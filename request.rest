@@ -1,0 +1,13 @@
+GET http://0.0.0.0:3000/?otp=39a3c48a-4d1a-46bc-a1f3-633d7fde366a
+
+###
+
+POST http://0.0.0.0:3000/signup
+Content-Type: application/json
+
+{
+    "email": "galliziafilippo@gmail.com"
+}
+
+###
+GET http://0.0.0.0:3000/login

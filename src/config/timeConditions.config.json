@@ -1,0 +1,16 @@
+{
+  "AvaliabilityGeneralRules": [
+    {
+      "day": "monday",
+      "availability": [{ "start": 7, "end": 15 }]
+    },
+    {
+      "day": "tuesday",
+      "availability": [{ "start": 7, "end": 15 }]
+    },
+    {
+      "day": "wednesday",
+      "availability": [{ "start": 7, "end": 15 }]
+    }
+  ]
+}
