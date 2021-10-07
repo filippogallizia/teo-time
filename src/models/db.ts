@@ -1,5 +1,5 @@
 const dbConfig = require('../config/db.config.js');
-import BookingGrid from '';
+import BookingGrid from './bookingGrid.model';
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(

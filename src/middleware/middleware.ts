@@ -1,5 +1,5 @@
 import express, { NextFunction } from 'express';
-
+import { op } from 'sequelize';
 const db = require('../models/db');
 const { DateTime } = require('luxon');
 const User = db.user;
