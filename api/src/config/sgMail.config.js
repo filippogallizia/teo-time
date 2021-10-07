@@ -9,7 +9,7 @@ class ClassSgMail {
       from: process.env.EMAIL, // Use the email address or domain you verified above
       subject: 'teo-time',
       text: 'and easy to do anywhere, even with Node.js',
-      html: `<a href=http://0.0.0.0:3000/?otp=${OTP}>LOG IN HERE</a>`,
+      html: `<a href=http://0.0.0.0:5000/?otp=${OTP}>LOG IN HERE</a>`,
     };
   }
   sendMessage(res) {

@@ -1,8 +1,8 @@
-GET http://0.0.0.0:3000/?otp=39a3c48a-4d1a-46bc-a1f3-633d7fde366a
+GET http://0.0.0.0:5000/?otp=39a3c48a-4d1a-46bc-a1f3-633d7fde366a
 
 ###
 
-POST http://0.0.0.0:3000/signup
+POST http://0.0.0.0:5000/signup
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
 
 ###
 
-POST http://0.0.0.0:3000/createbooking
+POST http://0.0.0.0:5000/createbooking
 Content-Type: application/json
 
 {
@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://0.0.0.0:3000/retrievebooking
+POST http://0.0.0.0:5000/retrievebooking
 Content-Type: application/json
 
 {
@@ -30,4 +30,4 @@ Content-Type: application/json
 
 
 ###
-GET http://0.0.0.0:3000/login
+GET http://0.0.0.0:5000/login

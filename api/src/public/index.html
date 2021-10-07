@@ -31,7 +31,7 @@
     }
 
     button.addEventListener('click', () => {
-      submit('http://0.0.0.0:3000/signup', { email: input.value }).then(
+      submit('http://0.0.0.0:5000/signup', { email: input.value }).then(
         (data) => {
           console.log(data); // JSON data parsed by `data.json()` call
         }
