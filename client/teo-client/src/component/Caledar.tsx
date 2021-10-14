@@ -9,13 +9,15 @@ type CalendarComponentType = {
 function CalendarComponent({ setIsBookSlotView }: CalendarComponentType) {
   const [value, onChange] = useState(new Date());
   return (
-    <div>
-      <Calendar
-        onClickDay={() => setIsBookSlotView(true)}
-        onChange={onChange}
-        value={value}
-      />
-      <pre>{JSON.stringify(value)}</pre>
+    <div className="flex justify-center">
+      <div style={{ maxWidth: '600px' }}>
+        <Calendar
+          onClickDay={() => setIsBookSlotView(true)}
+          onChange={onChange}
+          value={value}
+        />
+        <pre>{JSON.stringify(value)}</pre>
+      </div>
     </div>
   );
 }
