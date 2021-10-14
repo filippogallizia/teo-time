@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
-import Calendar from 'react-calendar';
-import logo from './logo.svg';
 import './App.css';
+import BookSlotContainer from './component/BookSlotContainer';
+import CalendarComponent from './component/Caledar';
 
 function App() {
-  const [value, onChange] = useState(new Date());
-  console.log(value, 'value')
+  const [isBookSlotView, setIsBookSlotView] = useState(false);
   return (
-    <div className="App" style={{maxWidth: "600px"}}>
-      <Calendar
-        onChange={onChange}
-        value={value}
-      />
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        height: '100vh',
+      }}
+    >
+      <div className="App" style={{ maxWidth: '600px' }}>
+        <CalendarComponent setIsBookSlotView={setIsBookSlotView} />
+      </div>
+      {isBookSlotView ? (
+        <BookSlotContainer setIsBookSlotView={setIsBookSlotView} />
+      ) : null}
     </div>
   );
 }
