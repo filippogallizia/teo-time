@@ -10,17 +10,13 @@ function CalendarComponent({ setIsBookSlotView }: CalendarComponentType) {
   const [value, onChange] = useState(new Date());
 
   return (
-    <div className="flex justify-center">
-      <div style={{ maxWidth: '600px' }}>
-        <Calendar
-          onClickDay={() => {
-            setIsBookSlotView && setIsBookSlotView(true);
-          }}
-          onChange={onChange}
-          value={value}
-        />
-      </div>
-    </div>
+    <Calendar
+      onClickDay={() => {
+        setIsBookSlotView && setIsBookSlotView(true);
+      }}
+      onChange={onChange}
+      value={value}
+    />
   );
 }
 export default CalendarComponent;

@@ -1,20 +1,20 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import 'react-calendar/dist/Calendar.css';
 import { FLEX_DIR_ROW } from '../constant';
 
-type BookSlotChildType = {
-  hours: number;
+type AvailabilitiesChildType = {
+  hours: { start: string; end: string };
   id: number;
   setIsClicked: Dispatch<SetStateAction<{ id: number; isOpen: boolean }>>;
   isClicked: { id: number; isOpen: boolean };
 };
 
-function BookSlotChild({
+function AvailabilityHourContainer({
   hours,
   id,
   isClicked,
   setIsClicked,
-}: BookSlotChildType) {
+}: AvailabilitiesChildType) {
   return (
     <div className={`${FLEX_DIR_ROW} w-11/12`}>
       {isClicked.isOpen && isClicked.id === id ? (
@@ -22,7 +22,7 @@ function BookSlotChild({
           <div
             className={`${FLEX_DIR_ROW} text-white border-2 border-gray-500 bg-gray-500  hover:bg-gray-600 mr-1 p-4 w-full md:p-4`}
           >
-            {hours}
+            {`${hours.start}`}
           </div>
           <div
             className={`${FLEX_DIR_ROW} text-white border-2 border-blue-500  bg-blue-500 ml-1 p-4 w-full md:p-4`}
@@ -35,11 +35,11 @@ function BookSlotChild({
           onClick={() => setIsClicked({ id: id, isOpen: true })}
           className="flex flex-col justify-center items-center border-2 border-blue-500 hover:border-blue-800  m-2 p-4 w-11/12 md:p-4 md:w-4/5"
         >
-          {hours}
+          {`${hours.start}`}
         </div>
       )}
     </div>
   );
 }
 
-export default BookSlotChild;
+export default AvailabilityHourContainer;
