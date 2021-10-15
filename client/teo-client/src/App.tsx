@@ -1,5 +1,5 @@
 import React from 'react';
-import BookingComponent from './component/BookingComponent';
+import BookingComponent from './pages/booking/BookingPage';
 
 const HomeLayout = ({ children }: { children: JSX.Element }) => {
   return (
