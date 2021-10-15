@@ -1,5 +1,5 @@
 const dbConfig = require('../config/db.config.js');
-import BookingGrid from './bookingGrid.model';
+import BookedHoursType from './bookingGrid.model';
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(
@@ -28,6 +28,6 @@ db.sequelize = sequelize;
 //@ts-expect-error
 db.user = require('./user.model.ts')(sequelize, Sequelize);
 //@ts-expect-error
-db.bookingGrid = BookingGrid(sequelize, Sequelize);
+db.bookingGrid = BookedHoursType(sequelize, Sequelize);
 
 module.exports = db;

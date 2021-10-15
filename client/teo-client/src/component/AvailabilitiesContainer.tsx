@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import 'react-calendar/dist/Calendar.css';
 import BookSlotChild from './BookSlotChild';
 import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
@@ -10,6 +10,8 @@ import {
   MEDIUMPADDING,
   TITLE,
 } from '../constant';
+import { DateTime } from 'luxon';
+import { getBooking } from '../service/calendar.service';
 
 type BookSlotHeaderType = {
   setIsBookSlotView: Dispatch<SetStateAction<boolean>>;
@@ -43,10 +45,28 @@ type BookSlotContainerType = {
   setIsBookSlotView: Dispatch<SetStateAction<boolean>>;
 };
 
-function BookSlotContainer({ setIsBookSlotView }: BookSlotContainerType) {
+function AvailabilitiesContainer({ setIsBookSlotView }: BookSlotContainerType) {
   const [isClicked, setIsClicked] = useState({ id: 0, isOpen: false });
+  const [availabilities, setAvailabilities] = useState<
+    {
+      start: string;
+      end: string;
+    }[]
+  >([]);
+  const [hours, setHours] = useState<any[]>([]);
 
-  const timeSlots = [9, 10.3, 12];
+  useEffect(() => {
+    getBooking(setAvailabilities);
+  }, []);
+
+  useEffect(() => {
+    setHours(() => {
+      return availabilities.map((av) => {
+        return DateTime.fromISO(av.start).hour;
+      });
+    });
+  }, [availabilities]);
+
   return (
     <div
       className={`${FLEX_DIR_COL} w-full border-2 border-gray-50 md:border-none`}
@@ -59,7 +79,7 @@ function BookSlotContainer({ setIsBookSlotView }: BookSlotContainerType) {
         <p className={`${BOLD} ${MARGIN_BOTTOM} ${TITLE}`}>SELECT A TIME</p>
         <p>Duration: 60 min</p>
       </div>
-      {timeSlots.map((slot, i) => {
+      {hours.map((slot, i) => {
         return (
           <BookSlotChild
             setIsClicked={setIsClicked}
@@ -73,4 +93,4 @@ function BookSlotContainer({ setIsBookSlotView }: BookSlotContainerType) {
   );
 }
 
-export default BookSlotContainer;
+export default AvailabilitiesContainer;

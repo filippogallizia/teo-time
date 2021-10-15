@@ -1,13 +1,16 @@
 import express, { NextFunction } from 'express';
-import { op } from 'sequelize';
+import { Op } from 'sequelize';
+import { getAvailabilityFromBooking } from '../helpers/retrieveAvaliability';
 const db = require('../models/db');
 const { DateTime } = require('luxon');
 const User = db.user;
 const sgMail = require('@sendgrid/mail');
+const generalAvaliabilityRules = require('../config/timeConditions.config.json');
 const { v4 } = require('uuid');
 const ClassSgMail = require('../config/sgMail.config');
 
 const OTP = v4();
+const BookingGrid = db.bookingGrid;
 
 const userExist = async (
   req: express.Request,
@@ -28,7 +31,6 @@ const userExist = async (
       }).catch((e) => {
         res.status(500).send(`this error occured ${e.message}`);
       });
-      console.log(process.env.EMAIL, 'process.env.EMAIL');
       if (user) {
         // if a user exist, check if is link is still valid and if it is not send a new one
         if (user.passwordExpiry < DateTime.now()) {
@@ -90,7 +92,59 @@ const checkForOtp = async (
   }
 };
 
+const getAvailability = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  const startRange = req.body.start;
+  const endRange = req.body.end;
+  try {
+    const filo = await BookingGrid.findAll({
+      where: {
+        start: {
+          [Op.gte]: startRange,
+        },
+        end: {
+          [Op.lte]: endRange,
+        },
+      },
+    }).catch((e: any) => {
+      res.status(500).send(e);
+    });
+
+    const availabilities = getAvailabilityFromBooking(
+      {
+        bookings: [
+          {
+            id: 1,
+            start: '2021-10-05T07:00:00.000+01:00',
+            end: '2021-10-05T08:30:00.000+01:00',
+            createdAt: '2021-10-14T16:49:47.000Z',
+            updatedAt: '2021-10-14T16:49:47.000Z',
+          },
+          {
+            id: 1,
+            start: '2021-10-05T10:00:00.000+01:00',
+            end: '2021-10-05T11:30:00.000+01:00',
+            createdAt: '2021-10-14T16:49:47.000Z',
+            updatedAt: '2021-10-14T16:49:47.000Z',
+          },
+        ],
+      },
+      generalAvaliabilityRules
+    );
+
+    //@ts-expect-error
+    res.availabilities = availabilities;
+    next();
+  } catch (e) {
+    res.send('e');
+  }
+};
+
 module.exports = {
   userExist,
   checkForOtp,
+  getAvailability,
 };

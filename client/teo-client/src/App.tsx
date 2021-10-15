@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import BookSlotContainer from './component/BookSlotContainer';
+import AvailabilitiesContainer from './component/AvailabilitiesContainer';
 import CalendarComponent from './component/Caledar';
 import { TAILWIND_MOBILE_BREAKPOINT } from './constant';
 
@@ -45,17 +45,15 @@ function App() {
         {isMobile.width <= TAILWIND_MOBILE_BREAKPOINT ? (
           <div>
             {isBookSlotView ? (
-              <BookSlotContainer setIsBookSlotView={setIsBookSlotView} />
+              <AvailabilitiesContainer setIsBookSlotView={setIsBookSlotView} />
             ) : (
               <CalendarComponent setIsBookSlotView={setIsBookSlotView} />
             )}
           </div>
         ) : (
           <div className="md:flex w-1/2 justify-evenly">
-            <CalendarComponent setIsBookSlotView={setIsBookSlotView} />
-            {isBookSlotView ? (
-              <BookSlotContainer setIsBookSlotView={setIsBookSlotView} />
-            ) : null}
+            <CalendarComponent />
+            <AvailabilitiesContainer setIsBookSlotView={setIsBookSlotView} />
           </div>
         )}
       </>

@@ -10,12 +10,10 @@ const MysgMail = require('./config/sgMail.config');
 
 const filo = new MysgMail('2', 2);
 
-console.log(filo.sendMessage, 'ciao');
-
 const routes = require('./routes/routes');
 
 var corsOptions = {
-  origin: 'http://localhost:5000',
+  origin: 'http://localhost:3000',
 };
 
 app.use(cors(corsOptions));

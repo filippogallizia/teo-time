@@ -15,7 +15,6 @@ function BookSlotChild({
   isClicked,
   setIsClicked,
 }: BookSlotChildType) {
-  console.log(id);
   return (
     <div className={`${FLEX_DIR_ROW} w-11/12`}>
       {isClicked.isOpen && isClicked.id === id ? (

@@ -1,7 +1,13 @@
 import express from 'express';
 import { Op } from 'sequelize';
+import { getAvailabilityFromBooking } from '../helpers/retrieveAvaliability';
+const generalAvaliabilityRules = require('../config/timeConditions.config.json');
 const path = require('path');
-const { userExist, checkForOtp } = require('../middleware/middleware');
+const {
+  userExist,
+  checkForOtp,
+  getAvailability,
+} = require('../middleware/middleware');
 const db = require('../models/db');
 const sgMail = require('@sendgrid/mail');
 const { v4 } = require('uuid');
@@ -83,23 +89,14 @@ router.post('/createbooking', (req: express.Request, res: express.Response) => {
 
 router.post(
   '/retrievebooking',
-  async (req: express.Request, res: express.Response) => {
-    const startRange = req.body.start;
-    const endRange = req.body.end;
-
-    const bookings = await BookingGrid.findAll({
-      where: {
-        start: {
-          [Op.gte]: startRange,
-        },
-        end: {
-          [Op.lte]: endRange,
-        },
-      },
-    }).catch((e: any) => {
-      res.status(500).send(e);
-    });
-    res.status(200).send(bookings);
+  [getAvailability],
+  (req: express.Request, res: express.Response) => {
+    try {
+      //@ts-expect-error
+      res.status(200).send(res.availabilities);
+    } catch (e) {
+      res.send(e);
+    }
   }
 );
 
