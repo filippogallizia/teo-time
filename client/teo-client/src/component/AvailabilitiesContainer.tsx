@@ -69,11 +69,13 @@ function AvailabilitiesContainer({
 
   useEffect(() => {
     setHours(() => {
-      return availabilities.map((av) => {
-        return {
-          start: DateTime.fromISO(av.start).toFormat('HH:mm'),
-        };
-      });
+      if (availabilities.length > 0) {
+        return availabilities.map((av) => {
+          return {
+            start: DateTime.fromISO(av.start).toFormat('HH:mm'),
+          };
+        });
+      } else return [];
     });
   }, [availabilities]);
 

@@ -1,12 +1,14 @@
 import express from 'express';
 import { Op } from 'sequelize';
 import { getAvailabilityFromBooking } from '../helpers/retrieveAvaliability';
+
 const generalAvaliabilityRules = require('../config/timeConditions.config.json');
 const path = require('path');
 const {
   userExist,
   checkForOtp,
   getAvailability,
+  checkForBookingAlreadyExisting,
 } = require('../middleware/middleware');
 const db = require('../models/db');
 const sgMail = require('@sendgrid/mail');
@@ -70,22 +72,31 @@ router.get('/signup', (req: express.Request, res: express.Response) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-router.post('/createbooking', (req: express.Request, res: express.Response) => {
-  const { start, end } = req.body;
-  // create a new user
-  const OTP = v4();
-  BookingGrid.create({
-    start,
-    end,
-  })
-    .then((booking: any) => {
-      //send link
-      res.status(200).send(booking);
-    })
-    .catch((e: any) => {
-      res.status(500).send(e.message);
-    });
-});
+router.post(
+  '/createbooking',
+  [checkForBookingAlreadyExisting],
+  (req: express.Request, res: express.Response) => {
+    try {
+      const { start, end } = req.body;
+      console.log(start, 'filoooooo');
+      // create a new user
+      const OTP = v4();
+      BookingGrid.create({
+        start,
+        end,
+      })
+        .then((booking: any) => {
+          //send link
+          res.status(200).send(booking);
+        })
+        .catch((e: any) => {
+          res.status(500).send(e.message);
+        });
+    } catch (e) {
+      res.status(500).send(e);
+    }
+  }
+);
 
 router.post(
   '/retrieveAvailability',

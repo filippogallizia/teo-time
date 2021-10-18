@@ -63,6 +63,24 @@ const userExist = async (
   }
 };
 
+export const checkForBookingAlreadyExisting = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  const { start, end } = req.body;
+  try {
+    const bookingAlreadyExist = await BookingGrid.findOne({
+      where: { start, end },
+    });
+    if (bookingAlreadyExist) {
+      res.status(404).send('This hour is already booked');
+    } else next();
+  } catch (e) {
+    res.send(e);
+  }
+};
+
 const checkForOtp = async (
   req: express.Request,
   res: express.Response,
@@ -100,7 +118,7 @@ const getAvailability = async (
   const startRange = req.body.start;
   const endRange = req.body.end;
   try {
-    const myAvailabilities = await BookingGrid.findAll({
+    const myBookings = await BookingGrid.findAll({
       where: {
         start: {
           [Op.gte]: startRange,
@@ -115,13 +133,13 @@ const getAvailability = async (
 
     const availabilities = getAvailabilityFromBooking(
       {
-        bookings: myAvailabilities,
+        bookings: myBookings,
       },
       generalAvaliabilityRules
     );
 
     //@ts-expect-error
-    res.availabilities = myAvailabilities;
+    res.availabilities = availabilities;
     next();
   } catch (e) {
     res.send(e);
@@ -132,4 +150,5 @@ module.exports = {
   userExist,
   checkForOtp,
   getAvailability,
+  checkForBookingAlreadyExisting,
 };

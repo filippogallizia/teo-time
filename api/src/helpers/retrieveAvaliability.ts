@@ -23,19 +23,6 @@ type BookedHoursType = {
   bookings: TimeRangeType[];
 };
 
-const bookedHours: BookedHoursType = {
-  bookings: [
-    {
-      start: DateTime.fromISO('2021-09-05T09:00:00.000'),
-      end: DateTime.fromISO('2021-10-05T11:00:00.000'),
-    },
-    {
-      start: DateTime.fromISO('2021-10-05T13:00:00.000'),
-      end: DateTime.fromISO('2021-10-05T15:00:00.000'),
-    },
-  ],
-};
-
 // helpers
 
 export const getAvailabilityFromBooking = (
@@ -58,40 +45,85 @@ export const getAvailabilityFromBooking = (
     left: any[],
     right: any[],
     compareFunction: (a: any, b: any) => boolean
-  ) =>
-    left.filter(
+  ) => {
+    return left.filter(
       (leftValue) =>
         !right.some((rightValue) => compareFunction(leftValue, rightValue))
     );
+  };
+
+  // const compareBookingAndAvailabiliy = (
+  //   left: any[],
+  //   right: any[]
+  //   // compareFunction: (a: any, b: any) => boolean
+  // ) => {
+  //   const bucket: any = [];
+  //   const findUnique = left.forEach((arrVal) => {
+  //     let exist = false;
+  //     right.forEach((arr1Val) => {
+  //       if (
+  //         DateTime.fromISO(arr1Val.start).hour ==
+  //         DateTime.fromISO(arrVal.start).hour
+  //       ) {
+  //         exist = true;
+  //       }
+  //       if (
+  //         DateTime.fromISO(arr1Val.start).hour !==
+  //           DateTime.fromISO(arrVal.start).hour &&
+  //         exist
+  //       ) {
+  //         bucket.push(arrVal);
+  //       }
+  //     });
+  //   });
+  //   return bucket;
+  // };
 
   const matchDayBookingAndAvailability = genAv.generalAvaliabilityRules.filter(
     (el) => {
       return bookedHours.bookings.find((hours) => {
-        const ciao = hours.start;
-        console.log(
-          DateTime.local(ciao).weekdayLong.toLocaleLowerCase(),
-          'hours'
-        );
+        //@ts-expect-error
+        const ciao = hours.start.toISOString();
+        console.log(DateTime.fromISO(ciao).weekdayLong.toLowerCase(), 'ciao');
+        // const ciao = hours.start;
         return (
-          el.day.toLocaleLowerCase() ===
-          DateTime.local(hours.start).weekdayLong.toLocaleLowerCase()
+          el.day.toLowerCase() ===
+          DateTime.fromISO(ciao).weekdayLong.toLowerCase()
         );
       });
     }
   );
 
-  console.log(matchDayBookingAndAvailability, 'matchDayBookingAndAvailability');
+  console.log(
+    JSON.stringify(matchDayBookingAndAvailability),
+    'matchDayBookingAndAvailability'
+  );
 
   const availabilities = matchDayBookingAndAvailability[0].availability;
   const bookings = bookedHours.bookings;
 
+  console.log(bookings, 'bookings');
+  const parsedBooking = bookings.map((hour) => {
+    //@ts-expect-error
+    const x = hour.start.toISOString();
+    //@ts-expect-error
+    const y = hour.end.toISOString();
+    return {
+      ...hour,
+      start: DateTime.fromISO(x),
+      end: DateTime.fromISO(y),
+    };
+  });
+
+  console.log(parsedBooking, 'parsedBooking');
+
   const filtered1 = compareBookingAndAvailabiliy(
     availabilities,
-    bookings,
+    parsedBooking,
     isSameHour
   );
   const fitered2 = compareBookingAndAvailabiliy(
-    bookings,
+    parsedBooking,
     availabilities,
     isSameHour
   );
@@ -115,9 +147,26 @@ const findBooking = async () => {
     }).catch((e: any) => {
       console.log(e);
     });
-    console.log(filo, 'filo');
     const result = getAvailabilityFromBooking(
-      { bookings: filo },
+      {
+        // bookings: [
+        //   {
+        //     id: 1,
+        //     start: '2021-10-05T07:00:00.000',
+        //     end: '2021-10-05T08:30:00.000',
+        //     createdAt: '2021-10-18T09:08:59.000Z',
+        //     updatedAt: '2021-10-18T09:08:59.000Z',
+        //   },
+        //   {
+        //     id: 1,
+        //     start: '2021-10-05T08:30:00.000',
+        //     end: '2021-10-05T10:00:00.000',
+        //     createdAt: '2021-10-18T09:08:59.000Z',
+        //     updatedAt: '2021-10-18T09:08:59.000Z',
+        //   },
+        // ],
+        bookings: filo,
+      },
       generalAvaliabilityRules
     );
     console.log(result, 'result');
@@ -135,6 +184,13 @@ findBooking();
 //         {
 //           id: 1,
 //           start: '2021-10-05T06:00:00.000Z',
+//           end: '2021-10-05T08:30:00.000Z',
+//           createdAt: '2021-10-18T09:08:59.000Z',
+//           updatedAt: '2021-10-18T09:08:59.000Z',
+//         },
+//         {
+//           id: 1,
+//           start: '2021-10-05T07:30:00.000Z',
 //           end: '2021-10-05T08:30:00.000Z',
 //           createdAt: '2021-10-18T09:08:59.000Z',
 //           updatedAt: '2021-10-18T09:08:59.000Z',
