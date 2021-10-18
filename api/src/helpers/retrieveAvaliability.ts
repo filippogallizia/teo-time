@@ -52,40 +52,11 @@ export const getAvailabilityFromBooking = (
     );
   };
 
-  // const compareBookingAndAvailabiliy = (
-  //   left: any[],
-  //   right: any[]
-  //   // compareFunction: (a: any, b: any) => boolean
-  // ) => {
-  //   const bucket: any = [];
-  //   const findUnique = left.forEach((arrVal) => {
-  //     let exist = false;
-  //     right.forEach((arr1Val) => {
-  //       if (
-  //         DateTime.fromISO(arr1Val.start).hour ==
-  //         DateTime.fromISO(arrVal.start).hour
-  //       ) {
-  //         exist = true;
-  //       }
-  //       if (
-  //         DateTime.fromISO(arr1Val.start).hour !==
-  //           DateTime.fromISO(arrVal.start).hour &&
-  //         exist
-  //       ) {
-  //         bucket.push(arrVal);
-  //       }
-  //     });
-  //   });
-  //   return bucket;
-  // };
-
   const matchDayBookingAndAvailability = genAv.generalAvaliabilityRules.filter(
     (el) => {
       return bookedHours.bookings.find((hours) => {
         //@ts-expect-error
         const ciao = hours.start.toISOString();
-        console.log(DateTime.fromISO(ciao).weekdayLong.toLowerCase(), 'ciao');
-        // const ciao = hours.start;
         return (
           el.day.toLowerCase() ===
           DateTime.fromISO(ciao).weekdayLong.toLowerCase()
@@ -94,15 +65,10 @@ export const getAvailabilityFromBooking = (
     }
   );
 
-  console.log(
-    JSON.stringify(matchDayBookingAndAvailability),
-    'matchDayBookingAndAvailability'
-  );
-
   const availabilities = matchDayBookingAndAvailability[0].availability;
+  console.log(availabilities, 'availabilities');
   const bookings = bookedHours.bookings;
 
-  console.log(bookings, 'bookings');
   const parsedBooking = bookings.map((hour) => {
     //@ts-expect-error
     const x = hour.start.toISOString();
@@ -133,7 +99,7 @@ export const getAvailabilityFromBooking = (
 
 const findBooking = async () => {
   const startRange = '2021-10-05T07:00:00.000';
-  const endRange = '2021-10-05T09:30:00.000';
+  const endRange = '2021-10-05T22:30:00.000';
   try {
     const filo = await BookingGrid.findAll({
       where: {
@@ -149,22 +115,6 @@ const findBooking = async () => {
     });
     const result = getAvailabilityFromBooking(
       {
-        // bookings: [
-        //   {
-        //     id: 1,
-        //     start: '2021-10-05T07:00:00.000',
-        //     end: '2021-10-05T08:30:00.000',
-        //     createdAt: '2021-10-18T09:08:59.000Z',
-        //     updatedAt: '2021-10-18T09:08:59.000Z',
-        //   },
-        //   {
-        //     id: 1,
-        //     start: '2021-10-05T08:30:00.000',
-        //     end: '2021-10-05T10:00:00.000',
-        //     createdAt: '2021-10-18T09:08:59.000Z',
-        //     updatedAt: '2021-10-18T09:08:59.000Z',
-        //   },
-        // ],
         bookings: filo,
       },
       generalAvaliabilityRules

@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import 'react-calendar/dist/Calendar.css';
 import { FLEX_DIR_ROW } from '../constant';
+import { Actions, SET_SELECTION_HOUR } from '../pages/booking/bookingReducer';
 
 type AvailabilitiesChildType = {
   hour: { start: string; end: string };
@@ -8,6 +9,7 @@ type AvailabilitiesChildType = {
   setIsClicked: Dispatch<SetStateAction<{ id: number; isOpen: boolean }>>;
   isClicked: { id: number; isOpen: boolean };
   setSelectionHour: Dispatch<SetStateAction<string>>;
+  dispatch: Dispatch<Actions>;
 };
 
 function AvailabilityHourContainer({
@@ -16,6 +18,7 @@ function AvailabilityHourContainer({
   isClicked,
   setIsClicked,
   setSelectionHour,
+  dispatch,
 }: AvailabilitiesChildType) {
   // useEffect(() => {
   //   return () => {
@@ -34,7 +37,9 @@ function AvailabilityHourContainer({
             {`${hour.start}`}
           </div>
           <div
-            onClick={() => setSelectionHour(hour.start)}
+            onClick={() =>
+              dispatch({ type: SET_SELECTION_HOUR, payload: hour.start })
+            }
             className={`${FLEX_DIR_ROW} text-white border-2 border-blue-500  bg-blue-500 hover:bg-blue-700 cursor-pointer  ml-1  p-4 w-full md:p-4`}
           >
             confirm

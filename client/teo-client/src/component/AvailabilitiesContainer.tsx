@@ -12,6 +12,7 @@ import {
 } from '../constant';
 import { DateTime } from 'luxon';
 import { getAvailabilities } from '../service/calendar.service';
+import { Actions } from '../pages/booking/bookingReducer';
 
 type BookSlotHeaderType = {
   setRenderAvailabilities?: Dispatch<SetStateAction<boolean>>;
@@ -48,29 +49,33 @@ const AvailabilityContainerHeader = ({
 type BookSlotContainerType = {
   setRenderAvailabilities?: Dispatch<SetStateAction<boolean>> | undefined;
   setSelectionHour: Dispatch<SetStateAction<string>>;
+  setAvailabilities: Dispatch<SetStateAction<any>>;
+  availabilities: any;
+  dispatch: Dispatch<Actions>;
 };
 
 function AvailabilitiesContainer({
   setRenderAvailabilities,
+  dispatch,
   setSelectionHour,
+  setAvailabilities,
+  availabilities,
 }: BookSlotContainerType) {
   const [isClicked, setIsClicked] = useState({ id: 0, isOpen: false });
-  const [availabilities, setAvailabilities] = useState<
-    {
-      start: string;
-      end: string;
-    }[]
-  >([]);
+
   const [hours, setHours] = useState<any[]>([]);
 
   useEffect(() => {
-    getAvailabilities(setAvailabilities);
+    getAvailabilities(setAvailabilities, {
+      start: '2021-10-05T07:00:00.000',
+      end: '2021-10-05T23:30:00.000',
+    });
   }, []);
 
   useEffect(() => {
     setHours(() => {
       if (availabilities.length > 0) {
-        return availabilities.map((av) => {
+        return availabilities.map((av: any) => {
           return {
             start: DateTime.fromISO(av.start).toFormat('HH:mm'),
           };
@@ -98,6 +103,7 @@ function AvailabilitiesContainer({
       {hours.map((hour, i) => {
         return (
           <AvailabilityHourContainer
+            dispatch={dispatch}
             key={i + 2}
             setIsClicked={setIsClicked}
             isClicked={isClicked}

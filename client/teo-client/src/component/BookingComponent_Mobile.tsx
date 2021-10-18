@@ -8,6 +8,9 @@ const BookingComponentMobile = ({
   setSelectionHour,
   setSelectionDate,
   selectedDate,
+  setAvailabilities,
+  availabilities,
+  dispatch,
 }: BookingComponentType) => {
   const [renderAvailabilities, setRenderAvailabilities] = useState(false);
 
@@ -15,6 +18,9 @@ const BookingComponentMobile = ({
     <div>
       {renderAvailabilities ? (
         <AvailabilitiesContainer
+          dispatch={dispatch}
+          availabilities={availabilities}
+          setAvailabilities={setAvailabilities}
           setRenderAvailabilities={setRenderAvailabilities}
           setSelectionHour={setSelectionHour}
         />

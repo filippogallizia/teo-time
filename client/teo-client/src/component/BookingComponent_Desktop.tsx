@@ -7,6 +7,9 @@ const BookingComponentDesktop = ({
   setSelectionHour,
   setSelectionDate,
   selectedDate,
+  setAvailabilities,
+  availabilities,
+  dispatch,
 }: BookingComponentType) => {
   return (
     <div className="flex justify-center ">
@@ -19,7 +22,12 @@ const BookingComponentDesktop = ({
           />
         </div>
       </div>
-      <AvailabilitiesContainer setSelectionHour={setSelectionHour} />
+      <AvailabilitiesContainer
+        dispatch={dispatch}
+        setAvailabilities={setAvailabilities}
+        availabilities={availabilities}
+        setSelectionHour={setSelectionHour}
+      />
     </div>
   );
 };
