@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://0.0.0.0:5000/retrievebooking
+POST http://0.0.0.0:5000/retrieveAvailability
 Content-Type: application/json
 
 {

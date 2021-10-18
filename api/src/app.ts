@@ -21,11 +21,11 @@ app.use(express.json());
 app.use('/', routes);
 
 db.sequelize
-  .sync({ force: true })
+  .sync({ force: false })
   .then(() => {
     console.log('Drop and Resync Dbasssssxs');
   })
-  .catch((e) => console.log(e));
+  .catch((e: any) => console.log(e));
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

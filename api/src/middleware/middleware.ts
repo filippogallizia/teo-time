@@ -100,7 +100,7 @@ const getAvailability = async (
   const startRange = req.body.start;
   const endRange = req.body.end;
   try {
-    const filo = await BookingGrid.findAll({
+    const myAvailabilities = await BookingGrid.findAll({
       where: {
         start: {
           [Op.gte]: startRange,
@@ -113,33 +113,18 @@ const getAvailability = async (
       res.status(500).send(e);
     });
 
-    // const availabilities = getAvailabilityFromBooking(
-    //   {
-    //     bookings: [
-    //       {
-    //         id: 1,
-    //         start: '2021-10-05T07:00:00.000+01:00',
-    //         end: '2021-10-05T08:30:00.000+01:00',
-    //         createdAt: '2021-10-14T16:49:47.000Z',
-    //         updatedAt: '2021-10-14T16:49:47.000Z',
-    //       },
-    //       {
-    //         id: 1,
-    //         start: '2021-10-05T10:00:00.000+01:00',
-    //         end: '2021-10-05T11:30:00.000+01:00',
-    //         createdAt: '2021-10-14T16:49:47.000Z',
-    //         updatedAt: '2021-10-14T16:49:47.000Z',
-    //       },
-    //     ],
-    //   },
-    //   generalAvaliabilityRules
-    // );
+    const availabilities = getAvailabilityFromBooking(
+      {
+        bookings: myAvailabilities,
+      },
+      generalAvaliabilityRules
+    );
 
     //@ts-expect-error
-    res.availabilities = filo;
+    res.availabilities = myAvailabilities;
     next();
   } catch (e) {
-    res.send('e');
+    res.send(e);
   }
 };
 
