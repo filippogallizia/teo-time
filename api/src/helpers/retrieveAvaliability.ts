@@ -87,3 +87,21 @@ export const getAvailabilityFromBooking = (
 
   return [...filtered1, ...fitered2];
 };
+
+console.log(
+  getAvailabilityFromBooking(
+    {
+      bookings: [
+        {
+          id: 1,
+          start: '2021-10-05T06:00:00.000Z',
+          end: '2021-10-05T08:30:00.000Z',
+          createdAt: '2021-10-18T09:08:59.000Z',
+          updatedAt: '2021-10-18T09:08:59.000Z',
+        },
+      ],
+    },
+
+    generalAvaliabilityRules
+  )
+);

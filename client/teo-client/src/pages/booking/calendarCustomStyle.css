@@ -1,0 +1,10 @@
+.react-calendar__tile
+  react-calendar__tile--now
+  react-calendar__tile--active
+  react-calendar__tile--range
+  react-calendar__tile--rangeStart
+  react-calendar__tile--rangeEnd
+  react-calendar__tile--rangeBothEnds
+  react-calendar__month-view__days__day {
+  background-color: red;
+}

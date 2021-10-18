@@ -3,9 +3,11 @@ import BookingComponentDesktop from '../../component/BookingComponent_Desktop';
 import BookingComponentMobile from '../../component/BookingComponent_Mobile';
 import { TAILWIND_MOBILE_BREAKPOINT } from '../../constant';
 
-function BookingComponent() {
+function BookingPage() {
   const [isMobile, setIsMobile] = useState({ width: window.innerWidth });
-  const [isBookSlotView, setIsBookSlotView] = useState(false);
+  const [selectedDate, setSelectionDate] = useState(new Date());
+
+  const [selectedHour, setSelectionHour] = useState('00:00');
 
   function debounce(fn: () => void, ms: number) {
     let timer: any;
@@ -34,14 +36,22 @@ function BookingComponent() {
     <>
       {isMobile.width <= TAILWIND_MOBILE_BREAKPOINT ? (
         <BookingComponentMobile
-          isBookSlotView={isBookSlotView}
-          setIsBookSlotView={setIsBookSlotView}
+          setSelectionDate={setSelectionDate}
+          selectedDate={selectedDate}
+          setSelectionHour={setSelectionHour}
         />
       ) : (
-        <BookingComponentDesktop />
+        <BookingComponentDesktop
+          setSelectionDate={setSelectionDate}
+          selectedDate={selectedDate}
+          setSelectionHour={setSelectionHour}
+        />
       )}
+      <pre style={{ backgroundColor: 'black', color: 'white' }}>
+        {JSON.stringify(`${selectedDate} ${selectedHour}`)}
+      </pre>
     </>
   );
 }
 
-export default BookingComponent;
+export default BookingPage;

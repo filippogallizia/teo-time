@@ -92,10 +92,17 @@ router.post(
   [getAvailability],
   (req: express.Request, res: express.Response) => {
     try {
-      //@ts-expect-error
-      res.status(200).send(res.availabilities);
+      const availabilities = getAvailabilityFromBooking(
+        {
+          //@ts-expect-error
+          bookings: res.availabilities,
+        },
+
+        generalAvaliabilityRules
+      );
+      res.status(200).send(availabilities);
     } catch (e) {
-      res.send(e);
+      res.send('sua');
     }
   }
 );

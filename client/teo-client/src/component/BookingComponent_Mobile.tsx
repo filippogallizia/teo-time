@@ -1,26 +1,32 @@
-import { Dispatch, SetStateAction } from 'react';
+import { useState } from 'react';
+import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import AvailabilitiesContainer from './AvailabilitiesContainer';
 import CalendarComponent from './Caledar';
 import EventInformations from './EventInformations';
 
-type BookingComponentMobileType = {
-  isBookSlotView: boolean;
-  setIsBookSlotView: Dispatch<SetStateAction<boolean>>;
-};
-
 const BookingComponentMobile = ({
-  isBookSlotView,
-  setIsBookSlotView,
-}: BookingComponentMobileType) => {
+  setSelectionHour,
+  setSelectionDate,
+  selectedDate,
+}: BookingComponentType) => {
+  const [renderAvailabilities, setRenderAvailabilities] = useState(false);
+
   return (
     <div>
-      {isBookSlotView ? (
-        <AvailabilitiesContainer setIsBookSlotView={setIsBookSlotView} />
+      {renderAvailabilities ? (
+        <AvailabilitiesContainer
+          setRenderAvailabilities={setRenderAvailabilities}
+          setSelectionHour={setSelectionHour}
+        />
       ) : (
         <div className="flex justify-center ">
           <div style={{ maxWidth: '600px' }}>
             <EventInformations />
-            <CalendarComponent setIsBookSlotView={setIsBookSlotView} />
+            <CalendarComponent
+              setSelectionDate={setSelectionDate}
+              selectedDate={selectedDate}
+              setRenderAvailabilities={setRenderAvailabilities}
+            />
           </div>
         </div>
       )}

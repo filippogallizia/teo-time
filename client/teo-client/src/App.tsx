@@ -1,5 +1,5 @@
 import React from 'react';
-import BookingComponent from './pages/booking/BookingPage';
+import BookingPage from './pages/booking/BookingPage';
 
 const HomeLayout = ({ children }: { children: JSX.Element }) => {
   return (
@@ -12,7 +12,7 @@ const HomeLayout = ({ children }: { children: JSX.Element }) => {
 function App() {
   return (
     <HomeLayout>
-      <BookingComponent />
+      <BookingPage />
     </HomeLayout>
   );
 }

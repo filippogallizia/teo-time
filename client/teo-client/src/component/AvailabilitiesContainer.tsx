@@ -11,14 +11,14 @@ import {
   TITLE,
 } from '../constant';
 import { DateTime } from 'luxon';
-import { getBooking } from '../service/calendar.service';
+import { getAvailabilities } from '../service/calendar.service';
 
 type BookSlotHeaderType = {
-  setIsBookSlotView?: Dispatch<SetStateAction<boolean>>;
+  setRenderAvailabilities?: Dispatch<SetStateAction<boolean>>;
 };
 
 const AvailabilityContainerHeader = ({
-  setIsBookSlotView,
+  setRenderAvailabilities,
 }: BookSlotHeaderType) => {
   return (
     <div
@@ -34,7 +34,9 @@ const AvailabilityContainerHeader = ({
         className={`absolute top-4 left-3 ${MARGIN_BOTTOM} md:hidden overflow-x-auto`}
       >
         <BsFillArrowLeftSquareFill
-          onClick={() => setIsBookSlotView && setIsBookSlotView(false)}
+          onClick={() =>
+            setRenderAvailabilities && setRenderAvailabilities(false)
+          }
           size="1.5em"
           color="blue"
         />
@@ -44,10 +46,14 @@ const AvailabilityContainerHeader = ({
 };
 
 type BookSlotContainerType = {
-  setIsBookSlotView?: Dispatch<SetStateAction<boolean>> | undefined;
+  setRenderAvailabilities?: Dispatch<SetStateAction<boolean>> | undefined;
+  setSelectionHour: Dispatch<SetStateAction<string>>;
 };
 
-function AvailabilitiesContainer({ setIsBookSlotView }: BookSlotContainerType) {
+function AvailabilitiesContainer({
+  setRenderAvailabilities,
+  setSelectionHour,
+}: BookSlotContainerType) {
   const [isClicked, setIsClicked] = useState({ id: 0, isOpen: false });
   const [availabilities, setAvailabilities] = useState<
     {
@@ -58,7 +64,7 @@ function AvailabilitiesContainer({ setIsBookSlotView }: BookSlotContainerType) {
   const [hours, setHours] = useState<any[]>([]);
 
   useEffect(() => {
-    getBooking(setAvailabilities);
+    getAvailabilities(setAvailabilities);
   }, []);
 
   useEffect(() => {
@@ -76,7 +82,9 @@ function AvailabilitiesContainer({ setIsBookSlotView }: BookSlotContainerType) {
       className={`${FLEX_DIR_COL} w-full border-2 border-gray-50 md:border-none`}
     >
       <AvailabilityContainerHeader
-        setIsBookSlotView={setIsBookSlotView && setIsBookSlotView}
+        setRenderAvailabilities={
+          setRenderAvailabilities && setRenderAvailabilities
+        }
       />
 
       <div
@@ -85,14 +93,15 @@ function AvailabilitiesContainer({ setIsBookSlotView }: BookSlotContainerType) {
         <p className={`${BOLD} ${MARGIN_BOTTOM} ${TITLE}`}>SELECT A TIME</p>
         <p>Duration: 60 min</p>
       </div>
-      {hours.map((slot, i) => {
+      {hours.map((hour, i) => {
         return (
           <AvailabilityHourContainer
             key={i + 2}
             setIsClicked={setIsClicked}
             isClicked={isClicked}
+            setSelectionHour={setSelectionHour}
             id={i}
-            hours={slot}
+            hour={hour}
           />
         );
       })}

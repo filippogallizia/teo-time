@@ -28,7 +28,7 @@ const userExist = async (
         where: {
           email,
         },
-      }).catch((e) => {
+      }).catch((e: any) => {
         res.status(500).send(`this error occured ${e.message}`);
       });
       if (user) {
@@ -57,7 +57,7 @@ const userExist = async (
         // if there is no user yet move forward to create a new one
         next();
       }
-    } catch (e) {
+    } catch (e: any) {
       res.status(500).send(`this error occured ${e.message}`);
     }
   }
@@ -113,30 +113,30 @@ const getAvailability = async (
       res.status(500).send(e);
     });
 
-    const availabilities = getAvailabilityFromBooking(
-      {
-        bookings: [
-          {
-            id: 1,
-            start: '2021-10-05T07:00:00.000+01:00',
-            end: '2021-10-05T08:30:00.000+01:00',
-            createdAt: '2021-10-14T16:49:47.000Z',
-            updatedAt: '2021-10-14T16:49:47.000Z',
-          },
-          {
-            id: 1,
-            start: '2021-10-05T10:00:00.000+01:00',
-            end: '2021-10-05T11:30:00.000+01:00',
-            createdAt: '2021-10-14T16:49:47.000Z',
-            updatedAt: '2021-10-14T16:49:47.000Z',
-          },
-        ],
-      },
-      generalAvaliabilityRules
-    );
+    // const availabilities = getAvailabilityFromBooking(
+    //   {
+    //     bookings: [
+    //       {
+    //         id: 1,
+    //         start: '2021-10-05T07:00:00.000+01:00',
+    //         end: '2021-10-05T08:30:00.000+01:00',
+    //         createdAt: '2021-10-14T16:49:47.000Z',
+    //         updatedAt: '2021-10-14T16:49:47.000Z',
+    //       },
+    //       {
+    //         id: 1,
+    //         start: '2021-10-05T10:00:00.000+01:00',
+    //         end: '2021-10-05T11:30:00.000+01:00',
+    //         createdAt: '2021-10-14T16:49:47.000Z',
+    //         updatedAt: '2021-10-14T16:49:47.000Z',
+    //       },
+    //     ],
+    //   },
+    //   generalAvaliabilityRules
+    // );
 
     //@ts-expect-error
-    res.availabilities = availabilities;
+    res.availabilities = filo;
     next();
   } catch (e) {
     res.send('e');

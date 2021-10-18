@@ -1,0 +1,31 @@
+{
+  "sqltools.connections": [
+    {
+      "mysqlOptions": {
+        "authProtocol": "default"
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "teo-time",
+      "database": "teoTime",
+      "username": "root",
+      "password": "surfando",
+      "connectionTimeout": 50
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default"
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MariaDB",
+      "name": "teo-time2",
+      "database": "teo-time",
+      "username": "root",
+      "password": "surfando"
+    }
+  ]
+}
