@@ -18,13 +18,7 @@ import {
   SET_AVAILABILITIES,
 } from '../pages/booking/bookingReducer';
 
-type BookSlotHeaderType = {
-  setRenderAvailabilities?: Dispatch<SetStateAction<boolean>>;
-};
-
-const AvailabilityContainerHeader = ({
-  setRenderAvailabilities,
-}: BookSlotHeaderType) => {
+const AvailabilityContainerHeader = () => {
   return (
     <div
       className={`w-full relative flex justify-center ${GLOBAL_PADDING} border-2 border-gray-50 md:border-none md:pt-0`}
@@ -38,29 +32,18 @@ const AvailabilityContainerHeader = ({
       <div
         className={`absolute top-4 left-3 ${MARGIN_BOTTOM} md:hidden overflow-x-auto`}
       >
-        <BsFillArrowLeftSquareFill
-          onClick={() =>
-            setRenderAvailabilities && setRenderAvailabilities(false)
-          }
-          size="1.5em"
-          color="blue"
-        />
+        <BsFillArrowLeftSquareFill size="1.5em" color="blue" />
       </div>
     </div>
   );
 };
 
 type BookSlotContainerType = {
-  setRenderAvailabilities?: Dispatch<SetStateAction<boolean>> | undefined;
   state: InitialState;
   dispatch: Dispatch<Actions>;
 };
 
-function AvailabilitiesContainer({
-  setRenderAvailabilities,
-  dispatch,
-  state,
-}: BookSlotContainerType) {
+function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
   const [isClicked, setIsClicked] = useState({ id: 0, isOpen: false });
 
   const [hours, setHours] = useState<any[]>([]);
@@ -99,15 +82,7 @@ function AvailabilitiesContainer({
     <div
       className={`${FLEX_DIR_COL} w-full border-2 border-gray-50 md:border-none`}
     >
-      <AvailabilityContainerHeader
-        setRenderAvailabilities={
-          setRenderAvailabilities && setRenderAvailabilities
-        }
-      />
-
-      <div
-        className={`${MARGIN_BOTTOM} ${GLOBAL_PADDING} ${FLEX_DIR_COL} md:hidden`}
-      >
+      <div className={`${MARGIN_BOTTOM}  ${FLEX_DIR_COL} md:hidden`}>
         <p className={`${BOLD} ${MARGIN_BOTTOM} ${TITLE}`}>SELECT A TIME</p>
         <p>Duration: 60 min</p>
       </div>

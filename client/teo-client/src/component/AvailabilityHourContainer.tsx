@@ -6,6 +6,7 @@ import { parseHoursToObject } from '../helpers/helpers';
 import {
   Actions,
   InitialState,
+  SET_CONFIRM_PHASE,
   SET_SELECTION_HOUR,
 } from '../pages/booking/bookingReducer';
 import { createBooking } from '../service/calendar.service';
@@ -39,24 +40,25 @@ function AvailabilityHourContainer({
           </div>
           <div
             onClick={() => {
-              dispatch({ type: SET_SELECTION_HOUR, payload: hour.start });
-              const mapped: { hours: number; minutes: number } =
-                parseHoursToObject(hour.start);
-              const parsedDate = DateTime.fromJSDate(
-                state.schedules.selectedDate
-              );
-              try {
-                const handleSuccess = (response: any) => {};
-                createBooking(handleSuccess, {
-                  start: parsedDate.plus(mapped).toISO(),
-                  end: parsedDate
-                    .plus(mapped)
-                    .plus({ hours: 1, minutes: 30 })
-                    .toISO(),
-                });
-              } catch (e) {
-                console.log(e);
-              }
+              dispatch({ type: SET_CONFIRM_PHASE, payload: true });
+              // dispatch({ type: SET_SELECTION_HOUR, payload: hour.start });
+              // const mapped: { hours: number; minutes: number } =
+              //   parseHoursToObject(hour.start);
+              // const parsedDate = DateTime.fromJSDate(
+              //   state.schedules.selectedDate
+              // );
+              // try {
+              //   const handleSuccess = (response: any) => {};
+              //   createBooking(handleSuccess, {
+              //     start: parsedDate.plus(mapped).toISO(),
+              //     end: parsedDate
+              //       .plus(mapped)
+              //       .plus({ hours: 1, minutes: 30 })
+              //       .toISO(),
+              //   });
+              // } catch (e) {
+              //   console.log(e);
+              // }
             }}
             className={`${FLEX_DIR_ROW} text-white border-2 border-blue-500  bg-blue-500 hover:bg-blue-700 cursor-pointer  ml-1  p-4 w-full md:p-4`}
           >

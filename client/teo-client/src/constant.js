@@ -25,7 +25,7 @@ export const FLEX_DIR_ROW = 'flex  justify-center items-center';
 
 // borders
 export const BORDERS_GRAY = 'border-2 border-gray-200';
-export const MY_DIVIDER = 'border-b-2 border-gray-200';
+export const MY_DIVIDER = 'border-b-2 border-gray-400';
 
 // colors
 

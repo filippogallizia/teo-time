@@ -1,15 +1,14 @@
 import React from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { CalendarComponentType } from '../pages/booking/BookingPageTypes';
-import { SET_SELECTION_DATE } from '../pages/booking/bookingReducer';
+import { BookingComponentType } from '../pages/booking/BookingPageTypes';
+import {
+  SET_RENDER_AVAILABILITIES,
+  SET_SELECTION_DATE,
+} from '../pages/booking/bookingReducer';
 import '../pages/booking/calendarCustomStyle.css';
 
-function CalendarComponent({
-  setRenderAvailabilities,
-  dispatch,
-  state,
-}: CalendarComponentType) {
+function CalendarComponent({ dispatch, state }: BookingComponentType) {
   const myDispatch = (value: any) => {
     const myPromise = new Promise((resolve, reject) => {
       //@ts-expect-error
@@ -20,16 +19,13 @@ function CalendarComponent({
         dispatch({ type: SET_SELECTION_DATE, payload: value });
       })
       .then(() => {
-        setRenderAvailabilities && setRenderAvailabilities(true);
+        dispatch({ type: SET_RENDER_AVAILABILITIES, payload: true });
       });
   };
   return (
     <Calendar
       minDate={new Date()}
       onChange={myDispatch}
-      // onClickDay={() => {
-      //   setRenderAvailabilities && setRenderAvailabilities(true);
-      // }}
       value={state.schedules.selectedDate}
     />
   );

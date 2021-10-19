@@ -25,6 +25,8 @@ const initialState = {
         end: endAvailabilities.toISOString(),
       },
     ],
+    isConfirmPhase: false,
+    isRenderAvailabilities: false,
   },
 };
 

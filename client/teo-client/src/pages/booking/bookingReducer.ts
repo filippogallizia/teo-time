@@ -6,6 +6,8 @@ import { createBooking } from '../../service/calendar.service';
 export const SET_AVAILABILITIES = 'SET_AVAILABILITIES';
 export const SET_SELECTION_DATE = 'SET_SELECTION_DATE';
 export const SET_SELECTION_HOUR = 'SET_SELECTION_HOUR';
+export const SET_CONFIRM_PHASE = 'SET_CONFIRM_PHASE';
+export const SET_RENDER_AVAILABILITIES = 'SET_RENDER_AVAILABILITIES';
 
 type timeRange = { start: string; end: string };
 
@@ -14,6 +16,8 @@ export type InitialState = {
     selectedDate: Date;
     selectedHour: string;
     availabilities: timeRange[];
+    isConfirmPhase: boolean;
+    isRenderAvailabilities: boolean;
   };
 };
 
@@ -32,10 +36,21 @@ type ActionSetSelectionHour = {
   payload: string;
 };
 
+type ActionSetConfirmPhase = {
+  type: typeof SET_CONFIRM_PHASE;
+  payload: boolean;
+};
+type ActionSetRenderAvailabilities = {
+  type: typeof SET_RENDER_AVAILABILITIES;
+  payload: boolean;
+};
+
 export type Actions =
   | ActionSetAvailabilities
   | ActionSetSelectionDate
-  | ActionSetSelectionHour;
+  | ActionSetSelectionHour
+  | ActionSetConfirmPhase
+  | ActionSetRenderAvailabilities;
 
 const bookingReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
@@ -50,6 +65,14 @@ const bookingReducer = (initialState: InitialState, action: Actions) => {
     case SET_SELECTION_HOUR:
       return produce(initialState, (draft) => {
         draft.schedules.selectedHour = action.payload;
+      });
+    case SET_CONFIRM_PHASE:
+      return produce(initialState, (draft) => {
+        draft.schedules.isConfirmPhase = action.payload;
+      });
+    case SET_RENDER_AVAILABILITIES:
+      return produce(initialState, (draft) => {
+        draft.schedules.isRenderAvailabilities = action.payload;
       });
     default:
       return initialState;

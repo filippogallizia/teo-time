@@ -3,7 +3,7 @@ import BookingPage from './pages/booking/BookingPage';
 
 const HomeLayout = ({ children }: { children: JSX.Element }) => {
   return (
-    <div className="flex flex-col justify-center h-screen md:items-center">
+    <div className="flex flex-col h-screen md:items-center md:justify-center">
       {children}
     </div>
   );

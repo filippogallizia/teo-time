@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 
 type GeneralButtonType = {
   buttonText: string | number;
-  onClick: Dispatch<SetStateAction<any>>;
+  onClick?: Dispatch<SetStateAction<any>>;
 };
 
 function GeneralButton({ buttonText, onClick }: GeneralButtonType) {
