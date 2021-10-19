@@ -11,15 +11,25 @@ function CalendarComponent({
   state,
 }: CalendarComponentType) {
   const myDispatch = (value: any) => {
-    return dispatch({ type: SET_SELECTION_DATE, payload: value });
+    const myPromise = new Promise((resolve, reject) => {
+      //@ts-expect-error
+      resolve();
+    });
+    myPromise
+      .then(() => {
+        dispatch({ type: SET_SELECTION_DATE, payload: value });
+      })
+      .then(() => {
+        setRenderAvailabilities && setRenderAvailabilities(true);
+      });
   };
   return (
     <Calendar
       minDate={new Date()}
-      onClickDay={() => {
-        setRenderAvailabilities && setRenderAvailabilities(true);
-      }}
       onChange={myDispatch}
+      // onClickDay={() => {
+      //   setRenderAvailabilities && setRenderAvailabilities(true);
+      // }}
       value={state.schedules.selectedDate}
     />
   );

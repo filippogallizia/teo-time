@@ -82,7 +82,7 @@ function AvailabilitiesContainer({
     };
     funcAsync();
   }, [dispatch, state.schedules.selectedDate, state.schedules.selectedHour]);
-
+  console.log(state.schedules.selectedDate, 'dateVealue');
   useEffect(() => {
     setHours(() => {
       if (state.schedules.availabilities.length > 0) {
