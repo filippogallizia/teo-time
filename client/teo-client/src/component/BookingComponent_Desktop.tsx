@@ -3,31 +3,16 @@ import AvailabilitiesContainer from './AvailabilitiesContainer';
 import CalendarComponent from './Caledar';
 import EventInformations from './EventInformations';
 
-const BookingComponentDesktop = ({
-  setSelectionHour,
-  setSelectionDate,
-  selectedDate,
-  setAvailabilities,
-  availabilities,
-  dispatch,
-}: BookingComponentType) => {
+const BookingComponentDesktop = ({ dispatch, state }: BookingComponentType) => {
   return (
     <div className="flex justify-center ">
       <EventInformations />
       <div className="flex justify-center ">
         <div style={{ maxWidth: '600px' }}>
-          <CalendarComponent
-            setSelectionDate={setSelectionDate}
-            selectedDate={selectedDate}
-          />
+          <CalendarComponent state={state} dispatch={dispatch} />
         </div>
       </div>
-      <AvailabilitiesContainer
-        dispatch={dispatch}
-        setAvailabilities={setAvailabilities}
-        availabilities={availabilities}
-        setSelectionHour={setSelectionHour}
-      />
+      <AvailabilitiesContainer state={state} dispatch={dispatch} />
     </div>
   );
 };

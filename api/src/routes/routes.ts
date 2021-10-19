@@ -78,7 +78,6 @@ router.post(
   (req: express.Request, res: express.Response) => {
     try {
       const { start, end } = req.body;
-      console.log(start, 'filoooooo');
       // create a new user
       const OTP = v4();
       BookingGrid.create({

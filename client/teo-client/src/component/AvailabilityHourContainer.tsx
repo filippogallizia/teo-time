@@ -1,15 +1,22 @@
+import { DateTime } from 'luxon';
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import 'react-calendar/dist/Calendar.css';
 import { FLEX_DIR_ROW } from '../constant';
-import { Actions, SET_SELECTION_HOUR } from '../pages/booking/bookingReducer';
+import { parseHoursToObject } from '../helpers/helpers';
+import {
+  Actions,
+  InitialState,
+  SET_SELECTION_HOUR,
+} from '../pages/booking/bookingReducer';
+import { createBooking } from '../service/calendar.service';
 
 type AvailabilitiesChildType = {
   hour: { start: string; end: string };
   id: number;
   setIsClicked: Dispatch<SetStateAction<{ id: number; isOpen: boolean }>>;
   isClicked: { id: number; isOpen: boolean };
-  setSelectionHour: Dispatch<SetStateAction<string>>;
   dispatch: Dispatch<Actions>;
+  state: InitialState;
 };
 
 function AvailabilityHourContainer({
@@ -17,16 +24,10 @@ function AvailabilityHourContainer({
   id,
   isClicked,
   setIsClicked,
-  setSelectionHour,
   dispatch,
+  state,
 }: AvailabilitiesChildType) {
-  // useEffect(() => {
-  //   return () => {
-  //     return window.removeEventListener('click', () =>
-  //       setIsClicked({ id: id, isOpen: false })
-  //     );
-  //   };
-  // }, [id, setIsClicked]);
+  useEffect(() => {}, [state.schedules.selectedHour]);
   return (
     <div className={`${FLEX_DIR_ROW} w-11/12`}>
       {isClicked.isOpen && isClicked.id === id ? (
@@ -37,9 +38,26 @@ function AvailabilityHourContainer({
             {`${hour.start}`}
           </div>
           <div
-            onClick={() =>
-              dispatch({ type: SET_SELECTION_HOUR, payload: hour.start })
-            }
+            onClick={() => {
+              dispatch({ type: SET_SELECTION_HOUR, payload: hour.start });
+              const mapped: { hours: number; minutes: number } =
+                parseHoursToObject(hour.start);
+              const parsedDate = DateTime.fromJSDate(
+                state.schedules.selectedDate
+              );
+              try {
+                const handleSuccess = (response: any) => {};
+                createBooking(handleSuccess, {
+                  start: parsedDate.plus(mapped).toISO(),
+                  end: parsedDate
+                    .plus(mapped)
+                    .plus({ hours: 1, minutes: 30 })
+                    .toISO(),
+                });
+              } catch (e) {
+                console.log(e);
+              }
+            }}
             className={`${FLEX_DIR_ROW} text-white border-2 border-blue-500  bg-blue-500 hover:bg-blue-700 cursor-pointer  ml-1  p-4 w-full md:p-4`}
           >
             confirm

@@ -135,7 +135,8 @@ const getAvailability = async (
       {
         bookings: myBookings,
       },
-      generalAvaliabilityRules
+      generalAvaliabilityRules,
+      { start: startRange, end: endRange }
     );
 
     //@ts-expect-error

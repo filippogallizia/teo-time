@@ -12,7 +12,11 @@ import {
 } from '../constant';
 import { DateTime } from 'luxon';
 import { getAvailabilities } from '../service/calendar.service';
-import { Actions } from '../pages/booking/bookingReducer';
+import {
+  Actions,
+  InitialState,
+  SET_AVAILABILITIES,
+} from '../pages/booking/bookingReducer';
 
 type BookSlotHeaderType = {
   setRenderAvailabilities?: Dispatch<SetStateAction<boolean>>;
@@ -48,41 +52,48 @@ const AvailabilityContainerHeader = ({
 
 type BookSlotContainerType = {
   setRenderAvailabilities?: Dispatch<SetStateAction<boolean>> | undefined;
-  setSelectionHour: Dispatch<SetStateAction<string>>;
-  setAvailabilities: Dispatch<SetStateAction<any>>;
-  availabilities: any;
+  state: InitialState;
   dispatch: Dispatch<Actions>;
 };
 
 function AvailabilitiesContainer({
   setRenderAvailabilities,
   dispatch,
-  setSelectionHour,
-  setAvailabilities,
-  availabilities,
+  state,
 }: BookSlotContainerType) {
   const [isClicked, setIsClicked] = useState({ id: 0, isOpen: false });
 
   const [hours, setHours] = useState<any[]>([]);
 
   useEffect(() => {
-    getAvailabilities(setAvailabilities, {
-      start: '2021-10-05T07:00:00.000',
-      end: '2021-10-05T23:30:00.000',
-    });
-  }, []);
+    const setAvailabilities = (response: any) => {
+      dispatch({ type: SET_AVAILABILITIES, payload: response });
+    };
+    const parsedDate = DateTime.fromJSDate(state.schedules.selectedDate);
+    const funcAsync = async () => {
+      try {
+        await getAvailabilities(setAvailabilities, {
+          start: state.schedules.selectedDate.toISOString(),
+          end: parsedDate.plus({ hours: 23, minutes: 59 }).toISO(),
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    funcAsync();
+  }, [dispatch, state.schedules.selectedDate, state.schedules.selectedHour]);
 
   useEffect(() => {
     setHours(() => {
-      if (availabilities.length > 0) {
-        return availabilities.map((av: any) => {
+      if (state.schedules.availabilities.length > 0) {
+        return state.schedules.availabilities.map((av: any) => {
           return {
             start: DateTime.fromISO(av.start).toFormat('HH:mm'),
           };
         });
       } else return [];
     });
-  }, [availabilities]);
+  }, [state.schedules.availabilities]);
 
   return (
     <div
@@ -103,11 +114,11 @@ function AvailabilitiesContainer({
       {hours.map((hour, i) => {
         return (
           <AvailabilityHourContainer
+            state={state}
             dispatch={dispatch}
             key={i + 2}
             setIsClicked={setIsClicked}
             isClicked={isClicked}
-            setSelectionHour={setSelectionHour}
             id={i}
             hour={hour}
           />

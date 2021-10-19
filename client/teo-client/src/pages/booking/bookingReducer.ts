@@ -1,4 +1,7 @@
 import produce from 'immer';
+import { DateTime } from 'luxon';
+import { parseHoursToObject } from '../../helpers/helpers';
+import { createBooking } from '../../service/calendar.service';
 
 export const SET_AVAILABILITIES = 'SET_AVAILABILITIES';
 export const SET_SELECTION_DATE = 'SET_SELECTION_DATE';

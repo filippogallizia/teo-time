@@ -4,14 +4,7 @@ import AvailabilitiesContainer from './AvailabilitiesContainer';
 import CalendarComponent from './Caledar';
 import EventInformations from './EventInformations';
 
-const BookingComponentMobile = ({
-  setSelectionHour,
-  setSelectionDate,
-  selectedDate,
-  setAvailabilities,
-  availabilities,
-  dispatch,
-}: BookingComponentType) => {
+const BookingComponentMobile = ({ dispatch, state }: BookingComponentType) => {
   const [renderAvailabilities, setRenderAvailabilities] = useState(false);
 
   return (
@@ -19,19 +12,17 @@ const BookingComponentMobile = ({
       {renderAvailabilities ? (
         <AvailabilitiesContainer
           dispatch={dispatch}
-          availabilities={availabilities}
-          setAvailabilities={setAvailabilities}
+          state={state}
           setRenderAvailabilities={setRenderAvailabilities}
-          setSelectionHour={setSelectionHour}
         />
       ) : (
         <div className="flex justify-center ">
           <div style={{ maxWidth: '600px' }}>
             <EventInformations />
             <CalendarComponent
-              setSelectionDate={setSelectionDate}
-              selectedDate={selectedDate}
               setRenderAvailabilities={setRenderAvailabilities}
+              state={state}
+              dispatch={dispatch}
             />
           </div>
         </div>

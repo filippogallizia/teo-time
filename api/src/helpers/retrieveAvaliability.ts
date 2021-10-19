@@ -35,66 +35,81 @@ export const getAvailabilityFromBooking = (
       updatedAt: string;
     }[];
   },
-  genAv: GeneralAvaliabilityRulesType
+  genAv: GeneralAvaliabilityRulesType,
+  timeRange?: { start: string; end: string }
 ) => {
-  const isSameHour = (a: TimeRangeType, b: TimeRangeType) => {
-    return DateTime.fromISO(a.start).hour == DateTime.fromISO(b.start).hour;
-  };
-
-  const compareBookingAndAvailabiliy = (
-    left: any[],
-    right: any[],
-    compareFunction: (a: any, b: any) => boolean
-  ) => {
-    return left.filter(
-      (leftValue) =>
-        !right.some((rightValue) => compareFunction(leftValue, rightValue))
-    );
-  };
-
-  const matchDayBookingAndAvailability = genAv.generalAvaliabilityRules.filter(
-    (el) => {
-      return bookedHours.bookings.find((hours) => {
-        //@ts-expect-error
-        const ciao = hours.start.toISOString();
+  console.log(
+    bookedHours.bookings.length,
+    'bookedHours.bookings.length ',
+    timeRange
+  );
+  // if there aren't booking, retrieve the  all availabilities for the time range
+  if (bookedHours.bookings.length === 0 && timeRange) {
+    const matchTimeRangeAndAvailability = genAv.generalAvaliabilityRules.filter(
+      (el) => {
         return (
           el.day.toLowerCase() ===
-          DateTime.fromISO(ciao).weekdayLong.toLowerCase()
+          DateTime.fromISO(timeRange.start).weekdayLong.toLowerCase()
         );
-      });
-    }
-  );
-
-  const availabilities = matchDayBookingAndAvailability[0].availability;
-  console.log(availabilities, 'availabilities');
-  const bookings = bookedHours.bookings;
-
-  const parsedBooking = bookings.map((hour) => {
-    //@ts-expect-error
-    const x = hour.start.toISOString();
-    //@ts-expect-error
-    const y = hour.end.toISOString();
-    return {
-      ...hour,
-      start: DateTime.fromISO(x),
-      end: DateTime.fromISO(y),
+      }
+    );
+    return matchTimeRangeAndAvailability[0].availability;
+  } else {
+    const isSameHour = (a: TimeRangeType, b: TimeRangeType) => {
+      return DateTime.fromISO(a.start).hour == DateTime.fromISO(b.start).hour;
     };
-  });
 
-  console.log(parsedBooking, 'parsedBooking');
+    const compareBookingAndAvailabiliy = (
+      left: any[],
+      right: any[],
+      compareFunction: (a: any, b: any) => boolean
+    ) => {
+      return left.filter(
+        (leftValue) =>
+          !right.some((rightValue) => compareFunction(leftValue, rightValue))
+      );
+    };
 
-  const filtered1 = compareBookingAndAvailabiliy(
-    availabilities,
-    parsedBooking,
-    isSameHour
-  );
-  const fitered2 = compareBookingAndAvailabiliy(
-    parsedBooking,
-    availabilities,
-    isSameHour
-  );
+    const matchDayBookingAndAvailability =
+      genAv.generalAvaliabilityRules.filter((el) => {
+        return bookedHours.bookings.find((hours) => {
+          //@ts-expect-error need to be converted because arrive as object from mySQL
+          const startParsed = hours.start.toISOString();
+          return (
+            el.day.toLowerCase() ===
+            DateTime.fromISO(startParsed).weekdayLong.toLowerCase()
+          );
+        });
+      });
 
-  return [...filtered1, ...fitered2];
+    const availabilities = matchDayBookingAndAvailability[0].availability;
+    const bookings = bookedHours.bookings;
+
+    const parsedBooking = bookings.map((hour) => {
+      //@ts-expect-error
+      const x = hour.start.toISOString();
+      //@ts-expect-error
+      const y = hour.end.toISOString();
+      return {
+        ...hour,
+        start: DateTime.fromISO(x),
+        end: DateTime.fromISO(y),
+      };
+    });
+
+    const filtered1 = compareBookingAndAvailabiliy(
+      availabilities,
+      parsedBooking,
+      isSameHour
+    );
+    const fitered2 = compareBookingAndAvailabiliy(
+      parsedBooking,
+      availabilities,
+      isSameHour
+    );
+
+    return [...filtered1, ...fitered2];
+  }
 };
 
 const findBooking = async () => {
@@ -119,7 +134,6 @@ const findBooking = async () => {
       },
       generalAvaliabilityRules
     );
-    console.log(result, 'result');
   } catch (e) {
     console.log(e, 'e2');
   }
