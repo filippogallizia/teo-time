@@ -7,11 +7,12 @@ export const getAvailabilities = async (
   body: { start: string; end: string }
 ) => {
   const { start, end } = body;
+  const bodyToSend = { timeRange: [{ start, end }] };
   try {
-    const response = await axios.post(`${URL}/retrieveAvailability`, {
-      start,
-      end,
-    });
+    const response = await axios.post(
+      `${URL}/retrieveAvailability`,
+      bodyToSend
+    );
     fn(response.data);
   } catch (e) {
     console.log(e);
