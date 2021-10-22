@@ -12,8 +12,8 @@ export const BIG_MARGIN_BOTTOM = 'mb-10';
 
 //font size
 
-export const PARAGRAPH_SIZE = 'text-xl';
 export const PARAGRAPH_SMALL = 'text-xs';
+export const PARAGRAPH_MEDIUM = 'text-xl';
 export const PARAGRAPH_BIG = 'text-3xl';
 export const TITLE = 'text-2xl';
 export const BOLD = 'font-bold';
@@ -30,3 +30,7 @@ export const MY_DIVIDER = 'border-b-2 border-gray-400';
 // colors
 
 export const BLUE_PRIMARY = '#006edc';
+
+//routes
+
+export const SUCCESSFUL_PAGE = 'successful';

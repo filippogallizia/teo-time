@@ -1,13 +1,11 @@
 import produce from 'immer';
-import { DateTime } from 'luxon';
-import { parseHoursToObject } from '../../helpers/helpers';
-import { createBooking } from '../../service/calendar.service';
 
 export const SET_AVAILABILITIES = 'SET_AVAILABILITIES';
 export const SET_SELECTION_DATE = 'SET_SELECTION_DATE';
 export const SET_SELECTION_HOUR = 'SET_SELECTION_HOUR';
 export const SET_CONFIRM_PHASE = 'SET_CONFIRM_PHASE';
 export const SET_RENDER_AVAILABILITIES = 'SET_RENDER_AVAILABILITIES';
+export const SET_APPOINTMENT_DETAILS = 'SET_APPOINTMENT_DETAILS';
 
 type timeRange = { start: string; end: string };
 
@@ -18,6 +16,10 @@ export type InitialState = {
     availabilities: timeRange[];
     isConfirmPhase: boolean;
     isRenderAvailabilities: boolean;
+    appointmentDetails: {
+      id: number;
+      start: string;
+    };
   };
 };
 
@@ -45,12 +47,21 @@ type ActionSetRenderAvailabilities = {
   payload: boolean;
 };
 
+type ActionSetAppointmentDetails = {
+  type: typeof SET_APPOINTMENT_DETAILS;
+  payload: {
+    id: number;
+    start: string;
+  };
+};
+
 export type Actions =
   | ActionSetAvailabilities
   | ActionSetSelectionDate
   | ActionSetSelectionHour
   | ActionSetConfirmPhase
-  | ActionSetRenderAvailabilities;
+  | ActionSetRenderAvailabilities
+  | ActionSetAppointmentDetails;
 
 const bookingReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
@@ -73,6 +84,10 @@ const bookingReducer = (initialState: InitialState, action: Actions) => {
     case SET_RENDER_AVAILABILITIES:
       return produce(initialState, (draft) => {
         draft.schedules.isRenderAvailabilities = action.payload;
+      });
+    case SET_APPOINTMENT_DETAILS:
+      return produce(initialState, (draft) => {
+        draft.schedules.appointmentDetails = action.payload;
       });
     default:
       return initialState;

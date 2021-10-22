@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import 'react-calendar/dist/Calendar.css';
 import AvailabilityHourContainer from './AvailabilityHourContainer';
-import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import {
   BOLD,
   FLEX_DIR_COL,
@@ -17,26 +16,27 @@ import {
   InitialState,
   SET_AVAILABILITIES,
 } from '../pages/booking/bookingReducer';
+const _ = require('lodash');
 
-const AvailabilityContainerHeader = () => {
-  return (
-    <div
-      className={`w-full relative flex justify-center ${GLOBAL_PADDING} border-2 border-gray-50 md:border-none md:pt-0`}
-    >
-      <div className={`${MARGIN_BOTTOM} md:flex`}>
-        <p className={`${BOLD} ${MARGIN_BOTTOM} md:${MARGIN_RIGHT}`}>
-          Wednesday
-        </p>
-        <p>11/05/2021</p>
-      </div>
-      <div
-        className={`absolute top-4 left-3 ${MARGIN_BOTTOM} md:hidden overflow-x-auto`}
-      >
-        <BsFillArrowLeftSquareFill size="1.5em" color="blue" />
-      </div>
-    </div>
-  );
-};
+// const AvailabilityContainerHeader = () => {
+//   return (
+//     <div
+//       className={`w-full relative flex  ${GLOBAL_PADDING} border-2 border-gray-50 md:border-none md:pt-0`}
+//     >
+//       <div className={`${MARGIN_BOTTOM} md:flex`}>
+//         <p className={`${BOLD} ${MARGIN_BOTTOM} md:${MARGIN_RIGHT}`}>
+//           Wednesday
+//         </p>
+//         <p>11/05/2021</p>
+//       </div>
+//       <div
+//         className={`absolute top-4 left-3 ${MARGIN_BOTTOM} md:hidden overflow-x-auto`}
+//       >
+//         <BsFillArrowLeftSquareFill size="1.5em" color="blue" />
+//       </div>
+//     </div>
+//   );
+// };
 
 type BookSlotContainerType = {
   state: InitialState;
@@ -80,25 +80,29 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
 
   return (
     <div
-      className={`${FLEX_DIR_COL} w-full border-2 border-gray-50 md:border-none`}
+      className={`flex flex-col items-center w-full border-2 border-gray-50 md:border-none`}
     >
       <div className={`${MARGIN_BOTTOM}  ${FLEX_DIR_COL} md:hidden`}>
         <p className={`${BOLD} ${MARGIN_BOTTOM} ${TITLE}`}>SELECT A TIME</p>
         <p>Duration: 60 min</p>
       </div>
-      {hours.map((hour, i) => {
-        return (
-          <AvailabilityHourContainer
-            state={state}
-            dispatch={dispatch}
-            key={i + 2}
-            setIsClicked={setIsClicked}
-            isClicked={isClicked}
-            id={i}
-            hour={hour}
-          />
-        );
-      })}
+      {hours.length === 0 ? (
+        <div>NESSUNA ORA DISPONIBILE</div>
+      ) : (
+        hours.map((hour, i) => {
+          return (
+            <AvailabilityHourContainer
+              state={state}
+              dispatch={dispatch}
+              key={i + 2}
+              setIsClicked={setIsClicked}
+              isClicked={isClicked}
+              id={i}
+              hour={hour}
+            />
+          );
+        })
+      )}
     </div>
   );
 }

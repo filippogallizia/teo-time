@@ -27,6 +27,10 @@ const initialState = {
     ],
     isConfirmPhase: false,
     isRenderAvailabilities: false,
+    appointmentDetails: {
+      id: 0,
+      start: '',
+    },
   },
 };
 

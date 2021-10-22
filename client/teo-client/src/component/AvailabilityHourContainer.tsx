@@ -41,7 +41,7 @@ function AvailabilityHourContainer({
           <div
             onClick={() => {
               dispatch({ type: SET_CONFIRM_PHASE, payload: true });
-              // dispatch({ type: SET_SELECTION_HOUR, payload: hour.start });
+              dispatch({ type: SET_SELECTION_HOUR, payload: hour.start });
               // const mapped: { hours: number; minutes: number } =
               //   parseHoursToObject(hour.start);
               // const parsedDate = DateTime.fromJSDate(
