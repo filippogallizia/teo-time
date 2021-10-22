@@ -2,6 +2,7 @@ API
 - see how to use OTP along all pages
 - make successful booking page
 - create a check on api to not allow booking outside of the slot 
+- develop logic for retrieve availability for more than one day?
 
 REFACTOR 
 - send the day on availability range ( we dont need to check for that later)

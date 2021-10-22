@@ -1,7 +1,4 @@
 import { fromIsoDateToDay, fromIsoDateToHour } from '../../utils';
-import { TimeRangeType } from '../types/generalTypes';
-
-const generalAvaliabilityRules = require('../config/timeConditions.config.json');
 const { DateTime } = require('luxon');
 const _ = require('lodash');
 
@@ -9,13 +6,14 @@ const _ = require('lodash');
 
 export const matchTimeRangeAndAvailability = (
   genAv: GeneralAvaliabilityRulesType,
-  timeRange: string
-) => {
+  timeRange: { start: string; end: string }
+): {
+  day: string;
+  availability: TimeRangeTypeJson[];
+}[] => {
   return _.filter(
     genAv.generalAvaliabilityRules,
-    (el: any) =>
-      el.day.toLowerCase() ===
-      DateTime.fromISO(timeRange).weekdayLong.toLowerCase()
+    (el: any) => el.day == fromIsoDateToDay(timeRange.start)
   );
 };
 
@@ -36,24 +34,29 @@ export const getAvailabilityFromBooking = (
 ) => {
   // if there aren't booking, retrieve the  all availabilities for the time range
   if (bookedHours.bookings.length === 0 && timeRange) {
-    const matchTimeRangeAndAvailability = _.filter(
-      genAv.generalAvaliabilityRules,
-      (el: any) =>
-        el.day.toLowerCase() ===
-        DateTime.fromISO(timeRange.start).weekdayLong.toLowerCase()
-    );
-    return matchTimeRangeAndAvailability[0].availability;
+    // const matchTimeRangeAndAvailability = _.filter(
+    //   genAv.generalAvaliabilityRules,
+    //   (el: { day: string; availability: TimeRangeTypeJson[] }) =>
+    //     el.day.toLowerCase() ===
+    //     DateTime.fromISO(timeRange.start).weekdayLong.toLowerCase()
+    // );
+    const matched = matchTimeRangeAndAvailability(genAv, timeRange);
+    return matched[0].availability;
   } else {
-    const matchDayBookingAndAvailability =
-      genAv.generalAvaliabilityRules.filter((el) => {
-        return bookedHours.bookings.find((hours) => {
-          // return el.day == DateTime.fromISO(hours.start).weekdayLong;
-          return el.day == fromIsoDateToDay(hours.start);
-        });
-      });
+    // const matchDayBookingAndAvailability =
+    //   genAv.generalAvaliabilityRules.filter((el) => {
+    //     return bookedHours.bookings.find((hours) => {
+    //       return el.day == fromIsoDateToDay(hours.start);
+    //     });
+    //   });
+    const matched = _.intersectionWith(
+      genAv.generalAvaliabilityRules,
+      bookedHours.bookings,
+      (a, b) => a.day == fromIsoDateToDay(b.start)
+    );
 
     const result = _.xorWith(
-      matchDayBookingAndAvailability[0].availability,
+      matched[0].availability,
       bookedHours.bookings,
       (a: any, b: any) =>
         fromIsoDateToHour(a.start) == fromIsoDateToHour(b.start)

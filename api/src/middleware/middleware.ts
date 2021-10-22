@@ -82,7 +82,7 @@ export const checkForBookingAlreadyExisting = async (
       res.status(404).send('This hour is already booked');
     } else next();
   } catch (e) {
-    res.send(e);
+    res.status(500).send(JSON.stringify(e));
   }
 };
 
@@ -92,13 +92,18 @@ export const checkForBookingOutOfRange = async (
   next: express.NextFunction
 ) => {
   const { start, end } = req.body;
-  const r = matchTimeRangeAndAvailability(generalAvaliabilityRules, start);
+  const r = matchTimeRangeAndAvailability(generalAvaliabilityRules, {
+    start: start,
+    end: end,
+  });
+  // we assume that the range is not bigger than one day
   const findedSlot = _.intersectionWith(
     r[0].availability,
     [{ start, end }],
-    (a, b) => {
+    (a: TimeRangeTypeJson, b: TimeRangeTypeJson) => {
       return (
-        fromIsoDateToHourMinute(a.start) == fromIsoDateToHourMinute(b.start)
+        fromIsoDateToHourMinute(a.start) == fromIsoDateToHourMinute(b.start) &&
+        fromIsoDateToHourMinute(a.end) == fromIsoDateToHourMinute(b.end)
       );
     }
   );
