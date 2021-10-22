@@ -24,8 +24,12 @@ POST http://0.0.0.0:5000/retrieveAvailability
 Content-Type: application/json
 
 {
-     "start": "2021-10-20T01:00:00.000Z",
-     "end": "2021-10-20T23:00:00.000Z"
+    "timeRange": [
+         {
+     "start": "2021-10-21T01:00:00.000Z",
+     "end": "2021-10-21T23:00:00.000Z"
+    }
+    ] 
 }
 
 

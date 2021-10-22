@@ -1,11 +1,8 @@
 import express, { NextFunction } from 'express';
 import { Op } from 'sequelize';
-import { fromIsoDateToHourMinute } from '../../utils';
+import { filterForDays, fromIsoDateToHourMinute } from '../../utils';
 const _ = require('lodash');
-import {
-  getAvailabilityFromBooking,
-  matchTimeRangeAndAvailability,
-} from '../helpers/retrieveAvaliability';
+import { retrieveAvailability } from '../helpers/retrieveAvaliability';
 const db = require('../models/db');
 const { DateTime } = require('luxon');
 const User = db.user;
@@ -92,10 +89,8 @@ export const checkForBookingOutOfRange = async (
   next: express.NextFunction
 ) => {
   const { start, end } = req.body;
-  const r = matchTimeRangeAndAvailability(generalAvaliabilityRules, {
-    start: start,
-    end: end,
-  });
+  const timeRange = [{ start, end }];
+  const r = filterForDays(generalAvaliabilityRules, timeRange);
   // we assume that the range is not bigger than one day
   const findedSlot = _.intersectionWith(
     r[0].availability,
@@ -148,16 +143,15 @@ const getAvailability = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const startRange = req.body.start;
-  const endRange = req.body.end;
+  const timeRange = [...req.body.timeRange];
   try {
     const myBookings = await BookingGrid.findAll({
       where: {
         start: {
-          [Op.gte]: startRange,
+          [Op.gte]: timeRange[0].start,
         },
         end: {
-          [Op.lte]: endRange,
+          [Op.lte]: timeRange[0].end,
         },
       },
     }).catch((e: any) => {
@@ -172,17 +166,18 @@ const getAvailability = async (
       };
     });
 
-    const availabilities = getAvailabilityFromBooking(
+    const availabilities = retrieveAvailability(
       {
         bookings: parseBooking,
       },
       generalAvaliabilityRules,
-      { start: startRange, end: endRange }
+      timeRange
     );
     //@ts-expect-error
     res.availabilities = availabilities;
     next();
   } catch (e) {
+    console.log(e, 'e');
     res.status(500).send(JSON.stringify(e));
   }
 };

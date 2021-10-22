@@ -20,7 +20,7 @@ type BookedHoursType = {
   bookings: TimeRangeType[];
 };
 
-export const getAvailabilityFromBooking = (
+export const retrieveAvailability = (
   bookedHours: {
     bookings: {
       id: number;
@@ -35,13 +35,13 @@ export const getAvailabilityFromBooking = (
 ) => {
   // if there aren't booking, retrieve the  all availabilities for the time range
   if (bookedHours.bookings.length === 0 && timeRange) {
-    const matchTimeRangeAndAvailability = _.filter(
+    const filterForDays = _.filter(
       genAv.generalAvaliabilityRules,
       (el: any) =>
         el.day.toLowerCase() ===
         DateTime.fromISO(timeRange.start).weekdayLong.toLowerCase()
     );
-    return matchTimeRangeAndAvailability[0].availability;
+    return filterForDays[0].availability;
   } else {
     // condition to compare bookings and availabilities
 

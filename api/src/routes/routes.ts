@@ -1,6 +1,5 @@
 import express from 'express';
 import { Op } from 'sequelize';
-import { getAvailabilityFromBooking } from '../helpers/retrieveAvaliability';
 import { checkForBookingOutOfRange } from '../middleware/middleware';
 
 const generalAvaliabilityRules = require('../config/timeConditions.config.json');

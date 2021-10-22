@@ -13,3 +13,8 @@ export type GeneralAvaliabilityRulesType = {
 export type BookedHoursType = {
   bookings: TimeRangeType[];
 };
+
+export type TimeRangeTypeJson = {
+  start: typeof DateTime;
+  end: typeof DateTime;
+};
