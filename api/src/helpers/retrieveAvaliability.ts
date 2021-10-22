@@ -1,29 +1,25 @@
+import { fromIsoDateToDay, fromIsoDateToHour } from '../../utils';
+import { TimeRangeType } from '../types/generalTypes';
+
 const generalAvaliabilityRules = require('../config/timeConditions.config.json');
 const { DateTime } = require('luxon');
-import { Op } from 'sequelize';
-const db = require('../models/db');
+const _ = require('lodash');
 
-const BookingGrid = db.bookingGrid;
+//helpers
+
+export const matchTimeRangeAndAvailability = (
+  genAv: GeneralAvaliabilityRulesType,
+  timeRange: string
+) => {
+  return _.filter(
+    genAv.generalAvaliabilityRules,
+    (el: any) =>
+      el.day.toLowerCase() ===
+      DateTime.fromISO(timeRange).weekdayLong.toLowerCase()
+  );
+};
 
 //types
-
-type TimeRangeType = {
-  start: Date;
-  end: Date;
-};
-
-type GeneralAvaliabilityRulesType = {
-  generalAvaliabilityRules: {
-    day: string;
-    availability: TimeRangeType[];
-  }[];
-};
-
-type BookedHoursType = {
-  bookings: TimeRangeType[];
-};
-
-// helpers
 
 export const getAvailabilityFromBooking = (
   bookedHours: {
@@ -38,130 +34,30 @@ export const getAvailabilityFromBooking = (
   genAv: GeneralAvaliabilityRulesType,
   timeRange?: { start: string; end: string }
 ) => {
-  console.log(
-    bookedHours.bookings.length,
-    'bookedHours.bookings.length ',
-    timeRange
-  );
   // if there aren't booking, retrieve the  all availabilities for the time range
   if (bookedHours.bookings.length === 0 && timeRange) {
-    const matchTimeRangeAndAvailability = genAv.generalAvaliabilityRules.filter(
-      (el) => {
-        return (
-          el.day.toLowerCase() ===
-          DateTime.fromISO(timeRange.start).weekdayLong.toLowerCase()
-        );
-      }
+    const matchTimeRangeAndAvailability = _.filter(
+      genAv.generalAvaliabilityRules,
+      (el: any) =>
+        el.day.toLowerCase() ===
+        DateTime.fromISO(timeRange.start).weekdayLong.toLowerCase()
     );
     return matchTimeRangeAndAvailability[0].availability;
   } else {
-    const isSameHour = (a: TimeRangeType, b: TimeRangeType) => {
-      return DateTime.fromISO(a.start).hour == DateTime.fromISO(b.start).hour;
-    };
-
-    const compareBookingAndAvailabiliy = (
-      left: any[],
-      right: any[],
-      compareFunction: (a: any, b: any) => boolean
-    ) => {
-      return left.filter(
-        (leftValue) =>
-          !right.some((rightValue) => compareFunction(leftValue, rightValue))
-      );
-    };
-
     const matchDayBookingAndAvailability =
       genAv.generalAvaliabilityRules.filter((el) => {
         return bookedHours.bookings.find((hours) => {
-          //@ts-expect-error need to be converted because arrive as object from mySQL
-          const startParsed = hours.start.toISOString();
-          return (
-            el.day.toLowerCase() ===
-            DateTime.fromISO(startParsed).weekdayLong.toLowerCase()
-          );
+          // return el.day == DateTime.fromISO(hours.start).weekdayLong;
+          return el.day == fromIsoDateToDay(hours.start);
         });
       });
 
-    const availabilities = matchDayBookingAndAvailability[0].availability;
-    const bookings = bookedHours.bookings;
-
-    const parsedBooking = bookings.map((hour) => {
-      //@ts-expect-error
-      const x = hour.start.toISOString();
-      //@ts-expect-error
-      const y = hour.end.toISOString();
-      return {
-        ...hour,
-        start: DateTime.fromISO(x),
-        end: DateTime.fromISO(y),
-      };
-    });
-
-    const filtered1 = compareBookingAndAvailabiliy(
-      availabilities,
-      parsedBooking,
-      isSameHour
+    const result = _.xorWith(
+      matchDayBookingAndAvailability[0].availability,
+      bookedHours.bookings,
+      (a: any, b: any) =>
+        fromIsoDateToHour(a.start) == fromIsoDateToHour(b.start)
     );
-    const fitered2 = compareBookingAndAvailabiliy(
-      parsedBooking,
-      availabilities,
-      isSameHour
-    );
-
-    return [...filtered1, ...fitered2];
+    return result;
   }
 };
-
-const findBooking = async () => {
-  const startRange = '2021-10-05T07:00:00.000';
-  const endRange = '2021-10-05T22:30:00.000';
-  try {
-    const filo = await BookingGrid.findAll({
-      where: {
-        start: {
-          [Op.gte]: startRange,
-        },
-        end: {
-          [Op.lte]: endRange,
-        },
-      },
-    }).catch((e: any) => {
-      console.log(e);
-    });
-    const result = getAvailabilityFromBooking(
-      {
-        bookings: filo,
-      },
-      generalAvaliabilityRules
-    );
-  } catch (e) {
-    console.log(e, 'e2');
-  }
-};
-
-findBooking();
-
-// console.log(
-//   getAvailabilityFromBooking(
-//     {
-//       bookings: [
-//         {
-//           id: 1,
-//           start: '2021-10-05T06:00:00.000Z',
-//           end: '2021-10-05T08:30:00.000Z',
-//           createdAt: '2021-10-18T09:08:59.000Z',
-//           updatedAt: '2021-10-18T09:08:59.000Z',
-//         },
-//         {
-//           id: 1,
-//           start: '2021-10-05T07:30:00.000Z',
-//           end: '2021-10-05T08:30:00.000Z',
-//           createdAt: '2021-10-18T09:08:59.000Z',
-//           updatedAt: '2021-10-18T09:08:59.000Z',
-//         },
-//       ],
-//     },
-
-//     generalAvaliabilityRules
-//   )
-// );

@@ -1,6 +1,11 @@
 import express, { NextFunction } from 'express';
 import { Op } from 'sequelize';
-import { getAvailabilityFromBooking } from '../helpers/retrieveAvaliability';
+import { fromIsoDateToHourMinute } from '../../utils';
+const _ = require('lodash');
+import {
+  getAvailabilityFromBooking,
+  matchTimeRangeAndAvailability,
+} from '../helpers/retrieveAvaliability';
 const db = require('../models/db');
 const { DateTime } = require('luxon');
 const User = db.user;
@@ -81,6 +86,29 @@ export const checkForBookingAlreadyExisting = async (
   }
 };
 
+export const checkForBookingOutOfRange = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  const { start, end } = req.body;
+  const r = matchTimeRangeAndAvailability(generalAvaliabilityRules, start);
+  const findedSlot = _.intersectionWith(
+    r[0].availability,
+    [{ start, end }],
+    (a, b) => {
+      return (
+        fromIsoDateToHourMinute(a.start) == fromIsoDateToHourMinute(b.start)
+      );
+    }
+  );
+  if (findedSlot.length === 0) {
+    res.status(400).send('the booking doesnt match a slot');
+  } else {
+    next();
+  }
+};
+
 const checkForOtp = async (
   req: express.Request,
   res: express.Response,
@@ -128,22 +156,29 @@ const getAvailability = async (
         },
       },
     }).catch((e: any) => {
-      res.status(500).send(e);
+      res.status(500).send(JSON.stringify(e));
+    });
+
+    const parseBooking = _.map(myBookings, (e: any) => {
+      return {
+        ...e,
+        start: DateTime.fromJSDate(e.start).toISO(),
+        end: DateTime.fromJSDate(e.end).toISO(),
+      };
     });
 
     const availabilities = getAvailabilityFromBooking(
       {
-        bookings: myBookings,
+        bookings: parseBooking,
       },
       generalAvaliabilityRules,
       { start: startRange, end: endRange }
     );
-
     //@ts-expect-error
     res.availabilities = availabilities;
     next();
   } catch (e) {
-    res.send(e);
+    res.status(500).send(JSON.stringify(e));
   }
 };
 
@@ -152,4 +187,5 @@ module.exports = {
   checkForOtp,
   getAvailability,
   checkForBookingAlreadyExisting,
+  checkForBookingOutOfRange,
 };

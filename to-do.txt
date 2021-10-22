@@ -1,3 +1,10 @@
 API
-- fix compareBookingAndAvailabiliy function in order to not depend on the 'end' value.
+- see how to use OTP along all pages
+- make successful booking page
+- create a check on api to not allow booking outside of the slot 
+
+REFACTOR 
+- send the day on availability range ( we dont need to check for that later)
+- check booking for start and end => retrieve the unique ones
+- make a common variable for slot duration
 - 

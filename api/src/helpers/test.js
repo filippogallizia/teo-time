@@ -29,7 +29,7 @@ const mergeUnique = (arr1, arr2) => {
 // console.log(_.unionBy(array1, array2, 'name'));
 
 // console.log(_.unionWith(array1, array2, _.isEqual));
-console.log(_.xorWith(array1, array2, (v, y) => v.name !== y.name));
+console.log(_.xorWith(array1, array2, (v, y) => v.name === y.name));
 
 // const fn = (array1, array2) => {
 //   const bucket = [];

@@ -15,8 +15,8 @@ POST http://0.0.0.0:5000/createbooking
 Content-Type: application/json
 
 {
-     "start": "2021-10-05T07:00:00.000",
-     "end": "2021-10-05T08:30:00.000"
+     "start": "2021-10-20T12:00:00.000Z",
+     "end": "2021-10-20T16:00:00.000Z"
 }
 
 ###
@@ -24,8 +24,8 @@ POST http://0.0.0.0:5000/retrieveAvailability
 Content-Type: application/json
 
 {
-     "start": "2021-10-05T07:00:00.000",
-     "end": "2021-10-05T23:00:00.000"
+     "start": "2021-10-20T01:00:00.000Z",
+     "end": "2021-10-20T23:00:00.000Z"
 }
 
 

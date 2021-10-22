@@ -7,8 +7,8 @@ const myGeneralRules: GeneralAvaliabilityRulesType = {
 
       availability: [
         {
-          start: DateTime.fromISO('2021-10-05T07:00:00.000'),
-          end: DateTime.fromISO('2021-10-05T21:00:00.000'),
+          start: DateTime.fromISO('2021-10-05T07:00:00.000').toUTC(),
+          end: DateTime.fromISO('2021-10-05T21:00:00.000').toUTC(),
         },
       ],
     },
@@ -17,8 +17,8 @@ const myGeneralRules: GeneralAvaliabilityRulesType = {
 
       availability: [
         {
-          start: DateTime.fromISO('2021-10-05T07:00:00.000'),
-          end: DateTime.fromISO('2021-10-05T21:00:00.000'),
+          start: DateTime.fromISO('2021-10-05T07:00:00.000').toUTC(),
+          end: DateTime.fromISO('2021-10-05T21:00:00.000').toUTC(),
         },
       ],
     },
@@ -27,8 +27,8 @@ const myGeneralRules: GeneralAvaliabilityRulesType = {
 
       availability: [
         {
-          start: DateTime.fromISO('2021-10-05T07:00:00.000'),
-          end: DateTime.fromISO('2021-10-05T21:00:00.000'),
+          start: DateTime.fromISO('2021-10-05T07:00:00.000').toUTC(),
+          end: DateTime.fromISO('2021-10-05T21:00:00.000').toUTC(),
         },
       ],
     },
@@ -37,8 +37,8 @@ const myGeneralRules: GeneralAvaliabilityRulesType = {
 
       availability: [
         {
-          start: DateTime.fromISO('2021-10-05T07:00:00.000'),
-          end: DateTime.fromISO('2021-10-05T21:00:00.000'),
+          start: DateTime.fromISO('2021-10-05T07:00:00.000').toUTC(),
+          end: DateTime.fromISO('2021-10-05T21:00:00.000').toUTC(),
         },
       ],
     },
@@ -47,8 +47,8 @@ const myGeneralRules: GeneralAvaliabilityRulesType = {
 
       availability: [
         {
-          start: DateTime.fromISO('2021-10-05T07:00:00.000'),
-          end: DateTime.fromISO('2021-10-05T21:00:00.000'),
+          start: DateTime.fromISO('2021-10-05T07:00:00.000').toUTC(),
+          end: DateTime.fromISO('2021-10-05T21:00:00.000').toUTC(),
         },
       ],
     },
@@ -121,3 +121,4 @@ const getGeneralAvaliabilityInSlots = (
     };
   });
 };
+console.log(JSON.stringify(getGeneralAvaliabilityInSlots(myGeneralRules)));

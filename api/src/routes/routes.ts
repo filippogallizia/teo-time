@@ -1,6 +1,7 @@
 import express from 'express';
 import { Op } from 'sequelize';
 import { getAvailabilityFromBooking } from '../helpers/retrieveAvaliability';
+import { checkForBookingOutOfRange } from '../middleware/middleware';
 
 const generalAvaliabilityRules = require('../config/timeConditions.config.json');
 const path = require('path');
@@ -36,7 +37,10 @@ router.post(
     })
       .then(() => {
         //send link
-        const mySgMail = new ClassSgMail(email, OTP);
+        const mySgMail = new ClassSgMail(
+          email,
+          `<a href=http://0.0.0.0:5000/?otp=${OTP}>LOG IN HERE</a>`
+        );
         mySgMail.sendMessage(res);
       })
       .catch((e: any) => {
@@ -46,35 +50,8 @@ router.post(
 );
 
 router.post(
-  '/signup',
-  [userExist],
-  (req: express.Request, res: express.Response) => {
-    const { email } = req.body;
-    // create a new user
-    const OTP = v4();
-    User.create({
-      email,
-      password: OTP,
-      passwordExpiry: DateTime.now().plus({ minutes: 1 }),
-    })
-      .then(() => {
-        //send link
-        const mySgMail = new ClassSgMail(email, OTP);
-        mySgMail.sendMessage(res);
-      })
-      .catch((e) => {
-        res.status(500).send(e.message);
-      });
-  }
-);
-
-router.get('/signup', (req: express.Request, res: express.Response) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
-});
-
-router.post(
   '/createbooking',
-  [checkForBookingAlreadyExisting],
+  [checkForBookingAlreadyExisting, checkForBookingOutOfRange],
   (req: express.Request, res: express.Response) => {
     try {
       const { start, end } = req.body;
@@ -97,11 +74,45 @@ router.post(
   }
 );
 
+// router.post(
+//   '/createbooking',
+//   [checkForBookingAlreadyExisting],
+//   (req: express.Request, res: express.Response) => {
+//     try {
+//       const { start, end } = req.body;
+//       // create a new user
+//       const OTP = v4();
+//       BookingGrid.create({
+//         start,
+//         end,
+//       })
+//         .then((booking: any) => {
+//           const parsedData = DateTime.fromISO(booking.start).toFormat(
+//             'yyyy LLL dd t'
+//           );
+//           //send link
+//           // const mySgMail = new ClassSgMail(
+//           //   'galliziafilippo@gmail.com',
+//           //   `Il tuo appuntamento e' prenotato per: ${parsedData}`
+//           // );
+//           // mySgMail.sendMessage(res);
+//           res.status(200).send(booking);
+//         })
+//         .catch((e: any) => {
+//           res.status(500).send(e.message);
+//         });
+//     } catch (e) {
+//       res.status(500).send(e);
+//     }
+//   }
+// );
+
 router.post(
   '/retrieveAvailability',
   [getAvailability],
   (req: express.Request, res: express.Response) => {
     try {
+      console.log('here');
       //@ts-expect-error
       res.status(200).send(res.availabilities);
     } catch (e) {
