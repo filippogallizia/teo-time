@@ -43,7 +43,7 @@ router.post(
         mySgMail.sendMessage(res);
       })
       .catch((e: any) => {
-        res.status(500).send(e.message);
+        res.status(500).send({ message: e.message });
       });
   }
 );
@@ -68,43 +68,10 @@ router.post(
           res.status(500).send(e.message);
         });
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ message: e.message });
     }
   }
 );
-
-// router.post(
-//   '/createbooking',
-//   [checkForBookingAlreadyExisting],
-//   (req: express.Request, res: express.Response) => {
-//     try {
-//       const { start, end } = req.body;
-//       // create a new user
-//       const OTP = v4();
-//       BookingGrid.create({
-//         start,
-//         end,
-//       })
-//         .then((booking: any) => {
-//           const parsedData = DateTime.fromISO(booking.start).toFormat(
-//             'yyyy LLL dd t'
-//           );
-//           //send link
-//           // const mySgMail = new ClassSgMail(
-//           //   'galliziafilippo@gmail.com',
-//           //   `Il tuo appuntamento e' prenotato per: ${parsedData}`
-//           // );
-//           // mySgMail.sendMessage(res);
-//           res.status(200).send(booking);
-//         })
-//         .catch((e: any) => {
-//           res.status(500).send(e.message);
-//         });
-//     } catch (e) {
-//       res.status(500).send(e);
-//     }
-//   }
-// );
 
 router.post(
   '/retrieveAvailability',
@@ -115,7 +82,21 @@ router.post(
       //@ts-expect-error
       res.status(200).send(res.availabilities);
     } catch (e) {
-      res.send('sua');
+      res.status(500).send({ message: e.message });
+    }
+  }
+);
+
+router.post(
+  '/delete',
+  [getAvailability],
+  (req: express.Request, res: express.Response) => {
+    try {
+      console.log('here');
+      //@ts-expect-error
+      res.status(200).send(res.availabilities);
+    } catch (e) {
+      res.status(500).send({ message: e.message });
     }
   }
 );
@@ -124,7 +105,11 @@ router.get(
   '/',
   [checkForOtp],
   (req: express.Request, res: express.Response) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+    try {
+      res.sendFile(path.join(__dirname, '../public/index.html'));
+    } catch (e) {
+      res.status(500).send({ message: e.message });
+    }
   }
 );
 

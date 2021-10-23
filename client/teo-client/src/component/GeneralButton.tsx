@@ -7,13 +7,12 @@ type GeneralButtonType = {
 };
 
 function GeneralButton({ buttonText, onClick, disabled }: GeneralButtonType) {
+  const buttonStyle = !disabled
+    ? 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+    : 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-blue-500 opacity-50 cursor-not-allowed';
   return (
     <div>
-      <button
-        disabled={disabled}
-        onClick={onClick}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-blue-500 opacity-50 cursor-not-allowed "
-      >
+      <button disabled={disabled} onClick={onClick} className={buttonStyle}>
         {buttonText}
       </button>
     </div>

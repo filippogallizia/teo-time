@@ -7,11 +7,11 @@ export const SET_CONFIRM_PHASE = 'SET_CONFIRM_PHASE';
 export const SET_RENDER_AVAILABILITIES = 'SET_RENDER_AVAILABILITIES';
 export const SET_APPOINTMENT_DETAILS = 'SET_APPOINTMENT_DETAILS';
 
-type timeRange = { start: string; end: string };
+export type timeRange = { start: string; end: string };
 
 export type InitialState = {
   schedules: {
-    selectedDate: Date;
+    selectedDate: string;
     selectedHour: string;
     availabilities: timeRange[];
     isConfirmPhase: boolean;
@@ -30,7 +30,7 @@ type ActionSetAvailabilities = {
 
 type ActionSetSelectionDate = {
   type: typeof SET_SELECTION_DATE;
-  payload: Date;
+  payload: string;
 };
 
 type ActionSetSelectionHour = {

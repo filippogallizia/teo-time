@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import AvailabilitiesContainer from './AvailabilitiesContainer';
 import CalendarComponent from './Caledar';

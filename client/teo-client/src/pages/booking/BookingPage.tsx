@@ -1,9 +1,7 @@
-import { DateTime } from 'luxon';
 import React, { useEffect, useState, useReducer } from 'react';
 import BookingComponentDesktop from '../../component/BookingComponent_Desktop';
 import BookingComponentMobile from '../../component/BookingComponent_Mobile';
 import { TAILWIND_MOBILE_BREAKPOINT } from '../../constant';
-import { parseHoursToObject } from '../../helpers/helpers';
 import bookingReducer from './bookingReducer';
 
 const today = new Date();
@@ -17,7 +15,7 @@ endAvailabilities.setHours(20, 30, 0, 0);
 
 const initialState = {
   schedules: {
-    selectedDate: today,
+    selectedDate: today.toISOString(),
     selectedHour: '00:00',
     availabilities: [
       {

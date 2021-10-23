@@ -1,6 +1,6 @@
 import express, { NextFunction } from 'express';
 import { Op } from 'sequelize';
-import { filterForDays, fromIsoDateToHourMinute } from '../../utils';
+import { filterForDays, HOUR_MINUTE_FORMAT } from '../../utils';
 const _ = require('lodash');
 import { retrieveAvailability } from '../helpers/retrieveAvaliability';
 const db = require('../models/db');
@@ -97,8 +97,8 @@ export const checkForBookingOutOfRange = async (
     [{ start, end }],
     (a: TimeRangeTypeJson, b: TimeRangeTypeJson) => {
       return (
-        fromIsoDateToHourMinute(a.start) == fromIsoDateToHourMinute(b.start) &&
-        fromIsoDateToHourMinute(a.end) == fromIsoDateToHourMinute(b.end)
+        HOUR_MINUTE_FORMAT(a.start) == HOUR_MINUTE_FORMAT(b.start) &&
+        HOUR_MINUTE_FORMAT(a.end) == HOUR_MINUTE_FORMAT(b.end)
       );
     }
   );
@@ -125,7 +125,7 @@ const checkForOtp = async (
         password: OTP,
       },
     }).catch((e: any) => {
-      res.status(500).send(`this error occured ${e.message}`);
+      res.status(500).send({ message: e.message });
     });
     // if the user exist, than check if is OTP is not expired
     if (user && user.passwordExpiry < DateTime.now()) {
@@ -155,7 +155,7 @@ const getAvailability = async (
         },
       },
     }).catch((e: any) => {
-      res.status(500).send(JSON.stringify(e));
+      res.status(500).send({ message: e.message });
     });
 
     const parseBooking = _.map(myBookings, (e: any) => {
@@ -178,7 +178,7 @@ const getAvailability = async (
     next();
   } catch (e) {
     console.log(e, 'e');
-    res.status(500).send(JSON.stringify(e));
+    res.status(500).send({ message: e.message });
   }
 };
 

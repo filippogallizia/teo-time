@@ -9,14 +9,14 @@ import {
 import '../pages/booking/calendarCustomStyle.css';
 
 function CalendarComponent({ dispatch, state }: BookingComponentType) {
-  const myDispatch = (value: any) => {
+  const myDispatch = (date: Date) => {
     const myPromise = new Promise((resolve, reject) => {
       //@ts-expect-error
       resolve();
     });
     myPromise
       .then(() => {
-        dispatch({ type: SET_SELECTION_DATE, payload: value });
+        dispatch({ type: SET_SELECTION_DATE, payload: date.toISOString() });
       })
       .then(() => {
         dispatch({ type: SET_RENDER_AVAILABILITIES, payload: true });
@@ -26,7 +26,7 @@ function CalendarComponent({ dispatch, state }: BookingComponentType) {
     <Calendar
       minDate={new Date()}
       onChange={myDispatch}
-      value={state.schedules.selectedDate}
+      value={new Date(state.schedules.selectedDate)}
     />
   );
 }

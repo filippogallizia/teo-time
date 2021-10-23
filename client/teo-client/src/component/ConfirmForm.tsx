@@ -1,12 +1,8 @@
 import { DateTime } from 'luxon';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { parseHoursToObject } from '../helpers/helpers';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
-import {
-  SET_APPOINTMENT_DETAILS,
-  SET_CONFIRM_PHASE,
-  SET_RENDER_AVAILABILITIES,
-} from '../pages/booking/bookingReducer';
+import { SET_APPOINTMENT_DETAILS } from '../pages/booking/bookingReducer';
 import { createBooking } from '../service/calendar.service';
 import { useForm } from 'react-hook-form';
 import GeneralButton from './GeneralButton';
@@ -20,18 +16,16 @@ type InitialFormType = {
 };
 
 const ConfirmForm = ({ dispatch, state }: BookingComponentType) => {
-  const { register, handleSubmit, watch, formState } = useForm<InitialFormType>(
-    {
-      mode: 'onBlur',
-    }
-  );
+  const { register, handleSubmit, formState } = useForm<InitialFormType>({
+    mode: 'onBlur',
+  });
   let history = useHistory();
   const { isValid, errors } = formState;
-  const myFunc = async () => {
+  const myFunc = async (value: InitialFormType) => {
     const mapped: { hours: number; minutes: number } = parseHoursToObject(
       state.schedules.selectedHour
     );
-    const parsedDate = DateTime.fromJSDate(state.schedules.selectedDate);
+    const parsedDate = DateTime.fromISO(state.schedules.selectedDate);
     try {
       const handleSuccess = (response: any) => {
         dispatch({
@@ -44,19 +38,11 @@ const ConfirmForm = ({ dispatch, state }: BookingComponentType) => {
         start: parsedDate.plus(mapped).toISO(),
         end: parsedDate.plus(mapped).plus({ hours: 1, minutes: 30 }).toISO(),
       });
-
-      // dispatch({ type: SET_CONFIRM_PHASE, payload: false });
-      // dispatch({ type: SET_RENDER_AVAILABILITIES, payload: false });
       history.push(SUCCESSFUL_PAGE);
     } catch (e) {
       console.log(e);
     }
-    // handleSubmit((value) => console.log(value, 'value'))();
   };
-
-  useEffect(() => {
-    console.log(isValid, 'isValid');
-  }, [formState]);
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -108,7 +94,7 @@ const ConfirmForm = ({ dispatch, state }: BookingComponentType) => {
         <GeneralButton
           disabled={!isValid}
           buttonText="Schedule Event"
-          onClick={myFunc}
+          onClick={handleSubmit(myFunc)}
         />
       </div>
     </div>
