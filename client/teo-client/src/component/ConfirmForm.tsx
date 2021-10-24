@@ -3,7 +3,7 @@ import React from 'react';
 import { parseHoursToObject } from '../helpers/helpers';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import { SET_APPOINTMENT_DETAILS } from '../pages/booking/bookingReducer';
-import { createBooking } from '../service/calendar.service';
+import { createBooking } from '../services/calendar.service';
 import { useForm } from 'react-hook-form';
 import GeneralButton from './GeneralButton';
 import { useHistory } from 'react-router-dom';

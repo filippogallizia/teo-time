@@ -29,5 +29,11 @@ db.sequelize = sequelize;
 db.user = require('./user.model.ts')(sequelize, Sequelize);
 //@ts-expect-error
 db.bookingGrid = BookedHoursType(sequelize, Sequelize);
+//@ts-expect-error
+db.user.hasMany(db.bookingGrid, { as: 'bookings' });
+//@ts-expect-error
+db.bookingGrid.belongsTo(db.user, {
+  as: 'user',
+});
 
 module.exports = db;

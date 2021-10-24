@@ -3,7 +3,7 @@ import 'react-calendar/dist/Calendar.css';
 import AvailabilityHourContainer from './AvailabilityHourContainer';
 import { BOLD, FLEX_DIR_COL, MARGIN_BOTTOM, TITLE } from '../constant';
 import { DateTime } from 'luxon';
-import { getAvailabilities } from '../service/calendar.service';
+import { getAvailabilities } from '../services/calendar.service';
 import {
   Actions,
   InitialState,

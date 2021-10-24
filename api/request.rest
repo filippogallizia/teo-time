@@ -15,8 +15,8 @@ POST http://0.0.0.0:5000/createbooking
 Content-Type: application/json
 
 {
-     "start": "2021-10-20T12:00:00.000Z",
-     "end": "2021-10-20T16:00:00.000Z"
+     "start": "2021-10-21T06:00:00.000Z",
+     "end": "2021-10-21T07:30:00.000Z"
 }
 
 ###

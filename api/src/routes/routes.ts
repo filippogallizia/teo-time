@@ -38,7 +38,7 @@ router.post(
         //send link
         const mySgMail = new ClassSgMail(
           email,
-          `<a href=http://0.0.0.0:5000/?otp=${OTP}>LOG IN HERE</a>`
+          `<a href=http://0.0.0.0:3000/?otp=${OTP}>LOG IN HERE</a>`
         );
         mySgMail.sendMessage(res);
       })
@@ -106,7 +106,7 @@ router.get(
   [checkForOtp],
   (req: express.Request, res: express.Response) => {
     try {
-      res.sendFile(path.join(__dirname, '../public/index.html'));
+      res.status(200).send('welcome');
     } catch (e) {
       res.status(500).send({ message: e.message });
     }

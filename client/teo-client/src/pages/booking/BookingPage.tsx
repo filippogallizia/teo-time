@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useReducer } from 'react';
+import { useLocation } from 'react-router';
 import BookingComponentDesktop from '../../component/BookingComponent_Desktop';
 import BookingComponentMobile from '../../component/BookingComponent_Mobile';
 import { TAILWIND_MOBILE_BREAKPOINT } from '../../constant';
+import { checkForOtp } from '../login/service/LoginService';
 import bookingReducer from './bookingReducer';
 
 const today = new Date();
@@ -35,6 +37,14 @@ const initialState = {
 function BookingPage() {
   const [isMobile, setIsMobile] = useState({ width: window.innerWidth });
   const [state, dispatch] = useReducer(bookingReducer, initialState);
+  const search = useLocation().search;
+  const otp = new URLSearchParams(search).get('otp');
+
+  useEffect(() => {
+    if (otp) {
+      checkForOtp((res: any) => console.log(res), otp);
+    }
+  }, [otp]);
 
   function debounce(fn: () => void, ms: number) {
     let timer: any;
