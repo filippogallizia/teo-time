@@ -50,7 +50,7 @@ const userExist = async (
           );
           //send link
           const mySgMail = new ClassSgMail(email, OTP);
-          mySgMail.sendMessage(res);
+          mySgMail.sendMessage(res, OTP);
         } else {
           // if the link is valid send a message saing to check email
           res.status(409).send('user already exists, check your email');
@@ -157,6 +157,27 @@ const getAvailability = async (
     }).catch((e: any) => {
       res.status(500).send({ message: e.message });
     });
+    // ONE TO MANY IMPLEMANTATION
+
+    // if (myBookings.length > 0) {
+    //   BookingGrid.findOne({
+    //     where: { start: '2021-10-21T06:00:00.000Z' },
+    //   })
+    //     .then((bkd: any) => {
+    //       User.findOne({ where: { email: 'galliziafilippo' } })
+    //         .then((usr: any) => {
+    //           bkd.setUser(usr).catch((e) => {
+    //             console.log(e);
+    //           });
+    //         })
+    //         .catch((e) => {
+    //           console.log(e);
+    //         });
+    //     })
+    //     .catch((e) => {
+    //       console.log(e);
+    //     });
+    // }
 
     const parseBooking = _.map(myBookings, (e: any) => {
       return {
