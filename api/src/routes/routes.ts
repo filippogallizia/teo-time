@@ -32,13 +32,13 @@ router.post(
     User.create({
       email,
       password: OTP,
-      passwordExpiry: DateTime.now().plus({ minutes: 1 }),
+      passwordExpiry: DateTime.now().plus({ minutes: 10 }),
     })
       .then(() => {
         //send link
         const mySgMail = new ClassSgMail(
           email,
-          `<a href=http://0.0.0.0:3000/?otp=${OTP}>LOG IN HERE</a>`
+          `<a href=http://localhost:3000/successful?otp=${OTP}>LOG IN HERE</a>`
         );
         mySgMail.sendMessage(res);
       })
@@ -78,7 +78,6 @@ router.post(
   [getAvailability],
   (req: express.Request, res: express.Response) => {
     try {
-      console.log('here');
       //@ts-expect-error
       res.status(200).send(res.availabilities);
     } catch (e) {
@@ -92,7 +91,6 @@ router.post(
   [getAvailability],
   (req: express.Request, res: express.Response) => {
     try {
-      console.log('here');
       //@ts-expect-error
       res.status(200).send(res.availabilities);
     } catch (e) {

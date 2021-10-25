@@ -77,9 +77,6 @@ export const retrieveAvailability = (
       };
     });
 
-    console.log(parsedBooking, 'parsedBooking');
-    console.log(availabilities, 'availabilities');
-
     return _.xorWith(availabilities, parsedBooking, isSameHour);
   }
 };

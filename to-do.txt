@@ -1,11 +1,7 @@
 API
 - see how to use OTP along all pages
-- make successful booking page
-- create a check on api to not allow booking outside of the slot 
 - develop logic for retrieve availability for more than one day?
+- avoid going back on successful page
 
 REFACTOR 
-- send the day on availability range ( we dont need to check for that later)
-- check booking for start and end => retrieve the unique ones
 - make a common variable for slot duration
-- 

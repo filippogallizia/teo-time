@@ -58,11 +58,7 @@ function App() {
         {/* A <Switch> looks through its children <Route>s and
           renders the first one that matches the current URL. */}
         <Switch>
-          <ProtectedRoute
-            path="/successful"
-            condition={false}
-            altRoute="/login"
-          >
+          <ProtectedRoute path="/successful" condition={true} altRoute="/login">
             <SuccessfulPage />
           </ProtectedRoute>
           <ProtectedRoute path="/login" condition={true} altRoute="/">

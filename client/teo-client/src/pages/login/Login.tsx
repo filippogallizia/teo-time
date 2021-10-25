@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import GeneralButton from '../../component/GeneralButton';
-import localStoreManager from '../../services/Storage';
+import { signup } from './service/LoginService';
 
 const Login = () => {
-  const [otp, setOtp] = useState('');
   const [email, setEmail] = useState('');
   const handleClick = async () => {
-    // try {
-    //   await getOTP(setOtp, email);
-    //   localStoreManager.setItem('otp', otp);
-    // } catch (e) {
-    //   console.log(e);
-    // }
+    try {
+      const handleSuccess = () => {};
+      await signup(handleSuccess, email);
+    } catch (e) {
+      console.log(e);
+    }
   };
   return (
     <div className="flex flex-col justify-center items-center">

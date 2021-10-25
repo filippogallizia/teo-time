@@ -121,4 +121,3 @@ const getGeneralAvaliabilityInSlots = (
     };
   });
 };
-console.log(JSON.stringify(getGeneralAvaliabilityInSlots(myGeneralRules)));
