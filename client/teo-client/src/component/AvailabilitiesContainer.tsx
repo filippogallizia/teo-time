@@ -66,6 +66,11 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
       //     };
       //   });
       // } else return [];
+      console.log(
+        DateTime.fromISO(state.schedules.selectedDate).toFormat(
+          'yyyy LLL dd'
+        ) === DateTime.fromJSDate(new Date()).toFormat('yyyy LLL dd')
+      );
       if (state.schedules.availabilities.length > 0) {
         return state.schedules.availabilities.reduce(
           (acc: { start: string }[], cv: timeRange) => {
@@ -73,13 +78,17 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
             const availabilitiesHours = FROM_DATE_TO_HOUR(cv.start);
             const currentDay = FROM_DATE_TO_DAY(new Date().toISOString());
             const currentHour = FROM_DATE_TO_HOUR(new Date().toISOString());
-            if (availabilitiesDay > currentDay) {
-              acc.push({ start: HOUR_MINUTE_FORMAT(cv.start) });
-            }
-            if (availabilitiesDay === currentDay) {
+            if (
+              availabilitiesDay === currentDay &&
+              DateTime.fromISO(state.schedules.selectedDate).toFormat(
+                'yyyy LLL dd'
+              ) === DateTime.fromJSDate(new Date()).toFormat('yyyy LLL dd')
+            ) {
               if (availabilitiesHours > currentHour) {
                 acc.push({ start: HOUR_MINUTE_FORMAT(cv.start) });
               }
+            } else {
+              acc.push({ start: HOUR_MINUTE_FORMAT(cv.start) });
             }
             return acc;
           },

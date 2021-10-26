@@ -8,8 +8,6 @@ const sgMail = require('@sendgrid/mail');
 
 const MysgMail = require('./config/sgMail.config');
 
-const filo = new MysgMail('2', 2);
-
 const routes = require('./routes/routes');
 
 var corsOptions = {
@@ -21,7 +19,7 @@ app.use(express.json());
 app.use('/', routes);
 
 db.sequelize
-  .sync({ force: false })
+  .sync({ force: true })
   .then(() => {
     console.log('Drop and Resync Dbasssssxs');
   })

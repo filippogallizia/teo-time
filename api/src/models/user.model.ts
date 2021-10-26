@@ -12,6 +12,14 @@ const user = (sequelize: any, Sequelize: any) => {
       type: Sequelize.DATE,
       unique: true,
     },
+    phoneNumber: {
+      type: Sequelize.STRING,
+      unique: true,
+    },
+    name: {
+      type: Sequelize.STRING,
+      unique: true,
+    },
   });
 
   return User;

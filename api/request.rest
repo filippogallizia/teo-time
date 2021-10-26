@@ -6,7 +6,9 @@ POST http://0.0.0.0:5000/signup
 Content-Type: application/json
 
 {
-    "email": "galliziafilippo@gmail.com"
+    "email": "galliziafilippo@gmail.com",
+    "name": "filippo",
+    "phoneNumber": "020202002"
 }
 
 ###
@@ -15,8 +17,10 @@ POST http://0.0.0.0:5000/createbooking
 Content-Type: application/json
 
 {
-     "start": "2021-10-21T06:00:00.000Z",
-     "end": "2021-10-21T07:30:00.000Z"
+     "start": "2021-10-22T06:00:00.000Z",
+     "end": "2021-10-22T07:30:00.000Z",
+     "email": "galliziafilippo@gmail.com",
+ 
 }
 
 ###
@@ -35,3 +39,12 @@ Content-Type: application/json
 
 ###
 GET http://0.0.0.0:5000/login
+
+
+###
+POST http://0.0.0.0:5000/bookingFromUser
+Content-Type: application/json
+
+{
+    "email": "galliziafilippo@gmail.com"
+}

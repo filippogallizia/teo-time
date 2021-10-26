@@ -19,7 +19,8 @@ const userExist = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const { email } = req.body;
+  const { email, phoneNumber, name } = req.body;
+
   // check if  user entered email and if not send error message
   if (!email) {
     res.status(400).send('email is missing');
@@ -36,11 +37,18 @@ const userExist = async (
       if (user) {
         // if a user exist, check if is link is still valid and if it is not send a new one
         if (user.passwordExpiry < DateTime.now()) {
+          const msg = {
+            to: email,
+            from: process.env.EMAIL, // Use the email address or domain you verified above
+            subject: 'teo-time',
+            text: `email: ${user.email}  name: ${user.name} `,
+            html: `<div><a href=http://localhost:3000/homepage/success?otp=${OTP}>LOG IN HERE</a></div>`,
+          };
           // if the link is not valid update user otp and passwordExpiry
           await user.update(
             {
               password: OTP,
-              passwordExpiry: DateTime.now().plus({ minutes: 1 }),
+              passwordExpiry: DateTime.now().plus({ minutes: 10 }),
             },
             {
               where: {
@@ -50,7 +58,7 @@ const userExist = async (
           );
           //send link
           const mySgMail = new ClassSgMail(email, OTP);
-          mySgMail.sendMessage(res, OTP);
+          mySgMail.sendMessage(res, msg);
         } else {
           // if the link is valid send a message saing to check email
           res.status(409).send('user already exists, check your email');
@@ -157,27 +165,6 @@ const getAvailability = async (
     }).catch((e: any) => {
       res.status(500).send({ message: e.message });
     });
-    // ONE TO MANY IMPLEMANTATION
-
-    // if (myBookings.length > 0) {
-    //   BookingGrid.findOne({
-    //     where: { start: '2021-10-21T06:00:00.000Z' },
-    //   })
-    //     .then((bkd: any) => {
-    //       User.findOne({ where: { email: 'galliziafilippo' } })
-    //         .then((usr: any) => {
-    //           bkd.setUser(usr).catch((e) => {
-    //             console.log(e);
-    //           });
-    //         })
-    //         .catch((e) => {
-    //           console.log(e);
-    //         });
-    //     })
-    //     .catch((e) => {
-    //       console.log(e);
-    //     });
-    // }
 
     const parseBooking = _.map(myBookings, (e: any) => {
       return {

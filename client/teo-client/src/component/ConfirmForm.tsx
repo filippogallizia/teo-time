@@ -6,20 +6,27 @@ import { SET_APPOINTMENT_DETAILS } from '../pages/booking/bookingReducer';
 import { createBooking } from '../services/calendar.service';
 import { useForm } from 'react-hook-form';
 import GeneralButton from './GeneralButton';
-import { useHistory } from 'react-router-dom';
-import { SUCCESSFUL_PAGE } from '../constant';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { signup } from '../pages/login/service/LoginService';
 
 type InitialFormType = {
   name: string;
   email: string;
-  telephone: number;
+  phoneNumber: number;
 };
+
+let schema = yup.object().shape({
+  name: yup.string().required(),
+  email: yup.string().email().required(),
+  phoneNumber: yup.number().required(),
+});
 
 const ConfirmForm = ({ dispatch, state }: BookingComponentType) => {
   const { register, handleSubmit, formState } = useForm<InitialFormType>({
-    mode: 'onBlur',
+    mode: 'onChange',
+    resolver: yupResolver(schema),
   });
-  let history = useHistory();
   const { isValid, errors } = formState;
   const myFunc = async (value: InitialFormType) => {
     const mapped: { hours: number; minutes: number } = parseHoursToObject(
@@ -34,11 +41,17 @@ const ConfirmForm = ({ dispatch, state }: BookingComponentType) => {
         });
         localStorage.setItem('APPOINTMENT_DETAILS', response.start);
       };
+      await signup(() => {}, {
+        email: value.email,
+        phoneNumber: value.phoneNumber,
+        name: value.name,
+      });
       await createBooking(handleSuccess, {
         start: parsedDate.plus(mapped).toISO(),
         end: parsedDate.plus(mapped).plus({ hours: 1, minutes: 30 }).toISO(),
+        email: value.email,
       });
-      history.push(SUCCESSFUL_PAGE);
+      alert('check your email!');
     } catch (e) {
       console.log(e);
     }
@@ -67,13 +80,13 @@ const ConfirmForm = ({ dispatch, state }: BookingComponentType) => {
           </label>
           <input
             className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
-            type="telephone"
-            id="telephone"
-            {...register('telephone', { required: true })}
+            type="phoneNumber"
+            id="phoneNumber"
+            {...register('phoneNumber', { required: true })}
             // onChange={this.setValue('username')}
             // value={username}
           />
-          {errors.telephone?.type === 'required' && 'First name is required'}
+          {errors.phoneNumber?.type === 'required' && 'First name is required'}
         </div>
         <div className="m-4">
           <label

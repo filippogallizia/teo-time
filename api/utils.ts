@@ -24,7 +24,6 @@ export const filterForDays = (
     genAv.generalAvaliabilityRules,
     timeRange,
     (a: any, b: any) => {
-      console.log(a.day, FROM_DATE_TO_DAY(b.start));
       return a.day == FROM_DATE_TO_DAY(b.start);
     }
   );

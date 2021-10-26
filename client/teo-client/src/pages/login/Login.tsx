@@ -5,12 +5,12 @@ import { signup } from './service/LoginService';
 const Login = () => {
   const [email, setEmail] = useState('');
   const handleClick = async () => {
-    try {
-      const handleSuccess = () => {};
-      await signup(handleSuccess, email);
-    } catch (e) {
-      console.log(e);
-    }
+    // try {
+    //   const handleSuccess = () => {};
+    //   await signup(handleSuccess, email);
+    // } catch (e) {
+    //   console.log(e);
+    // }
   };
   return (
     <div className="flex flex-col justify-center items-center">

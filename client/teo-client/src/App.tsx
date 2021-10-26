@@ -1,5 +1,5 @@
 import React from 'react';
-import BookingPage from './pages/booking/BookingPage';
+import Routes from './routes';
 import {
   BrowserRouter as Router,
   Switch,
@@ -8,8 +8,8 @@ import {
   RouteProps,
   Redirect,
 } from 'react-router-dom';
-import SuccessfulPage from './pages/successfulSchedule/SuccesfulPage';
 import Login from './pages/login/Login';
+import GeneralPage from './pages/home/GeneralPage';
 
 const HomeLayout = ({ children }: { children: JSX.Element }) => {
   return (
@@ -25,7 +25,7 @@ type ProtectedRouteType = {
   altRoute: string;
 } & RouteProps;
 
-const ProtectedRoute = ({
+export const ProtectedRoute = ({
   children,
   condition,
   altRoute,
@@ -54,20 +54,44 @@ function App() {
             </li>
           </ul>
         </nav>
+        <nav>
+          <ul>
+            <li>
+              <Link to={Routes.HOMEPAGE_BOOKING}>Booking</Link>
+            </li>
+          </ul>
+        </nav>
 
         {/* A <Switch> looks through its children <Route>s and
           renders the first one that matches the current URL. */}
         <Switch>
-          <ProtectedRoute path="/successful" condition={true} altRoute="/login">
-            <SuccessfulPage />
-          </ProtectedRoute>
-          <ProtectedRoute path="/login" condition={true} altRoute="/">
+          <ProtectedRoute
+            path={Routes.LOGIN}
+            condition={true}
+            altRoute={Routes.ROOT}
+          >
             <Login />
           </ProtectedRoute>
-          <ProtectedRoute path="/" condition={true} altRoute="/login">
+
+          <ProtectedRoute
+            path={Routes.HOMEPAGE}
+            condition={true}
+            altRoute={Routes.LOGIN}
+          >
             <HomeLayout>
-              <BookingPage />
+              <GeneralPage />
             </HomeLayout>
+          </ProtectedRoute>
+          <ProtectedRoute
+            path={Routes.ROOT}
+            condition={true}
+            altRoute={Routes.LOGIN}
+          >
+            <Redirect
+              to={{
+                pathname: Routes.HOMEPAGE,
+              }}
+            />
           </ProtectedRoute>
         </Switch>
       </div>

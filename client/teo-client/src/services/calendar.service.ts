@@ -21,13 +21,18 @@ export const getAvailabilities = async (
 
 export const createBooking = async (
   fn: any,
-  body: { start: string; end: string }
+  body: {
+    start: string;
+    end: string;
+    email: string;
+  }
 ) => {
   try {
-    const { start, end } = body;
+    const { start, end, email } = body;
     const response = await axios.post(`${URL}/createbooking`, {
       start,
       end,
+      email,
     });
     fn(response.data);
   } catch (e) {

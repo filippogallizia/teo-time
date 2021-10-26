@@ -1,40 +1,12 @@
-import React, { useEffect, useState, useReducer } from 'react';
+import { DateTime } from 'luxon';
+import React, { useEffect, useState } from 'react';
 import BookingComponentDesktop from '../../component/BookingComponent_Desktop';
 import BookingComponentMobile from '../../component/BookingComponent_Mobile';
 import { TAILWIND_MOBILE_BREAKPOINT } from '../../constant';
-import bookingReducer from './bookingReducer';
+import { BookingComponentType } from './BookingPageTypes';
 
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-
-const startingAvailabilities = new Date();
-startingAvailabilities.setHours(7, 0, 0, 0);
-
-const endAvailabilities = new Date();
-endAvailabilities.setHours(20, 30, 0, 0);
-
-const initialState = {
-  schedules: {
-    selectedDate: today.toISOString(),
-    selectedHour: '00:00',
-    availabilities: [
-      {
-        start: startingAvailabilities.toISOString(),
-        end: endAvailabilities.toISOString(),
-      },
-    ],
-    isConfirmPhase: false,
-    isRenderAvailabilities: false,
-    appointmentDetails: {
-      id: 0,
-      start: '',
-    },
-  },
-};
-
-function BookingPage() {
+function BookingPage({ dispatch, state }: BookingComponentType) {
   const [isMobile, setIsMobile] = useState({ width: window.innerWidth });
-  const [state, dispatch] = useReducer(bookingReducer, initialState);
 
   function debounce(fn: () => void, ms: number) {
     let timer: any;
