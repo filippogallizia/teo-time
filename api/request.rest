@@ -18,9 +18,9 @@ Content-Type: application/json
 
 {
      "email": "galliziafilippo@gmail.com",
-    "end": "2021-10-29T10:00:00.000+01:00",
-    "start": "2021-10-29T08:30:00.000+01:00"
- 
+     "end": "2021-10-29T07:00:00.000Z",
+     "start": "2021-10-29T08:30:00.000Z"
+
 }
 
 ###

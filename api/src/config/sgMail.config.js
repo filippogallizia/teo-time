@@ -25,7 +25,7 @@ class ClassSgMail {
           }
         )
         .catch((e) => {
-          res.status(500).send(`this error occured ${e.message}`);
+          res.status(500).send(`this error occured ${e}`);
         });
       return response;
     };

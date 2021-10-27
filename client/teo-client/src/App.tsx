@@ -1,24 +1,8 @@
-import React from 'react';
-import Routes from './routes';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  RouteProps,
-  Redirect,
-} from 'react-router-dom';
-import Login from './pages/login/Login';
-import GeneralPage from './pages/home/GeneralPage';
-import Navbar from './component/NavBar';
-
-const HomeLayout = ({ children }: { children: JSX.Element }) => {
-  return (
-    <div className="flex flex-col h-screen md:items-center md:justify-center">
-      {children}
-    </div>
-  );
-};
+import React, { useEffect, useState } from 'react';
+import { Route, RouteProps, Redirect } from 'react-router-dom';
+import EventListener from './helpers/EventListener';
+import GeneralButton from './component/GeneralButton';
+import RouterComponent from './component/Router';
 
 type ProtectedRouteType = {
   children: JSX.Element;
@@ -44,61 +28,38 @@ export const ProtectedRoute = ({
   );
 };
 
-function App() {
+const ErrorComponent = (props: any) => {
   return (
-    <Router>
+    <div className="h-screen flex flex-col justify-center items-center text-red-600 ">
+      <p className="mb-10">{props.message}</p>
       <div>
-        {/* <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-          </ul>
-        </nav>
-        <nav>
-          <ul>
-            <li>
-              <Link to={Routes.HOMEPAGE_BOOKING}>Booking</Link>
-            </li>
-          </ul>
-        </nav> */}
-        <Navbar />
-
-        {/* A <Switch> looks through its children <Route>s and
-          renders the first one that matches the current URL. */}
-        <Switch>
-          <ProtectedRoute
-            path={Routes.LOGIN}
-            condition={true}
-            altRoute={Routes.ROOT}
-          >
-            <Login />
-          </ProtectedRoute>
-
-          <ProtectedRoute
-            path={Routes.HOMEPAGE}
-            condition={true}
-            altRoute={Routes.LOGIN}
-          >
-            <HomeLayout>
-              <GeneralPage />
-            </HomeLayout>
-          </ProtectedRoute>
-          <ProtectedRoute
-            path={Routes.ROOT}
-            condition={true}
-            altRoute={Routes.LOGIN}
-          >
-            <Redirect
-              to={{
-                pathname: Routes.HOMEPAGE,
-              }}
-            />
-          </ProtectedRoute>
-        </Switch>
+        <GeneralButton
+          buttonText="Torna all'inizio"
+          onClick={() => EventListener.emit('errorHandling', false)}
+        />
       </div>
-    </Router>
+    </div>
   );
+};
+
+function App() {
+  const [error, setError] = useState<any>(null);
+  const [errorMessage, setErrorMessage] = useState("Qualcosa e' andato storto");
+  useEffect(() => {
+    if (error && error.data) {
+      if (typeof error.data.error.message === 'string') {
+        setErrorMessage(error.data.error.message);
+      }
+    }
+  }, [error]);
+  const removeListener = EventListener.addListener('errorHandling', setError);
+  if (!error) {
+    return <RouterComponent />;
+  } else {
+    return (
+      <ErrorComponent message={errorMessage} removeListener={removeListener} />
+    );
+  }
 }
 
 export default App;

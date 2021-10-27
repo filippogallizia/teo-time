@@ -1,10 +1,15 @@
-import React, { useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { Switch } from 'react-router';
 import { ProtectedRoute } from '../../App';
 import BookingPage from '../booking/BookingPage';
 import bookingReducer from '../booking/bookingReducer';
-import SuccessfulPage from '../successfulSchedule/SuccesfulPage';
+import SuccessfulPage from '../successfulBooking/SuccesfulPage';
 import Routes from '../../routes';
+import { checkForOtp } from '../login/service/LoginService';
+import { useLocation } from 'react-router-dom';
+import HomePage from '../home/HomePage';
+import EventListener from '../../helpers/EventListener';
+import UserPage from '../user/UserPage';
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
@@ -32,33 +37,48 @@ const initialState = {
   },
 };
 
-const HomePage = () => {
-  return (
-    <div className="flex justify-center">
-      <p>BENVENUTI</p>
-    </div>
-  );
-};
-
 const GeneralPage = () => {
   const [state, dispatch] = useReducer(bookingReducer, initialState);
+  const search = useLocation().search;
+  const otp = new URLSearchParams(search).get('otp');
+
+  useEffect(() => {
+    if (otp) {
+      const asyncFetch = async () => {
+        try {
+          await checkForOtp((res: any) => console.log(res), otp);
+          localStorage.setItem('token', otp);
+        } catch (e: any) {
+          EventListener.emit('errorHandling', e.response);
+        }
+      };
+      asyncFetch();
+    }
+  }, [otp]);
 
   return (
     <>
       <Switch>
         <ProtectedRoute
           path={Routes.HOMEPAGE_BOOKING}
-          condition={true}
+          condition={localStorage.getItem('token') ? true : false}
           altRoute={Routes.LOGIN}
         >
           <BookingPage dispatch={dispatch} state={state} />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.HOMEPAGE_SUCCESS}
-          condition={true}
+          condition={localStorage.getItem('token') ? true : false}
           altRoute={Routes.LOGIN}
         >
           <SuccessfulPage dispatch={dispatch} state={state} />
+        </ProtectedRoute>
+        <ProtectedRoute
+          path={Routes.USER}
+          condition={localStorage.getItem('token') ? true : false}
+          altRoute={Routes.LOGIN}
+        >
+          <UserPage dispatch={dispatch} state={state} />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.HOMEPAGE}

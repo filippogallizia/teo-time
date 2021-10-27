@@ -15,6 +15,7 @@ import {
   FROM_DATE_TO_HOUR,
   HOUR_MINUTE_FORMAT,
 } from '../utils';
+import EventListener from '../helpers/EventListener';
 
 type BookSlotContainerType = {
   state: InitialState;
@@ -50,8 +51,8 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
             })
             .toISO(),
         });
-      } catch (e) {
-        console.log(e);
+      } catch (e: any) {
+        EventListener.emit('errorHandling', e.response);
       }
     };
     funcAsync();
@@ -59,19 +60,8 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
 
   useEffect(() => {
     setHours(() => {
-      // if (state.schedules.availabilities.length > 0) {
-      //   return state.schedules.availabilities.map((av: any) => {
-      //     return {
-      //       start: state.schedules.availabilities.toFormat('HH:mm'),
-      //     };
-      //   });
-      // } else return [];
-      console.log(
-        DateTime.fromISO(state.schedules.selectedDate).toFormat(
-          'yyyy LLL dd'
-        ) === DateTime.fromJSDate(new Date()).toFormat('yyyy LLL dd')
-      );
       if (state.schedules.availabilities.length > 0) {
+        // if the date is today show availabilities just after the current hour
         return state.schedules.availabilities.reduce(
           (acc: { start: string }[], cv: timeRange) => {
             const availabilitiesDay = FROM_DATE_TO_DAY(cv.start);
@@ -96,7 +86,7 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
         );
       } else return [];
     });
-  }, [state.schedules.availabilities]);
+  }, [state.schedules.availabilities, state.schedules.selectedDate]);
 
   return (
     <div

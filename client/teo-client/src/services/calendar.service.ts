@@ -15,7 +15,7 @@ export const getAvailabilities = async (
     );
     fn(response.data);
   } catch (e) {
-    console.log(e);
+    throw e;
   }
 };
 
@@ -36,6 +36,6 @@ export const createBooking = async (
     });
     fn(response.data);
   } catch (e) {
-    console.log(e);
+    throw e;
   }
 };

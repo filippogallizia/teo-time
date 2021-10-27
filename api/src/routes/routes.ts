@@ -44,7 +44,7 @@ router.post(
           from: process.env.EMAIL, // Use the email address or domain you verified above
           subject: 'teo-time',
           text: `email: ${usr.email}  name: ${usr.name} `,
-          html: `<div><a href=http://localhost:3000/homepage/success?otp=${OTP}>LOG IN HERE</a></div>`,
+          html: `<div><a href=http://localhost:3000/homepage/booking?otp=${OTP}>LOG IN HERE</a></div>`,
         };
         //send link
         const sendMessage = async () => {
@@ -52,13 +52,18 @@ router.post(
             await sgMail.send(msg);
             res.status(200).send({ message: 'succesfull sent' });
           } catch (e: any) {
-            res.status(500).send({ message: e.message });
+            throw e;
           }
         };
         sendMessage();
       })
       .catch((e: any) => {
-        res.status(500).send({ message: e.message });
+        res.status(500).send({
+          success: false,
+          error: {
+            message: e,
+          },
+        });
       });
   }
 );
@@ -94,7 +99,12 @@ router.post(
           throw e;
         });
     } catch (e: any) {
-      res.status(500).send({ message: e.message });
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
     }
   }
 );
@@ -106,40 +116,48 @@ router.post(
     try {
       //@ts-expect-error
       res.status(200).send(res.availabilities);
-    } catch (e) {
-      res.status(500).send({ message: e.message });
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
     }
   }
 );
 
-// router.post(
-//   '/delete',
-//   // [getAvailability],
-//   (req: express.Request, res: express.Response) => {
-//     try {
-//       const { start, end } = req.body;
+router.post(
+  '/delete',
+  // [getAvailability],
+  (req: express.Request, res: express.Response) => {
+    try {
+      const { start, end } = req.body;
 
-//       BookingGrid.findOne({ where: { start, end } })
-//         .then((bks: any) => {
-//           bks
-//             .destroy()
-//             .then(() => {
-//               res.status(200).send('prenotazione cancellata');
-//             })
-//             .catch((e: any) => {
-//               throw e;
-//             });
-//         })
-//         .catch((e: any) => {
-//           throw e;
-//         });
-
-//       // res.status(200).send(res.availabilities);
-//     } catch (e: any) {
-//       res.status(500).send({ message: e.message });
-//     }
-//   }
-// );
+      BookingGrid.findOne({ where: { start, end } })
+        .then((bks: any) => {
+          bks
+            .destroy()
+            .then(() => {
+              res.status(200).send('prenotazione cancellata');
+            })
+            .catch((e: any) => {
+              throw e;
+            });
+        })
+        .catch((e: any) => {
+          throw e;
+        });
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
 
 router.get(
   '/tokenValidation',
@@ -148,7 +166,12 @@ router.get(
     try {
       res.status(200).send('welcome');
     } catch (e: any) {
-      res.status(500).send({ message: e.message });
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
     }
   }
 );
@@ -157,22 +180,29 @@ router.post(
   '/bookingFromUser',
   // [checkForOtp],
   (req: express.Request, res: express.Response) => {
-    const { email } = req.body;
+    const { password } = req.body;
     let findedBooking = 'undefined';
     try {
-      User.findOne({ where: { email } }).then((usr: any) => {
-        BookingGrid.findOne({ where: { id: usr.id } })
-          .then((bks: any) => {
-            // findedBooking = bks;
-            res.status(200).send(bks);
-          })
-          .catch((e: any) => {
-            throw e;
-          });
+      const user = User.findOne({ where: { password } }).catch((e: any) => {
+        throw e;
       });
-      // res.status(200).send(findedBooking);
+      user.then((u: any) => {
+        if (u) {
+          BookingGrid.findOne({ where: { userId: u.id } }).then((bks: any) => {
+            findedBooking = bks;
+            console.log(bks, 'filooooooo');
+            res.status(200).send(bks);
+          });
+        }
+      });
+      res.status(200).send(findedBooking);
     } catch (e: any) {
-      res.status(500).send({ message: e.message });
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
     }
   }
 );

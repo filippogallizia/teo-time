@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import routes from '../routes';
 
 export default function Navbar({ fixed }: any) {
   const [navbarOpen, setNavbarOpen] = React.useState(false);
@@ -32,11 +33,29 @@ export default function Navbar({ fixed }: any) {
             <ul className="flex flex-col lg:flex-row list-none lg:ml-auto">
               <li className="nav-item">
                 <Link
-                  to="/homepage/booking"
+                  to={routes.HOMEPAGE_BOOKING}
                   className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
                 >
-                  {/* <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i> */}
+                  <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
                   <span className="ml-2">booking</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  to={routes.LOGIN}
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                >
+                  <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
+                  <span className="ml-2">log in</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  to={routes.USER}
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                >
+                  <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
+                  <span className="ml-2">user</span>
                 </Link>
               </li>
             </ul>

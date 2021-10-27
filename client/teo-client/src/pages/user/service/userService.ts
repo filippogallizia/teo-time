@@ -10,16 +10,14 @@ export const checkForOtp = async (fn: any, OTP: string | null) => {
   }
 };
 
-export const signup = async (
+export const retriveUserBooking = async (
   fn: any,
-  body: { email: string; phoneNumber: number; name: string }
+  body: { password: number }
 ) => {
   try {
-    const { email, phoneNumber, name } = body;
-    const response = await axios.post(`${URL}/signup`, {
-      email,
-      phoneNumber,
-      name,
+    const { password } = body;
+    const response = await axios.post(`${URL}/bookingFromUser`, {
+      password,
     });
     fn(response.data);
   } catch (e: any) {

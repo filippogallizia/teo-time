@@ -7,3 +7,4 @@ API
 CLIENT
 - make a common variable for slot duration
 - show errors message when request fails
+- navbar link selected style

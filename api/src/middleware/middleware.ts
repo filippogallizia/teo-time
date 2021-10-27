@@ -23,7 +23,12 @@ const userExist = async (
 
   // check if  user entered email and if not send error message
   if (!email) {
-    res.status(400).send('email is missing');
+    res.status(400).send({
+      success: false,
+      error: {
+        message: 'email is missing',
+      },
+    });
   } else {
     try {
       // check for an existing user
@@ -32,7 +37,12 @@ const userExist = async (
           email,
         },
       }).catch((e: any) => {
-        res.status(500).send(`this error occured ${e.message}`);
+        res.status(500).send({
+          success: false,
+          error: {
+            message: e,
+          },
+        });
       });
       if (user) {
         // if a user exist, check if is link is still valid and if it is not send a new one
@@ -42,7 +52,7 @@ const userExist = async (
             from: process.env.EMAIL, // Use the email address or domain you verified above
             subject: 'teo-time',
             text: `email: ${user.email}  name: ${user.name} `,
-            html: `<div><a href=http://localhost:3000/homepage/success?otp=${OTP}>LOG IN HERE</a></div>`,
+            html: `<div><a href=http://localhost:3000/homepage/booking?otp=${OTP}>LOG IN HERE</a></div>`,
           };
           // if the link is not valid update user otp and passwordExpiry
           await user.update(
@@ -57,18 +67,38 @@ const userExist = async (
             }
           );
           //send link
-          const mySgMail = new ClassSgMail(email, OTP);
-          mySgMail.sendMessage(res, msg);
+          const sendMessage = async () => {
+            try {
+              await sgMail.send(msg);
+              res.status(500).send({
+                success: false,
+                error: {
+                  message: `'your link was expired, we sent you a new email',`,
+                },
+              });
+            } catch (e: any) {
+              throw e;
+            }
+          };
+          sendMessage();
         } else {
           // if the link is valid send a message saing to check email
-          res.status(409).send('user already exists, check your email');
+          res.status(500).send({
+            success: false,
+            error: {
+              message: 'user exist already, check your previous email',
+            },
+          });
         }
       } else {
         // if there is no user yet move forward to create a new one
         next();
       }
     } catch (e: any) {
-      res.status(500).send(`this error occured ${e.message}`);
+      res.status(500).send({
+        success: false,
+        error: { message: `this error occured ${e}` },
+      });
     }
   }
 };
@@ -84,10 +114,20 @@ export const checkForBookingAlreadyExisting = async (
       where: { start, end },
     });
     if (bookingAlreadyExist) {
-      res.status(404).send('This hour is already booked');
+      res.status(404).send({
+        success: false,
+        error: {
+          message: 'This hour is already booked',
+        },
+      });
     } else next();
-  } catch (e) {
-    res.status(500).send(JSON.stringify(e));
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
   }
 };
 
@@ -111,7 +151,12 @@ export const checkForBookingOutOfRange = async (
     }
   );
   if (findedSlot.length === 0) {
-    res.status(400).send('the booking doesnt match a slot');
+    res.status(404).send({
+      success: false,
+      error: {
+        message: 'the booking doesnt match a slot',
+      },
+    });
   } else {
     next();
   }
@@ -125,7 +170,12 @@ const checkForOtp = async (
   const OTP = req.query.otp;
   // check for a query parameter if not return not authorized
   if (!OTP) {
-    res.status(404).send('not authorized');
+    res.status(404).send({
+      success: false,
+      error: {
+        message: 'not authorized',
+      },
+    });
   } else {
     // if query parameter exist, then check for a user
     const user = await User.findOne({
@@ -133,15 +183,30 @@ const checkForOtp = async (
         password: OTP,
       },
     }).catch((e: any) => {
-      res.status(500).send({ message: e.message });
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
     });
     // if the user exist, than check if is OTP is not expired
     if (user && user.passwordExpiry < DateTime.now()) {
-      res.status(400).send('the link is expired');
+      res.status(404).send({
+        success: false,
+        error: {
+          message: 'the link is expired',
+        },
+      });
     } else if (user && user.passwordExpiry > DateTime.now()) {
       next();
     } else {
-      res.status(400).send('user not found');
+      res.status(500).send({
+        success: false,
+        error: {
+          message: 'user not found',
+        },
+      });
     }
   }
 };
@@ -163,7 +228,12 @@ const getAvailability = async (
         },
       },
     }).catch((e: any) => {
-      res.status(500).send({ message: e.message });
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
     });
 
     const parseBooking = _.map(myBookings, (e: any) => {
@@ -184,9 +254,13 @@ const getAvailability = async (
     //@ts-expect-error
     res.availabilities = availabilities;
     next();
-  } catch (e) {
-    console.log(e, 'e');
-    res.status(500).send({ message: e.message });
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
   }
 };
 
