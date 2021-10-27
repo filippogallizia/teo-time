@@ -17,9 +17,9 @@ POST http://0.0.0.0:5000/createbooking
 Content-Type: application/json
 
 {
-     "start": "2021-10-22T06:00:00.000Z",
-     "end": "2021-10-22T07:30:00.000Z",
      "email": "galliziafilippo@gmail.com",
+    "end": "2021-10-29T10:00:00.000+01:00",
+    "start": "2021-10-29T08:30:00.000+01:00"
  
 }
 
@@ -38,7 +38,7 @@ Content-Type: application/json
 
 
 ###
-GET http://0.0.0.0:5000/login
+GET http://0.0.0.0:5000/tokenValidation
 
 
 ###

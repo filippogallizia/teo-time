@@ -54,6 +54,7 @@ const ConfirmForm = ({ dispatch, state }: BookingComponentType) => {
       alert('check your email!');
     } catch (e) {
       console.log(e);
+      alert(e);
     }
   };
 

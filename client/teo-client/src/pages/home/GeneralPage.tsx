@@ -33,7 +33,11 @@ const initialState = {
 };
 
 const HomePage = () => {
-  return <p>WELCOM TO TEO-TIME</p>;
+  return (
+    <div className="flex justify-center">
+      <p>BENVENUTI</p>
+    </div>
+  );
 };
 
 const GeneralPage = () => {

@@ -2,6 +2,8 @@ API
 - see how to use OTP along all pages
 - develop logic for retrieve availability for more than one day?
 - avoid going back on successful page
+- add google calendar event 
 
-REFACTOR 
+CLIENT
 - make a common variable for slot duration
+- show errors message when request fails

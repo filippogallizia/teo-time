@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom';
 import Login from './pages/login/Login';
 import GeneralPage from './pages/home/GeneralPage';
+import Navbar from './component/NavBar';
 
 const HomeLayout = ({ children }: { children: JSX.Element }) => {
   return (
@@ -47,7 +48,7 @@ function App() {
   return (
     <Router>
       <div>
-        <nav>
+        {/* <nav>
           <ul>
             <li>
               <Link to="/">Home</Link>
@@ -60,7 +61,8 @@ function App() {
               <Link to={Routes.HOMEPAGE_BOOKING}>Booking</Link>
             </li>
           </ul>
-        </nav>
+        </nav> */}
+        <Navbar />
 
         {/* A <Switch> looks through its children <Route>s and
           renders the first one that matches the current URL. */}

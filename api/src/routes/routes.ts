@@ -47,11 +47,6 @@ router.post(
           html: `<div><a href=http://localhost:3000/homepage/success?otp=${OTP}>LOG IN HERE</a></div>`,
         };
         //send link
-        // const mySgMail = new ClassSgMail(
-        //   email,
-        //   `<a href=http://localhost:3000/homepage/success?otp=${OTP}>LOG IN HERE</a>`
-        // );
-        // mySgMail.sendMessage(res);
         const sendMessage = async () => {
           try {
             await sgMail.send(msg);
@@ -81,8 +76,10 @@ router.post(
         end,
       })
         .then((booking: any) => {
+          // search the user by email
           User.findOne({ where: { email } })
             .then((usr: any) => {
+              // associate the booking with the user
               booking.setUser(usr).catch((e: any) => {
                 throw e;
               });
@@ -115,21 +112,37 @@ router.post(
   }
 );
 
-router.post(
-  '/delete',
-  [getAvailability],
-  (req: express.Request, res: express.Response) => {
-    try {
-      //@ts-expect-error
-      res.status(200).send(res.availabilities);
-    } catch (e: any) {
-      res.status(500).send({ message: e.message });
-    }
-  }
-);
+// router.post(
+//   '/delete',
+//   // [getAvailability],
+//   (req: express.Request, res: express.Response) => {
+//     try {
+//       const { start, end } = req.body;
+
+//       BookingGrid.findOne({ where: { start, end } })
+//         .then((bks: any) => {
+//           bks
+//             .destroy()
+//             .then(() => {
+//               res.status(200).send('prenotazione cancellata');
+//             })
+//             .catch((e: any) => {
+//               throw e;
+//             });
+//         })
+//         .catch((e: any) => {
+//           throw e;
+//         });
+
+//       // res.status(200).send(res.availabilities);
+//     } catch (e: any) {
+//       res.status(500).send({ message: e.message });
+//     }
+//   }
+// );
 
 router.get(
-  '/',
+  '/tokenValidation',
   [checkForOtp],
   (req: express.Request, res: express.Response) => {
     try {
