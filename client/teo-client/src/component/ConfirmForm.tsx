@@ -1,14 +1,18 @@
 import { DateTime } from 'luxon';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { parseHoursToObject } from '../helpers/helpers';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
-import { SET_APPOINTMENT_DETAILS } from '../pages/booking/bookingReducer';
+import {
+  SET_APPOINTMENT_DETAILS,
+  SET_CONFIRM_PHASE,
+  SET_RENDER_AVAILABILITIES,
+} from '../pages/booking/bookingReducer';
 import { createBooking } from '../services/calendar.service';
 import GeneralButton from './GeneralButton';
 import { MARGIN_BOTTOM, TITLE } from '../constant';
 import Routes from '../routes';
 import EventListener from '../helpers/EventListener';
+import { parseHoursToObject } from '../utils';
 
 type InitialFormType = {
   name: string;
@@ -21,8 +25,12 @@ const ConfirmForm = ({ dispatch, state }: BookingComponentType) => {
   const mapped: { hours: number; minutes: number } = parseHoursToObject(
     state.schedules.selectedHour
   );
+  const parsedDate = DateTime.fromISO(state.schedules.selectedDate).set({
+    hour: 0,
+    minute: 0,
+    millisecond: 0,
+  });
   const myFunc = async (value: InitialFormType) => {
-    const parsedDate = DateTime.fromISO(state.schedules.selectedDate);
     try {
       const handleSuccess = (response: any) => {
         dispatch({
@@ -36,6 +44,14 @@ const ConfirmForm = ({ dispatch, state }: BookingComponentType) => {
         end: parsedDate.plus(mapped).plus({ hours: 1, minutes: 30 }).toISO(),
         email: value.email,
       });
+      dispatch({
+        type: SET_CONFIRM_PHASE,
+        payload: false,
+      });
+      dispatch({
+        type: SET_RENDER_AVAILABILITIES,
+        payload: false,
+      });
       history.push(Routes.HOMEPAGE_SUCCESS);
     } catch (e: any) {
       EventListener.emit('errorHandling', e.response);
@@ -43,7 +59,7 @@ const ConfirmForm = ({ dispatch, state }: BookingComponentType) => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="grid grid-cols-1 gap-8 justify-items-center">
       <div className={`${TITLE} ${MARGIN_BOTTOM}`}>Conferma i dati</div>
       <div className={MARGIN_BOTTOM}>
         <p className={TITLE}>

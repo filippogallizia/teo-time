@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Routes from '../routes';
 
 import {
@@ -10,11 +10,12 @@ import {
 } from 'react-router-dom';
 import Navbar from './NavBar';
 import GeneralPage from '../pages/general/GeneralPage';
-import Login from '../pages/login/Login';
+import Login from '../pages/login-signup/Login';
+import Signup from '../pages/login-signup/Signup';
 
 const GeneralLayout = ({ children }: { children: JSX.Element }) => {
   return (
-    <div className="flex flex-col h-screen md:items-center md:justify-center">
+    <div className="flex flex-col md:items-center md:justify-center">
       {children}
     </div>
   );
@@ -44,11 +45,15 @@ export const ProtectedRoute = ({
   );
 };
 
-const RouterComponent = () => {
+const RouterComponent = (): JSX.Element => {
+  const token = localStorage.getItem('token');
+  // const [navHeight, setNavHeight] = useState(0);
+
   return (
     <Router>
       <div>
         <Navbar />
+
         <Switch>
           <ProtectedRoute
             path={Routes.LOGIN}
@@ -59,8 +64,16 @@ const RouterComponent = () => {
           </ProtectedRoute>
 
           <ProtectedRoute
-            path={Routes.HOMEPAGE}
+            path={Routes.SIGNUP}
             condition={true}
+            altRoute={Routes.ROOT}
+          >
+            <Signup />
+          </ProtectedRoute>
+
+          <ProtectedRoute
+            path={Routes.HOMEPAGE}
+            condition={token ? true : false}
             altRoute={Routes.LOGIN}
           >
             <GeneralLayout>

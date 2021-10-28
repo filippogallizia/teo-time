@@ -19,7 +19,7 @@ app.use(express.json());
 app.use('/', routes);
 
 db.sequelize
-  .sync({ force: true })
+  .sync({ force: false })
   .then(() => {
     console.log('Drop and Resync Dbasssssxs');
   })

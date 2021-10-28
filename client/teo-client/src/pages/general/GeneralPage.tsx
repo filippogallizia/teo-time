@@ -1,15 +1,12 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useReducer } from 'react';
 import { Switch } from 'react-router';
-import { ProtectedRoute } from '../../App';
 import BookingPage from '../booking/BookingPage';
 import bookingReducer from '../booking/bookingReducer';
 import SuccessfulPage from '../successfulBooking/SuccesfulPage';
 import Routes from '../../routes';
-import { checkForOtp } from '../login/service/LoginService';
-import { useLocation } from 'react-router-dom';
 import HomePage from '../home/HomePage';
-import EventListener from '../../helpers/EventListener';
 import UserPage from '../user/UserPage';
+import { Redirect, Route, RouteProps } from 'react-router-dom';
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
@@ -28,6 +25,7 @@ const initialState = {
         end: endAvailabilities.toISOString(),
       },
     ],
+    userAllBooking: [],
     isConfirmPhase: false,
     isRenderAvailabilities: false,
     appointmentDetails: {
@@ -37,24 +35,32 @@ const initialState = {
   },
 };
 
+type ProtectedRouteType = {
+  children: any;
+  condition: boolean;
+  altRoute: string;
+} & RouteProps;
+
+export const ProtectedRoute = ({
+  children,
+  condition,
+  altRoute,
+  ...props
+}: ProtectedRouteType) => {
+  if (condition) {
+    return <Route {...props}>{children}</Route>;
+  }
+  return (
+    <Redirect
+      to={{
+        pathname: altRoute,
+      }}
+    />
+  );
+};
+
 const GeneralPage = () => {
   const [state, dispatch] = useReducer(bookingReducer, initialState);
-  const search = useLocation().search;
-  const otp = new URLSearchParams(search).get('otp');
-
-  useEffect(() => {
-    if (otp) {
-      const asyncFetch = async () => {
-        try {
-          await checkForOtp((res: any) => console.log(res), otp);
-          localStorage.setItem('token', otp);
-        } catch (e: any) {
-          EventListener.emit('errorHandling', e.response);
-        }
-      };
-      asyncFetch();
-    }
-  }, [otp]);
 
   return (
     <>

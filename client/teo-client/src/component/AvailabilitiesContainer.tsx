@@ -1,7 +1,13 @@
 import React, { Dispatch, useEffect, useState } from 'react';
 import 'react-calendar/dist/Calendar.css';
 import AvailabilityHourContainer from './AvailabilityHourContainer';
-import { BOLD, FLEX_DIR_COL, MARGIN_BOTTOM, TITLE } from '../constant';
+import {
+  BOLD,
+  FLEX_DIR_COL,
+  GRID_ONE_COL,
+  MARGIN_BOTTOM,
+  TITLE,
+} from '../constant';
 import { DateTime } from 'luxon';
 import { getAvailabilities } from '../services/calendar.service';
 import {
@@ -58,6 +64,8 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
     funcAsync();
   }, [dispatch, state.schedules.selectedDate, state.schedules.selectedHour]);
 
+  console.log(state, 'state');
+
   useEffect(() => {
     setHours(() => {
       if (state.schedules.availabilities.length > 0) {
@@ -90,10 +98,10 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
 
   return (
     <div
-      className={`flex flex-col items-center w-full border-2 border-gray-50 md:border-none`}
+      className={`${GRID_ONE_COL} w-full border-2 border-gray-50 md:border-none`}
     >
-      <div className={`${MARGIN_BOTTOM}  ${FLEX_DIR_COL} md:hidden`}>
-        <p className={`${BOLD} ${MARGIN_BOTTOM} ${TITLE}`}>SELECT A TIME</p>
+      <div className={` ${GRID_ONE_COL} md:hidden`}>
+        <p className={`${BOLD} ${TITLE}`}>SELECT A TIME</p>
         <p>{`${DateTime.fromISO(state.schedules.selectedDate).year}/${
           DateTime.fromISO(state.schedules.selectedDate).month
         }/${DateTime.fromISO(state.schedules.selectedDate).day}`}</p>

@@ -1,6 +1,7 @@
 import produce from 'immer';
 
 export const SET_AVAILABILITIES = 'SET_AVAILABILITIES';
+export const SET_USER_ALL_BOOKINGS = 'SET_USER_ALL_BOOKINGS';
 export const SET_SELECTION_DATE = 'SET_SELECTION_DATE';
 export const SET_SELECTION_HOUR = 'SET_SELECTION_HOUR';
 export const SET_CONFIRM_PHASE = 'SET_CONFIRM_PHASE';
@@ -20,11 +21,17 @@ export type InitialState = {
       id: number;
       start: string;
     };
+    userAllBooking: timeRange[];
   };
 };
 
 type ActionSetAvailabilities = {
   type: typeof SET_AVAILABILITIES;
+  payload: timeRange[];
+};
+
+type ActionSetUserAllBookings = {
+  type: typeof SET_USER_ALL_BOOKINGS;
   payload: timeRange[];
 };
 
@@ -61,13 +68,18 @@ export type Actions =
   | ActionSetSelectionHour
   | ActionSetConfirmPhase
   | ActionSetRenderAvailabilities
-  | ActionSetAppointmentDetails;
+  | ActionSetAppointmentDetails
+  | ActionSetUserAllBookings;
 
 const bookingReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
     case SET_AVAILABILITIES:
       return produce(initialState, (draft) => {
         draft.schedules.availabilities = action.payload;
+      });
+    case SET_USER_ALL_BOOKINGS:
+      return produce(initialState, (draft) => {
+        draft.schedules.userAllBooking = action.payload;
       });
     case SET_SELECTION_DATE:
       return produce(initialState, (draft) => {

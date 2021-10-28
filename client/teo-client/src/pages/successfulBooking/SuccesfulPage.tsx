@@ -15,7 +15,7 @@ const SuccessfulPage = ({ dispatch, state }: BookingComponentType) => {
     DateTime.fromISO(appointmentDetails).toFormat('yyyy LLL dd t');
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="grid grid-cols-1 gap-8 justify-items-center">
       <div className={`${TITLE} text-center ${MARGIN_BOTTOM}`}>
         Appuntamento registrato con successo
       </div>

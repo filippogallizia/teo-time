@@ -7,8 +7,8 @@
 - CREATEBOOKING
   . receive { start, end, email}
   . create a new booking associated with an ID user
-  . check for existing booking in the same slot ( checkForBookingAlreadyExisting )
-  . check if the { start, end } coming from client is in the range of availability ( checkForBookingOutOfRange )
+  . check for existing booking in the same slot ( bookExist )
+  . check if the { start, end } coming from client is in the range of availability ( bookOutRange )
   
 
 - RETRIEVEAVAILABILITY
@@ -21,9 +21,6 @@
   . receive { email }
   . retrieve all booking associated with that email
 
-- TOKENVALIDATION
-  . receive { otp }
-  . check if token is valid and is not expired
 
 - DELETE
   . receive { start, end, email }

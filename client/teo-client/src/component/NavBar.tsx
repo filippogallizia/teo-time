@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import routes from '../routes';
 
 export default function Navbar({ fixed }: any) {
   const [navbarOpen, setNavbarOpen] = React.useState(false);
+  const box = useRef<null | any>(null);
+
+  useEffect(() => {
+    if (box && box.current && box.current.style) {
+      console.log(
+        window.getComputedStyle(box.current).getPropertyValue('height')
+      ); //
+    }
+  }, []);
+
   return (
-    <>
+    <div ref={box} className="mb-10">
       <nav className="relative flex flex-wrap items-center justify-between px-2 py-3 bg-blue-500 mb-3">
         <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
           <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
@@ -62,6 +72,6 @@ export default function Navbar({ fixed }: any) {
           </div>
         </div>
       </nav>
-    </>
+    </div>
   );
 }

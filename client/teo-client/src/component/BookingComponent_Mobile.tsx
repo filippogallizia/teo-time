@@ -8,7 +8,7 @@ const BookingInfo = ({ dispatch, state }: BookingComponentType) => {
   return (
     <>
       {state.schedules.isRenderAvailabilities ? (
-        <div className="mt-4">
+        <div>
           <AvailabilitiesContainer dispatch={dispatch} state={state} />
         </div>
       ) : (

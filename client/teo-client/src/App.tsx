@@ -1,42 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { Route, RouteProps, Redirect } from 'react-router-dom';
 import EventListener from './helpers/EventListener';
 import GeneralButton from './component/GeneralButton';
 import RouterComponent from './component/Router';
-
-type ProtectedRouteType = {
-  children: JSX.Element;
-  condition: boolean;
-  altRoute: string;
-} & RouteProps;
-
-export const ProtectedRoute = ({
-  children,
-  condition,
-  altRoute,
-  ...props
-}: ProtectedRouteType) => {
-  if (condition) {
-    return <Route {...props}>{children}</Route>;
-  }
-  return (
-    <Redirect
-      to={{
-        pathname: altRoute,
-      }}
-    />
-  );
-};
+import { URL_CLIENT } from './constant';
+import routes from './routes';
 
 const ErrorComponent = (props: any) => {
   return (
-    <div className="h-screen flex flex-col justify-center items-center text-red-600 ">
+    <div className="flex flex-col justify-center items-center text-red-600 ">
       <p className="mb-10">{props.message}</p>
       <div>
-        <GeneralButton
-          buttonText="Torna all'inizio"
-          onClick={() => EventListener.emit('errorHandling', false)}
-        />
+        <a href={`${URL_CLIENT}${routes.HOMEPAGE}`}>
+          <GeneralButton
+            buttonText="Torna all'inizio"
+            onClick={() => {
+              EventListener.emit('errorHandling', false);
+            }}
+          />
+        </a>
       </div>
     </div>
   );
@@ -46,7 +27,8 @@ function App() {
   const [error, setError] = useState<any>(null);
   const [errorMessage, setErrorMessage] = useState("Qualcosa e' andato storto");
   useEffect(() => {
-    if (error && error.data) {
+    console.log(error, 'error');
+    if (error && error.data && error.data.error && error.data.error.message) {
       if (typeof error.data.error.message === 'string') {
         setErrorMessage(error.data.error.message);
       }

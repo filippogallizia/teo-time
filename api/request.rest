@@ -1,4 +1,4 @@
-GET http://0.0.0.0:5000/?otp=39a3c48a-4d1a-46bc-a1f3-633d7fde366a
+
 
 ###
 
@@ -8,24 +8,50 @@ Content-Type: application/json
 {
     "email": "galliziafilippo@gmail.com",
     "name": "filippo",
-    "phoneNumber": "020202002"
+    "phoneNumber": "020202002",
+    "password": "filo"
 }
+
+###
+
+POST http://0.0.0.0:5000/login
+Content-Type: application/json
+
+{
+    "email": "galliziagiovanni@gmail.com",
+    "password": "filo"
+}
+
 
 ###
 
 POST http://0.0.0.0:5000/createbooking
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpemlhZmlsaXBwb0BnbWFpbC5jb20iLCJwYXNzd29yZCI6InN1cmZhbmRvIiwiaWF0IjoxNjM1NDEyMTM4fQ.4OrNWrQ3KbxgvMCboT9JL-Xj3IQ_DTz5rqlv0AYj4PI
+
+{
+     "start": "2021-10-29T10:30:00.000Z",
+     "end": "2021-10-29T12:00:00.000Z"
+}
+
+###
+
+POST http://0.0.0.0:5000/deletebooking
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpemlhZmlsaXBwb0BnbWFpbC5jb20iLCJwYXNzd29yZCI6InN1cmZhbmRvIiwiaWF0IjoxNjM1NDEyMTM4fQ.4OrNWrQ3KbxgvMCboT9JL-Xj3IQ_DTz5rqlv0AYj4PI
 
 {
      "email": "galliziafilippo@gmail.com",
-     "end": "2021-10-29T07:00:00.000Z",
-     "start": "2021-10-29T08:30:00.000Z"
+    "start": "2021-10-29T10:30:00.000Z",
+     "end": "2021-10-29T12:00:00.000Z"
 
 }
 
 ###
 POST http://0.0.0.0:5000/retrieveAvailability
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpemlhZmlsaXBwb0BnbWFpbC5jb20iLCJwYXNzd29yZCI6ImZpbG8iLCJpYXQiOjE2MzUzNTQ1NjZ9.-jiJHSVIvaDpyP5I4wLfNHXvxyhqG4fBZSelMOk0KHY
+
 
 {
     "timeRange": [
@@ -44,6 +70,7 @@ GET http://0.0.0.0:5000/tokenValidation
 ###
 POST http://0.0.0.0:5000/bookingFromUser
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpemlhZmlsaXBwb0BnbWFpbC5jb20iLCJwYXNzd29yZCI6InN1cmZhbmRvIiwiaWF0IjoxNjM1NDEyMTM4fQ.4OrNWrQ3KbxgvMCboT9JL-Xj3IQ_DTz5rqlv0AYj4PI
 
 {
     "email": "galliziafilippo@gmail.com"

@@ -8,6 +8,7 @@ import {
   BOLD,
   PARAGRAPH_BIG,
   PARAGRAPH_MEDIUM,
+  BIG_MARGIN_BOTTOM,
 } from '../constant';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import {
@@ -18,14 +19,12 @@ import {
 const EventInformations = ({ state, dispatch }: BookingComponentType) => {
   return (
     <div
-      className={`${GLOBAL_PADDING} pt-0 flex flex-col items-center relative md:static`}
+      className={`${GLOBAL_PADDING} grid col-1 gap-4 justify-items-center relative md:static ${BIG_MARGIN_BOTTOM}`}
     >
       <div className={`${MARGIN_BOTTOM}`}>
         {(state.schedules.isConfirmPhase ||
           state.schedules.isRenderAvailabilities) && (
-          <div
-            className={`absolute top-3 left-3 ${MARGIN_BOTTOM} overflow-x-auto md:static`}
-          >
+          <div className={`absolute top-3 left-3 ${MARGIN_BOTTOM}  md:static`}>
             <BsFillArrowLeftSquareFill
               onClick={() => {
                 dispatch({ type: SET_CONFIRM_PHASE, payload: false });
@@ -37,18 +36,12 @@ const EventInformations = ({ state, dispatch }: BookingComponentType) => {
           </div>
         )}
       </div>
-      <div>
-        <p
-          className={`${MARGIN_BOTTOM} ${PARAGRAPH_MEDIUM} md:${PARAGRAPH_BIG}`}
-        >
-          Matteo
-        </p>
-        <p
-          className={`${BOLD} ${MARGIN_BOTTOM} ${PARAGRAPH_MEDIUM} md:${PARAGRAPH_BIG}`}
-        >
+      <div className="grid col-1 gap-3 justify-items-center">
+        <p className={`${PARAGRAPH_MEDIUM} md:${PARAGRAPH_BIG}`}>Matteo</p>
+        <p className={`${BOLD}  ${PARAGRAPH_MEDIUM} md:${PARAGRAPH_BIG}`}>
           TRAINING
         </p>
-        <div className={`flex align-middle ${MARGIN_BOTTOM}`}>
+        <div className={`flex align-middle`}>
           <BiTime size="1.2em" color="black" />
           <p>1h</p>
         </div>
