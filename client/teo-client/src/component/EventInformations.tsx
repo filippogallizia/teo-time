@@ -3,12 +3,10 @@ import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { BiTime } from 'react-icons/bi';
 import { GrLocationPin } from 'react-icons/gr';
 import {
-  GLOBAL_PADDING,
   MARGIN_BOTTOM,
   BOLD,
   PARAGRAPH_BIG,
   PARAGRAPH_MEDIUM,
-  BIG_MARGIN_BOTTOM,
 } from '../constant';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import {
@@ -19,23 +17,22 @@ import {
 const EventInformations = ({ state, dispatch }: BookingComponentType) => {
   return (
     <div
-      className={`${GLOBAL_PADDING} grid col-1 gap-4 justify-items-center relative md:static ${BIG_MARGIN_BOTTOM}`}
+      className={`grid col-1 gap-4 justify-items-center relative md:static ${MARGIN_BOTTOM}`}
     >
-      <div className={`${MARGIN_BOTTOM}`}>
-        {(state.schedules.isConfirmPhase ||
-          state.schedules.isRenderAvailabilities) && (
-          <div className={`absolute top-3 left-3 ${MARGIN_BOTTOM}  md:static`}>
-            <BsFillArrowLeftSquareFill
-              onClick={() => {
-                dispatch({ type: SET_CONFIRM_PHASE, payload: false });
-                dispatch({ type: SET_RENDER_AVAILABILITIES, payload: false });
-              }}
-              size="1.5em"
-              color="blue"
-            />
-          </div>
-        )}
-      </div>
+      {(state.schedules.isConfirmPhase ||
+        state.schedules.isRenderAvailabilities) && (
+        <div className={`absolute top-0 left-3 md:static`}>
+          <BsFillArrowLeftSquareFill
+            onClick={() => {
+              dispatch({ type: SET_CONFIRM_PHASE, payload: false });
+              dispatch({ type: SET_RENDER_AVAILABILITIES, payload: false });
+            }}
+            size="1.5em"
+            color="blue"
+          />
+        </div>
+      )}
+
       <div className="grid col-1 gap-3 justify-items-center">
         <p className={`${PARAGRAPH_MEDIUM} md:${PARAGRAPH_BIG}`}>Matteo</p>
         <p className={`${BOLD}  ${PARAGRAPH_MEDIUM} md:${PARAGRAPH_BIG}`}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import Routes from '../routes';
 
 import {
@@ -14,11 +14,7 @@ import Login from '../pages/login-signup/Login';
 import Signup from '../pages/login-signup/Signup';
 
 const GeneralLayout = ({ children }: { children: JSX.Element }) => {
-  return (
-    <div className="flex flex-col md:items-center md:justify-center">
-      {children}
-    </div>
-  );
+  return <div className="flex flex-col md:m-auto md:max-w-2xl">{children}</div>;
 };
 
 type ProtectedRouteType = {

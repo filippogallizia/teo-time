@@ -1,13 +1,7 @@
 import React, { Dispatch, useEffect, useState } from 'react';
 import 'react-calendar/dist/Calendar.css';
 import AvailabilityHourContainer from './AvailabilityHourContainer';
-import {
-  BOLD,
-  FLEX_DIR_COL,
-  GRID_ONE_COL,
-  MARGIN_BOTTOM,
-  TITLE,
-} from '../constant';
+import { BOLD, GRID_ONE_COL, TITLE } from '../constant';
 import { DateTime } from 'luxon';
 import { getAvailabilities } from '../services/calendar.service';
 import {
@@ -63,8 +57,6 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
     };
     funcAsync();
   }, [dispatch, state.schedules.selectedDate, state.schedules.selectedHour]);
-
-  console.log(state, 'state');
 
   useEffect(() => {
     setHours(() => {

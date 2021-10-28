@@ -1,12 +1,13 @@
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import 'react-calendar/dist/Calendar.css';
+import { useHistory } from 'react-router';
 import { FLEX_DIR_ROW } from '../constant';
 import {
   Actions,
   InitialState,
-  SET_CONFIRM_PHASE,
   SET_SELECTION_HOUR,
 } from '../pages/booking/bookingReducer';
+import routes from '../routes';
 
 type AvailabilitiesChildType = {
   hour: { start: string; end: string };
@@ -26,6 +27,8 @@ function AvailabilityHourContainer({
   state,
 }: AvailabilitiesChildType) {
   useEffect(() => {}, [state.schedules.selectedHour]);
+  const history = useHistory();
+
   return (
     <div className={`${FLEX_DIR_ROW} w-11/12`}>
       {isClicked.isOpen && isClicked.id === id ? (
@@ -37,8 +40,8 @@ function AvailabilityHourContainer({
           </div>
           <div
             onClick={() => {
-              dispatch({ type: SET_CONFIRM_PHASE, payload: true });
               dispatch({ type: SET_SELECTION_HOUR, payload: hour.start });
+              history.push(routes.CONFIRM_PAGE);
             }}
             className={`${FLEX_DIR_ROW} text-white border-2 border-blue-500  bg-blue-500 hover:bg-blue-700 cursor-pointer  ml-1  p-4 w-full md:p-4`}
           >

@@ -5,6 +5,7 @@ class Routes {
   public SIGNUP = '/signup';
   public USER = '/homepage/user';
   public HOMEPAGE = '/homepage';
+  public CONFIRM_PAGE = '/homepage/confirm';
   public HOMEPAGE_BOOKING = '/homepage/booking';
   public HOMEPAGE_SUCCESS = '/homepage/success';
 }

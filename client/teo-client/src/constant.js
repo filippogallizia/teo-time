@@ -12,6 +12,7 @@ export const MEDIUM_MARGIN_BOTTOM = 'mb-5';
 export const BIG_MARGIN_BOTTOM = 'mb-10';
 export const MARGIN_RIGHT = 'mr-2';
 export const MARGIN_LEFT = 'ml-2';
+export const MARGIN_TOP = 'mt-2';
 
 //font size
 

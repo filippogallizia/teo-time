@@ -20,6 +20,7 @@ function CalendarComponent({ dispatch, state }: BookingComponentType) {
       })
       .then(() => {
         dispatch({ type: SET_RENDER_AVAILABILITIES, payload: true });
+        // history.push(routes.CONFIRM_PAGE);
       });
   };
   return (

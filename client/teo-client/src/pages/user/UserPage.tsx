@@ -1,11 +1,17 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import GeneralButton from '../../component/GeneralButton';
-import { MARGIN_BOTTOM, MEDIUM_MARGIN_BOTTOM } from '../../constant';
+import {
+  GRID_ONE_COL,
+  MARGIN_BOTTOM,
+  MEDIUM_MARGIN_BOTTOM,
+  TITLE,
+} from '../../constant';
 import EventListener from '../../helpers/EventListener';
 import { DATE_TO_CLIENT_FORMAT } from '../../utils';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import { SET_USER_ALL_BOOKINGS, timeRange } from '../booking/bookingReducer';
 import { deleteBooking, retriveUserBooking } from './service/userService';
+import { toast } from 'react-toastify';
 
 const DeleteBooking = ({
   booking,
@@ -14,6 +20,9 @@ const DeleteBooking = ({
   booking: timeRange;
   setRender: Dispatch<SetStateAction<number>>;
 }) => {
+  const notify = () => {
+    toast('Default Notification !');
+  };
   const handleDelete = async () => {
     try {
       await deleteBooking(
@@ -23,15 +32,18 @@ const DeleteBooking = ({
         { start: booking.start, end: booking.end }
       );
       setRender((prev) => prev + 1);
+      toast.success('prenotazione cancellata', {
+        position: toast.POSITION.TOP_CENTER,
+      });
     } catch (e) {
       alert(e);
     }
   };
   return (
     <div
-      className={`grid grid-cols-2 gap-4 justify-items-center ${MEDIUM_MARGIN_BOTTOM}`}
+      className={`grid grid-cols-2 gap-4 justify-items-center items-center ${MEDIUM_MARGIN_BOTTOM}`}
     >
-      <div>{DATE_TO_CLIENT_FORMAT(booking.start)}</div>
+      <div className="">{DATE_TO_CLIENT_FORMAT(booking.start)}</div>
       <GeneralButton buttonText="cancella" onClick={handleDelete} />
     </div>
   );
@@ -59,7 +71,8 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
   }, [dispatch, forceRender]);
 
   return (
-    <>
+    <div className={GRID_ONE_COL}>
+      <p className={`${TITLE} ${MEDIUM_MARGIN_BOTTOM}`}>Le tue prenotazioni.</p>
       {state.schedules.userAllBooking.length > 0 ? (
         <div>
           {state.schedules.userAllBooking.map((book) => {
@@ -78,7 +91,7 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
           <p>Non hai prenotazioni marcate.</p>
         </div>
       ) : null}
-    </>
+    </div>
   );
 };
 
