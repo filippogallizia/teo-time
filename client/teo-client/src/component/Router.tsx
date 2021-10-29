@@ -12,6 +12,7 @@ import Navbar from './NavBar';
 import GeneralPage from '../pages/general/GeneralPage';
 import Login from '../pages/login-signup/Login';
 import Signup from '../pages/login-signup/Signup';
+import Footer from './Footer';
 
 const GeneralLayout = ({ children }: { children: JSX.Element }) => {
   return <div className="flex flex-col md:m-auto md:max-w-2xl">{children}</div>;
@@ -47,47 +48,50 @@ const RouterComponent = (): JSX.Element => {
 
   return (
     <Router>
-      <div>
-        <Navbar />
+      <div className="relative min-h-screen">
+        <div className="pb-16">
+          <Navbar />
 
-        <Switch>
-          <ProtectedRoute
-            path={Routes.LOGIN}
-            condition={true}
-            altRoute={Routes.ROOT}
-          >
-            <Login />
-          </ProtectedRoute>
+          <Switch>
+            <ProtectedRoute
+              path={Routes.LOGIN}
+              condition={true}
+              altRoute={Routes.ROOT}
+            >
+              <Login />
+            </ProtectedRoute>
 
-          <ProtectedRoute
-            path={Routes.SIGNUP}
-            condition={true}
-            altRoute={Routes.ROOT}
-          >
-            <Signup />
-          </ProtectedRoute>
+            <ProtectedRoute
+              path={Routes.SIGNUP}
+              condition={true}
+              altRoute={Routes.ROOT}
+            >
+              <Signup />
+            </ProtectedRoute>
 
-          <ProtectedRoute
-            path={Routes.HOMEPAGE}
-            condition={token ? true : false}
-            altRoute={Routes.LOGIN}
-          >
-            <GeneralLayout>
-              <GeneralPage />
-            </GeneralLayout>
-          </ProtectedRoute>
-          <ProtectedRoute
-            path={Routes.ROOT}
-            condition={true}
-            altRoute={Routes.LOGIN}
-          >
-            <Redirect
-              to={{
-                pathname: Routes.HOMEPAGE,
-              }}
-            />
-          </ProtectedRoute>
-        </Switch>
+            <ProtectedRoute
+              path={Routes.HOMEPAGE}
+              condition={token ? true : false}
+              altRoute={Routes.LOGIN}
+            >
+              <GeneralLayout>
+                <GeneralPage />
+              </GeneralLayout>
+            </ProtectedRoute>
+            <ProtectedRoute
+              path={Routes.ROOT}
+              condition={true}
+              altRoute={Routes.LOGIN}
+            >
+              <Redirect
+                to={{
+                  pathname: Routes.HOMEPAGE,
+                }}
+              />
+            </ProtectedRoute>
+          </Switch>
+          <Footer />
+        </div>
       </div>
     </Router>
   );

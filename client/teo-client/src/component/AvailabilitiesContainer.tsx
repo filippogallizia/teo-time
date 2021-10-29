@@ -25,7 +25,7 @@ type BookSlotContainerType = {
 function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
   const [isClicked, setIsClicked] = useState({ id: 0, isOpen: false });
 
-  const [hours, setHours] = useState<any[]>([]);
+  const [hours, setHours] = useState<{ start: string; end: string }[]>([]);
 
   useEffect(() => {
     const setAvailabilities = (response: any) => {
@@ -63,7 +63,7 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
       if (state.schedules.availabilities.length > 0) {
         // if the date is today show availabilities just after the current hour
         return state.schedules.availabilities.reduce(
-          (acc: { start: string }[], cv: timeRange) => {
+          (acc: { start: string; end: string }[], cv: timeRange) => {
             const availabilitiesDay = FROM_DATE_TO_DAY(cv.start);
             const availabilitiesHours = FROM_DATE_TO_HOUR(cv.start);
             const currentDay = FROM_DATE_TO_DAY(new Date().toISOString());
@@ -75,10 +75,20 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
               ) === DateTime.fromJSDate(new Date()).toFormat('yyyy LLL dd')
             ) {
               if (availabilitiesHours > currentHour) {
-                acc.push({ start: HOUR_MINUTE_FORMAT(cv.start) });
+                acc.push({
+                  start: HOUR_MINUTE_FORMAT(cv.start),
+                  end: DateTime.fromISO(cv.start)
+                    .plus({ hours: 1 })
+                    .toFormat('HH:mm'),
+                });
               }
             } else {
-              acc.push({ start: HOUR_MINUTE_FORMAT(cv.start) });
+              acc.push({
+                start: HOUR_MINUTE_FORMAT(cv.start),
+                end: DateTime.fromISO(cv.start)
+                  .plus({ hours: 1 })
+                  .toFormat('HH:mm'),
+              });
             }
             return acc;
           },

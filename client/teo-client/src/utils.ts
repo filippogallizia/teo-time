@@ -16,6 +16,14 @@ export const DATE_TO_CLIENT_FORMAT = (date: string) => {
   return DateTime.fromISO(date).toFormat('yyyy LLL dd t');
 };
 
+export const TODAY_AT_MIDNIGHT = () => {
+  return DateTime.fromJSDate(new Date()).set({
+    hour: 0,
+    minute: 0,
+    millisecond: 0,
+  });
+};
+
 export const parseHoursToObject = (
   selectedHour: string
 ): { hours: number; minutes: number } => {

@@ -10,7 +10,7 @@ ReactDOM.render(
   <React.StrictMode>
     <App />
     <ToastContainer
-      autoClose={4000}
+      autoClose={2000}
       limit={1}
       hideProgressBar={true}
       closeOnClick

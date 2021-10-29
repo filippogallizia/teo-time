@@ -1,6 +1,6 @@
 export type TimeRangeType = {
-  start: Date;
-  end: Date;
+  start: string;
+  end: string;
 };
 
 export type GeneralAvaliabilityRulesType = {

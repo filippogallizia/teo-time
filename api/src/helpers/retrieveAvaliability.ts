@@ -1,5 +1,5 @@
 const _ = require('lodash');
-import { filterForDays, FROM_DATE_TO_HOUR } from '../../utils';
+import { filterForDays, HOUR_MINUTE_FORMAT } from '../../utils';
 import { GeneralAvaliabilityRulesType } from '../types/generalTypes';
 
 export const retrieveAvailability = (
@@ -28,13 +28,33 @@ export const retrieveAvailability = (
     if (matched.length === 0) {
       return [];
     }
-    const result = _.xorWith(
+    const result = _.differenceWith(
       // scenario one day
       matched[0].availability,
       bookedHours.bookings,
       (a: any, b: any) =>
-        FROM_DATE_TO_HOUR(a.start) == FROM_DATE_TO_HOUR(b.start)
+        HOUR_MINUTE_FORMAT(a.start) == HOUR_MINUTE_FORMAT(b.start)
     );
+
     return result;
   }
 };
+
+// START OF NEW ALGORITM
+
+// const result = _.differenceWith(
+//   matched[0].availability,
+//   bookedHours.bookings,
+//   (a: any, b: any) => {
+//     if (
+//       (HOUR_MINUTE_FORMAT(a.start) >= HOUR_MINUTE_FORMAT(b.start) &&
+//         HOUR_MINUTE_FORMAT(a.end) <= HOUR_MINUTE_FORMAT(b.end)) ||
+//       (HOUR_MINUTE_FORMAT(a.start) <= HOUR_MINUTE_FORMAT(b.start) &&
+//         HOUR_MINUTE_FORMAT(a.end) >= HOUR_MINUTE_FORMAT(b.start)) ||
+//       (HOUR_MINUTE_FORMAT(a.start) <= HOUR_MINUTE_FORMAT(b.end) &&
+//         HOUR_MINUTE_FORMAT(a.end) >= HOUR_MINUTE_FORMAT(b.end))
+//     ) {
+//       return true;
+//     }
+//   }
+// );

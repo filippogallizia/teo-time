@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import 'react-calendar/dist/Calendar.css';
 import { useHistory } from 'react-router';
@@ -8,6 +9,7 @@ import {
   SET_SELECTION_HOUR,
 } from '../pages/booking/bookingReducer';
 import routes from '../routes';
+// import { TODAY_AT_MIDNIGHT } from '../utils';
 
 type AvailabilitiesChildType = {
   hour: { start: string; end: string };
@@ -55,7 +57,7 @@ function AvailabilityHourContainer({
           }}
           className="flex flex-col justify-center items-center border-2 border-blue-500 hover:border-blue-700 cursor-pointer m-2 p-4 w-11/12 md:p-4 md:w-4/5"
         >
-          {`${hour.start}`}
+          {`${hour.start} - ${hour.end}`}
         </div>
       )}
     </div>

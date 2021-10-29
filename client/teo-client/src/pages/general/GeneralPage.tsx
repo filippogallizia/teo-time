@@ -8,6 +8,7 @@ import HomePage from '../home/HomePage';
 import UserPage from '../user/UserPage';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 import ConfirmPage from '../confirm/ConfirmPage';
+import AdminPage from '../admin/AdminPage';
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
@@ -93,6 +94,13 @@ const GeneralPage = () => {
           altRoute={Routes.LOGIN}
         >
           <ConfirmPage dispatch={dispatch} state={state} />
+        </ProtectedRoute>
+        <ProtectedRoute
+          path={Routes.ADMIN}
+          condition={localStorage.getItem('token') ? true : false}
+          altRoute={Routes.LOGIN}
+        >
+          <AdminPage dispatch={dispatch} state={state} />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.HOMEPAGE}
