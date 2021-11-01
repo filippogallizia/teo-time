@@ -1,13 +1,15 @@
 import React from 'react';
-import GeneralButton from '../../component/GeneralButton';
+import GeneralButton, { buttonStyle } from '../../component/GeneralButton';
 import { loginService } from './service/LoginService';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
-import EventListener from '../../helpers/EventListener';
 import { useHistory } from 'react-router-dom';
 import Routes from '../../routes';
-import { GRID_ONE_COL, TITLE } from '../../constant';
+import { GRID_ONE_COL, TITLE } from '../../shared/locales/constant';
+import { handleToastInFailRequest } from '../../shared/locales/utils';
+import { toast } from 'react-toastify';
+import i18n from '../../i18n';
 
 type InitialFormType = {
   email: string;
@@ -26,6 +28,7 @@ const Login = () => {
   });
   const history = useHistory();
   const { isValid, errors } = formState;
+
   const myFunc = async (value: InitialFormType) => {
     const handleSuccess = (tokenValue: string) => {
       localStorage.setItem('token', tokenValue);
@@ -35,23 +38,22 @@ const Login = () => {
         email: value.email,
         password: value.password,
       });
+      console.log('here');
       history.push(Routes.HOMEPAGE_BOOKING);
     } catch (e: any) {
-      EventListener.emit('errorHandling', e.response);
+      handleToastInFailRequest(e, toast);
     }
   };
-  const buttonStyle = isValid
-    ? 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-    : 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-blue-500 opacity-50 cursor-not-allowed';
+
   return (
     <form className={GRID_ONE_COL} onSubmit={handleSubmit(myFunc)}>
-      <p className={`${TITLE}`}>LOG IN</p>
+      <p className={`${TITLE}`}>{i18n.t('loginPage.title')}</p>
       <div>
         <label
           className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="email"
         >
-          Email
+          {i18n.t('loginPage.form.email')}
         </label>
         <input
           className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
@@ -77,7 +79,7 @@ const Login = () => {
         {errors.password?.type === 'required' && 'password is required'}
       </div>
       <div>
-        <input className={buttonStyle} type="submit" value="LOG IN" />
+        <input className={buttonStyle(isValid)} type="submit" value="LOG IN" />
       </div>
       <div>
         <GeneralButton

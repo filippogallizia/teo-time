@@ -7,7 +7,7 @@ import {
   BOLD,
   PARAGRAPH_BIG,
   PARAGRAPH_MEDIUM,
-} from '../constant';
+} from '../shared/locales/constant';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import {
   SET_CONFIRM_PHASE,

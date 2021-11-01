@@ -1,0 +1,12 @@
+{
+  "errors": {
+    "notAuthorized": "Non autorizzato"
+  },
+  "loginPage": {
+    "title": "LOGIN",
+    "form": {
+      "email": "Email",
+      "password": "Password"
+    }
+  }
+}

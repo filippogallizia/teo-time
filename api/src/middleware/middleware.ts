@@ -13,7 +13,7 @@ const generalAvaliabilityRules = require('../config/timeConditions.config.json')
 const { v4 } = require('uuid');
 const ClassSgMail = require('../config/sgMail.config');
 
-const BookingGrid = db.bookingGrid;
+const Bookings = db.Bookings;
 
 export const bookExist = async (
   req: express.Request,
@@ -22,7 +22,7 @@ export const bookExist = async (
 ) => {
   const { start, end } = req.body;
   try {
-    const bookingAlreadyExist = await BookingGrid.findOne({
+    const bookingAlreadyExist = await Bookings.findOne({
       where: { start, end },
     });
     if (bookingAlreadyExist) {
@@ -81,7 +81,7 @@ const getAvailability = async (
 ) => {
   const timeRange = [...req.body.timeRange];
   try {
-    const myBookings = await BookingGrid.findAll({
+    const myBookings = await Bookings.findAll({
       where: {
         start: {
           [Op.gte]: timeRange[0].start,
@@ -208,9 +208,21 @@ const authenticateToken = (
 ) => {
   const authHeader = req.header('Authorization');
   const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(404).send('Invalid token');
+  if (!token)
+    return res.status(500).send({
+      success: false,
+      error: {
+        message: 'non hai effettuato il login',
+      },
+    });
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-    if (err) return res.status(404).send('"Invalid token"');
+    if (err)
+      return res.status(500).send({
+        success: false,
+        error: {
+          message: 'accesso non autorizzato',
+        },
+      });
     res.user = decoded;
     next();
   });

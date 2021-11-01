@@ -1,13 +1,15 @@
 import React from 'react';
-import GeneralButton from '../../component/GeneralButton';
+import GeneralButton, { buttonStyle } from '../../component/GeneralButton';
 import { signupService } from './service/LoginService';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
-import EventListener from '../../helpers/EventListener';
 import { useHistory } from 'react-router-dom';
 import Routes from '../../routes';
-import { TITLE } from '../../constant';
+import { TITLE } from '../../shared/locales/constant';
+import { toast } from 'react-toastify';
+import { handleToastInFailRequest } from '../../shared/locales/utils';
+import routes from '../../routes';
 
 type InitialFormType = {
   name: string;
@@ -30,6 +32,7 @@ const Signup = () => {
   });
   const history = useHistory();
   const { isValid, errors } = formState;
+
   const myFunc = async (value: InitialFormType) => {
     try {
       await signupService(() => {}, {
@@ -38,13 +41,15 @@ const Signup = () => {
         password: value.password,
         phoneNumber: value.phoneNumber,
       });
-    } catch (e: any) {
-      EventListener.emit('errorHandling', e.response);
+      toast.success('sign up effettuato con successo', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      history.push(routes.LOGIN);
+    } catch (error: any) {
+      handleToastInFailRequest(error, toast);
     }
   };
-  const buttonStyle = isValid
-    ? 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-    : 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-blue-500 opacity-50 cursor-not-allowed';
+
   return (
     <form
       className="grid col-1 gap-4 justify-items-center"
@@ -115,7 +120,7 @@ const Signup = () => {
       </div>
 
       <div>
-        <input className={buttonStyle} type="submit" value="SIGN UP" />
+        <input className={buttonStyle(isValid)} type="submit" value="SIGN UP" />
       </div>
       <div>
         <GeneralButton

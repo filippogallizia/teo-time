@@ -1,5 +1,5 @@
 const dbConfig = require('../config/db.config.js');
-import BookedHoursType from './bookingGrid.model';
+import BookedHoursType from './Bookings.model';
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(
@@ -28,11 +28,11 @@ db.sequelize = sequelize;
 //@ts-expect-error
 db.user = require('./user.model.ts')(sequelize, Sequelize);
 //@ts-expect-error
-db.bookingGrid = BookedHoursType(sequelize, Sequelize);
+db.Bookings = BookedHoursType(sequelize, Sequelize);
 //@ts-expect-error
-db.user.hasMany(db.bookingGrid, { as: 'bookings' });
+db.user.hasMany(db.Bookings, { as: 'bookings' });
 //@ts-expect-error
-db.bookingGrid.belongsTo(db.user, {
+db.Bookings.belongsTo(db.user, {
   as: 'user',
 });
 

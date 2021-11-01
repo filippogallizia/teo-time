@@ -5,14 +5,20 @@ type GeneralButtonType = {
   onClick?: Dispatch<SetStateAction<any>>;
   disabled?: boolean;
 };
+export const buttonStyle = (isEnable: boolean): string => {
+  return isEnable
+    ? 'bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded'
+    : 'bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded disabled:bg-yellow-500 opacity-50 cursor-not-allowed';
+};
 
 function GeneralButton({ buttonText, onClick, disabled }: GeneralButtonType) {
-  const buttonStyle = !disabled
-    ? 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-    : 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-blue-500 opacity-50 cursor-not-allowed';
   return (
     <div>
-      <button disabled={disabled} onClick={onClick} className={buttonStyle}>
+      <button
+        disabled={disabled}
+        onClick={onClick}
+        className={buttonStyle(!disabled)}
+      >
         {buttonText}
       </button>
     </div>

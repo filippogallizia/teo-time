@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Routes from '../routes';
 
 import {
@@ -43,8 +43,12 @@ export const ProtectedRoute = ({
 };
 
 const RouterComponent = (): JSX.Element => {
-  const token = localStorage.getItem('token');
-  // const [navHeight, setNavHeight] = useState(0);
+  const [token, setToken] = useState<string | null>('');
+  useEffect(() => {
+    setToken(() => localStorage.getItem('token'));
+  }, [token]);
+
+  console.log(token, 'token');
 
   return (
     <Router>

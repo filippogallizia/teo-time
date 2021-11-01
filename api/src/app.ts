@@ -4,10 +4,6 @@ const app = express();
 const port = 5000;
 var cors = require('cors');
 const db = require('./models/db');
-const sgMail = require('@sendgrid/mail');
-
-const MysgMail = require('./config/sgMail.config');
-
 const routes = require('./routes/routes');
 
 var corsOptions = {

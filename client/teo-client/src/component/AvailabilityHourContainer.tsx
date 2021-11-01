@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import 'react-calendar/dist/Calendar.css';
 import { useHistory } from 'react-router';
-import { FLEX_DIR_ROW } from '../constant';
+import { FLEX_DIR_ROW } from '../shared/locales/constant';
 import {
   Actions,
   InitialState,

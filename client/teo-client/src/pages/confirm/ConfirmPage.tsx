@@ -3,11 +3,11 @@ import React from 'react';
 import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { useHistory } from 'react-router-dom';
 import GeneralButton from '../../component/GeneralButton';
-import { MARGIN_BOTTOM, TITLE } from '../../constant';
+import { MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
 import EventListener from '../../helpers/EventListener';
 import routes from '../../routes';
 import { createBooking } from '../../services/calendar.service';
-import { parseHoursToObject } from '../../utils';
+import { parseHoursToObject } from '../../shared/locales/utils';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import {
   SET_APPOINTMENT_DETAILS,

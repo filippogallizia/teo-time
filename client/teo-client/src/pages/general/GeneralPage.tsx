@@ -27,13 +27,14 @@ const initialState = {
         end: endAvailabilities.toISOString(),
       },
     ],
-    userAllBooking: [],
+    specificUserBookings: [],
     isConfirmPhase: false,
     isRenderAvailabilities: false,
     appointmentDetails: {
       id: 0,
       start: '',
     },
+    allBookingsAndUsers: [],
   },
 };
 

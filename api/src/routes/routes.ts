@@ -1,5 +1,7 @@
 import express from 'express';
 import { Op } from 'sequelize';
+import { BookingType, UserType } from '../../../types/Types';
+const _ = require('lodash');
 
 const generalAvaliabilityRules = require('../config/timeConditions.config.json');
 const path = require('path');
@@ -19,7 +21,7 @@ const { DateTime } = require('luxon');
 const ClassSgMail = require('../config/sgMail.config');
 
 const User = db.user;
-const BookingGrid = db.bookingGrid;
+const Bookings = db.Bookings;
 
 const router = express.Router();
 
@@ -35,33 +37,34 @@ router.post(
           message: 'user already Exist',
         },
       });
-    }
-    const { email, phoneNumber, name, password } = req.body;
-    try {
-      User.create({
-        email,
-        name,
-        password,
-        phoneNumber,
-      })
-        .then((user: any) => {
-          res.send({ message: 'User was registered successfully!' });
+    } else {
+      const { email, phoneNumber, name, password } = req.body;
+      try {
+        User.create({
+          email,
+          name,
+          password,
+          phoneNumber,
         })
-        .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
+          .then((user: UserType) => {
+            res.send({ message: 'User was registered successfully!' });
+          })
+          .catch((e: any) => {
+            res.status(500).send({
+              success: false,
+              error: {
+                message: e,
+              },
+            });
           });
+      } catch (e: any) {
+        res.status(500).send({
+          success: false,
+          error: {
+            message: e,
+          },
         });
-    } catch (e: any) {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
-      });
+      }
     }
   }
 );
@@ -77,12 +80,17 @@ router.post(
           message: "user doesn't exist",
         },
       });
-    }
-    try {
-      res.status(200).send(res.locals.jwt_secret);
-    } catch (e) {
-      console.log('sco');
-      res.send(e);
+    } else {
+      try {
+        res.status(200).send(res.locals.jwt_secret);
+      } catch (e) {
+        res.status(500).send({
+          success: false,
+          error: {
+            message: e,
+          },
+        });
+      }
     }
   }
 );
@@ -96,15 +104,16 @@ router.post(
       //@ts-expect-error
       const userEmail = res.user.email;
       // create a new user
-      BookingGrid.create({
+      Bookings.create({
         start,
         end,
       })
-        .then((booking: any) => {
+        .then((booking: BookingType) => {
           // search the user by email
           User.findOne({ where: { email: userEmail } })
-            .then((usr: any) => {
+            .then((usr: UserType) => {
               // associate the booking with the user
+              //@ts-expect-error
               booking.setUser(usr).catch((e: any) => {
                 throw e;
               });
@@ -155,7 +164,7 @@ router.post(
     //@ts-expect-error
     const userEmail = res.user.email;
     try {
-      BookingGrid.findOne({ where: { start, end } })
+      Bookings.findOne({ where: { start, end } })
         .then((bks: any) => {
           if (bks) {
             console.log(bks, 'filofilofilo');
@@ -206,7 +215,7 @@ router.post(
       );
       user.then((u: any) => {
         if (u) {
-          BookingGrid.findAll({ where: { userId: u.id } }).then((bks: any) => {
+          Bookings.findAll({ where: { userId: u.id } }).then((bks: any) => {
             findedBooking = bks;
             console.log(bks, 'filooooooo');
             res.status(200).send(bks);
@@ -215,6 +224,44 @@ router.post(
           res.status(200).send('not booking found');
         }
       });
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+
+router.get(
+  '/usersAndBookings',
+  [authenticateToken],
+  (req: express.Request, res: express.Response) => {
+    try {
+      Bookings.findAll({
+        include: {
+          model: User,
+          as: 'user',
+        },
+        order: [['start', 'ASC']],
+      })
+        .then((bks: any) => {
+          if (bks.length > 0) {
+            res.send(bks);
+          } else {
+            res.status(500).send({
+              success: false,
+              error: {
+                message: 'there are no users',
+              },
+            });
+          }
+        })
+        .catch((e: any) => {
+          throw e;
+        });
     } catch (e: any) {
       res.status(500).send({
         success: false,

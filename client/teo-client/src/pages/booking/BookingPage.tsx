@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AvailabilitiesContainer from '../../component/AvailabilitiesContainer';
 import CalendarComponent from '../../component/Caledar';
 import EventInformations from '../../component/EventInformations';
-import { TAILWIND_MOBILE_BREAKPOINT } from '../../constant';
+import { TAILWIND_MOBILE_BREAKPOINT } from '../../shared/locales/constant';
 import { BookingComponentType } from './BookingPageTypes';
 
 function BookingPage({ dispatch, state }: BookingComponentType) {

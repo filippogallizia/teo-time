@@ -1,24 +1,9 @@
 const generalAvaliabilityRules = require('../config/timeConditions.config.json');
 const { DateTime } = require('luxon');
 const _ = require('lodash');
+import { TimeRangeType } from '../types/Types';
 
 //types
-
-type TimeRangeType = {
-  start: Date;
-  end: Date;
-};
-
-type GeneralAvaliabilityRulesType = {
-  generalAvaliabilityRules: {
-    day: string;
-    availability: TimeRangeType[];
-  }[];
-};
-
-type BookedHoursType = {
-  bookings: TimeRangeType[];
-};
 
 export const retrieveAvailability = (
   bookedHours: {

@@ -58,3 +58,22 @@ export const parseHoursToObject = (
   result.hours = hoursInNumber;
   return result;
 };
+
+export const handleToastInFailRequest = (error: any, toast: any) => {
+  if (
+    error &&
+    error.response.data &&
+    error.response.data.error &&
+    error.response.data.error.message
+  ) {
+    if (typeof error.response.data.error.message === 'string') {
+      toast.error(error.response.data.error.message, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+  } else {
+    toast.error("qualcosa e' andato storto", {
+      position: toast.POSITION.TOP_CENTER,
+    });
+  }
+};

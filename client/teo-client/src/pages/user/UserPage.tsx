@@ -2,14 +2,16 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import GeneralButton from '../../component/GeneralButton';
 import {
   GRID_ONE_COL,
-  MARGIN_BOTTOM,
   MEDIUM_MARGIN_BOTTOM,
   TITLE,
-} from '../../constant';
+} from '../../shared/locales/constant';
 import EventListener from '../../helpers/EventListener';
-import { DATE_TO_CLIENT_FORMAT } from '../../utils';
+import { DATE_TO_CLIENT_FORMAT } from '../../shared/locales/utils';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import { SET_USER_ALL_BOOKINGS, timeRange } from '../booking/bookingReducer';
+import {
+  SET_SPECIFIC_USER_BOOKINGS,
+  timeRange,
+} from '../booking/bookingReducer';
 import { deleteBooking, retriveUserBooking } from './service/userService';
 import { toast } from 'react-toastify';
 
@@ -20,9 +22,6 @@ const DeleteBooking = ({
   booking: timeRange;
   setRender: Dispatch<SetStateAction<number>>;
 }) => {
-  const notify = () => {
-    toast('Default Notification !');
-  };
   const handleDelete = async () => {
     try {
       await deleteBooking(
@@ -55,7 +54,7 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
   useEffect(() => {}, [forceRender]);
   useEffect(() => {
     const handleReceiveBooking = (booking: any) => {
-      dispatch({ type: SET_USER_ALL_BOOKINGS, payload: booking });
+      dispatch({ type: SET_SPECIFIC_USER_BOOKINGS, payload: booking });
     };
     const asyncFunc = async () => {
       try {
@@ -73,9 +72,9 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
   return (
     <div className={GRID_ONE_COL}>
       <p className={`${TITLE} ${MEDIUM_MARGIN_BOTTOM}`}>Le tue prenotazioni.</p>
-      {state.schedules.userAllBooking.length > 0 ? (
+      {state.schedules.specificUserBookings.length > 0 ? (
         <div>
-          {state.schedules.userAllBooking.map((book) => {
+          {state.schedules.specificUserBookings.map((book) => {
             return (
               <DeleteBooking
                 setRender={setRender}
@@ -86,7 +85,7 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
           })}
         </div>
       ) : null}
-      {state.schedules.userAllBooking.length === 0 ? (
+      {state.schedules.specificUserBookings.length === 0 ? (
         <div className="flex justify-center">
           <p>Non hai prenotazioni marcate.</p>
         </div>

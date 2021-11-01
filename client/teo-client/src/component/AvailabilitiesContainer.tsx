@@ -1,7 +1,7 @@
 import React, { Dispatch, useEffect, useState } from 'react';
 import 'react-calendar/dist/Calendar.css';
 import AvailabilityHourContainer from './AvailabilityHourContainer';
-import { BOLD, GRID_ONE_COL, TITLE } from '../constant';
+import { BOLD, GRID_ONE_COL, TITLE } from '../shared/locales/constant';
 import { DateTime } from 'luxon';
 import { getAvailabilities } from '../services/calendar.service';
 import {
@@ -14,7 +14,7 @@ import {
   FROM_DATE_TO_DAY,
   FROM_DATE_TO_HOUR,
   HOUR_MINUTE_FORMAT,
-} from '../utils';
+} from '../shared/locales/utils';
 import EventListener from '../helpers/EventListener';
 
 type BookSlotContainerType = {

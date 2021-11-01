@@ -9,10 +9,10 @@ import {
 } from '../pages/booking/bookingReducer';
 import { createBooking } from '../services/calendar.service';
 import GeneralButton from './GeneralButton';
-import { MARGIN_BOTTOM, TITLE } from '../constant';
+import { MARGIN_BOTTOM, TITLE } from '../shared/locales/constant';
 import Routes from '../routes';
 import EventListener from '../helpers/EventListener';
-import { parseHoursToObject } from '../utils';
+import { parseHoursToObject } from '../shared/locales/utils';
 
 type InitialFormType = {
   name: string;

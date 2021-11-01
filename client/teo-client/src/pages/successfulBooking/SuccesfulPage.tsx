@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import React, { useEffect, useState } from 'react';
-import { MARGIN_BOTTOM, TITLE } from '../../constant';
+import { MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 
 const SuccessfulPage = ({ dispatch, state }: BookingComponentType) => {
