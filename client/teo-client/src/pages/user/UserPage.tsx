@@ -43,7 +43,7 @@ const DeleteBooking = ({
       className={`grid grid-cols-2 gap-4 justify-items-center items-center ${MEDIUM_MARGIN_BOTTOM}`}
     >
       <div className="">{DATE_TO_CLIENT_FORMAT(booking.start)}</div>
-      <GeneralButton buttonText="cancella" onClick={handleDelete} />
+      <GeneralButton buttonText="Cancella" onClick={handleDelete} />
     </div>
   );
 };

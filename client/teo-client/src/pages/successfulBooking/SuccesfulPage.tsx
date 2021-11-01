@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import React, { useEffect, useState } from 'react';
-import { MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
+import { BOLD, MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 
 const SuccessfulPage = ({ dispatch, state }: BookingComponentType) => {
@@ -21,7 +21,7 @@ const SuccessfulPage = ({ dispatch, state }: BookingComponentType) => {
       </div>
       <div>
         <p className={TITLE}>
-          {`DATA:  `} <span className="text-green-500">{parsedData}</span>
+          {`DATA:  `} <span className={BOLD}>{parsedData}</span>
         </p>
       </div>
     </div>

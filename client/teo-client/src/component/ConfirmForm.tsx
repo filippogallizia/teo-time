@@ -9,7 +9,7 @@ import {
 } from '../pages/booking/bookingReducer';
 import { createBooking } from '../services/calendar.service';
 import GeneralButton from './GeneralButton';
-import { MARGIN_BOTTOM, TITLE } from '../shared/locales/constant';
+import { BOLD, MARGIN_BOTTOM, TITLE } from '../shared/locales/constant';
 import Routes from '../routes';
 import EventListener from '../helpers/EventListener';
 import { parseHoursToObject } from '../shared/locales/utils';
@@ -64,7 +64,7 @@ const ConfirmForm = ({ dispatch, state }: BookingComponentType) => {
       <div className={MARGIN_BOTTOM}>
         <p className={TITLE}>
           {`Data:  `}{' '}
-          <span className="text-green-500">
+          <span className={BOLD}>
             {DateTime.fromISO(state.schedules.selectedDate).toFormat(
               'yyyy LLL dd'
             )}{' '}

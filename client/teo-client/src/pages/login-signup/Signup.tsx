@@ -120,11 +120,11 @@ const Signup = () => {
       </div>
 
       <div>
-        <input className={buttonStyle(isValid)} type="submit" value="SIGN UP" />
+        <input className={buttonStyle(isValid)} type="submit" value="Sign up" />
       </div>
       <div>
         <GeneralButton
-          buttonText="LOG IN"
+          buttonText="Login"
           onClick={() => history.push(Routes.LOGIN)}
         />
       </div>

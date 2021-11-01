@@ -3,7 +3,7 @@ import React from 'react';
 import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { useHistory } from 'react-router-dom';
 import GeneralButton from '../../component/GeneralButton';
-import { MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
+import { BOLD, MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
 import EventListener from '../../helpers/EventListener';
 import routes from '../../routes';
 import { createBooking } from '../../services/calendar.service';
@@ -71,18 +71,17 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
             dispatch({ type: SET_RENDER_AVAILABILITIES, payload: false });
           }}
           size="1.5em"
-          color="blue"
+          color="#f59e0b"
         />
       </div>
       <div className={`${TITLE} ${MARGIN_BOTTOM}`}>Conferma i dati</div>
       <div className={MARGIN_BOTTOM}>
         <p className={TITLE}>
-          {`Data:  `}{' '}
-          <span className="text-green-500">
+          Data:
+          <span className={BOLD}>
             {DateTime.fromISO(state.schedules.selectedDate).toFormat(
               'yyyy LLL dd'
-            )}{' '}
-            {''}
+            )}
             {DateTime.fromISO(state.schedules.selectedHour).toFormat('t')}
           </span>
         </p>

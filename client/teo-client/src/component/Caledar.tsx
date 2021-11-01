@@ -1,12 +1,11 @@
 import React from 'react';
 import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
+// import 'react-calendar/dist/Calendar.css';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import {
   SET_RENDER_AVAILABILITIES,
   SET_SELECTION_DATE,
 } from '../pages/booking/bookingReducer';
-import '../pages/booking/calendarCustomStyle.css';
 
 function CalendarComponent({ dispatch, state }: BookingComponentType) {
   const myDispatch = (date: Date) => {

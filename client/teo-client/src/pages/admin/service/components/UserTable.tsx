@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { BOLD } from '../../../../shared/locales/constant';
 import {
-  DATE_TO_CLIENT_FORMAT,
-  HOUR_MINUTE_FORMAT,
-} from '../../../../shared/locales/utils';
+  ITALIC,
+  MEDIUM_MARGIN_BOTTOM,
+} from '../../../../shared/locales/constant';
+import { HOUR_MINUTE_FORMAT } from '../../../../shared/locales/utils';
 
 const EditBooking = () => {
   return (
@@ -12,14 +12,13 @@ const EditBooking = () => {
         <p className="cursor-pointer self-auto">Reschedule</p>
       </div>
       <div className="flex justify-center items-center rounded-full bg-yellow-500">
-        <p className="cursor-pointer self-auto">Cancel</p>
+        <p className="cursor-pointer self-auto">Cancella</p>
       </div>
     </div>
   );
 };
 
-const TableComponent = ({ dispatch, booking, ind }: any) => {
-  const [isSectionDetailsOpen, setSectionDetails] = useState(false);
+const TableComponent = ({ booking, ind }: any) => {
   const [prova, setProva] = useState<any>([]);
 
   useEffect(() => {
@@ -34,42 +33,44 @@ const TableComponent = ({ dispatch, booking, ind }: any) => {
   }, [booking]);
 
   return (
-    <>
+    <div className="">
       {prova.map((l: any, i: number) => {
         const { start, user } = l;
         return (
-          <div key={start} className="grid grid-cols-3 gap-4 ">
-            <div className="col-span-3">
-              {/* <p>{DATE_TO_CLIENT_FORMAT(start)}</p> */}
-            </div>
-            <div className="col-span-1 grid grid-cols-1 gap-4 content-start">
+          <div
+            key={start}
+            className={`grid grid-cols-5 gap-4 ${MEDIUM_MARGIN_BOTTOM}`}
+          >
+            <div className="col-span-2 grid grid-cols-1 gap-4 content-start">
               <div className="grid grid-cols-2 gap-0">
                 <div className="rounded-full h-7 w-7 bg-yellow-500"></div>
                 <p>{HOUR_MINUTE_FORMAT(start)}</p>
               </div>
               {prova[i].open && <EditBooking />}
             </div>
-            <div className="col-span-1 grid grid-cols-1 gap-4">
-              <div className={BOLD}>{/* <p>{user.name}</p> */}</div>
-              {isSectionDetailsOpen && (
+            <div className="col-span-2 grid grid-cols-1 gap-4">
+              <div>
+                <p>{user.name}</p>
+              </div>
+              {prova[i].open && (
                 <>
                   <div>
-                    <p className={BOLD}>EMAIL</p>
+                    <p className={ITALIC}>Email</p>
                     <p>{user.email}</p>
                   </div>
                   <div>
-                    <p className={BOLD}>LOCATION</p>
+                    <p className={ITALIC}>Luogo</p>
                     <p>milano</p>
                   </div>
                   <div>
-                    <p className={BOLD}>TELEFONO</p>
+                    <p className={ITALIC}>Telefono</p>
                     <p>{user.phoneNumber}</p>
                   </div>
                 </>
               )}
             </div>
             <div
-              className=" col-span-1 cursor-pointer"
+              className="col-span-1 cursor-pointer font-serif"
               onClick={() => {
                 setProva((prev: any) => {
                   const mutation = [...prev];
@@ -81,12 +82,12 @@ const TableComponent = ({ dispatch, booking, ind }: any) => {
                 });
               }}
             >
-              --Details
+              Details
             </div>
           </div>
         );
       })}
-    </>
+    </div>
   );
   // return (
 

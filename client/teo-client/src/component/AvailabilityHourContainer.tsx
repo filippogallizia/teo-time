@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
-import 'react-calendar/dist/Calendar.css';
+// import 'react-calendar/dist/Calendar.css';
 import { useHistory } from 'react-router';
 import { FLEX_DIR_ROW } from '../shared/locales/constant';
 import {
@@ -36,7 +36,7 @@ function AvailabilityHourContainer({
       {isClicked.isOpen && isClicked.id === id ? (
         <div className={`${FLEX_DIR_ROW} w-11/12`}>
           <div
-            className={`${FLEX_DIR_ROW} text-white border-2 border-gray-500 bg-gray-500  mr-1 p-4 w-full md:p-4`}
+            className={`${FLEX_DIR_ROW} text-white border-2 border-gray-500 bg-gray-300  mr-1 p-4 w-full md:p-4`}
           >
             {`${hour.start}`}
           </div>
@@ -45,7 +45,7 @@ function AvailabilityHourContainer({
               dispatch({ type: SET_SELECTION_HOUR, payload: hour.start });
               history.push(routes.CONFIRM_PAGE);
             }}
-            className={`${FLEX_DIR_ROW} text-white border-2 border-blue-500  bg-blue-500 hover:bg-blue-700 cursor-pointer  ml-1  p-4 w-full md:p-4`}
+            className={`${FLEX_DIR_ROW} text-white border-2 border-yellow-500  bg-yellow-500 hover:bg-yellow-700 cursor-pointer  ml-1  p-4 w-full md:p-4`}
           >
             confirm
           </div>
@@ -55,7 +55,7 @@ function AvailabilityHourContainer({
           onClick={() => {
             setIsClicked({ id: id, isOpen: true });
           }}
-          className="flex flex-col justify-center items-center border-2 border-blue-500 hover:border-blue-700 cursor-pointer m-2 p-4 w-11/12 md:p-4 md:w-4/5"
+          className="flex flex-col justify-center items-center border-2 border-yellow-500 hover:border-yellow-700 cursor-pointer m-2 p-4 w-11/12 md:p-4 md:w-4/5"
         >
           {`${hour.start} - ${hour.end}`}
         </div>

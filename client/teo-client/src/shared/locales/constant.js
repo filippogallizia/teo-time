@@ -21,6 +21,7 @@ export const PARAGRAPH_MEDIUM = 'text-xl';
 export const PARAGRAPH_BIG = 'text-3xl';
 export const TITLE = 'text-2xl';
 export const BOLD = 'font-bold';
+export const ITALIC = 'italic';
 
 // flex box
 

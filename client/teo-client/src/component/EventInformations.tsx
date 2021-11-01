@@ -28,7 +28,7 @@ const EventInformations = ({ state, dispatch }: BookingComponentType) => {
               dispatch({ type: SET_RENDER_AVAILABILITIES, payload: false });
             }}
             size="1.5em"
-            color="blue"
+            color="#f59e0b"
           />
         </div>
       )}

@@ -79,11 +79,11 @@ const Login = () => {
         {errors.password?.type === 'required' && 'password is required'}
       </div>
       <div>
-        <input className={buttonStyle(isValid)} type="submit" value="LOG IN" />
+        <input className={buttonStyle(isValid)} type="submit" value="Login" />
       </div>
       <div>
         <GeneralButton
-          buttonText="SIGNUP"
+          buttonText="Sign up"
           onClick={() => history.push(Routes.SIGNUP)}
         />
       </div>

@@ -1,5 +1,5 @@
 import React, { Dispatch, useEffect, useState } from 'react';
-import 'react-calendar/dist/Calendar.css';
+// import 'react-calendar/dist/Calendar.css';
 import AvailabilityHourContainer from './AvailabilityHourContainer';
 import { BOLD, GRID_ONE_COL, TITLE } from '../shared/locales/constant';
 import { DateTime } from 'luxon';
