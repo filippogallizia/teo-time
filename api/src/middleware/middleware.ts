@@ -178,7 +178,7 @@ const createToken = (
   })
     .then((usr: any) => {
       if (usr) {
-        const userToSign = { email, password };
+        const userToSign = { email, password, role: usr.role };
         res.locals.jwt_secret = generateAccessToken(userToSign);
         res.locals.jwt_type = 'Bearer';
         next();
@@ -215,17 +215,21 @@ const authenticateToken = (
         message: 'non hai effettuato il login',
       },
     });
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-    if (err)
-      return res.status(500).send({
-        success: false,
-        error: {
-          message: 'accesso non autorizzato',
-        },
-      });
-    res.user = decoded;
-    next();
-  });
+  jwt.verify(
+    token,
+    process.env.ACCESS_TOKEN_SECRET,
+    (err: any, decoded: any) => {
+      if (err)
+        return res.status(500).send({
+          success: false,
+          error: {
+            message: 'accesso non autorizzato',
+          },
+        });
+      res.user = decoded;
+      next();
+    }
+  );
 };
 
 module.exports = {

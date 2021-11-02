@@ -9,34 +9,8 @@ import UserPage from '../user/UserPage';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 import ConfirmPage from '../confirm/ConfirmPage';
 import AdminPage from '../admin/AdminPage';
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-
-const startingAvailabilities = new Date();
-startingAvailabilities.setHours(7, 0, 0, 0);
-
-const endAvailabilities = new Date();
-endAvailabilities.setHours(20, 30, 0, 0);
-const initialState = {
-  schedules: {
-    selectedDate: today.toISOString(),
-    selectedHour: '00:00',
-    availabilities: [
-      {
-        start: startingAvailabilities.toISOString(),
-        end: endAvailabilities.toISOString(),
-      },
-    ],
-    specificUserBookings: [],
-    isConfirmPhase: false,
-    isRenderAvailabilities: false,
-    appointmentDetails: {
-      id: 0,
-      start: '',
-    },
-    allBookingsAndUsers: [],
-  },
-};
+import { BookingComponentType } from '../booking/BookingPageTypes';
+import { ACCESS_TOKEN } from '../../shared/locales/constant';
 
 type ProtectedRouteType = {
   children: any;
@@ -62,43 +36,45 @@ export const ProtectedRoute = ({
   );
 };
 
-const GeneralPage = () => {
-  const [state, dispatch] = useReducer(bookingReducer, initialState);
+const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
+  const IS_ADMIN = state.schedules.currentUser?.role === 'admin';
+
+  const TOKEN = localStorage.getItem(ACCESS_TOKEN);
 
   return (
     <>
       <Switch>
         <ProtectedRoute
           path={Routes.HOMEPAGE_BOOKING}
-          condition={localStorage.getItem('token') ? true : false}
+          condition={localStorage.getItem(ACCESS_TOKEN) ? true : false}
           altRoute={Routes.LOGIN}
         >
           <BookingPage dispatch={dispatch} state={state} />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.HOMEPAGE_SUCCESS}
-          condition={localStorage.getItem('token') ? true : false}
+          condition={TOKEN ? true : false}
           altRoute={Routes.LOGIN}
         >
           <SuccessfulPage dispatch={dispatch} state={state} />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.USER}
-          condition={localStorage.getItem('token') ? true : false}
+          condition={TOKEN ? true : false}
           altRoute={Routes.LOGIN}
         >
           <UserPage dispatch={dispatch} state={state} />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.CONFIRM_PAGE}
-          condition={localStorage.getItem('token') ? true : false}
+          condition={TOKEN ? true : false}
           altRoute={Routes.LOGIN}
         >
           <ConfirmPage dispatch={dispatch} state={state} />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.ADMIN}
-          condition={localStorage.getItem('token') ? true : false}
+          condition={TOKEN && IS_ADMIN ? true : false}
           altRoute={Routes.LOGIN}
         >
           <AdminPage dispatch={dispatch} state={state} />

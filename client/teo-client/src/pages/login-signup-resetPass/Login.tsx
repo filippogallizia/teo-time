@@ -6,10 +6,17 @@ import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import Routes from '../../routes';
-import { GRID_ONE_COL, TITLE } from '../../shared/locales/constant';
+import {
+  ACCESS_TOKEN,
+  GRID_ONE_COL,
+  TITLE,
+} from '../../shared/locales/constant';
 import { handleToastInFailRequest } from '../../shared/locales/utils';
 import { toast } from 'react-toastify';
 import i18n from '../../i18n';
+import { BookingComponentType } from '../booking/BookingPageTypes';
+import { SET_CURRENT_USER } from '../booking/bookingReducer';
+import { UserType } from '../../../../../types/Types';
 
 type InitialFormType = {
   email: string;
@@ -21,7 +28,7 @@ let schema = yup.object().shape({
   password: yup.string().required(),
 });
 
-const Login = () => {
+const Login = ({ dispatch, state }: BookingComponentType) => {
   const { register, handleSubmit, formState } = useForm<InitialFormType>({
     mode: 'onChange',
     resolver: yupResolver(schema),
@@ -30,15 +37,15 @@ const Login = () => {
   const { isValid, errors } = formState;
 
   const myFunc = async (value: InitialFormType) => {
-    const handleSuccess = (tokenValue: string) => {
-      localStorage.setItem('token', tokenValue);
+    const handleSuccess = (response: { token: string; user: UserType }) => {
+      localStorage.setItem(ACCESS_TOKEN, response.token);
+      dispatch({ type: SET_CURRENT_USER, payload: response.user });
     };
     try {
       await loginService(handleSuccess, {
         email: value.email,
         password: value.password,
       });
-      console.log('here');
       history.push(Routes.HOMEPAGE_BOOKING);
     } catch (e: any) {
       handleToastInFailRequest(e, toast);

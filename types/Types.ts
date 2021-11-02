@@ -26,9 +26,10 @@ export type BookingType = {
 };
 
 export type UserType = {
-  id: number;
+  id?: number;
   password?: any;
-  email: string;
-  name: string;
-  phoneNumber: number;
+  email?: string;
+  name?: string;
+  phoneNumber?: number;
+  role?: string;
 };

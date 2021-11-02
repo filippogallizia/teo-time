@@ -15,6 +15,12 @@ const user = (sequelize: any, Sequelize: any) => {
       phoneNumber: {
         type: Sequelize.STRING,
       },
+      role: {
+        type: Sequelize.STRING,
+      },
+      resetPasswordToken: {
+        type: Sequelize.STRING,
+      },
     },
     {
       timestamps: false,

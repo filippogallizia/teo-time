@@ -1,4 +1,5 @@
 export const URL_CLIENT = 'http://localhost:3000';
+export const ACCESS_TOKEN = 'tokenTeoApp';
 
 export const TAILWIND_MOBILE_BREAKPOINT = 768;
 
@@ -44,4 +45,4 @@ export const BLUE_PRIMARY = '#006edc';
 
 export const SUCCESSFUL_PAGE = 'successful';
 
-export const WEB_TOKEN = localStorage.getItem('token');
+export const WEB_TOKEN = localStorage.getItem(ACCESS_TOKEN);

@@ -3,7 +3,7 @@ API
 - book a full day or a range of slot ( for Teo ) 3h
 - mail a teo con booking 1h
 - add google calendar event 4h
-- adminRole 1h
+- adminRole OK
 - apply scopes to model database to avoid sending password
 - password forget 1h
 

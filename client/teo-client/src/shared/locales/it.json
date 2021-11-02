@@ -13,5 +13,12 @@
       "email": "Email",
       "password": "Password"
     }
+  },
+  "resetPassword": {
+    "title": "RESET PASSWORD",
+    "form": {
+      "newPassword": "Nuova password",
+      "newPasswordRepeat": "Ripeti nuova password"
+    }
   }
 }

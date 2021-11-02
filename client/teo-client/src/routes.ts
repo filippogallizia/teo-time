@@ -3,6 +3,7 @@ class Routes {
   public ERROR = '/error';
   public LOGIN = '/login';
   public SIGNUP = '/signup';
+  public RESET_PASSWORD = '/resetPassword';
   public USER = '/homepage/user';
   public HOMEPAGE = '/homepage';
   public CONFIRM_PAGE = '/homepage/confirm';

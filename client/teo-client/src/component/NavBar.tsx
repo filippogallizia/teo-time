@@ -1,19 +1,31 @@
-import React, { useEffect, useRef } from 'react';
+import React, { Dispatch, useEffect, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import routes from '../routes';
 import { toast } from 'react-toastify';
 import i18n from '../i18n';
+import { Actions, InitialState } from '../pages/booking/bookingReducer';
+import { ACCESS_TOKEN } from '../shared/locales/constant';
+import 'react-toastify/dist/ReactToastify.css';
 
-export default function Navbar({ fixed }: any) {
+export default function Navbar({
+  fixed,
+  dispatch,
+  state,
+  setToken,
+}: {
+  fixed?: any;
+  state: InitialState;
+  dispatch: Dispatch<Actions>;
+  setToken: Dispatch<string | null>;
+}) {
   const [navbarOpen, setNavbarOpen] = React.useState(false);
   const box = useRef<null | any>(null);
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem(ACCESS_TOKEN);
   const history = useHistory();
 
   useEffect(() => {
-    if (!token) {
-    }
-  }, [token]);
+    setToken(localStorage.getItem(ACCESS_TOKEN));
+  }, []);
 
   useEffect(() => {
     if (box && box.current && box.current.style) {
@@ -22,6 +34,8 @@ export default function Navbar({ fixed }: any) {
       ); //
     }
   }, []);
+
+  const IS_ADMIN = state.schedules.currentUser?.role === 'admin';
 
   return (
     <div ref={box} className="mb-10">
@@ -56,7 +70,7 @@ export default function Navbar({ fixed }: any) {
                 <Link
                   onClick={() => {
                     if (!token) {
-                      toast(i18n.t('errors.notAuthorized'));
+                      toast(i18n.t('toastMessages.errors.notAuthorized'));
                     }
                   }}
                   to={routes.HOMEPAGE_BOOKING}
@@ -77,7 +91,7 @@ export default function Navbar({ fixed }: any) {
                 <Link
                   onClick={() => {
                     if (!token) {
-                      toast(i18n.t('errors.notAuthorized'));
+                      toast(i18n.t('toastMessages.errors.notAuthorized'));
                     }
                   }}
                   to={routes.USER}
@@ -87,27 +101,29 @@ export default function Navbar({ fixed }: any) {
                   <span className="ml-2">user</span>
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link
-                  onClick={() => {
-                    if (!token) {
-                      toast(i18n.t('errors.notAuthorized'));
-                    }
-                  }}
-                  to={routes.ADMIN}
-                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white border-b-4  border-transparent hover:border-yellow-500"
-                >
-                  <span className="ml-2">admin</span>
-                </Link>
-              </li>
+              {IS_ADMIN && (
+                <li className="nav-item">
+                  <Link
+                    onClick={() => {
+                      if (!token) {
+                        toast(i18n.t('toastMessages.errors.notAuthorized'));
+                      }
+                    }}
+                    to={routes.ADMIN}
+                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white border-b-4  border-transparent hover:border-yellow-500"
+                  >
+                    <span className="ml-2">admin</span>
+                  </Link>
+                </li>
+              )}
               <li className="nav-item">
                 <div className="text-white border-b-4  border-transparent hover:border-yellow-500">
                   <div
                     onClick={() => {
                       if (token) {
-                        localStorage.removeItem('token');
+                        localStorage.removeItem(ACCESS_TOKEN);
                         history.push(routes.LOGIN);
-                        toast(i18n.t('toastMessages.other.logOut'));
+                        toast(i18n.t('toastMessages.others.logOut'));
                       }
                     }}
                     className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"

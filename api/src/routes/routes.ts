@@ -18,12 +18,15 @@ const sgMail = require('@sendgrid/mail');
 const { v4 } = require('uuid');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY_2);
 const { DateTime } = require('luxon');
-const ClassSgMail = require('../config/sgMail.config');
 
 const User = db.user;
 const Bookings = db.Bookings;
 
 const router = express.Router();
+
+const URL = 'http://localhost:3000/resetPassword';
+
+const OTP = v4();
 
 router.post(
   '/signup',
@@ -39,12 +42,15 @@ router.post(
       });
     } else {
       const { email, phoneNumber, name, password } = req.body;
+      const adminOrUser =
+        email === 'galliziafilippo@gmail.com' ? 'admin' : 'user';
       try {
         User.create({
           email,
           name,
           password,
           phoneNumber,
+          role: adminOrUser,
         })
           .then((user: UserType) => {
             res.send({ message: 'User was registered successfully!' });
@@ -82,7 +88,8 @@ router.post(
       });
     } else {
       try {
-        res.status(200).send(res.locals.jwt_secret);
+        //@ts-expect-error
+        res.status(200).send({ user: res.user, token: res.locals.jwt_secret });
       } catch (e) {
         res.status(500).send({
           success: false,
@@ -199,14 +206,12 @@ router.post(
   }
 );
 
-router.post(
+router.get(
   '/bookingFromUser',
   [authenticateToken],
   (req: express.Request, res: express.Response) => {
     //@ts-expect-error
     const userEmail = res.user.email;
-
-    let findedBooking = 'undefined';
     try {
       const user = User.findOne({ where: { email: userEmail } }).catch(
         (e: any) => {
@@ -215,11 +220,13 @@ router.post(
       );
       user.then((u: any) => {
         if (u) {
-          Bookings.findAll({ where: { userId: u.id } }).then((bks: any) => {
-            findedBooking = bks;
-            console.log(bks, 'filooooooo');
-            res.status(200).send(bks);
-          });
+          Bookings.findAll({ where: { userId: u.id } })
+            .then((bks: any) => {
+              res.status(200).send(bks);
+            })
+            .catch((e: any) => {
+              throw e;
+            });
         } else {
           res.status(200).send('not booking found');
         }
@@ -260,6 +267,135 @@ router.get(
           }
         })
         .catch((e: any) => {
+          throw e;
+        });
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+
+router.get(
+  '/resetPassword',
+  async (req: express.Request, res: express.Response) => {
+    const userEmail = req.body.email;
+    try {
+      User.findOne({ where: { email: userEmail } })
+        .then((usr: any) => {
+          if (usr) {
+            const updateUser = async () => {
+              usr.set({ resetPasswordToken: OTP });
+              await usr.save();
+            };
+            updateUser();
+            const msg = {
+              to: userEmail,
+              from: process.env.EMAIL, // Use the email address or domain you verified above
+              subject: 'teo-time',
+              text: 'and easy to do anywhere, even with Node.js',
+              html: `<a href=${URL}?resetPasswordToken=${OTP}>reset your password here</a>`,
+            };
+            const sendEmail = async () => {
+              await sgMail
+                .send(msg)
+                .then(
+                  () => {
+                    res.send({ message: 'succesfull sent' });
+                  },
+                  (e: any) => {
+                    throw e;
+                  }
+                )
+                .catch((e: any) => {
+                  throw e;
+                });
+            };
+            sendEmail();
+          } else {
+            res.status(400).send({
+              success: false,
+              error: {
+                message: "l' email non esiste",
+              },
+            });
+          }
+        })
+        .catch((e: any) => {
+          throw e;
+        });
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+router.post(
+  '/password/otp',
+  async (req: express.Request, res: express.Response) => {
+    const resetPasswordToken = req.body.newPassord;
+    try {
+      User.findOne({ where: { resetPasswordToken } })
+        .then((usr: any) => {
+          if (usr) {
+            res.send('allowed to reset password');
+          } else {
+            res.status(400).send({
+              success: false,
+              error: {
+                message: 'not allowed',
+              },
+            });
+          }
+        })
+        .catch((e: any) => {
+          throw e;
+        });
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+
+router.post(
+  '/password/newPassword',
+  async (req: express.Request, res: express.Response) => {
+    const resetPasswordToken = req.body.resetPasswordToken;
+    const newPassword = req.body.newPassword;
+    try {
+      User.findOne({ where: { resetPasswordToken } })
+        .then((usr: any) => {
+          if (usr) {
+            const asyncFn = async () => {
+              usr.set({ password: newPassword });
+              await usr.save();
+              res.send('password changed');
+            };
+            asyncFn();
+          } else {
+            res.status(400).send({
+              success: false,
+              error: {
+                message: 'not allowed',
+              },
+            });
+          }
+        })
+        .catch((e: any) => {
+          console.log(e, 'e');
           throw e;
         });
     } catch (e: any) {

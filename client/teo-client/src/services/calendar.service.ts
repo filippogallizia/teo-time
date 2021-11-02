@@ -1,8 +1,11 @@
 import axios from 'axios';
+import { ACCESS_TOKEN } from '../shared/locales/constant';
 
 const URL = 'http://0.0.0.0:5000';
 
-const webtoken = localStorage.getItem('token');
+const webtoken = localStorage.getItem(ACCESS_TOKEN);
+
+console.log(webtoken, 'webtoken');
 
 export const getAvailabilities = async (
   fn: any,

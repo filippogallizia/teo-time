@@ -14,12 +14,30 @@ Content-Type: application/json
 
 ###
 
+POST http://0.0.0.0:5000/resetPassword
+Content-Type: application/json
+
+{
+    "email": "galliziafilippo@gmail.com"
+}
+
+###
+
+POST http://0.0.0.0:5000/password/otp
+Content-Type: application/json
+
+{
+    "resetPasswordToken": "bcd7508a-ca44-494f-bc1c-168648551b2b"
+}
+
+###
+
 POST http://0.0.0.0:5000/login
 Content-Type: application/json
 
 {
-    "email": "galliziagiovanni@gmail.com",
-    "password": "filo"
+    "email": "galliziafilippo@gmail.com",
+    "password": "carlo"
 }
 
 
@@ -70,10 +88,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpe
 
 
 ###
-POST http://0.0.0.0:5000/bookingFromUser
+GET http://0.0.0.0:5000/bookingFromUser
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpemlhZmlsaXBwb0BnbWFpbC5jb20iLCJwYXNzd29yZCI6InN1cmZhbmRvIiwiaWF0IjoxNjM1NDEyMTM4fQ.4OrNWrQ3KbxgvMCboT9JL-Xj3IQ_DTz5rqlv0AYj4PI
 
+###
+POST http://0.0.0.0:5000/password/newPassword
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpemlhZmlsaXBwb0BnbWFpbC5jb20iLCJwYXNzd29yZCI6ImZpbG8iLCJpYXQiOjE2MzUzNTQ1NjZ9.-jiJHSVIvaDpyP5I4wLfNHXvxyhqG4fBZSelMOk0KHY
+
+
 {
-    "email": "galliziafilippo@gmail.com"
+    "newPassword": "filips",
+    "resetPasswordToken": "bcd7508a-ca44-494f-bc1c-168648551b2b"
+
 }

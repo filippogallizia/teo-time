@@ -10,6 +10,14 @@ export const FROM_DATE_TO_HOUR = (date: string) => {
   return DateTime.fromISO(date).hour;
 };
 
+export const TODAY_AT_MIDNIGHT = () => {
+  return DateTime.fromJSDate(new Date()).set({
+    hour: 0,
+    minute: 0,
+    millisecond: 0,
+  });
+};
+
 export const FROM_DATE_TO_DAY = (date: string) => {
   return DateTime.fromISO(date).weekdayLong;
 };

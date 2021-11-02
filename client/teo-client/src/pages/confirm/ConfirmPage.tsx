@@ -38,7 +38,6 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
           type: SET_APPOINTMENT_DETAILS,
           payload: { id: response.id, start: response.start },
         });
-        localStorage.setItem('APPOINTMENT_DETAILS', response.start);
       };
       await createBooking(handleSuccess, {
         start: parsedDate.plus(mapped).toISO(),

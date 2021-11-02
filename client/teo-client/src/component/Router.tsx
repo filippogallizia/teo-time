@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import Routes from '../routes';
 
 import {
@@ -10,9 +10,12 @@ import {
 } from 'react-router-dom';
 import Navbar from './NavBar';
 import GeneralPage from '../pages/general/GeneralPage';
-import Login from '../pages/login-signup/Login';
-import Signup from '../pages/login-signup/Signup';
+import Login from '../pages/login-signup-resetPass/Login';
+import Signup from '../pages/login-signup-resetPass/Signup';
 import Footer from './Footer';
+import bookingReducer from '../pages/booking/bookingReducer';
+import { ACCESS_TOKEN } from '../shared/locales/constant';
+import ResetPassword from '../pages/login-signup-resetPass/ResetPassword';
 
 const GeneralLayout = ({ children }: { children: JSX.Element }) => {
   return <div className="flex flex-col md:m-auto md:max-w-2xl">{children}</div>;
@@ -42,19 +45,49 @@ export const ProtectedRoute = ({
   );
 };
 
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const startingAvailabilities = new Date();
+startingAvailabilities.setHours(7, 0, 0, 0);
+
+const endAvailabilities = new Date();
+endAvailabilities.setHours(20, 30, 0, 0);
+
+const initialState = {
+  schedules: {
+    selectedDate: today.toISOString(),
+    selectedHour: '00:00',
+    availabilities: [
+      {
+        start: startingAvailabilities.toISOString(),
+        end: endAvailabilities.toISOString(),
+      },
+    ],
+    specificUserBookings: [],
+    isConfirmPhase: false,
+    isRenderAvailabilities: false,
+    appointmentDetails: {
+      id: 0,
+      start: '',
+    },
+    allBookingsAndUsers: [],
+  },
+};
+
 const RouterComponent = (): JSX.Element => {
   const [token, setToken] = useState<string | null>('');
-  useEffect(() => {
-    setToken(() => localStorage.getItem('token'));
-  }, [token]);
+  const [state, dispatch] = useReducer(bookingReducer, initialState);
 
-  console.log(token, 'token');
+  useEffect(() => {
+    setToken(() => localStorage.getItem(ACCESS_TOKEN));
+  }, []);
 
   return (
     <Router>
       <div className="relative min-h-screen">
         <div className="pb-16">
-          <Navbar />
+          <Navbar setToken={setToken} dispatch={dispatch} state={state} />
 
           <Switch>
             <ProtectedRoute
@@ -62,7 +95,15 @@ const RouterComponent = (): JSX.Element => {
               condition={true}
               altRoute={Routes.ROOT}
             >
-              <Login />
+              <Login dispatch={dispatch} state={state} />
+            </ProtectedRoute>
+
+            <ProtectedRoute
+              path={Routes.RESET_PASSWORD}
+              condition={true}
+              altRoute={Routes.ROOT}
+            >
+              <ResetPassword dispatch={dispatch} state={state} />
             </ProtectedRoute>
 
             <ProtectedRoute
@@ -75,11 +116,11 @@ const RouterComponent = (): JSX.Element => {
 
             <ProtectedRoute
               path={Routes.HOMEPAGE}
-              condition={token ? true : false}
+              condition={true}
               altRoute={Routes.LOGIN}
             >
               <GeneralLayout>
-                <GeneralPage />
+                <GeneralPage dispatch={dispatch} state={state} />
               </GeneralLayout>
             </ProtectedRoute>
             <ProtectedRoute
