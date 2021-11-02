@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import { SET_ALL_BOOKINGS_AND_USERS } from '../booking/bookingReducer';
 import { getUsersAndBookings } from './service/AdminPageService';
-import TableComponent from './service/components/UserTable';
+import TableComponent from './service/components/DetailedBookingInfo';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 import { DATE_TO_CLIENT_FORMAT } from '../../shared/locales/utils';
@@ -14,9 +14,11 @@ const AdminNav = () => {
     <div
       className={`grid grid-flow-col row-span-3 place-items-center ${MEDIUM_MARGIN_BOTTOM}`}
     >
-      <div className="font-serif">Prenotazioni</div>
-      <div className="font-serif">Disponibilita'</div>
-      <div className="font-serif">Altro</div>
+      <div className="font-serif cursor-pointer border-b-4 border-yellow-500">
+        Prenotazioni
+      </div>
+      <div className="font-serif cursor-pointer">Disponibilita'</div>
+      <div className="font-serif cursor-pointer">Altro</div>
     </div>
   );
 };
@@ -27,9 +29,51 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
       try {
         const handleSuccess = (response: any) => {
           if (response) {
+            const allBookingsParsedByDate: [
+              {
+                id: number;
+                start: string;
+                end: string;
+                userId: number;
+                user: UserType;
+              }[]
+            ] = response.reduce(
+              (
+                acc: any,
+                cv: any
+              ): [
+                {
+                  id: number;
+                  start: string;
+                  end: string;
+                  userId: number;
+                  user: UserType;
+                }[]
+              ] => {
+                if (acc.length === 0) {
+                  acc.push([cv]);
+                }
+                const lastOne = acc[acc.length - 1];
+                if (
+                  DateTime.fromISO(lastOne[lastOne.length - 1].start).day ===
+                    DateTime.fromISO(cv.start).day &&
+                  lastOne[lastOne.length - 1].start !== cv.start
+                ) {
+                  lastOne.push(cv);
+                }
+                if (
+                  DateTime.fromISO(lastOne[lastOne.length - 1].start).day !==
+                  DateTime.fromISO(cv.start).day
+                ) {
+                  acc.push([cv]);
+                }
+                return acc;
+              },
+              []
+            );
             dispatch({
               type: SET_ALL_BOOKINGS_AND_USERS,
-              payload: response,
+              payload: allBookingsParsedByDate,
             });
           }
         };
@@ -41,54 +85,11 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
     asynFn();
   }, [dispatch]);
 
-  const prova: [
-    {
-      id: number;
-      start: string;
-      end: string;
-      userId: number;
-      user: UserType;
-    }[]
-  ] = state.schedules.allBookingsAndUsers.reduce(
-    (
-      acc: any,
-      cv
-    ): [
-      {
-        id: number;
-        start: string;
-        end: string;
-        userId: number;
-        user: UserType;
-      }[]
-    ] => {
-      if (acc.length === 0) {
-        acc.push([cv]);
-      }
-      const lastOne = acc[acc.length - 1];
-      if (
-        DateTime.fromISO(lastOne[lastOne.length - 1].start).day ===
-          DateTime.fromISO(cv.start).day &&
-        lastOne[lastOne.length - 1].start !== cv.start
-      ) {
-        lastOne.push(cv);
-      }
-      if (
-        DateTime.fromISO(lastOne[lastOne.length - 1].start).day !==
-        DateTime.fromISO(cv.start).day
-      ) {
-        acc.push([cv]);
-      }
-      return acc;
-    },
-    []
-  );
-
   return (
     <>
       <AdminNav />
       <div className="grid grid-flow-row gap-8  py-2 shadow-sm">
-        {prova.map((booking, i: number) => {
+        {state.schedules.allBookingsAndUsers.map((booking, i: number) => {
           return (
             <div className="p-4 shadow-md">
               <p className={`${BOLD} ${MEDIUM_MARGIN_BOTTOM}`}>

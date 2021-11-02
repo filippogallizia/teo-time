@@ -1,6 +1,11 @@
 {
-  "errors": {
-    "notAuthorized": "Non autorizzato"
+  "toastMessages": {
+    "errors": {
+      "notAuthorized": "Non autorizzato"
+    },
+    "other": {
+      "logOut": "Logout effettutato"
+    }
   },
   "loginPage": {
     "title": "LOGIN",

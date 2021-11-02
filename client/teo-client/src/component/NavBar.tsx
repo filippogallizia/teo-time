@@ -60,18 +60,16 @@ export default function Navbar({ fixed }: any) {
                     }
                   }}
                   to={routes.HOMEPAGE_BOOKING}
-                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
                 >
-                  <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
                   <span className="ml-2">booking</span>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
                   to={routes.LOGIN}
-                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
                 >
-                  <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
                   <span className="ml-2">log in</span>
                 </Link>
               </li>
@@ -83,7 +81,7 @@ export default function Navbar({ fixed }: any) {
                     }
                   }}
                   to={routes.USER}
-                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
                 >
                   <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
                   <span className="ml-2">user</span>
@@ -97,24 +95,25 @@ export default function Navbar({ fixed }: any) {
                     }
                   }}
                   to={routes.ADMIN}
-                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white border-b-4  border-transparent hover:border-yellow-500"
                 >
-                  <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
                   <span className="ml-2">admin</span>
                 </Link>
               </li>
               <li className="nav-item">
-                <div
-                  onClick={() => {
-                    if (token) {
-                      localStorage.removeItem('token');
-                      history.push(routes.LOGIN);
-                    }
-                  }}
-                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
-                >
-                  <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
-                  <span className="ml-2">log out</span>
+                <div className="text-white border-b-4  border-transparent hover:border-yellow-500">
+                  <div
+                    onClick={() => {
+                      if (token) {
+                        localStorage.removeItem('token');
+                        history.push(routes.LOGIN);
+                        toast(i18n.t('toastMessages.other.logOut'));
+                      }
+                    }}
+                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                  >
+                    <span className="ml-2">log out</span>
+                  </div>
                 </div>
               </li>
             </ul>

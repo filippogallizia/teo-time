@@ -7,34 +7,33 @@ import { HOUR_MINUTE_FORMAT } from '../../../../shared/locales/utils';
 
 const EditBooking = () => {
   return (
-    <div className="grid grid-cols-1 gap-2 rounded-t">
-      <div className="flex justify-center items-center rounded-full bg-yellow-500">
+    <div className="grid grid-cols-1 gap-2 place-items-start">
+      <div className="flex justify-center items-center rounded-full p-2 bg-green-500  w-1/2">
         <p className="cursor-pointer self-auto">Reschedule</p>
       </div>
-      <div className="flex justify-center items-center rounded-full bg-yellow-500">
+      <div className="flex justify-center items-center rounded-full p-2 bg-yellow-500  w-1/2">
         <p className="cursor-pointer self-auto">Cancella</p>
       </div>
     </div>
   );
 };
 
-const TableComponent = ({ booking, ind }: any) => {
-  const [prova, setProva] = useState<any>([]);
+const DetailedInfoBooking = ({ booking, ind }: any) => {
+  const [allBookingInfo, setAllBookingInfo] = useState<any>([]);
 
   useEffect(() => {
-    console.log(booking);
-    const final = booking.map((a: any) => {
+    const addOpenProp = booking.map((a: any) => {
       return {
         ...a,
         open: false,
       };
     });
-    setProva(final);
+    setAllBookingInfo(addOpenProp);
   }, [booking]);
 
   return (
     <div className="">
-      {prova.map((l: any, i: number) => {
+      {allBookingInfo.map((l: any, i: number) => {
         const { start, user } = l;
         return (
           <div
@@ -46,13 +45,13 @@ const TableComponent = ({ booking, ind }: any) => {
                 <div className="rounded-full h-7 w-7 bg-yellow-500"></div>
                 <p>{HOUR_MINUTE_FORMAT(start)}</p>
               </div>
-              {prova[i].open && <EditBooking />}
+              {allBookingInfo[i].open && <EditBooking />}
             </div>
             <div className="col-span-2 grid grid-cols-1 gap-4">
               <div>
                 <p>{user.name}</p>
               </div>
-              {prova[i].open && (
+              {allBookingInfo[i].open && (
                 <>
                   <div>
                     <p className={ITALIC}>Email</p>
@@ -72,7 +71,7 @@ const TableComponent = ({ booking, ind }: any) => {
             <div
               className="col-span-1 cursor-pointer font-serif"
               onClick={() => {
-                setProva((prev: any) => {
+                setAllBookingInfo((prev: any) => {
                   const mutation = [...prev];
                   mutation[i] = {
                     ...mutation[i],
@@ -131,7 +130,7 @@ const TableComponent = ({ booking, ind }: any) => {
   // );
 };
 
-// function TableComponent({ dispatch, state }: BookingComponentType) {
+// function DetailedInfoBooking({ dispatch, state }: BookingComponentType) {
 //   const data = React.useMemo(() => {
 //     return state.schedules.allBookingsAndUsers.map((user) => {
 //       return {
@@ -211,4 +210,4 @@ const TableComponent = ({ booking, ind }: any) => {
 //   );
 // }
 
-export default TableComponent;
+export default DetailedInfoBooking;

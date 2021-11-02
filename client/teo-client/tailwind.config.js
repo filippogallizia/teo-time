@@ -18,6 +18,8 @@ module.exports = {
           light: '#F1F3F2',
         },
       },
+      borderStyle: ['responsive', 'hover'],
+      borderWidth: ['responsive', 'hover'],
     },
   },
   variants: {

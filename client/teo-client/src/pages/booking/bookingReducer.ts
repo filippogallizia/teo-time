@@ -30,8 +30,8 @@ export type InitialState = {
       end: string;
       userId: number;
       user: UserType;
-      open: boolean;
-    }[];
+      // open: boolean;
+    }[][];
   };
 };
 
@@ -72,8 +72,8 @@ type ActionSetAllBookingsAndUsers = {
     end: string;
     userId: number;
     user: UserType;
-    open: boolean;
-  }[];
+    // open: boolean;
+  }[][];
 };
 
 type ActionSetAppointmentDetails = {
