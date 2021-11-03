@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import GeneralButton, { buttonStyle } from '../../component/GeneralButton';
+
 import {
   postOtpForVerification,
-  loginService,
   postNewPassword,
 } from './service/LoginService';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,9 +14,8 @@ import { handleToastInFailRequest } from '../../shared/locales/utils';
 import { toast } from 'react-toastify';
 import i18n from '../../i18n';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import { SET_CURRENT_USER } from '../booking/bookingReducer';
-import { UserType } from '../../../../../types/Types';
 import { useLocation } from 'react-router-dom';
+import { buttonStyle } from '../../component/GeneralButton';
 
 type InitialFormType = {
   newPassword: string;
@@ -25,14 +23,8 @@ type InitialFormType = {
 };
 
 let schema = yup.object().shape({
-  newPassword: yup.string().email().required(),
-  newPasswordRepeat: yup
-    .string()
-    .required()
-    .test((value: any) => {
-      console.log('newPassword', 'this');
-      return true;
-    }),
+  newPassword: yup.string().required(),
+  newPasswordRepeat: yup.string().required(),
 });
 
 const ResetPassword = ({ dispatch, state }: BookingComponentType) => {
@@ -68,13 +60,15 @@ const ResetPassword = ({ dispatch, state }: BookingComponentType) => {
   const myFunc = async (value: InitialFormType) => {
     const handleSuccess = (response: any) => {
       console.log(response);
+      console.log(response);
+      toast(i18n.t(response));
     };
     try {
       await postNewPassword(handleSuccess, {
         resetPasswordToken,
         newPassword: value.newPassword,
       });
-      history.push(Routes.HOMEPAGE_BOOKING);
+      history.push(Routes.LOGIN);
     } catch (e: any) {
       handleToastInFailRequest(e, toast);
     }
@@ -122,12 +116,6 @@ const ResetPassword = ({ dispatch, state }: BookingComponentType) => {
               className={buttonStyle(isValid)}
               type="submit"
               value="ResetPassword"
-            />
-          </div>
-          <div>
-            <GeneralButton
-              buttonText="Sign up"
-              onClick={() => history.push(Routes.SIGNUP)}
             />
           </div>
         </form>

@@ -76,7 +76,7 @@ const initialState = {
 };
 
 const RouterComponent = (): JSX.Element => {
-  const [token, setToken] = useState<string | null>('');
+  const [, setToken] = useState<string | null>('');
   const [state, dispatch] = useReducer(bookingReducer, initialState);
 
   useEffect(() => {

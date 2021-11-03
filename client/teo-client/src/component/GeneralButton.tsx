@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 
 type GeneralButtonType = {
-  buttonText: string | number;
+  buttonText: string | number | any;
   onClick?: Dispatch<SetStateAction<any>>;
   disabled?: boolean;
 };

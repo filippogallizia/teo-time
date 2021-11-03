@@ -14,6 +14,7 @@ import {
   SET_CONFIRM_PHASE,
   SET_RENDER_AVAILABILITIES,
 } from '../booking/bookingReducer';
+import i18n from '../../i18n';
 
 type InitialFormType = {
   name: string;
@@ -73,21 +74,24 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
           color="#f59e0b"
         />
       </div>
-      <div className={`${TITLE} ${MARGIN_BOTTOM}`}>Conferma i dati</div>
+      <div className={`${TITLE} ${MARGIN_BOTTOM}`}>
+        {i18n.t('confirmPage.confirmDatas')}
+      </div>
       <div className={MARGIN_BOTTOM}>
         <p className={TITLE}>
-          Data:
-          <span className={BOLD}>
+          <span>{i18n.t('confirmPage.date')}</span>
+          <span className={`${BOLD} ml-2`}>
             {DateTime.fromISO(state.schedules.selectedDate).toFormat(
-              'yyyy LLL dd'
+              'yyyy LLL  dd - t'
             )}
-            {DateTime.fromISO(state.schedules.selectedHour).toFormat('t')}
           </span>
         </p>
       </div>
-      {/* <div>email: blabjag</div> */}
       <div>
-        <GeneralButton buttonText="PRENOTA" onClick={myFunc} />
+        <GeneralButton
+          buttonText={i18n.t('confirmPage.bookButton')}
+          onClick={myFunc}
+        />
       </div>
     </div>
   );

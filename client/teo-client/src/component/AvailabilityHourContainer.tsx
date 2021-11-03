@@ -1,6 +1,4 @@
-import { DateTime } from 'luxon';
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
-// import 'react-calendar/dist/Calendar.css';
 import { useHistory } from 'react-router';
 import { FLEX_DIR_ROW } from '../shared/locales/constant';
 import {
@@ -9,7 +7,6 @@ import {
   SET_SELECTION_HOUR,
 } from '../pages/booking/bookingReducer';
 import routes from '../routes';
-// import { TODAY_AT_MIDNIGHT } from '../utils';
 
 type AvailabilitiesChildType = {
   hour: { start: string; end: string };

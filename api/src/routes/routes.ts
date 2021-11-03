@@ -280,7 +280,7 @@ router.get(
   }
 );
 
-router.get(
+router.post(
   '/resetPassword',
   async (req: express.Request, res: express.Response) => {
     const userEmail = req.body.email;
@@ -326,6 +326,7 @@ router.get(
           }
         })
         .catch((e: any) => {
+          console.log(e, 'here', 'e');
           throw e;
         });
     } catch (e: any) {
@@ -341,7 +342,7 @@ router.get(
 router.post(
   '/password/otp',
   async (req: express.Request, res: express.Response) => {
-    const resetPasswordToken = req.body.newPassord;
+    const resetPasswordToken = req.body.resetPasswordToken;
     try {
       User.findOne({ where: { resetPasswordToken } })
         .then((usr: any) => {
@@ -357,7 +358,12 @@ router.post(
           }
         })
         .catch((e: any) => {
-          throw e;
+          res.status(500).send({
+            success: false,
+            error: {
+              message: e,
+            },
+          });
         });
     } catch (e: any) {
       res.status(500).send({

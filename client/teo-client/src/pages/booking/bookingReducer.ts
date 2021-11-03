@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { BookingType, UserType } from '../../../../../types/Types';
+import { UserType } from '../../../../../types/Types';
 
 export const SET_AVAILABILITIES = 'SET_AVAILABILITIES';
 export const SET_SPECIFIC_USER_BOOKINGS = 'SET_SPECIFIC_USER_BOOKINGS';

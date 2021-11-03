@@ -25,7 +25,7 @@ export default function Navbar({
 
   useEffect(() => {
     setToken(localStorage.getItem(ACCESS_TOKEN));
-  }, []);
+  }, [setToken]);
 
   useEffect(() => {
     if (box && box.current && box.current.style) {

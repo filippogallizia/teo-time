@@ -1,7 +1,6 @@
-import React, { useReducer } from 'react';
+import React from 'react';
 import { Switch } from 'react-router';
 import BookingPage from '../booking/BookingPage';
-import bookingReducer from '../booking/bookingReducer';
 import SuccessfulPage from '../successfulBooking/SuccesfulPage';
 import Routes from '../../routes';
 import HomePage from '../home/HomePage';

@@ -1,7 +1,5 @@
 import axios from 'axios';
-import { ACCESS_TOKEN } from '../../../shared/locales/constant';
 const URL = 'http://0.0.0.0:5000';
-const webtoken = localStorage.getItem(ACCESS_TOKEN);
 
 export const signupService = async (
   fn: any,
@@ -70,9 +68,24 @@ export const postNewPassword = async (
 ) => {
   try {
     const { resetPasswordToken, newPassword } = body;
-    const response = await axios.post(`${URL}/password/otp`, {
+    const response = await axios.post(`${URL}/password/newPassword`, {
       resetPasswordToken,
       newPassword,
+    });
+    fn(response.data);
+  } catch (e: any) {
+    throw e;
+  }
+};
+
+export const postEmailForResetPassword = async (
+  fn: any,
+  body: { email: string }
+) => {
+  try {
+    const { email } = body;
+    const response = await axios.post(`${URL}/resetPassword`, {
+      email,
     });
     fn(response.data);
   } catch (e: any) {

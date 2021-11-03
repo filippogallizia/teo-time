@@ -3,7 +3,6 @@ import { BookingComponentType } from '../booking/BookingPageTypes';
 import { SET_ALL_BOOKINGS_AND_USERS } from '../booking/bookingReducer';
 import { getUsersAndBookings } from './service/AdminPageService';
 import TableComponent from './service/components/DetailedBookingInfo';
-import _ from 'lodash';
 import { DateTime } from 'luxon';
 import { DATE_TO_CLIENT_FORMAT } from '../../shared/locales/utils';
 import { UserType } from '../../../../../types/Types';

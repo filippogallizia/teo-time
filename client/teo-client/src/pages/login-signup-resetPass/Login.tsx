@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import GeneralButton, { buttonStyle } from '../../component/GeneralButton';
-import { loginService } from './service/LoginService';
+import {
+  loginService,
+  postEmailForResetPassword,
+} from './service/LoginService';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, useHistory } from 'react-router-dom';
 import Routes from '../../routes';
 import {
   ACCESS_TOKEN,
@@ -17,6 +20,60 @@ import i18n from '../../i18n';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import { SET_CURRENT_USER } from '../booking/bookingReducer';
 import { UserType } from '../../../../../types/Types';
+import { ProtectedRoute } from '../general/GeneralPage';
+
+const ForgotPassword = () => {
+  const [emailValue, setEmail] = useState('');
+  const [requestSuccess, setSuccess] = useState(false);
+
+  useEffect(() => {}, []);
+
+  return (
+    <>
+      {!requestSuccess ? (
+        <div className="grid col-1 gap-4 justify-items-center">
+          <p className={`${TITLE}`}>{i18n.t('forgotPassword.title')}</p>
+          <div>
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="email"
+            >
+              {i18n.t('form.email')}
+            </label>
+            <input
+              className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
+              id="email"
+              onChange={(e: any) => setEmail(e.target.value)}
+            />
+          </div>
+          <div>
+            <GeneralButton
+              buttonText={i18n.t('forgotPassword.buttonReset')}
+              onClick={() => {
+                const asyncFn = async () => {
+                  try {
+                    await postEmailForResetPassword(
+                      (response: any) => {
+                        toast.success(response);
+                      },
+                      { email: emailValue }
+                    );
+                    setSuccess(true);
+                  } catch (e) {
+                    handleToastInFailRequest(e, toast);
+                  }
+                };
+                asyncFn();
+              }}
+            />
+          </div>
+        </div>
+      ) : (
+        <p>{i18n.t('forgotPassword.onSuccess.body')}</p>
+      )}
+    </>
+  );
+};
 
 type InitialFormType = {
   email: string;
@@ -25,12 +82,20 @@ type InitialFormType = {
 
 let schema = yup.object().shape({
   email: yup.string().email().required(),
-  password: yup.string().required(),
+  password: yup
+    .string()
+    .required()
+    .test(function (value) {
+      return true;
+    }),
 });
 
-const Login = ({ dispatch, state }: BookingComponentType) => {
+const LoginMainPage = ({ dispatch, state }: BookingComponentType) => {
   const { register, handleSubmit, formState } = useForm<InitialFormType>({
-    mode: 'onChange',
+    mode: 'all',
+    reValidateMode: 'onChange',
+    shouldFocusError: true,
+    criteriaMode: 'all',
     resolver: yupResolver(schema),
   });
   const history = useHistory();
@@ -60,7 +125,7 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
           className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="email"
         >
-          {i18n.t('loginPage.form.email')}
+          {i18n.t('form.email')}
         </label>
         <input
           className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
@@ -74,7 +139,7 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
           className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="password"
         >
-          Password
+          {i18n.t('form.password')}
         </label>
         <input
           className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
@@ -90,11 +155,42 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
       </div>
       <div>
         <GeneralButton
-          buttonText="Sign up"
+          buttonText={i18n.t('signUp.mainButton')}
           onClick={() => history.push(Routes.SIGNUP)}
         />
       </div>
+      <div
+        className="cursor-pointer"
+        onClick={() => {
+          history.push(Routes.LOGIN_FORGOT_PASSWORD);
+        }}
+      >
+        {i18n.t('loginPage.passwordLost')}
+      </div>
     </form>
+  );
+};
+
+const Login = ({ dispatch, state }: BookingComponentType) => {
+  return (
+    <Router>
+      <Switch>
+        <ProtectedRoute
+          path={Routes.LOGIN_FORGOT_PASSWORD}
+          condition={true}
+          altRoute={Routes.LOGIN}
+        >
+          <ForgotPassword />
+        </ProtectedRoute>
+        <ProtectedRoute
+          path={Routes.LOGIN}
+          condition={true}
+          altRoute={Routes.ROOT}
+        >
+          <LoginMainPage dispatch={dispatch} state={state} />
+        </ProtectedRoute>
+      </Switch>
+    </Router>
   );
 };
 
