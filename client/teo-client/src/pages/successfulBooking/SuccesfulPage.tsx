@@ -25,10 +25,10 @@ const SuccessfulPage = ({ dispatch, state }: BookingComponentType) => {
         {i18n.t('succesfulPage.succesfullMessage')}
       </div>
       <div>
-        <p className={TITLE}>
-          <span>{i18n.t('succesfulPage.date')} </span>
+        <div className={TITLE}>
+          {i18n.t('succesfulPage.date')}
           <span className={`${BOLD} ml-2`}>{parsedData}</span>
-        </p>
+        </div>
       </div>
       <GeneralButton
         buttonText={i18n.t('succesfulPage.backToBookingButton')}

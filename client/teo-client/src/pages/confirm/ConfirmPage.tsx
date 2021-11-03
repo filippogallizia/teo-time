@@ -78,14 +78,14 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
         {i18n.t('confirmPage.confirmDatas')}
       </div>
       <div className={MARGIN_BOTTOM}>
-        <p className={TITLE}>
-          <span>{i18n.t('confirmPage.date')}</span>
+        <div className={TITLE}>
+          {i18n.t('confirmPage.date')}
           <span className={`${BOLD} ml-2`}>
             {DateTime.fromISO(state.schedules.selectedDate).toFormat(
               'yyyy LLL  dd - t'
             )}
           </span>
-        </p>
+        </div>
       </div>
       <div>
         <GeneralButton
