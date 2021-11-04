@@ -12,7 +12,11 @@ import GeneralButton from './GeneralButton';
 import { BOLD, MARGIN_BOTTOM, TITLE } from '../shared/locales/constant';
 import Routes from '../routes';
 import EventListener from '../helpers/EventListener';
-import { parseHoursToObject } from '../shared/locales/utils';
+import {
+  handleToastInFailRequest,
+  parseHoursToObject,
+} from '../shared/locales/utils';
+import { toast } from 'react-toastify';
 
 type InitialFormType = {
   name: string;
@@ -53,7 +57,8 @@ const ConfirmForm = ({ dispatch, state }: BookingComponentType) => {
       });
       history.push(Routes.HOMEPAGE_SUCCESS);
     } catch (e: any) {
-      EventListener.emit('errorHandling', e.response);
+      console.log(e, 'here');
+      handleToastInFailRequest(e, toast);
     }
   };
 

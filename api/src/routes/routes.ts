@@ -130,34 +130,34 @@ router.post(
             });
           //send link
 
-          const htmlForEmail = `
-          <div style="padding: 10px; border: 3px dashed #f59e0b; font-size: 1.3rem;">
-          <h2>
-            Ciao! Il tuo appuntamento e' stato registrato con successo.
-          </h2>
-          <p style="margin-bottom: 10px;">
-            Questi sono i dettagli:
-          </p>
-          <p>
-            EVENTO: <span style="font-weight: bold;">Trattamento osteopatico</span>
-          </p>
-          <p>
-            DATA:
-            <span style="font-weight: bold;">
-              ${DateTime.fromISO(booking.start)
-                .toFormat('yyyy LLL dd - t')
-                .toISO()}</span
-            >
-          </p>
-        </div>
-        `;
+          const parsedData = DateTime.fromISO(booking.start).toFormat(
+            'yyyy LLL dd - t'
+          );
 
           const msg = {
             to: [userEmail, process.env.EMAIL],
             from: process.env.EMAIL, // Use the email address or domain you verified above
             subject: 'teo-time',
             text: 'and easy to do anywhere, even with Node.js',
-            html: htmlForEmail,
+            html: `
+            <div style="padding: 10px; border: 3px dashed #f59e0b; font-size: 1.1rem;">
+            <h2>
+              Ciao! Il tuo appuntamento e' stato registrato con successo.
+            </h2>
+            <p style="margin-bottom: 10px;">
+              Questi sono i dettagli:
+            </p>
+            <p>
+              EVENTO: <span style="font-weight: bold;">Trattamento osteopatico</span>
+            </p>
+            <p>
+              DATA:
+              <span style="font-weight: bold;">
+                ${parsedData}</span
+              >
+            </p>
+          </div>
+          `,
           };
           const sendEmail = async () => {
             await sgMail
@@ -167,17 +167,32 @@ router.post(
                   res.status(200).send(booking);
                 },
                 (e: any) => {
-                  throw e;
+                  res.status(500).send({
+                    success: false,
+                    error: {
+                      message: e,
+                    },
+                  });
                 }
               )
               .catch((e: any) => {
-                throw e;
+                res.status(500).send({
+                  success: false,
+                  error: {
+                    message: e,
+                  },
+                });
               });
           };
           sendEmail();
         })
         .catch((e: any) => {
-          throw e;
+          res.status(500).send({
+            success: false,
+            error: {
+              message: e,
+            },
+          });
         });
     } catch (e: any) {
       res.status(500).send({
@@ -192,7 +207,7 @@ router.post(
 
 router.post(
   '/retrieveAvailability',
-  [authenticateToken, getAvailability],
+  [getAvailability],
   (req: express.Request, res: express.Response) => {
     try {
       //@ts-expect-error

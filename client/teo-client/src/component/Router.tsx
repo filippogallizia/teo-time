@@ -10,7 +10,7 @@ import {
 } from 'react-router-dom';
 import Navbar from './NavBar';
 import GeneralPage from '../pages/general/GeneralPage';
-import Login from '../pages/login-signup-resetPass/Login';
+import Login, { ForgotPassword } from '../pages/login-signup-resetPass/Login';
 import Signup from '../pages/login-signup-resetPass/Signup';
 import Footer from './Footer';
 import bookingReducer from '../pages/booking/bookingReducer';
@@ -104,6 +104,14 @@ const RouterComponent = (): JSX.Element => {
               altRoute={Routes.ROOT}
             >
               <ResetPassword dispatch={dispatch} state={state} />
+            </ProtectedRoute>
+
+            <ProtectedRoute
+              path={Routes.LOGIN_FORGOT_PASSWORD}
+              condition={true}
+              altRoute={Routes.LOGIN}
+            >
+              <ForgotPassword />
             </ProtectedRoute>
 
             <ProtectedRoute

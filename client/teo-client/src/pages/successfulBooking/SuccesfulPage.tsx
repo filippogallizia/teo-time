@@ -8,16 +8,11 @@ import { BookingComponentType } from '../booking/BookingPageTypes';
 import routes from '../../routes';
 
 const SuccessfulPage = ({ dispatch, state }: BookingComponentType) => {
-  const [appointmentDetails, setDetails] = useState<string | null>('');
   const history = useHistory();
-  useEffect(() => {
-    const details = localStorage.getItem('APPOINTMENT_DETAILS');
-    setDetails(details);
-  }, []);
 
-  const parsedData =
-    appointmentDetails &&
-    DateTime.fromISO(appointmentDetails).toFormat('yyyy LLL dd - t');
+  const parsedData = DateTime.fromISO(
+    state.schedules.appointmentDetails.start
+  ).toFormat('yyyy LLL dd - t');
 
   return (
     <div className="grid grid-cols-1 gap-8 justify-items-center">

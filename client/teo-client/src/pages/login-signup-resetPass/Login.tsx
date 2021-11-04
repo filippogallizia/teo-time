@@ -11,6 +11,7 @@ import { BrowserRouter as Router, Switch, useHistory } from 'react-router-dom';
 import Routes from '../../routes';
 import {
   ACCESS_TOKEN,
+  CURRENT_USER_ROLE,
   GRID_ONE_COL,
   TITLE,
 } from '../../shared/locales/constant';
@@ -22,7 +23,7 @@ import { SET_CURRENT_USER } from '../booking/bookingReducer';
 import { UserType } from '../../../../../types/Types';
 import { ProtectedRoute } from '../general/GeneralPage';
 
-const ForgotPassword = () => {
+export const ForgotPassword = () => {
   const [emailValue, setEmail] = useState('');
   const [requestSuccess, setSuccess] = useState(false);
 
@@ -90,7 +91,7 @@ let schema = yup.object().shape({
     }),
 });
 
-const LoginMainPage = ({ dispatch, state }: BookingComponentType) => {
+const Login = ({ dispatch, state }: BookingComponentType) => {
   const { register, handleSubmit, formState } = useForm<InitialFormType>({
     mode: 'all',
     reValidateMode: 'onChange',
@@ -104,7 +105,10 @@ const LoginMainPage = ({ dispatch, state }: BookingComponentType) => {
   const myFunc = async (value: InitialFormType) => {
     const handleSuccess = (response: { token: string; user: UserType }) => {
       localStorage.setItem(ACCESS_TOKEN, response.token);
-      dispatch({ type: SET_CURRENT_USER, payload: response.user });
+      if (response.user.role) {
+        localStorage.setItem(CURRENT_USER_ROLE, response.user.role);
+        dispatch({ type: SET_CURRENT_USER, payload: response.user });
+      }
     };
     try {
       await loginService(handleSuccess, {
@@ -171,27 +175,20 @@ const LoginMainPage = ({ dispatch, state }: BookingComponentType) => {
   );
 };
 
-const Login = ({ dispatch, state }: BookingComponentType) => {
-  return (
-    <Router>
-      <Switch>
-        <ProtectedRoute
-          path={Routes.LOGIN_FORGOT_PASSWORD}
-          condition={true}
-          altRoute={Routes.LOGIN}
-        >
-          <ForgotPassword />
-        </ProtectedRoute>
-        <ProtectedRoute
-          path={Routes.LOGIN}
-          condition={true}
-          altRoute={Routes.ROOT}
-        >
-          <LoginMainPage dispatch={dispatch} state={state} />
-        </ProtectedRoute>
-      </Switch>
-    </Router>
-  );
-};
+// const Login = ({ dispatch, state }: BookingComponentType) => {
+//   return (
+//     <Router>
+//       <Switch>
+//         {/* <ProtectedRoute
+//           path={Routes.LOGIN}
+//           condition={true}
+//           altRoute={Routes.ROOT}
+//         >
+//           <LoginMainPage dispatch={dispatch} state={state} />
+//         </ProtectedRoute> */}
+//       </Switch>
+//     </Router>
+//   );
+// };
 
 export default Login;

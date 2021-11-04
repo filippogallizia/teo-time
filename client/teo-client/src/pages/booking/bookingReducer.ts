@@ -65,15 +65,17 @@ type ActionSetRenderAvailabilities = {
   payload: boolean;
 };
 
+export type BookingAndUser = {
+  id: number;
+  start: string;
+  end: string;
+  userId: number;
+  user: UserType;
+};
+
 type ActionSetAllBookingsAndUsers = {
   type: typeof SET_ALL_BOOKINGS_AND_USERS;
-  payload: {
-    id: number;
-    start: string;
-    end: string;
-    userId: number;
-    user: UserType;
-  }[][];
+  payload: BookingAndUser[][];
 };
 
 type ActionSetAppointmentDetails = {

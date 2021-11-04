@@ -5,7 +5,7 @@ import {
   MEDIUM_MARGIN_BOTTOM,
   TITLE,
 } from '../../shared/locales/constant';
-import EventListener from '../../helpers/EventListener';
+import { handleToastInFailRequest } from '../../shared/locales/utils';
 import { DATE_TO_CLIENT_FORMAT } from '../../shared/locales/utils';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import {
@@ -58,12 +58,9 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
     };
     const asyncFunc = async () => {
       try {
-        const password = localStorage.getItem('token');
-        if (password) {
-          await retriveUserBooking(handleReceiveBooking);
-        }
+        await retriveUserBooking(handleReceiveBooking);
       } catch (e: any) {
-        EventListener.emit('errorHandling', e.response);
+        handleToastInFailRequest(e, toast);
       }
     };
     asyncFunc();

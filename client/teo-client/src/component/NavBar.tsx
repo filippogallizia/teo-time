@@ -4,7 +4,7 @@ import routes from '../routes';
 import { toast } from 'react-toastify';
 import i18n from '../i18n';
 import { Actions, InitialState } from '../pages/booking/bookingReducer';
-import { ACCESS_TOKEN } from '../shared/locales/constant';
+import { ACCESS_TOKEN, CURRENT_USER_ROLE } from '../shared/locales/constant';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function Navbar({
@@ -35,7 +35,7 @@ export default function Navbar({
     }
   }, []);
 
-  const IS_ADMIN = state.schedules.currentUser?.role === 'admin';
+  const IS_ADMIN = localStorage.getItem(CURRENT_USER_ROLE);
 
   return (
     <div ref={box} className="mb-10">
@@ -68,11 +68,6 @@ export default function Navbar({
             <ul className="flex flex-col lg:flex-row list-none lg:ml-auto">
               <li className="nav-item">
                 <Link
-                  onClick={() => {
-                    if (!token) {
-                      toast(i18n.t('toastMessages.errors.notAuthorized'));
-                    }
-                  }}
                   to={routes.HOMEPAGE_BOOKING}
                   className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
                 >
@@ -104,11 +99,6 @@ export default function Navbar({
               {IS_ADMIN && (
                 <li className="nav-item">
                   <Link
-                    onClick={() => {
-                      if (!token) {
-                        toast(i18n.t('toastMessages.errors.notAuthorized'));
-                      }
-                    }}
                     to={routes.ADMIN}
                     className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white border-b-4  border-transparent hover:border-yellow-500"
                   >
@@ -117,13 +107,13 @@ export default function Navbar({
                 </li>
               )}
               <li className="nav-item">
-                <div className="text-white border-b-4  border-transparent hover:border-yellow-500">
+                <div className="text-white border-b-4 cursor-pointer  border-transparent hover:border-yellow-500">
                   <div
                     onClick={() => {
                       if (token) {
                         localStorage.removeItem(ACCESS_TOKEN);
                         history.push(routes.LOGIN);
-                        toast(i18n.t('toastMessages.others.logOut'));
+                        toast(i18n.t('toastMessages.other.logOut'));
                       }
                     }}
                     className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"

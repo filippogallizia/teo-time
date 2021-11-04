@@ -3,6 +3,7 @@ import { ACCESS_TOKEN } from '../../../shared/locales/constant';
 // import { WEB_TOKEN } from '../../../constant';
 const URL = 'http://0.0.0.0:5000';
 const webtoken = localStorage.getItem(ACCESS_TOKEN);
+console.log(webtoken, 'webtoken');
 
 export const retriveUserBooking = async (fn: any) => {
   try {

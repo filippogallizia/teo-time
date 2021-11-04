@@ -7,7 +7,10 @@ import { BOLD, MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
 import EventListener from '../../helpers/EventListener';
 import routes from '../../routes';
 import { createBooking } from '../../services/calendar.service';
-import { parseHoursToObject } from '../../shared/locales/utils';
+import {
+  handleToastInFailRequest,
+  parseHoursToObject,
+} from '../../shared/locales/utils';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import {
   SET_APPOINTMENT_DETAILS,
@@ -15,6 +18,7 @@ import {
   SET_RENDER_AVAILABILITIES,
 } from '../booking/bookingReducer';
 import i18n from '../../i18n';
+import { toast } from 'react-toastify';
 
 type InitialFormType = {
   name: string;
@@ -55,7 +59,8 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
       });
       history.push(routes.HOMEPAGE_SUCCESS);
     } catch (e: any) {
-      EventListener.emit('errorHandling', e.response);
+      console.log('here');
+      handleToastInFailRequest(e, toast);
     }
   };
 

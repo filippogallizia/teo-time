@@ -9,7 +9,7 @@ import { Redirect, Route, RouteProps } from 'react-router-dom';
 import ConfirmPage from '../confirm/ConfirmPage';
 import AdminPage from '../admin/AdminPage';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import { ACCESS_TOKEN } from '../../shared/locales/constant';
+import { ACCESS_TOKEN, CURRENT_USER_ROLE } from '../../shared/locales/constant';
 
 type ProtectedRouteType = {
   children: any;
@@ -36,8 +36,7 @@ export const ProtectedRoute = ({
 };
 
 const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
-  const IS_ADMIN = state.schedules.currentUser?.role === 'admin';
-
+  const IS_ADMIN = localStorage.getItem(CURRENT_USER_ROLE);
   const TOKEN = localStorage.getItem(ACCESS_TOKEN);
 
   return (
@@ -45,7 +44,7 @@ const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
       <Switch>
         <ProtectedRoute
           path={Routes.HOMEPAGE_BOOKING}
-          condition={localStorage.getItem(ACCESS_TOKEN) ? true : false}
+          condition={true}
           altRoute={Routes.LOGIN}
         >
           <BookingPage dispatch={dispatch} state={state} />

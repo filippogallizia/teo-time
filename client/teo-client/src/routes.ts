@@ -5,7 +5,7 @@ class Routes {
   public ROOT = '/';
   public ERROR = '/error';
   public LOGIN = '/login';
-  public LOGIN_FORGOT_PASSWORD = '/login/forgotPassword';
+  public LOGIN_FORGOT_PASSWORD = '/forgotPassword';
   public SIGNUP = '/signup';
   public RESET_PASSWORD = '/resetPassword';
   public USER = '/homepage/user';
@@ -14,6 +14,8 @@ class Routes {
   public ADMIN = '/homepage/admin';
   public HOMEPAGE_BOOKING = '/homepage/booking';
   public HOMEPAGE_SUCCESS = '/homepage/success';
+  public ADMIN_BOOKING_MANAGER = '/homepage/admin/bookingManager';
+  public ADMIN_USERS_TABLE = '/homepage/admin/usersTable';
 }
 
 export default new Routes();
