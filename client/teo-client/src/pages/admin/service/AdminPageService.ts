@@ -15,3 +15,17 @@ export const getUsersAndBookings = async (fn: any) => {
     throw e;
   }
 };
+
+export const getAllUsers = async (fn: any) => {
+  let config = {
+    headers: {
+      Authorization: `Bearer ${WEB_TOKEN}`,
+    },
+  };
+  try {
+    const response = await axios.get(`${URL}/allUsers`, config);
+    fn(response.data);
+  } catch (e: any) {
+    throw e;
+  }
+};

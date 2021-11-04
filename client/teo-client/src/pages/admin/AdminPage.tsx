@@ -55,7 +55,7 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
           condition={true}
           altRoute={Routes.ADMIN}
         >
-          <UsersTable state={state} />
+          <UsersTable />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.ADMIN}

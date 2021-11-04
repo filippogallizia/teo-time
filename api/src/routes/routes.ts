@@ -340,6 +340,38 @@ router.get(
   }
 );
 
+router.get(
+  '/allUsers',
+  [authenticateToken],
+  (req: express.Request, res: express.Response) => {
+    try {
+      User.findAll()
+        .then((usr: any) => {
+          if (usr.length > 0) {
+            res.send(usr);
+          } else {
+            res.status(500).send({
+              success: false,
+              error: {
+                message: 'there are no users',
+              },
+            });
+          }
+        })
+        .catch((e: any) => {
+          throw e;
+        });
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+
 router.post(
   '/resetPassword',
   async (req: express.Request, res: express.Response) => {
