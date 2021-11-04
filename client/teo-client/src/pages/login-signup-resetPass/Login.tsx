@@ -14,14 +14,13 @@ import {
   CURRENT_USER_ROLE,
   GRID_ONE_COL,
   TITLE,
+  USER_INFO,
 } from '../../shared/locales/constant';
 import { handleToastInFailRequest } from '../../shared/locales/utils';
 import { toast } from 'react-toastify';
 import i18n from '../../i18n';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import { SET_CURRENT_USER } from '../booking/bookingReducer';
 import { UserType } from '../../../../../types/Types';
-import { ProtectedRoute } from '../general/GeneralPage';
 
 export const ForgotPassword = () => {
   const [emailValue, setEmail] = useState('');
@@ -106,8 +105,7 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
     const handleSuccess = (response: { token: string; user: UserType }) => {
       localStorage.setItem(ACCESS_TOKEN, response.token);
       if (response.user.role) {
-        localStorage.setItem(CURRENT_USER_ROLE, response.user.role);
-        dispatch({ type: SET_CURRENT_USER, payload: response.user });
+        localStorage.setItem(USER_INFO, JSON.stringify(response.user));
       }
     };
     try {

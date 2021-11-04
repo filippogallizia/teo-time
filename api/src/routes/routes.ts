@@ -280,7 +280,9 @@ router.get(
       );
       user.then((u: any) => {
         if (u) {
-          Bookings.findAll({ where: { userId: u.id } })
+          Bookings.findAll({
+            where: { userId: u.id },
+          })
             .then((bks: any) => {
               res.status(200).send(bks);
             })
@@ -316,6 +318,15 @@ router.get(
       })
         .then((bks: any) => {
           if (bks.length > 0) {
+            // const mappedUsr = bks.map((bookingWithUser: any) => {
+            //   return {
+            //     name: us.name,
+            //     id: us.id,
+            //     email: us.email,
+            //     role: us.email,
+            //     phoneNumber: us.phoneNumber,
+            //   };
+            // });
             res.send(bks);
           } else {
             res.status(500).send({
@@ -348,7 +359,16 @@ router.get(
       User.findAll()
         .then((usr: any) => {
           if (usr.length > 0) {
-            res.send(usr);
+            const mappedUsr = usr.map((us: any) => {
+              return {
+                name: us.name,
+                id: us.id,
+                email: us.email,
+                role: us.email,
+                phoneNumber: us.phoneNumber,
+              };
+            });
+            res.send(mappedUsr);
           } else {
             res.status(500).send({
               success: false,

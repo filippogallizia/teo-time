@@ -57,7 +57,6 @@ const ConfirmForm = ({ dispatch, state }: BookingComponentType) => {
       });
       history.push(Routes.HOMEPAGE_SUCCESS);
     } catch (e: any) {
-      console.log(e, 'here');
       handleToastInFailRequest(e, toast);
     }
   };

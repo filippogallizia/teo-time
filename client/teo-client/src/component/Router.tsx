@@ -1,6 +1,6 @@
+// external libraries
 import React, { useEffect, useReducer, useState } from 'react';
 import Routes from '../routes';
-
 import {
   BrowserRouter as Router,
   Switch,
@@ -8,6 +8,8 @@ import {
   RouteProps,
   Redirect,
 } from 'react-router-dom';
+
+// local files
 import Navbar from './NavBar';
 import GeneralPage from '../pages/general/GeneralPage';
 import Login, { ForgotPassword } from '../pages/login-signup-resetPass/Login';
@@ -71,6 +73,7 @@ const initialState = {
       id: 0,
       start: '',
     },
+    currentUser: {},
     allBookingsAndUsers: [],
   },
 };
@@ -87,7 +90,7 @@ const RouterComponent = (): JSX.Element => {
     <Router>
       <div className="relative min-h-screen">
         <div className="pb-16">
-          <Navbar setToken={setToken} dispatch={dispatch} state={state} />
+          <Navbar setToken={setToken} />
 
           <Switch>
             <ProtectedRoute

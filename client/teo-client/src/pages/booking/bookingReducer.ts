@@ -9,7 +9,6 @@ export const SET_CONFIRM_PHASE = 'SET_CONFIRM_PHASE';
 export const SET_RENDER_AVAILABILITIES = 'SET_RENDER_AVAILABILITIES';
 export const SET_APPOINTMENT_DETAILS = 'SET_APPOINTMENT_DETAILS';
 export const SET_ALL_BOOKINGS_AND_USERS = 'SET_ALL_BOOKINGS_AND_USERS';
-export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 
 export type timeRange = { start: string; end: string };
 
@@ -24,8 +23,7 @@ export type InitialState = {
       id: number;
       start: string;
     };
-    currentUser?: UserType;
-    specificUserBookings: timeRange[];
+    specificUserBookings: BookingAndUser[];
     allBookingsAndUsers: {
       id: number;
       start: string;
@@ -43,7 +41,7 @@ type ActionSetAvailabilities = {
 
 type ActionSetUserAllBookings = {
   type: typeof SET_SPECIFIC_USER_BOOKINGS;
-  payload: timeRange[];
+  payload: BookingAndUser[];
 };
 
 type ActionSetSelectionDate = {
@@ -86,11 +84,6 @@ type ActionSetAppointmentDetails = {
   };
 };
 
-type ActionSetCurrentUser = {
-  type: typeof SET_CURRENT_USER;
-  payload: UserType;
-};
-
 export type Actions =
   | ActionSetAvailabilities
   | ActionSetSelectionDate
@@ -99,8 +92,7 @@ export type Actions =
   | ActionSetRenderAvailabilities
   | ActionSetAppointmentDetails
   | ActionSetUserAllBookings
-  | ActionSetAllBookingsAndUsers
-  | ActionSetCurrentUser;
+  | ActionSetAllBookingsAndUsers;
 
 const bookingReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
@@ -135,10 +127,6 @@ const bookingReducer = (initialState: InitialState, action: Actions) => {
     case SET_ALL_BOOKINGS_AND_USERS:
       return produce(initialState, (draft) => {
         draft.schedules.allBookingsAndUsers = action.payload;
-      });
-    case SET_CURRENT_USER:
-      return produce(initialState, (draft) => {
-        draft.schedules.currentUser = action.payload;
       });
     default:
       return initialState;

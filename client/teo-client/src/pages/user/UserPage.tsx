@@ -4,6 +4,7 @@ import {
   GRID_ONE_COL,
   MEDIUM_MARGIN_BOTTOM,
   TITLE,
+  USER_INFO,
 } from '../../shared/locales/constant';
 import { handleToastInFailRequest } from '../../shared/locales/utils';
 import { DATE_TO_CLIENT_FORMAT } from '../../shared/locales/utils';
@@ -66,8 +67,18 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
     asyncFunc();
   }, [dispatch, forceRender]);
 
+  const currentUser = localStorage.getItem(USER_INFO);
+
   return (
     <div className={GRID_ONE_COL}>
+      <div className="grid grid-flow-col gap-4 grid-cols-1 mb-10">
+        {currentUser && (
+          <>
+            <div>{JSON.parse(currentUser).name}</div>
+            <div>{JSON.parse(currentUser).email}</div>
+          </>
+        )}
+      </div>
       <p className={`${TITLE} ${MEDIUM_MARGIN_BOTTOM}`}>Le tue prenotazioni.</p>
       {state.schedules.specificUserBookings.length > 0 ? (
         <div>

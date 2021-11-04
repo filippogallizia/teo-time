@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Switch } from 'react-router';
 import BookingPage from '../booking/BookingPage';
 import SuccessfulPage from '../successfulBooking/SuccesfulPage';
@@ -9,7 +9,11 @@ import { Redirect, Route, RouteProps } from 'react-router-dom';
 import ConfirmPage from '../confirm/ConfirmPage';
 import AdminPage from '../admin/AdminPage';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import { ACCESS_TOKEN, CURRENT_USER_ROLE } from '../../shared/locales/constant';
+import {
+  ACCESS_TOKEN,
+  CURRENT_USER_ROLE,
+  USER_INFO,
+} from '../../shared/locales/constant';
 
 type ProtectedRouteType = {
   children: any;
@@ -35,10 +39,15 @@ export const ProtectedRoute = ({
   );
 };
 
-const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
-  const IS_ADMIN = localStorage.getItem(CURRENT_USER_ROLE);
-  const TOKEN = localStorage.getItem(ACCESS_TOKEN);
+const userInfo = localStorage.getItem(USER_INFO);
 
+export const IS_ADMIN = userInfo
+  ? JSON.parse(userInfo).role === 'admin'
+  : false;
+
+export const TOKEN = localStorage.getItem(ACCESS_TOKEN);
+
+const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
   return (
     <>
       <Switch>

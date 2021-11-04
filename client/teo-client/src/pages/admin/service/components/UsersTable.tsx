@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useAsyncDebounce, useSortBy, useTable } from 'react-table';
+import {
+  useAsyncDebounce,
+  useSortBy,
+  useTable,
+  useFilters,
+  useGlobalFilter,
+  usePagination,
+  Column,
+} from 'react-table';
 import { UserType } from '../../../../../../../types/Types';
-import { InitialState } from '../../../booking/bookingReducer';
 import { getAllUsers } from '../AdminPageService';
 
 // Define a default UI for filtering
@@ -42,7 +49,11 @@ const UsersTable = () => {
     };
     getAllUsers(handleSuccess);
   }, []);
-  const columns = React.useMemo(
+  const columns: readonly Column<{
+    col1: string | undefined;
+    col2: string | undefined;
+    col3: number | undefined;
+  }>[] = React.useMemo(
     () => [
       {
         Header: 'Name',
@@ -72,8 +83,16 @@ const UsersTable = () => {
   }, [data1]);
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    //@ts-expect-error
-    useTable({ columns, data }, useSortBy);
+    useTable(
+      {
+        columns,
+        data,
+      },
+      useFilters, // useFilters!
+      useGlobalFilter,
+      useSortBy,
+      usePagination // new
+    );
 
   const firstPageRows = rows.slice(0, 20);
 

@@ -1,6 +1,7 @@
 export const URL_CLIENT = 'http://localhost:3000';
 export const ACCESS_TOKEN = 'tokenTeoApp';
 export const CURRENT_USER_ROLE = 'CURRENT_USER_ROLE';
+export const USER_INFO = 'USER_INFO';
 
 export const TAILWIND_MOBILE_BREAKPOINT = 768;
 

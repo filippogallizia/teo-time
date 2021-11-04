@@ -54,13 +54,10 @@ const ResetPassword = ({ dispatch, state }: BookingComponentType) => {
         console.log(e);
       }
     }
-    console.log(resetPasswordToken, 'resetPasswordToken');
   }, [resetPasswordToken]);
 
   const myFunc = async (value: InitialFormType) => {
     const handleSuccess = (response: any) => {
-      console.log(response);
-      console.log(response);
       toast(i18n.t(response));
     };
     try {
