@@ -159,32 +159,33 @@ router.post(
           </div>
           `,
           };
-          const sendEmail = async () => {
-            await sgMail
-              .sendMultiple(msg)
-              .then(
-                () => {
-                  res.status(200).send(booking);
-                },
-                (e: any) => {
-                  res.status(500).send({
-                    success: false,
-                    error: {
-                      message: e,
-                    },
-                  });
-                }
-              )
-              .catch((e: any) => {
-                res.status(500).send({
-                  success: false,
-                  error: {
-                    message: e,
-                  },
-                });
-              });
-          };
-          sendEmail();
+          // const sendEmail = async () => {
+          //   await sgMail
+          //     .sendMultiple(msg)
+          //     .then(
+          //       () => {
+          //         res.status(200).send(booking);
+          //       },
+          //       (e: any) => {
+          //         res.status(500).send({
+          //           success: false,
+          //           error: {
+          //             message: e,
+          //           },
+          //         });
+          //       }
+          //     )
+          //     .catch((e: any) => {
+          //       res.status(500).send({
+          //         success: false,
+          //         error: {
+          //           message: e,
+          //         },
+          //       });
+          //     });
+          // };
+          // sendEmail();
+          res.status(200).send(booking);
         })
         .catch((e: any) => {
           res.status(500).send({

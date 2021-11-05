@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import GeneralButton, { buttonStyle } from '../../component/GeneralButton';
 import {
   loginService,
@@ -7,11 +7,10 @@ import {
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
-import { BrowserRouter as Router, Switch, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Routes from '../../routes';
 import {
   ACCESS_TOKEN,
-  CURRENT_USER_ROLE,
   GRID_ONE_COL,
   TITLE,
   USER_INFO,
@@ -21,6 +20,7 @@ import { toast } from 'react-toastify';
 import i18n from '../../i18n';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import { UserType } from '../../../../../types/Types';
+import { UserContext } from '../../component/UserContext';
 
 export const ForgotPassword = () => {
   const [emailValue, setEmail] = useState('');
@@ -99,13 +99,16 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
     resolver: yupResolver(schema),
   });
   const history = useHistory();
+  const { setUser, setToken } = useContext(UserContext);
   const { isValid, errors } = formState;
 
   const myFunc = async (value: InitialFormType) => {
     const handleSuccess = (response: { token: string; user: UserType }) => {
       localStorage.setItem(ACCESS_TOKEN, response.token);
-      if (response.user.role) {
+      setToken(response.token);
+      if (response.user) {
         localStorage.setItem(USER_INFO, JSON.stringify(response.user));
+        setUser(response.user);
       }
     };
     try {
@@ -172,21 +175,5 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
     </form>
   );
 };
-
-// const Login = ({ dispatch, state }: BookingComponentType) => {
-//   return (
-//     <Router>
-//       <Switch>
-//         {/* <ProtectedRoute
-//           path={Routes.LOGIN}
-//           condition={true}
-//           altRoute={Routes.ROOT}
-//         >
-//           <LoginMainPage dispatch={dispatch} state={state} />
-//         </ProtectedRoute> */}
-//       </Switch>
-//     </Router>
-//   );
-// };
 
 export default Login;

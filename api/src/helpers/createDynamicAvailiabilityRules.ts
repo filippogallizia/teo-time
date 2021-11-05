@@ -223,12 +223,7 @@ const compareTwoDatesWithK = (
 
   const contenitoreTurni: any = [];
 
-  let fineUltimoTurno: any;
-  while (contenitoreTurni.length > 0) {
-    fineUltimoTurno = DateTime.fromISO(
-      contenitoreTurni[contenitoreTurni.length - 1].end
-    );
-  }
+  const tmpBucket: any = [];
 
   // if thera are not slot in bucket && inizioGiornata piu' k are smaller then inizioLimite, then push in the bucket
   while (
@@ -236,8 +231,8 @@ const compareTwoDatesWithK = (
     contenitoreTurni.length === 0
   ) {
     contenitoreTurni.push({
-      start: inizioGiornata.toUTC().toISO(),
-      end: inizioGiornata.plus(k).toUTC().toISO(),
+      start: inizioGiornata.toUTC(),
+      end: inizioGiornata.plus(k),
     });
   }
 
@@ -249,27 +244,19 @@ const compareTwoDatesWithK = (
     fineLimite.plus(k) < fineGiornata
   ) {
     contenitoreTurni.push({
-      start: inizioLimite.toUTC().toISO(),
-      end: inizioLimite.plus(k).toUTC().toISO(),
+      start: inizioLimite.toUTC(),
+      end: inizioLimite.plus(k),
     });
   }
 
   // if fineUltimoTurno plus k is smaller then inizioLimite, then push in bucket
 
   while (
-    DateTime.fromISO(contenitoreTurni[contenitoreTurni.length - 1].end).plus(
-      k
-    ) < inizioLimite
+    contenitoreTurni[contenitoreTurni.length - 1].end.plus(k) < inizioLimite
   ) {
-    console.log('here');
     contenitoreTurni.push({
-      start: DateTime.fromISO(contenitoreTurni[contenitoreTurni.length - 1].end)
-        .toUTC()
-        .toISO(),
-      end: DateTime.fromISO(contenitoreTurni[contenitoreTurni.length - 1].end)
-        .plus(k)
-        .toUTC()
-        .toISO(),
+      start: contenitoreTurni[contenitoreTurni.length - 1].end,
+      end: contenitoreTurni[contenitoreTurni.length - 1].end.plus(k),
     });
   }
 
@@ -277,28 +264,28 @@ const compareTwoDatesWithK = (
 
   while (
     fineLimite.plus(k) < fineGiornata &&
-    DateTime.fromISO(contenitoreTurni[contenitoreTurni.length - 1].end) <
-      fineGiornata
+    contenitoreTurni[contenitoreTurni.length - 1].end < fineGiornata
   ) {
-    console.log(
-      DateTime.fromISO(contenitoreTurni[contenitoreTurni.length - 1].end).hour
-    );
-
+    if (tmpBucket.length === 0) {
+      tmpBucket.push({
+        start: fineLimite,
+        end: fineLimite.plus(k),
+      });
+    } else {
+      tmpBucket.push({
+        start: tmpBucket[tmpBucket.length - 1].end,
+        end: tmpBucket[tmpBucket.length - 1].end.plus(k),
+      });
+    }
     contenitoreTurni.push({
-      start: DateTime.fromISO(contenitoreTurni[contenitoreTurni.length - 1].end)
-        .toUTC()
-        .toISO(),
-      end: DateTime.fromISO(contenitoreTurni[contenitoreTurni.length - 1].end)
-        .plus(k)
-        .toUTC()
-        .toISO(),
-    });
-    contenitoreTurni.push({
-      start: fineLimite.toUTC().toISO(),
-      end: fineLimite.plus(k).toUTC().toISO(),
+      start: tmpBucket[tmpBucket.length - 1].start,
+      end: tmpBucket[tmpBucket.length - 1].end,
     });
   }
-  return contenitoreTurni;
+  return contenitoreTurni.map((obj: { start: Date; end: Date }) => ({
+    start: DateTime.fromISO(obj.start).toUTC().toISO(),
+    end: DateTime.fromISO(obj.end).toUTC().toISO(),
+  }));
 };
 
 console.log(
@@ -309,9 +296,9 @@ console.log(
     },
     {
       start: '2021-10-04T16:30:00.000Z',
-      end: '2021-10-04T17:30:00.000Z',
+      end: '2021-10-04T19:30:00.000Z',
     },
 
-    { hours: 0, minutes: 45 }
+    { hours: 2, minutes: 45 }
   )
 );

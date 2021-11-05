@@ -11,7 +11,6 @@ import { createBooking } from '../services/calendar.service';
 import GeneralButton from './GeneralButton';
 import { BOLD, MARGIN_BOTTOM, TITLE } from '../shared/locales/constant';
 import Routes from '../routes';
-import EventListener from '../helpers/EventListener';
 import {
   handleToastInFailRequest,
   parseHoursToObject,

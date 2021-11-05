@@ -1,11 +1,10 @@
-import React, { Dispatch, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import routes from '../routes';
 import { toast } from 'react-toastify';
 import i18n from '../i18n';
-import { ACCESS_TOKEN } from '../shared/locales/constant';
 import 'react-toastify/dist/ReactToastify.css';
-import { IS_ADMIN, TOKEN } from '../pages/general/GeneralPage';
+import { UserContext } from './UserContext';
 
 function useOutsideAlerter(ref: any, fn: any) {
   useEffect(() => {
@@ -33,19 +32,10 @@ function OutsideAlerter(props: any) {
   return <div ref={wrapperRef}>{props.children}</div>;
 }
 
-export default function Navbar({
-  fixed,
-  setToken,
-}: {
-  fixed?: any;
-  setToken: Dispatch<string | null>;
-}) {
+export default function Navbar({ fixed }: { fixed?: any }) {
   const history = useHistory();
   const [navbarOpen, setNavbarOpen] = React.useState(false);
-
-  useEffect(() => {
-    setToken(localStorage.getItem(ACCESS_TOKEN));
-  }, [setToken]);
+  const { user, setUser, token, setToken } = useContext(UserContext);
 
   return (
     <OutsideAlerter setNavbarOpen={setNavbarOpen}>
@@ -96,7 +86,7 @@ export default function Navbar({
                 <li className="nav-item">
                   <Link
                     onClick={() => {
-                      if (!TOKEN) {
+                      if (!token) {
                         toast(i18n.t('toastMessages.errors.notAuthorized'));
                       }
                     }}
@@ -107,7 +97,7 @@ export default function Navbar({
                     <span className="ml-2">user</span>
                   </Link>
                 </li>
-                {IS_ADMIN && (
+                {user && user.role === 'admin' && (
                   <li className="nav-item">
                     <Link
                       to={routes.ADMIN}
@@ -121,11 +111,11 @@ export default function Navbar({
                   <div className="text-white border-b-4 cursor-pointer  border-transparent hover:border-yellow-500">
                     <div
                       onClick={() => {
-                        if (TOKEN) {
-                          localStorage.removeItem(ACCESS_TOKEN);
-                          history.push(routes.LOGIN);
-                          toast(i18n.t('toastMessages.other.logOut'));
-                        }
+                        localStorage.clear();
+                        setUser(null);
+                        setToken(null);
+                        history.push(routes.LOGIN);
+                        toast(i18n.t('toastMessages.other.logOut'));
                       }}
                       className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
                     >

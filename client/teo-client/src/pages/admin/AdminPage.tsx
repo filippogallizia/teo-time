@@ -140,7 +140,7 @@ const BookingManager = ({ dispatch, state }: BookingComponentType) => {
     <div className="grid grid-flow-row gap-8  py-2 shadow-sm">
       {state.schedules.allBookingsAndUsers.map((booking, i: number) => {
         return (
-          <div className="p-4 shadow-md">
+          <div key={booking[i].id} className="p-4 shadow-md">
             <p className={`${BOLD} ${MEDIUM_MARGIN_BOTTOM}`}>
               {DATE_TO_CLIENT_FORMAT(booking[0].start)}
             </p>

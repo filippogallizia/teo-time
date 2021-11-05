@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useContext } from 'react';
 import { Switch } from 'react-router';
 import BookingPage from '../booking/BookingPage';
 import SuccessfulPage from '../successfulBooking/SuccesfulPage';
@@ -9,11 +9,7 @@ import { Redirect, Route, RouteProps } from 'react-router-dom';
 import ConfirmPage from '../confirm/ConfirmPage';
 import AdminPage from '../admin/AdminPage';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import {
-  ACCESS_TOKEN,
-  CURRENT_USER_ROLE,
-  USER_INFO,
-} from '../../shared/locales/constant';
+import { UserContext } from '../../component/UserContext';
 
 type ProtectedRouteType = {
   children: any;
@@ -39,15 +35,9 @@ export const ProtectedRoute = ({
   );
 };
 
-const userInfo = localStorage.getItem(USER_INFO);
-
-export const IS_ADMIN = userInfo
-  ? JSON.parse(userInfo).role === 'admin'
-  : false;
-
-export const TOKEN = localStorage.getItem(ACCESS_TOKEN);
-
 const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
+  const { user, token } = useContext(UserContext);
+
   return (
     <>
       <Switch>
@@ -60,28 +50,28 @@ const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.HOMEPAGE_SUCCESS}
-          condition={TOKEN ? true : false}
+          condition={token ? true : false}
           altRoute={Routes.LOGIN}
         >
           <SuccessfulPage dispatch={dispatch} state={state} />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.USER}
-          condition={TOKEN ? true : false}
+          condition={token ? true : false}
           altRoute={Routes.LOGIN}
         >
           <UserPage dispatch={dispatch} state={state} />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.CONFIRM_PAGE}
-          condition={TOKEN ? true : false}
+          condition={token ? true : false}
           altRoute={Routes.LOGIN}
         >
           <ConfirmPage dispatch={dispatch} state={state} />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.ADMIN}
-          condition={TOKEN && IS_ADMIN ? true : false}
+          condition={token && user.role === 'admin' ? true : false}
           altRoute={Routes.LOGIN}
         >
           <AdminPage dispatch={dispatch} state={state} />

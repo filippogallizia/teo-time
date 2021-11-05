@@ -1,5 +1,5 @@
 // external libraries
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import Routes from '../routes';
 import {
   BrowserRouter as Router,
@@ -16,8 +16,9 @@ import Login, { ForgotPassword } from '../pages/login-signup-resetPass/Login';
 import Signup from '../pages/login-signup-resetPass/Signup';
 import Footer from './Footer';
 import bookingReducer from '../pages/booking/bookingReducer';
-import { ACCESS_TOKEN } from '../shared/locales/constant';
+import { ACCESS_TOKEN, USER_INFO } from '../shared/locales/constant';
 import ResetPassword from '../pages/login-signup-resetPass/ResetPassword';
+import { UserContext } from './UserContext';
 
 const GeneralLayout = ({ children }: { children: JSX.Element }) => {
   return <div className="flex flex-col md:m-auto md:max-w-2xl">{children}</div>;
@@ -79,76 +80,91 @@ const initialState = {
 };
 
 const RouterComponent = (): JSX.Element => {
-  const [, setToken] = useState<string | null>('');
   const [state, dispatch] = useReducer(bookingReducer, initialState);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState<string | null>(null);
+
+  const value = useMemo(
+    () => ({ user, setUser, token, setToken }),
+    [user, setUser, token, setToken]
+  );
 
   useEffect(() => {
-    setToken(() => localStorage.getItem(ACCESS_TOKEN));
-  }, []);
+    const userInfo = localStorage.getItem(USER_INFO);
+    const TOKEN = localStorage.getItem(ACCESS_TOKEN);
+    if (TOKEN) {
+      setToken(TOKEN);
+    }
+    if (userInfo) {
+      setUser(JSON.parse(userInfo));
+    }
+  }, [setUser]);
 
   return (
     <Router>
-      <div className="relative min-h-screen">
-        <div className="pb-16">
-          <Navbar setToken={setToken} />
+      <UserContext.Provider value={value}>
+        <div className="relative min-h-screen">
+          <div className="pb-16">
+            <Navbar />
 
-          <Switch>
-            <ProtectedRoute
-              path={Routes.LOGIN}
-              condition={true}
-              altRoute={Routes.ROOT}
-            >
-              <Login dispatch={dispatch} state={state} />
-            </ProtectedRoute>
+            <Switch>
+              <ProtectedRoute
+                path={Routes.LOGIN}
+                condition={true}
+                altRoute={Routes.ROOT}
+              >
+                <Login dispatch={dispatch} state={state} />
+              </ProtectedRoute>
 
-            <ProtectedRoute
-              path={Routes.RESET_PASSWORD}
-              condition={true}
-              altRoute={Routes.ROOT}
-            >
-              <ResetPassword dispatch={dispatch} state={state} />
-            </ProtectedRoute>
+              <ProtectedRoute
+                path={Routes.RESET_PASSWORD}
+                condition={true}
+                altRoute={Routes.ROOT}
+              >
+                <ResetPassword dispatch={dispatch} state={state} />
+              </ProtectedRoute>
 
-            <ProtectedRoute
-              path={Routes.LOGIN_FORGOT_PASSWORD}
-              condition={true}
-              altRoute={Routes.LOGIN}
-            >
-              <ForgotPassword />
-            </ProtectedRoute>
+              <ProtectedRoute
+                path={Routes.LOGIN_FORGOT_PASSWORD}
+                condition={true}
+                altRoute={Routes.LOGIN}
+              >
+                <ForgotPassword />
+              </ProtectedRoute>
 
-            <ProtectedRoute
-              path={Routes.SIGNUP}
-              condition={true}
-              altRoute={Routes.ROOT}
-            >
-              <Signup />
-            </ProtectedRoute>
+              <ProtectedRoute
+                path={Routes.SIGNUP}
+                condition={true}
+                altRoute={Routes.ROOT}
+              >
+                <Signup />
+              </ProtectedRoute>
 
-            <ProtectedRoute
-              path={Routes.HOMEPAGE}
-              condition={true}
-              altRoute={Routes.LOGIN}
-            >
-              <GeneralLayout>
-                <GeneralPage dispatch={dispatch} state={state} />
-              </GeneralLayout>
-            </ProtectedRoute>
-            <ProtectedRoute
-              path={Routes.ROOT}
-              condition={true}
-              altRoute={Routes.LOGIN}
-            >
-              <Redirect
-                to={{
-                  pathname: Routes.HOMEPAGE,
-                }}
-              />
-            </ProtectedRoute>
-          </Switch>
-          <Footer />
+              <ProtectedRoute
+                path={Routes.HOMEPAGE}
+                condition={true}
+                altRoute={Routes.LOGIN}
+              >
+                <GeneralLayout>
+                  <GeneralPage dispatch={dispatch} state={state} />
+                </GeneralLayout>
+              </ProtectedRoute>
+              <ProtectedRoute
+                path={Routes.ROOT}
+                condition={true}
+                altRoute={Routes.LOGIN}
+              >
+                <Redirect
+                  to={{
+                    pathname: Routes.HOMEPAGE,
+                  }}
+                />
+              </ProtectedRoute>
+            </Switch>
+            <Footer />
+          </div>
         </div>
-      </div>
+      </UserContext.Provider>
     </Router>
   );
 };
