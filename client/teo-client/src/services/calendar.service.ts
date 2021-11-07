@@ -3,8 +3,6 @@ import { ACCESS_TOKEN } from '../shared/locales/constant';
 
 const URL = 'http://0.0.0.0:5000';
 
-const webtoken = localStorage.getItem(ACCESS_TOKEN);
-
 export const getAvailabilities = async (
   fn: any,
   body: { start: string; end: string }
@@ -17,7 +15,7 @@ export const getAvailabilities = async (
       method: 'post',
       url: `${URL}/retrieveAvailability`,
       headers: {
-        Authorization: `Bearer ${webtoken}`,
+        Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
       },
       data: {
         ...bodyToSend,
@@ -43,7 +41,7 @@ export const createBooking = async (
       method: 'post',
       url: `${URL}/createbooking`,
       headers: {
-        Authorization: `Bearer ${webtoken}`,
+        Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
       },
       data: {
         start,

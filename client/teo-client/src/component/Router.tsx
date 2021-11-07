@@ -76,6 +76,83 @@ const initialState = {
     },
     currentUser: {},
     allBookingsAndUsers: [],
+    manageAvailabilities: [
+      {
+        day: 'Monday',
+        parameters: {
+          workTimeRange: {
+            start: '07:30',
+            end: '21:00',
+          },
+          breakTimeRange: {
+            start: '12:00',
+            end: '13:30',
+          },
+          eventDuration: { hours: 1, minutes: 0 },
+          breakTimeBtwEvents: { hours: 0, minutes: 30 },
+        },
+      },
+      {
+        day: 'Tuesday',
+        parameters: {
+          workTimeRange: {
+            start: '07:30',
+            end: '21:00',
+          },
+          breakTimeRange: {
+            start: '12:00',
+            end: '13:30',
+          },
+          eventDuration: { hours: 1, minutes: 0 },
+          breakTimeBtwEvents: { hours: 0, minutes: 30 },
+        },
+      },
+      {
+        day: 'Wednesday',
+        parameters: {
+          workTimeRange: {
+            start: '07:30',
+            end: '21:00',
+          },
+          breakTimeRange: {
+            start: '12:00',
+            end: '13:30',
+          },
+          eventDuration: { hours: 1, minutes: 0 },
+          breakTimeBtwEvents: { hours: 0, minutes: 30 },
+        },
+      },
+      {
+        day: 'Thursday',
+        parameters: {
+          workTimeRange: {
+            start: '07:30',
+            end: '21:00',
+          },
+          breakTimeRange: {
+            start: '12:00',
+            end: '13:30',
+          },
+          eventDuration: { hours: 1, minutes: 0 },
+          breakTimeBtwEvents: { hours: 0, minutes: 30 },
+        },
+      },
+      {
+        day: 'Friday',
+        parameters: {
+          workTimeRange: {
+            start: '07:30',
+            end: '21:00',
+          },
+          breakTimeRange: {
+            start: '12:00',
+            end: '13:30',
+          },
+          eventDuration: { hours: 1, minutes: 0 },
+          breakTimeBtwEvents: { hours: 0, minutes: 30 },
+        },
+      },
+    ],
   },
 };
 
@@ -105,7 +182,7 @@ const RouterComponent = (): JSX.Element => {
       <UserContext.Provider value={value}>
         <div className="relative min-h-screen">
           <div className="pb-16">
-            <Navbar />
+            <Navbar dispatch={dispatch} state={state} />
 
             <Switch>
               <ProtectedRoute

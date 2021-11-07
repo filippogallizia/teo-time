@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { WEB_TOKEN } from '../../../shared/locales/constant';
+import { ACCESS_TOKEN } from '../../../shared/locales/constant';
 const URL = 'http://0.0.0.0:5000';
 
 export const getUsersAndBookings = async (fn: any) => {
   let config = {
     headers: {
-      Authorization: `Bearer ${WEB_TOKEN}`,
+      Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
     },
   };
   try {
@@ -19,7 +19,7 @@ export const getUsersAndBookings = async (fn: any) => {
 export const getAllUsers = async (fn: any) => {
   let config = {
     headers: {
-      Authorization: `Bearer ${WEB_TOKEN}`,
+      Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
     },
   };
   try {

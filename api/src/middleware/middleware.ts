@@ -1,18 +1,23 @@
 import express, { NextFunction } from 'express';
-const jwt = require('jsonwebtoken');
 import { Op } from 'sequelize';
 import { any } from 'sequelize/types/lib/operators';
 import { filterForDays, HOUR_MINUTE_FORMAT } from '../../utils';
-const _ = require('lodash');
 import { retrieveAvailability } from '../helpers/retrieveAvaliability';
+const jwt = require('jsonwebtoken');
+const _ = require('lodash');
 const db = require('../models/db');
+const {
+  result,
+  compareTwoDatesWithK,
+} = require('../helpers/createDynamicAvailiabilityRules');
 const { DateTime } = require('luxon');
-const User = db.user;
 const sgMail = require('@sendgrid/mail');
 const generalAvaliabilityRules = require('../config/timeConditions.config.json');
 const { v4 } = require('uuid');
 const ClassSgMail = require('../config/sgMail.config');
 
+const User = db.user;
+const WorkSettings = db.WorkSettings;
 const Bookings = db.Bookings;
 
 export const bookExist = async (
@@ -50,12 +55,12 @@ export const bookOutRange = async (
 ) => {
   const { start, end } = req.body;
   const timeRange = [{ start, end }];
-  const r = filterForDays(generalAvaliabilityRules, timeRange);
+  const r = filterForDays(result, timeRange);
   // we assume that the range is not bigger than one day
   const findedSlot = _.intersectionWith(
     r[0].availability,
     [{ start, end }],
-    (a: TimeRangeTypeJson, b: TimeRangeTypeJson) => {
+    (a: any, b: any) => {
       return (
         HOUR_MINUTE_FORMAT(a.start) == HOUR_MINUTE_FORMAT(b.start) &&
         HOUR_MINUTE_FORMAT(a.end) == HOUR_MINUTE_FORMAT(b.end)
@@ -107,11 +112,41 @@ const getAvailability = async (
       };
     });
 
+    const r = await WorkSettings.findAll()
+      .then((daySetting: any) => {
+        const f = daySetting.map((day: any) => {
+          return {
+            day: day.day,
+            availability: compareTwoDatesWithK(
+              { start: day.workTimeStart, end: day.workTimeEnd },
+              { start: day.breakTimeStart, end: day.breakTimeEnd },
+              {
+                hours: day.eventDurationHours,
+                minutes: day.eventDurationMinutes,
+              },
+              {
+                hours: day.breakTimeBtwEventsHours,
+                minutes: day.breakTimeBtwEventsMinutes,
+              }
+            ),
+          };
+        });
+        return f;
+      })
+      .catch((e: any) => {
+        res.status(500).send({
+          success: false,
+          error: {
+            message: e,
+          },
+        });
+      });
     const availabilities = retrieveAvailability(
       {
         bookings: parseBooking,
       },
-      generalAvaliabilityRules,
+      { generalAvaliabilityRules: r },
+      // generalAvaliabilityRules,
       timeRange
     );
     //@ts-expect-error
@@ -145,7 +180,12 @@ const userExist = async (
     const user = await User.findOne({
       where: { email },
     }).catch((e: any) => {
-      throw e;
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
     });
     //@ts-expect-error
     res.user = user;
@@ -171,14 +211,14 @@ const createToken = (
   res: express.Response & { user: any },
   next: express.NextFunction
 ) => {
-  const { email, phoneNumber, name, password } = req.body;
+  const { email } = req.body;
 
   User.findOne({
     where: { email },
   })
     .then((usr: any) => {
       if (usr) {
-        const userToSign = { email, password, role: usr.role };
+        const userToSign = { email };
         res.locals.jwt_secret = generateAccessToken(userToSign);
         res.locals.jwt_type = 'Bearer';
         next();

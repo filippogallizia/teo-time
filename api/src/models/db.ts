@@ -1,5 +1,6 @@
 const dbConfig = require('../config/db.config.js');
-import BookedHoursType from './Bookings.model';
+import BookedHoursModel from './Bookings.model';
+import WorkSettingsModel from './WorkSettings.model';
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(
@@ -28,7 +29,9 @@ db.sequelize = sequelize;
 //@ts-expect-error
 db.user = require('./user.model.ts')(sequelize, Sequelize);
 //@ts-expect-error
-db.Bookings = BookedHoursType(sequelize, Sequelize);
+db.Bookings = BookedHoursModel(sequelize, Sequelize);
+//@ts-expect-error
+db.WorkSettings = WorkSettingsModel(sequelize, Sequelize);
 //@ts-expect-error
 db.user.hasMany(db.Bookings, { as: 'bookings' });
 //@ts-expect-error

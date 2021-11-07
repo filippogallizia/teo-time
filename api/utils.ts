@@ -1,5 +1,10 @@
 import { DateTime } from 'luxon';
-import { GeneralAvailabilityType, TimeRangeType } from '../types/Types';
+import {
+  GeneralAvailabilityType,
+  GeneralAvailabilityTypes,
+  GeneralAvaliabilityRulesType,
+  TimeRangeType,
+} from '../types/Types';
 const _ = require('lodash');
 
 export const HOUR_MINUTE_FORMAT = (value: string): string => {
@@ -27,7 +32,7 @@ export const filterForDays = (
   timeRange: TimeRangeType[]
 ): {
   day: string;
-  availability: TimeRangeTypeJson[];
+  availability: TimeRangeType[];
 }[] => {
   return _.intersectionWith(
     genAv.generalAvaliabilityRules,

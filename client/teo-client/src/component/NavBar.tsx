@@ -5,6 +5,11 @@ import { toast } from 'react-toastify';
 import i18n from '../i18n';
 import 'react-toastify/dist/ReactToastify.css';
 import { UserContext } from './UserContext';
+import { BookingComponentType } from '../pages/booking/BookingPageTypes';
+import {
+  SET_CONFIRM_PHASE,
+  SET_RENDER_AVAILABILITIES,
+} from '../pages/booking/bookingReducer';
 
 function useOutsideAlerter(ref: any, fn: any) {
   useEffect(() => {
@@ -16,11 +21,13 @@ function useOutsideAlerter(ref: any, fn: any) {
         fn(false);
       }
     }
+
+    // const event = new Event('ciao')
     // Bind the event listener
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('click', handleClickOutside);
     return () => {
       // Unbind the event listener on clean up
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside);
     };
   }, [fn, ref]);
 }
@@ -32,7 +39,11 @@ function OutsideAlerter(props: any) {
   return <div ref={wrapperRef}>{props.children}</div>;
 }
 
-export default function Navbar({ fixed }: { fixed?: any }) {
+export default function Navbar({
+  fixed,
+  dispatch,
+  state,
+}: { fixed?: any } & BookingComponentType) {
   const history = useHistory();
   const [navbarOpen, setNavbarOpen] = React.useState(false);
   const { user, setUser, token, setToken } = useContext(UserContext);
@@ -71,6 +82,13 @@ export default function Navbar({ fixed }: { fixed?: any }) {
                   <Link
                     to={routes.HOMEPAGE_BOOKING}
                     className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
+                    onClick={() => {
+                      dispatch({ type: SET_CONFIRM_PHASE, payload: false });
+                      dispatch({
+                        type: SET_RENDER_AVAILABILITIES,
+                        payload: false,
+                      });
+                    }}
                   >
                     <span className="ml-2">booking</span>
                   </Link>

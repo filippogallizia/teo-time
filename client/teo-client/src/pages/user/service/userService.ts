@@ -1,9 +1,6 @@
 import axios from 'axios';
 import { ACCESS_TOKEN } from '../../../shared/locales/constant';
-// import { WEB_TOKEN } from '../../../constant';
 const URL = 'http://0.0.0.0:5000';
-const webtoken = localStorage.getItem(ACCESS_TOKEN);
-console.log(webtoken, 'webtoken');
 
 export const retriveUserBooking = async (fn: any) => {
   try {
@@ -11,7 +8,7 @@ export const retriveUserBooking = async (fn: any) => {
       method: 'get',
       url: `${URL}/bookingFromUser`,
       headers: {
-        Authorization: `Bearer ${webtoken}`,
+        Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
       },
     });
 
@@ -35,7 +32,7 @@ export const deleteBooking = async (
         end,
       },
       headers: {
-        Authorization: `Bearer ${webtoken}`,
+        Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
       },
     });
 

@@ -1,4 +1,5 @@
 import produce from 'immer';
+import { ChangeEvent } from 'react';
 import { UserType } from '../../../../../types/Types';
 
 export const SET_AVAILABILITIES = 'SET_AVAILABILITIES';
@@ -9,8 +10,25 @@ export const SET_CONFIRM_PHASE = 'SET_CONFIRM_PHASE';
 export const SET_RENDER_AVAILABILITIES = 'SET_RENDER_AVAILABILITIES';
 export const SET_APPOINTMENT_DETAILS = 'SET_APPOINTMENT_DETAILS';
 export const SET_ALL_BOOKINGS_AND_USERS = 'SET_ALL_BOOKINGS_AND_USERS';
+export const SET_MANAGE_AVAILABILITIES = 'SET_MANAGE_AVAILABILITIES';
 
 export type timeRange = { start: string; end: string };
+
+export type ManageAvailability = {
+  day: string;
+  parameters?: {
+    workTimeRange: {
+      start: string;
+      end: string;
+    };
+    breakTimeRange: {
+      start: string;
+      end: string;
+    };
+    eventDuration: { hours: number; minutes: number };
+    breakTimeBtwEvents: { hours: number; minutes: number };
+  };
+};
 
 export type InitialState = {
   schedules: {
@@ -31,6 +49,7 @@ export type InitialState = {
       userId: number;
       user: UserType;
     }[][];
+    manageAvailabilities: ManageAvailability[];
   };
 };
 
@@ -63,6 +82,11 @@ type ActionSetRenderAvailabilities = {
   payload: boolean;
 };
 
+type ActionSetManageAvailabilities = {
+  type: typeof SET_MANAGE_AVAILABILITIES;
+  payload: { day: string; e: ChangeEvent<HTMLInputElement> };
+};
+
 export type BookingAndUser = {
   id: number;
   start: string;
@@ -92,7 +116,8 @@ export type Actions =
   | ActionSetRenderAvailabilities
   | ActionSetAppointmentDetails
   | ActionSetUserAllBookings
-  | ActionSetAllBookingsAndUsers;
+  | ActionSetAllBookingsAndUsers
+  | ActionSetManageAvailabilities;
 
 const bookingReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
@@ -127,6 +152,19 @@ const bookingReducer = (initialState: InitialState, action: Actions) => {
     case SET_ALL_BOOKINGS_AND_USERS:
       return produce(initialState, (draft) => {
         draft.schedules.allBookingsAndUsers = action.payload;
+      });
+    case SET_MANAGE_AVAILABILITIES:
+      return produce(initialState, (draft) => {
+        const day = action.payload.day;
+        const x = action.payload.e.target.id.split('.');
+        draft.schedules.allBookingsAndUsers =
+          draft.schedules.manageAvailabilities.map((d: any) => {
+            if (d.day === day) {
+              console.log('here');
+              return (d.parameters[x[0]][x[1]] = action.payload.e.target.value);
+            }
+            return d;
+          });
       });
     default:
       return initialState;

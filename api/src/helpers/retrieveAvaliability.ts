@@ -1,6 +1,6 @@
 const _ = require('lodash');
+import { GeneralAvaliabilityRulesType } from '../../../types/Types';
 import { filterForDays, HOUR_MINUTE_FORMAT } from '../../utils';
-import { GeneralAvaliabilityRulesType } from '../types/generalTypes';
 
 export const retrieveAvailability = (
   bookedHours: {

@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* input[type='time']::-webkit-calendar-picker-indicator {
+  background: none;
+} */
 .react-calendar {
   width: 350px;
   max-width: 100%;

@@ -42,9 +42,3 @@ export const MY_DIVIDER = 'border-b-2 border-gray-400';
 // colors
 
 export const BLUE_PRIMARY = '#006edc';
-
-//routes
-
-export const SUCCESSFUL_PAGE = 'successful';
-
-export const WEB_TOKEN = localStorage.getItem(ACCESS_TOKEN);

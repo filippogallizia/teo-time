@@ -1,13 +1,10 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { UserType } from '../../../../../../../types/Types';
-import {
-  ITALIC,
-  MEDIUM_MARGIN_BOTTOM,
-} from '../../../../shared/locales/constant';
-import { HOUR_MINUTE_FORMAT } from '../../../../shared/locales/utils';
-import { Actions, BookingAndUser } from '../../../booking/bookingReducer';
-import { deleteBooking } from '../../../user/service/userService';
+import { UserType } from '../../../../../../types/Types';
+import { ITALIC, MEDIUM_MARGIN_BOTTOM } from '../../../shared/locales/constant';
+import { HOUR_MINUTE_FORMAT } from '../../../shared/locales/utils';
+import { Actions, BookingAndUser } from '../../booking/bookingReducer';
+import { deleteBooking } from '../../user/service/userService';
 
 const EditBooking = ({
   oneBooking,

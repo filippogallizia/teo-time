@@ -6,10 +6,12 @@ export type TimeRangeType = {
 export type GeneralAvailabilityType = {
   day: string;
   availability: TimeRangeType[];
-}[];
+};
+
+export type GeneralAvailabilityTypes = GeneralAvailabilityType[];
 
 export type GeneralAvaliabilityRulesType = {
-  generalAvaliabilityRules: GeneralAvailabilityType;
+  generalAvaliabilityRules: GeneralAvailabilityTypes;
 };
 
 export type BookedHoursType = {

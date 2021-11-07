@@ -33,7 +33,7 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
     };
     const parsedDate = DateTime.fromISO(state.schedules.selectedDate);
     const startOfDay = DateTime.fromISO(state.schedules.selectedDate).set({
-      hour: 7,
+      hour: 0,
       minute: 0,
       second: 0,
       millisecond: 0,

@@ -8,8 +8,8 @@ import {
   usePagination,
   Column,
 } from 'react-table';
-import { UserType } from '../../../../../../../types/Types';
-import { getAllUsers } from '../AdminPageService';
+import { UserType } from '../../../../../../types/Types';
+import { getAllUsers } from '../service/AdminPageService';
 
 // Define a default UI for filtering
 function GlobalFilter({

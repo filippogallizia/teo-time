@@ -21,6 +21,7 @@ const { DateTime } = require('luxon');
 
 const User = db.user;
 const Bookings = db.Bookings;
+const WorkSettings = db.WorkSettings;
 
 const router = express.Router();
 
@@ -104,7 +105,9 @@ router.post(
 
 router.post(
   '/createbooking',
-  [authenticateToken, bookExist, bookOutRange],
+  // [authenticateToken, bookExist, bookOutRange],
+  [authenticateToken, bookExist],
+
   (req: express.Request, res: express.Response) => {
     try {
       const { start, end } = req.body;
@@ -122,11 +125,21 @@ router.post(
               // associate the booking with the user
               //@ts-expect-error
               booking.setUser(usr).catch((e: any) => {
-                throw e;
+                res.status(500).send({
+                  success: false,
+                  error: {
+                    message: e,
+                  },
+                });
               });
             })
             .catch((e: any) => {
-              throw e;
+              res.status(500).send({
+                success: false,
+                error: {
+                  message: e,
+                },
+              });
             });
           //send link
 
@@ -235,14 +248,18 @@ router.post(
       Bookings.findOne({ where: { start, end } })
         .then((bks: any) => {
           if (bks) {
-            console.log(bks, 'filofilofilo');
             bks
               .destroy()
               .then(() => {
                 res.status(200).send('prenotazione cancellata');
               })
               .catch((e: any) => {
-                throw e;
+                res.status(500).send({
+                  success: false,
+                  error: {
+                    message: e,
+                  },
+                });
               });
           } else {
             res.status(400).send({
@@ -254,7 +271,12 @@ router.post(
           }
         })
         .catch((e: any) => {
-          throw e;
+          res.status(500).send({
+            success: false,
+            error: {
+              message: e,
+            },
+          });
         });
     } catch (e: any) {
       res.status(500).send({
@@ -276,7 +298,12 @@ router.get(
     try {
       const user = User.findOne({ where: { email: userEmail } }).catch(
         (e: any) => {
-          throw e;
+          res.status(500).send({
+            success: false,
+            error: {
+              message: e,
+            },
+          });
         }
       );
       user.then((u: any) => {
@@ -288,7 +315,12 @@ router.get(
               res.status(200).send(bks);
             })
             .catch((e: any) => {
-              throw e;
+              res.status(500).send({
+                success: false,
+                error: {
+                  message: e,
+                },
+              });
             });
         } else {
           res.status(200).send('not booking found');
@@ -319,15 +351,6 @@ router.get(
       })
         .then((bks: any) => {
           if (bks.length > 0) {
-            // const mappedUsr = bks.map((bookingWithUser: any) => {
-            //   return {
-            //     name: us.name,
-            //     id: us.id,
-            //     email: us.email,
-            //     role: us.email,
-            //     phoneNumber: us.phoneNumber,
-            //   };
-            // });
             res.send(bks);
           } else {
             res.status(500).send({
@@ -339,7 +362,12 @@ router.get(
           }
         })
         .catch((e: any) => {
-          throw e;
+          res.status(500).send({
+            success: false,
+            error: {
+              message: e,
+            },
+          });
         });
     } catch (e: any) {
       res.status(500).send({
@@ -380,7 +408,12 @@ router.get(
           }
         })
         .catch((e: any) => {
-          throw e;
+          res.status(500).send({
+            success: false,
+            error: {
+              message: e,
+            },
+          });
         });
     } catch (e: any) {
       res.status(500).send({
@@ -421,11 +454,21 @@ router.post(
                     res.send({ message: 'succesfull sent' });
                   },
                   (e: any) => {
-                    throw e;
+                    res.status(500).send({
+                      success: false,
+                      error: {
+                        message: e,
+                      },
+                    });
                   }
                 )
                 .catch((e: any) => {
-                  throw e;
+                  res.status(500).send({
+                    success: false,
+                    error: {
+                      message: e,
+                    },
+                  });
                 });
             };
             sendEmail();
@@ -439,8 +482,12 @@ router.post(
           }
         })
         .catch((e: any) => {
-          console.log(e, 'here', 'e');
-          throw e;
+          res.status(500).send({
+            success: false,
+            error: {
+              message: e,
+            },
+          });
         });
     } catch (e: any) {
       res.status(500).send({
@@ -490,6 +537,84 @@ router.post(
 );
 
 router.post(
+  '/manageAvailabilities',
+  async (req: express.Request, res: express.Response) => {
+    const { workSettings } = req.body;
+    try {
+      workSettings.forEach((daySetting: any) => {
+        WorkSettings.findOne({ where: { day: daySetting.day } })
+          .then((d: any) => {
+            if (d) {
+              const asyncFn = async () => {
+                d.update({
+                  day: daySetting.day,
+                  workTimeStart: daySetting.parameters.workTimeRange.start,
+                  workTimeEnd: daySetting.parameters.workTimeRange.end,
+                  breakTimeStart: daySetting.parameters.breakTimeRange.start,
+                  breakTimeEnd: daySetting.parameters.breakTimeRange.end,
+                  eventDurationHours: daySetting.parameters.eventDuration.hours,
+                  eventDurationMinutes:
+                    daySetting.parameters.eventDuration.minutes,
+                  breakTimeBtwEventsHours:
+                    daySetting.parameters.breakTimeBtwEvents.hours,
+                  breakTimeBtwEventsMinutes:
+                    daySetting.parameters.breakTimeBtwEvents.minutes,
+                });
+                await d.save();
+              };
+              asyncFn();
+              res.send({ message: 'Availabilities updated' });
+            } else {
+              WorkSettings.create({
+                day: daySetting.day,
+                workTimeStart: daySetting.parameters.workTimeRange.start,
+                workTimeEnd: daySetting.parameters.workTimeRange.end,
+                breakTimeStart: daySetting.parameters.breakTimeRange.start,
+                breakTimeEnd: daySetting.parameters.breakTimeRange.end,
+                eventDurationHours: daySetting.parameters.eventDuration.hours,
+                eventDurationMinutes:
+                  daySetting.parameters.eventDuration.minutes,
+                breakTimeBtwEventsHours:
+                  daySetting.parameters.breakTimeBtwEvents.hours,
+                breakTimeBtwEventsMinutes:
+                  daySetting.parameters.breakTimeBtwEvents.minutes,
+              })
+                .then((user: UserType) => {
+                  res.send({ message: 'Availabilities created!' });
+                })
+                .catch((e: any) => {
+                  res.status(500).send({
+                    success: false,
+                    error: {
+                      message: e,
+                    },
+                  });
+                });
+            }
+          })
+          .catch((e: any) => {
+            console.log(e, 'sofia');
+            res.status(500).send({
+              success: false,
+              error: {
+                message: e,
+              },
+            });
+          });
+      });
+    } catch (e: any) {
+      console.log(e);
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+
+router.post(
   '/password/newPassword',
   async (req: express.Request, res: express.Response) => {
     const resetPasswordToken = req.body.resetPasswordToken;
@@ -515,7 +640,12 @@ router.post(
         })
         .catch((e: any) => {
           console.log(e, 'e');
-          throw e;
+          res.status(500).send({
+            success: false,
+            error: {
+              message: e,
+            },
+          });
         });
     } catch (e: any) {
       res.status(500).send({

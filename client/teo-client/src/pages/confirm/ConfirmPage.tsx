@@ -4,7 +4,6 @@ import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { useHistory } from 'react-router-dom';
 import GeneralButton from '../../component/GeneralButton';
 import { BOLD, MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
-import EventListener from '../../helpers/EventListener';
 import routes from '../../routes';
 import { createBooking } from '../../services/calendar.service';
 import {
@@ -26,6 +25,8 @@ type InitialFormType = {
   phoneNumber: number;
 };
 
+const EVENT_DURATION = { hours: 1, minutes: 0 };
+
 const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
   const history = useHistory();
   const mapped: { hours: number; minutes: number } = parseHoursToObject(
@@ -46,7 +47,7 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
       };
       await createBooking(handleSuccess, {
         start: parsedDate.plus(mapped).toISO(),
-        end: parsedDate.plus(mapped).plus({ hours: 1, minutes: 30 }).toISO(),
+        end: parsedDate.plus(mapped).plus(EVENT_DURATION).toISO(),
         email: value.email,
       });
       dispatch({
