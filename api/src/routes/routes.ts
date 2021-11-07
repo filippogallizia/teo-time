@@ -238,8 +238,8 @@ router.post(
 );
 
 router.post(
-  '/deletebooking',
-  [authenticateToken, bookOutRange],
+  '/deleteBooking',
+  [authenticateToken],
   (req: express.Request, res: express.Response) => {
     const { start, end } = req.body;
     //@ts-expect-error
@@ -350,16 +350,7 @@ router.get(
         order: [['start', 'ASC']],
       })
         .then((bks: any) => {
-          if (bks.length > 0) {
-            res.send(bks);
-          } else {
-            res.status(500).send({
-              success: false,
-              error: {
-                message: 'there are no users',
-              },
-            });
-          }
+          res.send(bks);
         })
         .catch((e: any) => {
           res.status(500).send({

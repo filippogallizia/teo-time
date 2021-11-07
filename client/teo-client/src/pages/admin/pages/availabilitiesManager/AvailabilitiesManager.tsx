@@ -1,35 +1,14 @@
 import { BookingComponentType } from '../../../booking/BookingPageTypes';
 import { SET_MANAGE_AVAILABILITIES } from '../../../booking/bookingReducer';
-import {
-  BOLD,
-  ITALIC,
-  MARGIN_BOTTOM,
-  MEDIUM_MARGIN_BOTTOM,
-} from '../../../../shared/locales/constant';
+import { BOLD, ITALIC } from '../../../../shared/locales/constant';
 import GeneralButton from '../../../../component/GeneralButton';
 import { manageAvailabilities } from './service/availabilitiesManagerService';
 
 const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
-  //   {
-  //     day: 'Monday',
-  //   parameters: {
-  //       workTimeRange: {
-  //         start: '2021-10-04T07:30:00.000Z',
-  //         end: '2021-10-04T21:15:00.000Z',
-  //       },
-  //       breakTimeRange: {
-  //         start: '2021-10-04T12:00:00.000Z',
-  //         end: '2021-10-04T13:30:00.000Z',
-  //       },
-  //       eventDuration: { hours: 1, minutes: 0 },
-  //       breakTimeBtwEvents: { hours: 0, minutes: 30 },
-  //     },
-  //   },
-
   const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
   return (
-    <div className="overflow-auto px-4">
+    <div className="overflow-auto px-4 ">
       <div className="grid grid-cols-1 gap-4">
         {weekDays.map((day: string) => {
           const dayInfo = state.schedules.manageAvailabilities.filter(
@@ -37,7 +16,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
           );
 
           return (
-            <div key={day}>
+            <div key={day} className="shadow-md p-2 mb-2">
               <div className={`grid grid-cols-1 gap-4`}>
                 <p className={`${BOLD}`}>{day}</p>
                 <div className={`grid grid-cols-3 gap-4 `}>
@@ -49,8 +28,6 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                       type="time"
                       id="workTimeRange.start"
                       //   name="appt"
-                      min="00:00"
-                      max="12:00"
                       required
                       value={
                         dayInfo.length > 0
@@ -72,8 +49,6 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                       type="time"
                       id="workTimeRange.end"
                       //   name="appt"
-                      min="13:00"
-                      max="24:00"
                       required
                       value={
                         dayInfo.length > 0
@@ -98,8 +73,6 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                         type="time"
                         id="breakTimeRange.start"
                         //   name="appt"
-                        min="00:00"
-                        max="12:00"
                         required
                         value={
                           dayInfo.length > 0
@@ -121,9 +94,6 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                       <input
                         type="time"
                         id="breakTimeRange.end"
-                        //   name="appt"
-                        min="13:00"
-                        max="24:00"
                         required
                         value={
                           dayInfo.length > 0

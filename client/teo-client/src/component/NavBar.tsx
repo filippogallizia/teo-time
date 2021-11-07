@@ -81,7 +81,7 @@ export default function Navbar({
                 <li className="nav-item">
                   <Link
                     to={routes.HOMEPAGE_BOOKING}
-                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
+                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
                     onClick={() => {
                       dispatch({ type: SET_CONFIRM_PHASE, payload: false });
                       dispatch({
@@ -90,15 +90,19 @@ export default function Navbar({
                       });
                     }}
                   >
-                    <span className="ml-2">booking</span>
+                    <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
+                      booking
+                    </span>
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link
                     to={routes.LOGIN}
-                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
+                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white  "
                   >
-                    <span className="ml-2">log in</span>
+                    <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
+                      log in
+                    </span>
                   </Link>
                 </li>
                 <li className="nav-item">
@@ -109,24 +113,28 @@ export default function Navbar({
                       }
                     }}
                     to={routes.USER}
-                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
+                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
                   >
                     <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
-                    <span className="ml-2">user</span>
+                    <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
+                      user
+                    </span>
                   </Link>
                 </li>
                 {user && user.role === 'admin' && (
                   <li className="nav-item">
                     <Link
                       to={routes.ADMIN}
-                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white border-b-4  border-transparent hover:border-yellow-500"
+                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white"
                     >
-                      <span className="ml-2">admin</span>
+                      <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
+                        admin
+                      </span>
                     </Link>
                   </li>
                 )}
                 <li className="nav-item">
-                  <div className="text-white border-b-4 cursor-pointer  border-transparent hover:border-yellow-500">
+                  <div className="text-white border-b-4 cursor-pointer">
                     <div
                       onClick={() => {
                         localStorage.clear();
@@ -137,7 +145,9 @@ export default function Navbar({
                       }}
                       className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
                     >
-                      <span className="ml-2">log out</span>
+                      <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
+                        log out
+                      </span>
                     </div>
                   </div>
                 </li>

@@ -39,7 +39,7 @@ const compareTwoDatesWithK = (
 
   // if thera are not slot in bucket && dayStart piu' eventDuration are smaller then breakStart, then push in the bucket
   while (
-    dayStart.plus(eventDuration) < breakStart &&
+    dayStart.plus(eventDuration) <= breakStart &&
     availabilitiesBucket.length === 0
   ) {
     availabilitiesBucket.push({
@@ -53,7 +53,7 @@ const compareTwoDatesWithK = (
   while (
     dayStart.plus(eventDuration) > breakStart &&
     availabilitiesBucket.length === 0 &&
-    breakEnd.plus(eventDuration) < dayEnd
+    breakEnd.plus(eventDuration) <= dayEnd
   ) {
     availabilitiesBucket.push({
       start: breakStart.toUTC(),
@@ -66,7 +66,7 @@ const compareTwoDatesWithK = (
   while (
     availabilitiesBucket[availabilitiesBucket.length - 1].end
       .plus(eventDuration)
-      .plus(breakTimeBtwEvents) < breakStart
+      .plus(breakTimeBtwEvents) <= breakStart
   ) {
     availabilitiesBucket.push({
       start:
@@ -82,11 +82,11 @@ const compareTwoDatesWithK = (
   // if breakEnd plus eventDuration is smaller then dayEnd, then push in bucket
 
   while (
-    breakEnd.plus(eventDuration) < dayEnd &&
-    availabilitiesBucket[availabilitiesBucket.length - 1].end < dayEnd &&
+    breakEnd.plus(eventDuration) <= dayEnd &&
+    availabilitiesBucket[availabilitiesBucket.length - 1].end <= dayEnd &&
     availabilitiesBucket[availabilitiesBucket.length - 1].end
       .plus(eventDuration)
-      .plus(breakTimeBtwEvents) < dayEnd
+      .plus(breakTimeBtwEvents) <= dayEnd
   ) {
     if (tmpBucket.length === 0) {
       tmpBucket.push({

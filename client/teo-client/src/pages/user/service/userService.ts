@@ -26,7 +26,7 @@ export const deleteBooking = async (
   try {
     const response = await axios({
       method: 'post',
-      url: `${URL}/deletebooking`,
+      url: `${URL}/deleteBooking`,
       data: {
         start,
         end,
