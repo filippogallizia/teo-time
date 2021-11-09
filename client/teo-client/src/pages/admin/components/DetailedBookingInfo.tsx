@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { ITALIC, MEDIUM_MARGIN_BOTTOM } from '../../../shared/locales/constant';
 import { HOUR_MINUTE_FORMAT } from '../../../shared/locales/utils';
-import { Actions, BookingAndUser } from '../../booking/bookingReducer';
+import { Actions, BookingAndUser } from '../../booking/stateReducer';
 import { deleteBooking } from '../../user/service/userService';
 
 const EditBooking = ({
@@ -14,12 +14,10 @@ const EditBooking = ({
 }) => {
   const handleDelete = async () => {
     try {
-      await deleteBooking(
-        (response: any) => {
-          console.log(response);
-        },
-        { start: oneBooking.start, end: oneBooking.end }
-      );
+      await deleteBooking((response: any) => {}, {
+        start: oneBooking.start,
+        end: oneBooking.end,
+      });
       setForceRender((prev: number) => prev + 1);
       toast.success('prenotazione cancellata', {
         position: toast.POSITION.TOP_CENTER,

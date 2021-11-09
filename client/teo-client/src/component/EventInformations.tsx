@@ -11,21 +11,20 @@ import {
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import {
   SET_CONFIRM_PHASE,
-  SET_RENDER_AVAILABILITIES,
-} from '../pages/booking/bookingReducer';
+  SET_RENDER_AVAL,
+} from '../pages/booking/stateReducer';
 
 const EventInformations = ({ state, dispatch }: BookingComponentType) => {
   return (
     <div
       className={`grid col-1 gap-4 justify-items-center relative md:static ${MARGIN_BOTTOM}`}
     >
-      {(state.schedules.isConfirmPhase ||
-        state.schedules.isRenderAvailabilities) && (
+      {(state.schedules.isConfirmPhase || state.schedules.isRenderAval) && (
         <div className={`absolute top-0 left-3 md:static`}>
           <BsFillArrowLeftSquareFill
             onClick={() => {
               dispatch({ type: SET_CONFIRM_PHASE, payload: false });
-              dispatch({ type: SET_RENDER_AVAILABILITIES, payload: false });
+              dispatch({ type: SET_RENDER_AVAL, payload: false });
             }}
             size="1.5em"
             color="#f59e0b"

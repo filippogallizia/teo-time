@@ -40,12 +40,12 @@ function BookingPage({ dispatch, state }: BookingComponentType) {
           <EventInformations state={state} dispatch={dispatch} />
         </div>
         <div className="col-span-4">
-          {state.schedules.isRenderAvailabilities && (
+          {state.schedules.isRenderAval && (
             <div>
               <AvailabilitiesContainer dispatch={dispatch} state={state} />
             </div>
           )}
-          {!state.schedules.isRenderAvailabilities && (
+          {!state.schedules.isRenderAval && (
             <div className="flex justify-center">
               <div style={{ maxWidth: '600px' }}>
                 <CalendarComponent state={state} dispatch={dispatch} />

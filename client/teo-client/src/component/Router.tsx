@@ -15,7 +15,7 @@ import GeneralPage from '../pages/general/GeneralPage';
 import Login, { ForgotPassword } from '../pages/login-signup-resetPass/Login';
 import Signup from '../pages/login-signup-resetPass/Signup';
 import Footer from './Footer';
-import bookingReducer from '../pages/booking/bookingReducer';
+import stateReducer from '../pages/booking/stateReducer';
 import { ACCESS_TOKEN, USER_INFO } from '../shared/locales/constant';
 import ResetPassword from '../pages/login-signup-resetPass/ResetPassword';
 import { UserContext } from './UserContext';
@@ -67,16 +67,12 @@ const initialState = {
         end: endAvailabilities.toISOString(),
       },
     ],
-    specificUserBookings: [],
+    userBookings: [],
     isConfirmPhase: false,
-    isRenderAvailabilities: false,
-    appointmentDetails: {
-      id: 0,
-      start: '',
-    },
+    isRenderAval: false,
     currentUser: {},
-    allBookingsAndUsers: [],
-    manageAvailabilities: [
+    bookingsAndUsers: [],
+    weekAvalSettings: [
       {
         day: 'Monday',
         parameters: {
@@ -157,7 +153,7 @@ const initialState = {
 };
 
 const RouterComponent = (): JSX.Element => {
-  const [state, dispatch] = useReducer(bookingReducer, initialState);
+  const [state, dispatch] = useReducer(stateReducer, initialState);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState<string | null>(null);
 

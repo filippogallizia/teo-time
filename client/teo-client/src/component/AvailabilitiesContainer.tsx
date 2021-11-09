@@ -4,18 +4,14 @@ import AvailabilityHourContainer from './AvailabilityHourContainer';
 import { BOLD, GRID_ONE_COL, TITLE } from '../shared/locales/constant';
 import { DateTime } from 'luxon';
 import { getAvailabilities } from '../services/calendar.service';
-import {
-  Actions,
-  InitialState,
-  SET_AVAILABILITIES,
-  timeRange,
-} from '../pages/booking/bookingReducer';
+import { Actions, InitialState, SET_AVAL } from '../pages/booking/stateReducer';
 import {
   FROM_DATE_TO_DAY,
   FROM_DATE_TO_HOUR,
   HOUR_MINUTE_FORMAT,
 } from '../shared/locales/utils';
 import EventListener from '../helpers/EventListener';
+import { TimeRangeType } from '../../types/Types';
 
 type BookSlotContainerType = {
   state: InitialState;
@@ -29,7 +25,7 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
 
   useEffect(() => {
     const setAvailabilities = (response: any) => {
-      dispatch({ type: SET_AVAILABILITIES, payload: response });
+      dispatch({ type: SET_AVAL, payload: response });
     };
     const parsedDate = DateTime.fromISO(state.schedules.selectedDate);
     const startOfDay = DateTime.fromISO(state.schedules.selectedDate).set({
@@ -63,7 +59,7 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
       if (state.schedules.availabilities.length > 0) {
         // if the date is today show availabilities just after the current hour
         return state.schedules.availabilities.reduce(
-          (acc: { start: string; end: string }[], cv: timeRange) => {
+          (acc: { start: string; end: string }[], cv: TimeRangeType) => {
             const availabilitiesDay = FROM_DATE_TO_DAY(cv.start);
             const availabilitiesHours = FROM_DATE_TO_HOUR(cv.start);
             const currentDay = FROM_DATE_TO_DAY(new Date().toISOString());

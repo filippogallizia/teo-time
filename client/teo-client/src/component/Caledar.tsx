@@ -3,9 +3,9 @@ import Calendar from 'react-calendar';
 // import 'react-calendar/dist/Calendar.css';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import {
-  SET_RENDER_AVAILABILITIES,
+  SET_RENDER_AVAL,
   SET_SELECTION_DATE,
-} from '../pages/booking/bookingReducer';
+} from '../pages/booking/stateReducer';
 
 function CalendarComponent({ dispatch, state }: BookingComponentType) {
   const myDispatch = (date: Date) => {
@@ -18,7 +18,7 @@ function CalendarComponent({ dispatch, state }: BookingComponentType) {
         dispatch({ type: SET_SELECTION_DATE, payload: date.toISOString() });
       })
       .then(() => {
-        dispatch({ type: SET_RENDER_AVAILABILITIES, payload: true });
+        dispatch({ type: SET_RENDER_AVAL, payload: true });
         // history.push(routes.CONFIRM_PAGE);
       });
   };

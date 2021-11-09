@@ -8,7 +8,7 @@ export const getAvailabilities = async (
   body: { start: string; end: string }
 ) => {
   const { start, end } = body;
-  const bodyToSend = { timeRange: [{ start, end }] };
+  const bodyToSend = { TimeRangeType: [{ start, end }] };
 
   try {
     const response = await axios({

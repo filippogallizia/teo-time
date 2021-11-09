@@ -1,9 +1,9 @@
 import express from 'express';
 import { Op } from 'sequelize';
-import { BookingType, UserType } from '../../../types/Types';
+import { BookingType, UserType } from '../types/types';
 const _ = require('lodash');
 
-const generalAvaliabilityRules = require('../config/timeConditions.config.json');
+const weekAvalSettings = require('../config/timeConditions.config.json');
 const path = require('path');
 const {
   getAvailability,
@@ -21,7 +21,7 @@ const { DateTime } = require('luxon');
 
 const User = db.user;
 const Bookings = db.Bookings;
-const WorkSettings = db.WorkSettings;
+const WeekAvailabilitiesSettings = db.WeekAvailabilitiesSettings;
 
 const router = express.Router();
 
@@ -113,7 +113,7 @@ router.post(
         start,
         end,
       })
-        .then((booking: BookingType) => {
+        .then((booking: any) => {
           // search the user by email
           User.findOne({ where: { email: userEmail } })
             .then((usr: UserType) => {
@@ -238,32 +238,31 @@ router.post(
 );
 
 router.get(
-  '/bookingFromUser',
+  '/userBookings',
   [authenticateToken],
   (req: express.Request, res: express.Response) => {
     //@ts-expect-error
     const userEmail = res.user.email;
     try {
-      const user = User.findOne({ where: { email: userEmail } }).catch(
-        (e: any) => {
-          throw e;
-        }
-      );
-      user.then((u: any) => {
-        if (u) {
-          Bookings.findAll({
-            where: { userId: u.id },
-          })
-            .then((bks: any) => {
-              res.status(200).send(bks);
+      User.findOne({ where: { email: userEmail } })
+        .then((usr: any) => {
+          if (usr) {
+            Bookings.findAll({
+              where: { userId: usr.id },
             })
-            .catch((e: any) => {
-              throw e;
-            });
-        } else {
-          res.status(200).send('not booking found');
-        }
-      });
+              .then((bks: any) => {
+                res.status(200).send(bks);
+              })
+              .catch((e: any) => {
+                throw e;
+              });
+          } else {
+            res.status(200).send([]);
+          }
+        })
+        .catch((e: any) => {
+          throw e;
+        });
     } catch (e: any) {
       res.status(500).send({
         success: false,
@@ -441,7 +440,7 @@ router.post(
     const { workSettings } = req.body;
     try {
       workSettings.forEach((daySetting: any) => {
-        WorkSettings.findOne({ where: { day: daySetting.day } })
+        WeekAvailabilitiesSettings.findOne({ where: { day: daySetting.day } })
           .then((d: any) => {
             if (d) {
               const asyncFn = async () => {
@@ -464,7 +463,7 @@ router.post(
               asyncFn();
               res.send({ message: 'Availabilities updated' });
             } else {
-              WorkSettings.create({
+              WeekAvailabilitiesSettings.create({
                 day: daySetting.day,
                 workTimeStart: daySetting.parameters.workTimeRange.start,
                 workTimeEnd: daySetting.parameters.workTimeRange.end,

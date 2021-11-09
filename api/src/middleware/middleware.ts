@@ -3,7 +3,7 @@ import { Op } from 'sequelize';
 import { filterForDays, HOUR_MINUTE_FORMAT } from '../../utils';
 import { retrieveAvailability } from '../helpers/retrieveAvaliability';
 import { WorkSetting } from '../types/types';
-const availabilitiesDefault = require('../config/availabilitiesDefault.json');
+const availabilitiesDefault = require('../config/availabilitiesDefault.config.json');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const db = require('../models/db');
@@ -13,12 +13,12 @@ const {
 } = require('../helpers/createDynamicAvailiabilityRules');
 const { DateTime } = require('luxon');
 const sgMail = require('@sendgrid/mail');
-const generalAvaliabilityRules = require('../config/timeConditions.config.json');
+const weekAvalSettings = require('../config/timeConditions.config.json');
 const { v4 } = require('uuid');
 const ClassSgMail = require('../config/sgMail.config');
 
 const User = db.user;
-const WorkSettings = db.WorkSettings;
+const WeekAvailabilitiesSettings = db.WeekAvailabilitiesSettings;
 const Bookings = db.Bookings;
 
 export const bookExist = async (
@@ -55,8 +55,8 @@ export const bookOutRange = async (
   next: express.NextFunction
 ) => {
   const { start, end } = req.body;
-  const timeRange = [{ start, end }];
-  const r = filterForDays(result, timeRange);
+  const TimeRangeType = [{ start, end }];
+  const r = filterForDays(result, TimeRangeType);
   // we assume that the range is not bigger than one day
   const findedSlot = _.intersectionWith(
     r[0].availability,
@@ -85,15 +85,15 @@ const getAvailability = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const timeRange = [...req.body.timeRange];
+  const TimeRangeType = [...req.body.TimeRangeType];
   try {
     const myBookings = await Bookings.findAll({
       where: {
         start: {
-          [Op.gte]: timeRange[0].start,
+          [Op.gte]: TimeRangeType[0].start,
         },
         end: {
-          [Op.lte]: timeRange[0].end,
+          [Op.lte]: TimeRangeType[0].end,
         },
       },
     }).catch((e: any) => {
@@ -108,10 +108,10 @@ const getAvailability = async (
       };
     });
 
-    const workSettings = await WorkSettings.findAll()
+    const weekAvailabilitiesSetting = await WeekAvailabilitiesSettings.findAll()
       .then((daySetting: WorkSetting[]) => {
         if (daySetting.length > 0) {
-          const f = daySetting.map((day: WorkSetting) => {
+          const result = daySetting.map((day: WorkSetting) => {
             return {
               day: day.day,
               availability: compareTwoDatesWithK(
@@ -128,10 +128,10 @@ const getAvailability = async (
               ),
             };
           });
-          return f;
+          return result;
         } else {
-          availabilitiesDefault.manageAvailabilities.map((day: any) => {
-            WorkSettings.create({
+          availabilitiesDefault.weekAvalSettings.map((day: any) => {
+            WeekAvailabilitiesSettings.create({
               day: day.day,
               workTimeStart: day.parameters.workTimeRange.start,
               workTimeEnd: day.parameters.workTimeRange.end,
@@ -155,8 +155,8 @@ const getAvailability = async (
       {
         bookings: parseBooking,
       },
-      { generalAvaliabilityRules: workSettings },
-      timeRange
+      { weekAvalSettings: weekAvailabilitiesSetting },
+      TimeRangeType
     );
     //@ts-expect-error
     res.availabilities = availabilities;

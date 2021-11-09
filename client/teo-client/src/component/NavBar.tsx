@@ -8,8 +8,8 @@ import { UserContext } from './UserContext';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import {
   SET_CONFIRM_PHASE,
-  SET_RENDER_AVAILABILITIES,
-} from '../pages/booking/bookingReducer';
+  SET_RENDER_AVAL,
+} from '../pages/booking/stateReducer';
 
 function useOutsideAlerter(ref: any, fn: any) {
   useEffect(() => {
@@ -85,7 +85,7 @@ export default function Navbar({
                     onClick={() => {
                       dispatch({ type: SET_CONFIRM_PHASE, payload: false });
                       dispatch({
-                        type: SET_RENDER_AVAILABILITIES,
+                        type: SET_RENDER_AVAL,
                         payload: false,
                       });
                     }}

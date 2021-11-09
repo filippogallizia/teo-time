@@ -1,4 +1,4 @@
-const generalAvaliabilityRules = require('../config/timeConditions.config.json');
+const weekAvalSettings = require('../config/timeConditions.config.json');
 const { DateTime } = require('luxon');
 const _ = require('lodash');
 import { TimeRangeType } from '../types/Types';
@@ -16,15 +16,15 @@ export const retrieveAvailability = (
     }[];
   },
   genAv: GeneralAvaliabilityRulesType,
-  timeRange?: { start: string; end: string }
+  TimeRangeType?: { start: string; end: string }
 ) => {
   // if there aren't booking, retrieve the  all availabilities for the time range
-  if (bookedHours.bookings.length === 0 && timeRange) {
+  if (bookedHours.bookings.length === 0 && TimeRangeType) {
     const filterForDays = _.filter(
-      genAv.generalAvaliabilityRules,
+      genAv.weekAvalSettings,
       (el: any) =>
         el.day.toLowerCase() ===
-        DateTime.fromISO(timeRange.start).weekdayLong.toLowerCase()
+        DateTime.fromISO(TimeRangeType.start).weekdayLong.toLowerCase()
     );
     return filterForDays[0].availability;
   } else {
@@ -36,7 +36,7 @@ export const retrieveAvailability = (
     // in between the booking provided, retrieve the availabilities with the same weekDay.
 
     const matchDayBookingAndAvailability = _.intersectionWith(
-      genAv.generalAvaliabilityRules,
+      genAv.weekAvalSettings,
       bookedHours.bookings,
       (a: any, b: any) => {
         const startParsed = b.start.toISOString();

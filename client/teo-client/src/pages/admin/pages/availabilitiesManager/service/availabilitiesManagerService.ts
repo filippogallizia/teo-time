@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { ACCESS_TOKEN } from '../../../../../shared/locales/constant';
-import { ManageAvailability } from '../../../../booking/bookingReducer';
+import { DayAvalSettingsType } from '../../../../booking/stateReducer';
 
 const URL = 'http://0.0.0.0:5000';
 
 export const manageAvailabilities = async (
   fn: any,
-  body: ManageAvailability[]
+  body: DayAvalSettingsType[]
 ) => {
   try {
     const response = await axios({

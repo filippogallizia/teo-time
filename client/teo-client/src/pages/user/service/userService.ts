@@ -6,7 +6,7 @@ export const retriveUserBooking = async (fn: any) => {
   try {
     const response = await axios({
       method: 'get',
-      url: `${URL}/bookingFromUser`,
+      url: `${URL}/userBookings`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
       },

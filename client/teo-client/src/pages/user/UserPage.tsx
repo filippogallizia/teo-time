@@ -9,28 +9,24 @@ import {
 import { handleToastInFailRequest } from '../../shared/locales/utils';
 import { DATE_TO_CLIENT_FORMAT } from '../../shared/locales/utils';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import {
-  SET_SPECIFIC_USER_BOOKINGS,
-  timeRange,
-} from '../booking/bookingReducer';
+import { SET_USER_BOOKINGS } from '../booking/stateReducer';
 import { deleteBooking, retriveUserBooking } from './service/userService';
 import { toast } from 'react-toastify';
+import { TimeRangeType } from '../../../types/Types';
 
 const DeleteBooking = ({
   booking,
   setRender,
 }: {
-  booking: timeRange;
+  booking: TimeRangeType;
   setRender: Dispatch<SetStateAction<number>>;
 }) => {
   const handleDelete = async () => {
     try {
-      await deleteBooking(
-        (response: any) => {
-          console.log(response);
-        },
-        { start: booking.start, end: booking.end }
-      );
+      await deleteBooking((response: any) => {}, {
+        start: booking.start,
+        end: booking.end,
+      });
       setRender((prev) => prev + 1);
       toast.success('prenotazione cancellata', {
         position: toast.POSITION.TOP_CENTER,
@@ -55,7 +51,7 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
   useEffect(() => {}, [forceRender]);
   useEffect(() => {
     const handleReceiveBooking = (booking: any) => {
-      dispatch({ type: SET_SPECIFIC_USER_BOOKINGS, payload: booking });
+      dispatch({ type: SET_USER_BOOKINGS, payload: booking });
     };
     const asyncFunc = async () => {
       try {
@@ -80,9 +76,9 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
         )}
       </div>
       <p className={`${TITLE} ${MEDIUM_MARGIN_BOTTOM}`}>Le tue prenotazioni.</p>
-      {state.schedules.specificUserBookings.length > 0 ? (
+      {state.schedules.userBookings.length > 0 ? (
         <div>
-          {state.schedules.specificUserBookings.map((book) => {
+          {state.schedules.userBookings.map((book) => {
             return (
               <DeleteBooking
                 setRender={setRender}
@@ -93,7 +89,7 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
           })}
         </div>
       ) : null}
-      {state.schedules.specificUserBookings.length === 0 ? (
+      {state.schedules.userBookings.length === 0 ? (
         <div className="flex justify-center">
           <p>Non hai prenotazioni marcate.</p>
         </div>

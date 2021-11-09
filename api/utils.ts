@@ -29,18 +29,15 @@ export const FROM_DATE_TO_DAY = (date: string) => {
 
 export const filterForDays = (
   genAv: GeneralAvaliabilityRulesType,
-  timeRange: TimeRangeType[]
+  TimeRangeType: TimeRangeType[]
 ): {
   day: string;
   availability: TimeRangeType[];
 }[] => {
-  console.log(genAv.generalAvaliabilityRules, 'ciao');
-  console.log(timeRange, 'timeRange');
   return _.intersectionWith(
-    genAv.generalAvaliabilityRules,
-    timeRange,
+    genAv.weekAvalSettings,
+    TimeRangeType,
     (a: GeneralAvailabilityType, b: TimeRangeType) => {
-      console.log(a, b);
       return a.day == FROM_DATE_TO_DAY(b.start);
     }
   );

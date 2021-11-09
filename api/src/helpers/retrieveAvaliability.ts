@@ -13,11 +13,11 @@ export const retrieveAvailability = (
     }[];
   },
   genAv: GeneralAvaliabilityRulesType,
-  timeRange?: { start: string; end: string }[]
+  TimeRangeType?: { start: string; end: string }[]
 ) => {
   // if there aren't booking, retrieve the  all availabilities for the time range
-  if (bookedHours.bookings.length === 0 && timeRange) {
-    const matched = filterForDays(genAv, timeRange);
+  if (bookedHours.bookings.length === 0 && TimeRangeType) {
+    const matched = filterForDays(genAv, TimeRangeType);
     if (matched.length === 0) {
       return [];
     }

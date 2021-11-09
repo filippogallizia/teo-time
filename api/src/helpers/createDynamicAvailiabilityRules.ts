@@ -15,7 +15,7 @@ type TimeRangeTypeJson = {
 };
 
 type GeneralAvaliabilityRulesType = {
-  generalAvaliabilityRules: {
+  weekAvalSettings: {
     day: string;
     availability: TimeRangeTypeJson[];
   }[];
@@ -25,7 +25,7 @@ const compareTwoDatesWithK = (
   workTimeRange: TimeRangeType,
   breakTimeRange: TimeRangeType,
   eventDuration: K,
-  breakTimeBtwEvents: { hours: number; minutes: number }
+  breakTimeBtwEvents: HrsAndMinsType
 ) => {
   const dayStart = DateTime.fromISO(workTimeRange.start);
   const dayEnd = DateTime.fromISO(workTimeRange.end);
@@ -172,4 +172,4 @@ const result = days.map((day: any) => {
   };
 });
 
-module.exports = { generalAvaliabilityRules: result, compareTwoDatesWithK };
+module.exports = { weekAvalSettings: result, compareTwoDatesWithK };

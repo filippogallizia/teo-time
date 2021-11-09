@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { HrsAndMinsType } from '../../../types/Types';
 
 export const FROM_DATE_TO_HOUR = (date: string) => {
   return DateTime.fromISO(date).hour;
@@ -24,9 +25,7 @@ export const TODAY_AT_MIDNIGHT = () => {
   });
 };
 
-export const parseHoursToObject = (
-  selectedHour: string
-): { hours: number; minutes: number } => {
+export const parseHoursToObject = (selectedHour: string): HrsAndMinsType => {
   let flag = false;
   let wasZero = false;
   const result = selectedHour.split('').reduce(

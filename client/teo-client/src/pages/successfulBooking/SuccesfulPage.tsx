@@ -6,13 +6,10 @@ import { useHistory } from 'react-router-dom';
 import { BOLD, MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import routes from '../../routes';
+import InfoBooking from '../admin/components/InfoBooking';
 
 const SuccessfulPage = ({ dispatch, state }: BookingComponentType) => {
   const history = useHistory();
-
-  const parsedData = DateTime.fromISO(
-    state.schedules.appointmentDetails.start
-  ).toFormat('yyyy LLL dd - t');
 
   return (
     <div className="grid grid-cols-1 gap-8 justify-items-center">
@@ -20,10 +17,10 @@ const SuccessfulPage = ({ dispatch, state }: BookingComponentType) => {
         {i18n.t('succesfulPage.succesfullMessage')}
       </div>
       <div>
-        <div className={TITLE}>
-          {i18n.t('succesfulPage.date')}
-          <span className={`${BOLD} ml-2`}>{parsedData}</span>
-        </div>
+        <InfoBooking
+          date={state.schedules.selectedDate}
+          hours={state.schedules.selectedHour}
+        />
       </div>
       <GeneralButton
         buttonText={i18n.t('succesfulPage.backToBookingButton')}

@@ -1,5 +1,5 @@
 import { BookingComponentType } from '../../../booking/BookingPageTypes';
-import { SET_MANAGE_AVAILABILITIES } from '../../../booking/bookingReducer';
+import { SET_WEEK_AVAL_SETTINGS } from '../../../booking/stateReducer';
 import { BOLD, ITALIC } from '../../../../shared/locales/constant';
 import GeneralButton from '../../../../component/GeneralButton';
 import { manageAvailabilities } from './service/availabilitiesManagerService';
@@ -11,7 +11,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
     <div className=" grid grid-cols-1 gap-6 overflow-auto px-4">
       <div className="grid grid-cols-1 gap-4">
         {weekDays.map((day: string) => {
-          const dayInfo = state.schedules.manageAvailabilities.filter(
+          const dayInfo = state.schedules.weekAvalSettings.filter(
             (d) => d.day === day
           );
 
@@ -34,7 +34,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                       }
                       onChange={(e) => {
                         dispatch({
-                          type: SET_MANAGE_AVAILABILITIES,
+                          type: SET_WEEK_AVAL_SETTINGS,
                           payload: { day: day, e: e },
                         });
                       }}
@@ -53,7 +53,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                       }
                       onChange={(e) => {
                         dispatch({
-                          type: SET_MANAGE_AVAILABILITIES,
+                          type: SET_WEEK_AVAL_SETTINGS,
                           payload: { day: day, e: e },
                         });
                       }}
@@ -76,7 +76,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                         }
                         onChange={(e) => {
                           dispatch({
-                            type: SET_MANAGE_AVAILABILITIES,
+                            type: SET_WEEK_AVAL_SETTINGS,
                             payload: { day: day, e: e },
                           });
                         }}
@@ -97,7 +97,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                         }
                         onChange={(e) => {
                           dispatch({
-                            type: SET_MANAGE_AVAILABILITIES,
+                            type: SET_WEEK_AVAL_SETTINGS,
                             payload: { day: day, e: e },
                           });
                         }}
@@ -128,7 +128,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                 // }
                 // onChange={(e) => {
                 //   dispatch({
-                //     type: SET_MANAGE_AVAILABILITIES,
+                //     type: SET_WEEK_AVAL_SETTINGS,
                 //     payload: { day: day, e: e },
                 //   });
                 // }}
@@ -150,7 +150,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                 // }
                 // onChange={(e) => {
                 //   dispatch({
-                //     type: SET_MANAGE_AVAILABILITIES,
+                //     type: SET_WEEK_AVAL_SETTINGS,
                 //     payload: { day: day, e: e },
                 //   });
                 // }}
@@ -170,7 +170,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                 // value={state.schedules.manageAvailabilities}
                 // onChange={(e) => {
                 //   dispatch({
-                //     type: SET_MANAGE_AVAILABILITIES,
+                //     type: SET_WEEK_AVAL_SETTINGS,
                 //     payload: { day: day, e: e },
                 //   });
                 // }}
@@ -192,7 +192,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                 // }
                 // onChange={(e) => {
                 //   dispatch({
-                //     type: SET_MANAGE_AVAILABILITIES,
+                //     type: SET_WEEK_AVAL_SETTINGS,
                 //     payload: { day: day, e: e },
                 //   });
                 // }}
@@ -209,7 +209,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
               const handleSuccess = (response: any) => {};
               await manageAvailabilities(
                 handleSuccess,
-                state.schedules.manageAvailabilities
+                state.schedules.weekAvalSettings
               );
             };
             asyncFn();

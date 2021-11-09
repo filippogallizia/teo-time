@@ -5,7 +5,7 @@ import {
   Actions,
   InitialState,
   SET_SELECTION_HOUR,
-} from '../pages/booking/bookingReducer';
+} from '../pages/booking/stateReducer';
 import routes from '../routes';
 
 type AvailabilitiesChildType = {

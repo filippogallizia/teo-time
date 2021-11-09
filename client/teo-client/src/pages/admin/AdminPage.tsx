@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import { SET_ALL_BOOKINGS_AND_USERS } from '../booking/bookingReducer';
+import { SET_BKGS_AND_USERS } from '../booking/stateReducer';
 import { getUsersAndBookings } from './service/AdminPageService';
 import DetailedInfoBooking from './components/DetailedBookingInfo';
 import { DateTime } from 'luxon';
@@ -135,7 +135,7 @@ const BookingManager = ({ dispatch, state }: BookingComponentType) => {
               []
             );
             dispatch({
-              type: SET_ALL_BOOKINGS_AND_USERS,
+              type: SET_BKGS_AND_USERS,
               payload: allBookingsParsedByDate,
             });
           }
@@ -150,8 +150,8 @@ const BookingManager = ({ dispatch, state }: BookingComponentType) => {
 
   return (
     <div className="grid grid-flow-row gap-8  py-2 shadow-sm">
-      {state.schedules.allBookingsAndUsers.length > 0 &&
-        state.schedules.allBookingsAndUsers.map((booking, i: number) => {
+      {state.schedules.bookingsAndUsers.length > 0 &&
+        state.schedules.bookingsAndUsers.map((booking, i: number) => {
           return (
             <div key={i} className="p-4 shadow-md">
               <p className={`${BOLD} ${MEDIUM_MARGIN_BOTTOM}`}>
@@ -165,7 +165,7 @@ const BookingManager = ({ dispatch, state }: BookingComponentType) => {
             </div>
           );
         })}
-      {state.schedules.allBookingsAndUsers.length === 0 && (
+      {state.schedules.bookingsAndUsers.length === 0 && (
         <div className="flex justify-center ">
           <div>Nessuna prenotazione</div>
         </div>
