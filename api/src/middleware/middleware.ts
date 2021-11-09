@@ -1,8 +1,9 @@
 import express, { NextFunction } from 'express';
 import { Op } from 'sequelize';
-import { any } from 'sequelize/types/lib/operators';
 import { filterForDays, HOUR_MINUTE_FORMAT } from '../../utils';
 import { retrieveAvailability } from '../helpers/retrieveAvaliability';
+import { WorkSetting } from '../types/types';
+const availabilitiesDefault = require('../config/availabilitiesDefault.json');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const db = require('../models/db');
@@ -96,12 +97,7 @@ const getAvailability = async (
         },
       },
     }).catch((e: any) => {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
-      });
+      throw e;
     });
 
     const parseBooking = _.map(myBookings, (e: any) => {
@@ -112,41 +108,54 @@ const getAvailability = async (
       };
     });
 
-    const r = await WorkSettings.findAll()
-      .then((daySetting: any) => {
-        const f = daySetting.map((day: any) => {
-          return {
-            day: day.day,
-            availability: compareTwoDatesWithK(
-              { start: day.workTimeStart, end: day.workTimeEnd },
-              { start: day.breakTimeStart, end: day.breakTimeEnd },
-              {
-                hours: day.eventDurationHours,
-                minutes: day.eventDurationMinutes,
-              },
-              {
-                hours: day.breakTimeBtwEventsHours,
-                minutes: day.breakTimeBtwEventsMinutes,
-              }
-            ),
-          };
-        });
-        return f;
+    const workSettings = await WorkSettings.findAll()
+      .then((daySetting: WorkSetting[]) => {
+        if (daySetting.length > 0) {
+          const f = daySetting.map((day: WorkSetting) => {
+            return {
+              day: day.day,
+              availability: compareTwoDatesWithK(
+                { start: day.workTimeStart, end: day.workTimeEnd },
+                { start: day.breakTimeStart, end: day.breakTimeEnd },
+                {
+                  hours: day.eventDurationHours,
+                  minutes: day.eventDurationMinutes,
+                },
+                {
+                  hours: day.breakTimeBtwEventsHours,
+                  minutes: day.breakTimeBtwEventsMinutes,
+                }
+              ),
+            };
+          });
+          return f;
+        } else {
+          availabilitiesDefault.manageAvailabilities.map((day: any) => {
+            WorkSettings.create({
+              day: day.day,
+              workTimeStart: day.parameters.workTimeRange.start,
+              workTimeEnd: day.parameters.workTimeRange.end,
+              breakTimeStart: day.parameters.breakTimeRange.start,
+              breakTimeEnd: day.parameters.breakTimeRange.end,
+              eventDurationHours: day.parameters.eventDuration.hours,
+              eventDurationMinutes: day.parameters.eventDuration.minutes,
+              breakTimeBtwEventsHours: day.parameters.breakTimeBtwEvents.hours,
+              breakTimeBtwEventsMinutes:
+                day.parameters.breakTimeBtwEvents.minutes,
+            }).catch((e: any) => {
+              throw e;
+            });
+          });
+        }
       })
       .catch((e: any) => {
-        res.status(500).send({
-          success: false,
-          error: {
-            message: e,
-          },
-        });
+        throw e;
       });
     const availabilities = retrieveAvailability(
       {
         bookings: parseBooking,
       },
-      { generalAvaliabilityRules: r },
-      // generalAvaliabilityRules,
+      { generalAvaliabilityRules: workSettings },
       timeRange
     );
     //@ts-expect-error
@@ -178,14 +187,9 @@ const userExist = async (
   }
   try {
     const user = await User.findOne({
-      where: { email },
+      where: { email, password },
     }).catch((e: any) => {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
-      });
+      throw e;
     });
     //@ts-expect-error
     res.user = user;
@@ -223,10 +227,10 @@ const createToken = (
         res.locals.jwt_type = 'Bearer';
         next();
       } else {
-        res.status(500).send({
+        return res.status(500).send({
           success: false,
           error: {
-            message: 'user not found',
+            message: 'nessun user trovato',
           },
         });
       }

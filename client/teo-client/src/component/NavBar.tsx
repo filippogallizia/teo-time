@@ -134,7 +134,7 @@ export default function Navbar({
                   </li>
                 )}
                 <li className="nav-item">
-                  <div className="text-white border-b-4 cursor-pointer">
+                  <div className="text-white cursor-pointer">
                     <div
                       onClick={() => {
                         localStorage.clear();

@@ -35,7 +35,7 @@ router.post(
   (req: express.Request, res: express.Response) => {
     //@ts-expect-error
     if (res.user) {
-      res.status(500).send({
+      return res.status(500).send({
         success: false,
         error: {
           message: 'user already Exist',
@@ -57,12 +57,7 @@ router.post(
             res.send({ message: 'User was registered successfully!' });
           })
           .catch((e: any) => {
-            res.status(500).send({
-              success: false,
-              error: {
-                message: e,
-              },
-            });
+            throw e;
           });
       } catch (e: any) {
         res.status(500).send({
@@ -81,7 +76,7 @@ router.post(
   (req: express.Request, res: express.Response) => {
     //@ts-expect-error
     if (!res.user) {
-      res.status(500).send({
+      return res.status(500).send({
         success: false,
         error: {
           message: "user doesn't exist",
@@ -123,7 +118,6 @@ router.post(
           User.findOne({ where: { email: userEmail } })
             .then((usr: UserType) => {
               // associate the booking with the user
-              //@ts-expect-error
               booking.setUser(usr).catch((e: any) => {
                 res.status(500).send({
                   success: false,
@@ -134,12 +128,7 @@ router.post(
               });
             })
             .catch((e: any) => {
-              res.status(500).send({
-                success: false,
-                error: {
-                  message: e,
-                },
-              });
+              throw e;
             });
           //send link
 
@@ -172,41 +161,10 @@ router.post(
           </div>
           `,
           };
-          // const sendEmail = async () => {
-          //   await sgMail
-          //     .sendMultiple(msg)
-          //     .then(
-          //       () => {
-          //         res.status(200).send(booking);
-          //       },
-          //       (e: any) => {
-          //         res.status(500).send({
-          //           success: false,
-          //           error: {
-          //             message: e,
-          //           },
-          //         });
-          //       }
-          //     )
-          //     .catch((e: any) => {
-          //       res.status(500).send({
-          //         success: false,
-          //         error: {
-          //           message: e,
-          //         },
-          //       });
-          //     });
-          // };
-          // sendEmail();
           res.status(200).send(booking);
         })
         .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({
@@ -254,15 +212,10 @@ router.post(
                 res.status(200).send('prenotazione cancellata');
               })
               .catch((e: any) => {
-                res.status(500).send({
-                  success: false,
-                  error: {
-                    message: e,
-                  },
-                });
+                throw e;
               });
           } else {
-            res.status(400).send({
+            return res.status(400).send({
               success: false,
               error: {
                 message: 'booking not found',
@@ -271,12 +224,7 @@ router.post(
           }
         })
         .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({
@@ -298,12 +246,7 @@ router.get(
     try {
       const user = User.findOne({ where: { email: userEmail } }).catch(
         (e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         }
       );
       user.then((u: any) => {
@@ -315,12 +258,7 @@ router.get(
               res.status(200).send(bks);
             })
             .catch((e: any) => {
-              res.status(500).send({
-                success: false,
-                error: {
-                  message: e,
-                },
-              });
+              throw e;
             });
         } else {
           res.status(200).send('not booking found');
@@ -353,12 +291,7 @@ router.get(
           res.send(bks);
         })
         .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({
@@ -390,7 +323,7 @@ router.get(
             });
             res.send(mappedUsr);
           } else {
-            res.status(500).send({
+            return res.status(500).send({
               success: false,
               error: {
                 message: 'there are no users',
@@ -399,12 +332,7 @@ router.get(
           }
         })
         .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({
@@ -445,26 +373,16 @@ router.post(
                     res.send({ message: 'succesfull sent' });
                   },
                   (e: any) => {
-                    res.status(500).send({
-                      success: false,
-                      error: {
-                        message: e,
-                      },
-                    });
+                    throw e;
                   }
                 )
                 .catch((e: any) => {
-                  res.status(500).send({
-                    success: false,
-                    error: {
-                      message: e,
-                    },
-                  });
+                  throw e;
                 });
             };
             sendEmail();
           } else {
-            res.status(400).send({
+            return res.status(400).send({
               success: false,
               error: {
                 message: "l' email non esiste",
@@ -473,12 +391,7 @@ router.post(
           }
         })
         .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({
@@ -500,7 +413,7 @@ router.post(
           if (usr) {
             res.send('allowed to reset password');
           } else {
-            res.status(400).send({
+            return res.status(400).send({
               success: false,
               error: {
                 message: 'not allowed',
@@ -509,12 +422,7 @@ router.post(
           }
         })
         .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({
@@ -574,27 +482,15 @@ router.post(
                   res.send({ message: 'Availabilities created!' });
                 })
                 .catch((e: any) => {
-                  res.status(500).send({
-                    success: false,
-                    error: {
-                      message: e,
-                    },
-                  });
+                  throw e;
                 });
             }
           })
           .catch((e: any) => {
-            console.log(e, 'sofia');
-            res.status(500).send({
-              success: false,
-              error: {
-                message: e,
-              },
-            });
+            throw e;
           });
       });
     } catch (e: any) {
-      console.log(e);
       res.status(500).send({
         success: false,
         error: {
@@ -621,7 +517,7 @@ router.post(
             };
             asyncFn();
           } else {
-            res.status(400).send({
+            return res.status(400).send({
               success: false,
               error: {
                 message: 'not allowed',
@@ -630,13 +526,7 @@ router.post(
           }
         })
         .catch((e: any) => {
-          console.log(e, 'e');
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({

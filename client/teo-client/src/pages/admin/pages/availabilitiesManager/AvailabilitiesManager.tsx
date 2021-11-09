@@ -8,7 +8,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
   const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
   return (
-    <div className="overflow-auto px-4 ">
+    <div className=" grid grid-cols-1 gap-6 overflow-auto px-4">
       <div className="grid grid-cols-1 gap-4">
         {weekDays.map((day: string) => {
           const dayInfo = state.schedules.manageAvailabilities.filter(
@@ -16,7 +16,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
           );
 
           return (
-            <div key={day} className="shadow-md p-2 mb-2">
+            <div key={day} className="shadow-md">
               <div className={`grid grid-cols-1 gap-4`}>
                 <p className={`${BOLD}`}>{day}</p>
                 <div className={`grid grid-cols-3 gap-4 `}>
@@ -24,17 +24,14 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                   <div className="col-span-3 grid grid-cols-2">
                     <p>start</p>
                     <input
-                      //   className="border-2 border-gray-2"
                       type="time"
                       id="workTimeRange.start"
-                      //   name="appt"
                       required
                       value={
                         dayInfo.length > 0
                           ? dayInfo[0].parameters?.workTimeRange.start
                           : ''
                       }
-                      //   value={19}
                       onChange={(e) => {
                         dispatch({
                           type: SET_MANAGE_AVAILABILITIES,
@@ -48,7 +45,6 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                     <input
                       type="time"
                       id="workTimeRange.end"
-                      //   name="appt"
                       required
                       value={
                         dayInfo.length > 0
@@ -72,7 +68,6 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                       <input
                         type="time"
                         id="breakTimeRange.start"
-                        //   name="appt"
                         required
                         value={
                           dayInfo.length > 0
@@ -115,62 +110,112 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
           );
         })}
       </div>
-      <div className="grid grid-cols-1 gap-4 py-10">
+      <div className="grid grid-cols-1 gap-4 p-2 shadow-md">
+        <p className={`${BOLD}`}>Generali</p>
         <div className="grid grid-cols-3 gap-4 justify-items-start ">
-          <p className="col-span-2">Pausa tra lezioni:</p>
-          <div className="col-span-1">
-            <input
-              type="time"
-              id="eventDuration.hours"
-              //   name="appt"
-              min="00:00"
-              max="03:00"
-              required
-              //   onChange={(e) => {
-              //     dispatch({
-              //       type: SET_MANAGE_AVAILABILITIES,
-              //       payload: { day: 'onday', e: e },
-              //     });
-              //   }}
-              //   value={value}
-            />
+          <p className={`col-span-3 ${ITALIC}`}>Pausa tra lezioni:</p>
+          <div className="col-span-3 grid grid-cols-2">
+            <div className="col-span-3 grid grid-cols-2">
+              <p className="self-start">ore</p>
+              <input
+                className=" border border-solid border-black-dark"
+                type="number"
+                id="pausa-ore"
+                // value={
+                //   dayInfo.length > 0
+                //     ? dayInfo[0].parameters?.breakTimeRange.start
+                //     : ''
+                // }
+                // onChange={(e) => {
+                //   dispatch({
+                //     type: SET_MANAGE_AVAILABILITIES,
+                //     payload: { day: day, e: e },
+                //   });
+                // }}
+              />
+            </div>
+          </div>
+          <div className="col-span-3 grid grid-cols-2">
+            <div className="col-span-3 grid grid-cols-2">
+              <p>minuti</p>
+              <input
+                type="number"
+                className=" border border-solid border-black-dark"
+                id="breakTimeRange.end"
+                required
+                // value={
+                //   dayInfo.length > 0
+                //     ? dayInfo[0].parameters?.breakTimeRange.end
+                //     : ''
+                // }
+                // onChange={(e) => {
+                //   dispatch({
+                //     type: SET_MANAGE_AVAILABILITIES,
+                //     payload: { day: day, e: e },
+                //   });
+                // }}
+              />
+            </div>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-4 justify-items-start">
-          <p className="col-span-2">Durata training:</p>
-          <div className="col-span-1">
-            {/* <Select id="breakTimeBtwEvents.hours" options={options} /> */}
-
-            <input
-              type="time"
-              id="breakTimeBtwEvents.hours"
-              //   id="appt"
-              //   name="appt"
-              min="00:00"
-              max="03:00"
-              required
-              //   onChange={(e) => onChange(e.target.value)}
-              //   value={value}
-            />
+        <div className="grid grid-cols-3 gap-4 justify-items-start ">
+          <p className={`col-span-3 ${ITALIC}`}>Durata Lezione:</p>
+          <div className="col-span-3 grid grid-cols-2">
+            <div className="col-span-3 grid grid-cols-2">
+              <p className="self-start">ore</p>
+              <input
+                className=" border border-solid border-black-dark"
+                type="number"
+                id="pausa-ore"
+                // value={state.schedules.manageAvailabilities}
+                // onChange={(e) => {
+                //   dispatch({
+                //     type: SET_MANAGE_AVAILABILITIES,
+                //     payload: { day: day, e: e },
+                //   });
+                // }}
+              />
+            </div>
+          </div>
+          <div className="col-span-3 grid grid-cols-2">
+            <div className="col-span-3 grid grid-cols-2">
+              <p>minuti</p>
+              <input
+                type="number"
+                className=" border border-solid border-black-dark"
+                id="breakTimeRange.end"
+                required
+                // value={
+                //   dayInfo.length > 0
+                //     ? dayInfo[0].parameters?.breakTimeRange.end
+                //     : ''
+                // }
+                // onChange={(e) => {
+                //   dispatch({
+                //     type: SET_MANAGE_AVAILABILITIES,
+                //     payload: { day: day, e: e },
+                //   });
+                // }}
+              />
+            </div>
           </div>
         </div>
       </div>
-      <GeneralButton
-        buttonText="Modifica disponibilita"
-        onClick={() => {
-          const asyncFn = async () => {
-            const handleSuccess = (response: any) => {
-              console.log(response);
+      <div className="flex w-full justify-center">
+        <GeneralButton
+          buttonText="Modifica disponibilita"
+          onClick={() => {
+            const asyncFn = async () => {
+              const handleSuccess = (response: any) => {};
+              await manageAvailabilities(
+                handleSuccess,
+                state.schedules.manageAvailabilities
+              );
             };
-
-            await manageAvailabilities(
-              handleSuccess,
-              state.schedules.manageAvailabilities
-            );
-          };
-          asyncFn();
-        }}
-      />
+            asyncFn();
+          }}
+        />
+      </div>
     </div>
   );
 };

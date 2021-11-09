@@ -1,9 +1,10 @@
 const db = {
-  HOST: 'localhost',
-  USER: 'root',
-  PASSWORD: 'surfando',
-  DATABASE: 'teoTime',
+  HOST: process.env.DB_HOST,
+  USER: process.env.DB_USER,
+  PASSWORD: process.env.DB_PASSWORD,
+  DATABASE: process.env.DB_NAME,
   dialect: 'mysql',
+  port: process.env.DB_PORT,
   pool: {
     max: 5,
     min: 0,

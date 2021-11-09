@@ -181,7 +181,7 @@ const RouterComponent = (): JSX.Element => {
     <Router>
       <UserContext.Provider value={value}>
         <div className="relative min-h-screen">
-          <div className="pb-16">
+          <div className="pb-20">
             <Navbar dispatch={dispatch} state={state} />
 
             <Switch>

@@ -5,7 +5,6 @@ import { getUsersAndBookings } from './service/AdminPageService';
 import DetailedInfoBooking from './components/DetailedBookingInfo';
 import { DateTime } from 'luxon';
 import { DATE_TO_CLIENT_FORMAT } from '../../shared/locales/utils';
-import { UserType } from '../../../../../types/Types';
 import { BOLD, MEDIUM_MARGIN_BOTTOM } from '../../shared/locales/constant';
 import UsersTable from './components/UsersTable';
 import { ProtectedRoute } from '../general/GeneralPage';
@@ -13,6 +12,7 @@ import { Redirect, Switch } from 'react-router';
 import Routes from '../../routes';
 import { Link } from 'react-router-dom';
 import AvailabilitiesManager from './pages/availabilitiesManager/AvailabilitiesManager';
+import { UserType } from '../../../types/Types';
 
 const AdminNav = () => {
   return (
@@ -155,7 +155,7 @@ const BookingManager = ({ dispatch, state }: BookingComponentType) => {
           return (
             <div key={i} className="p-4 shadow-md">
               <p className={`${BOLD} ${MEDIUM_MARGIN_BOTTOM}`}>
-                {DATE_TO_CLIENT_FORMAT(booking[0].start)}
+                {booking[0].start && DATE_TO_CLIENT_FORMAT(booking[0].start)}
               </p>
               <DetailedInfoBooking
                 key={i}
@@ -166,7 +166,7 @@ const BookingManager = ({ dispatch, state }: BookingComponentType) => {
           );
         })}
       {state.schedules.allBookingsAndUsers.length === 0 && (
-        <div className="flex justify-center">
+        <div className="flex justify-center ">
           <div>Nessuna prenotazione</div>
         </div>
       )}

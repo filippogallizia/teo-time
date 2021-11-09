@@ -1,13 +1,14 @@
 import express from 'express';
+import { env } from 'process';
 require('dotenv').config();
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 var cors = require('cors');
 const db = require('./models/db');
 const routes = require('./routes/routes');
 
 var corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000',
 };
 
 app.use(cors(corsOptions));

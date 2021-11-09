@@ -19,7 +19,7 @@ import { handleToastInFailRequest } from '../../shared/locales/utils';
 import { toast } from 'react-toastify';
 import i18n from '../../i18n';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import { UserType } from '../../../../../types/Types';
+import { UserType } from '../../../types/Types';
 import { UserContext } from '../../component/UserContext';
 
 export const ForgotPassword = () => {

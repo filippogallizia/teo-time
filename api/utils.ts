@@ -34,10 +34,13 @@ export const filterForDays = (
   day: string;
   availability: TimeRangeType[];
 }[] => {
+  console.log(genAv.generalAvaliabilityRules, 'ciao');
+  console.log(timeRange, 'timeRange');
   return _.intersectionWith(
     genAv.generalAvaliabilityRules,
     timeRange,
     (a: GeneralAvailabilityType, b: TimeRangeType) => {
+      console.log(a, b);
       return a.day == FROM_DATE_TO_DAY(b.start);
     }
   );
