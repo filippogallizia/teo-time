@@ -538,4 +538,123 @@ router.post(
   }
 );
 
+export const booksExist = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  const startRange = req.body.start;
+  const endRange = req.body.end;
+  try {
+    const bookingsAlreadyExist = await Bookings.findAll({
+      where: {
+        start: {
+          [Op.gte]: startRange,
+        },
+        end: {
+          [Op.lte]: endRange,
+        },
+      },
+    });
+    if (bookingsAlreadyExist.length > 0) {
+      res.status(404).send({
+        success: false,
+        error: {
+          message: 'This hour is already booked',
+        },
+      });
+    } else {
+      console.log(bookingsAlreadyExist, 'bookingsAlreadyExist');
+
+      next();
+    }
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
+  }
+};
+
+router.post(
+  '/manageHolidays',
+  // [authenticateToken, bookExist, bookOutRange],
+  [authenticateToken, booksExist],
+
+  (req: express.Request, res: express.Response) => {
+    try {
+      const { start, end } = req.body;
+      //@ts-expect-error
+      const userEmail = res.user.email;
+      // create a new user
+      Bookings.create({
+        start,
+        end,
+      })
+        .then((booking: any) => {
+          // search the user by email
+          User.findOne({ where: { email: userEmail } })
+            .then((usr: UserType) => {
+              // associate the booking with the user
+              booking.setUser(usr).catch((e: any) => {
+                res.status(500).send({
+                  success: false,
+                  error: {
+                    message: e,
+                  },
+                });
+              });
+            })
+            .catch((e: any) => {
+              throw e;
+            });
+          //send link
+
+          const parsedData = DateTime.fromISO(booking.start).toFormat(
+            'yyyy LLL dd - t'
+          );
+
+          const msg = {
+            to: [userEmail, process.env.EMAIL],
+            from: process.env.EMAIL, // Use the email address or domain you verified above
+            subject: 'teo-time',
+            text: 'and easy to do anywhere, even with Node.js',
+            html: `
+            <div style="padding: 10px; border: 3px dashed #f59e0b; font-size: 1.1rem;">
+            <h2>
+              Ciao! Il tuo appuntamento e' stato registrato con successo.
+            </h2>
+            <p style="margin-bottom: 10px;">
+              Questi sono i dettagli:
+            </p>
+            <p>
+              EVENTO: <span style="font-weight: bold;">Trattamento osteopatico</span>
+            </p>
+            <p>
+              DATA:
+              <span style="font-weight: bold;">
+                ${parsedData}</span
+              >
+            </p>
+          </div>
+          `,
+          };
+          res.status(200).send(booking);
+        })
+        .catch((e: any) => {
+          throw e;
+        });
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+
 module.exports = router;

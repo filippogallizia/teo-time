@@ -1,6 +1,6 @@
 const _ = require('lodash');
-import { GeneralAvaliabilityRulesType } from '../../../types/Types';
-import { filterForDays, HOUR_MINUTE_FORMAT } from '../../utils';
+import { filterForDays } from '../../utils';
+import { GeneralAvaliabilityRulesType } from '../types/types';
 
 export const retrieveAvailability = (
   bookedHours: {
@@ -12,49 +12,23 @@ export const retrieveAvailability = (
       updatedAt: string;
     }[];
   },
-  genAv: GeneralAvaliabilityRulesType,
-  TimeRangeType?: { start: string; end: string }[]
+  genAval: GeneralAvaliabilityRulesType,
+  avalTimeRange?: { start: string; end: string }[]
 ) => {
-  // if there aren't booking, retrieve the  all availabilities for the time range
-  if (bookedHours.bookings.length === 0 && TimeRangeType) {
-    const matched = filterForDays(genAv, TimeRangeType);
-    if (matched.length === 0) {
-      return [];
-    }
-    // scenario one day
-    return matched[0].availability;
-  } else {
-    const matched = filterForDays(genAv, bookedHours.bookings);
-    if (matched.length === 0) {
-      return [];
-    }
+  //@ts-expect-error
+  const final = filterForDays(genAval, avalTimeRange);
+
+  try {
     const result = _.differenceWith(
       // scenario one day
-      matched[0].availability,
+      final[0].availability,
       bookedHours.bookings,
-      (a: any, b: any) =>
-        HOUR_MINUTE_FORMAT(a.start) == HOUR_MINUTE_FORMAT(b.start)
+      (aval: any, bks: any) => {
+        return bks.start <= aval.start && bks.end >= aval.end;
+      }
     );
-
     return result;
+  } catch (e) {
+    console.log(e);
   }
 };
-
-// START OF NEW ALGORITM
-
-// const result = _.differenceWith(
-//   matched[0].availability,
-//   bookedHours.bookings,
-//   (a: any, b: any) => {
-//     if (
-//       (HOUR_MINUTE_FORMAT(a.start) >= HOUR_MINUTE_FORMAT(b.start) &&
-//         HOUR_MINUTE_FORMAT(a.end) <= HOUR_MINUTE_FORMAT(b.end)) ||
-//       (HOUR_MINUTE_FORMAT(a.start) <= HOUR_MINUTE_FORMAT(b.start) &&
-//         HOUR_MINUTE_FORMAT(a.end) >= HOUR_MINUTE_FORMAT(b.start)) ||
-//       (HOUR_MINUTE_FORMAT(a.start) <= HOUR_MINUTE_FORMAT(b.end) &&
-//         HOUR_MINUTE_FORMAT(a.end) >= HOUR_MINUTE_FORMAT(b.end))
-//     ) {
-//       return true;
-//     }
-//   }
-// );

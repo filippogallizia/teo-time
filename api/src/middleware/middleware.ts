@@ -1,6 +1,5 @@
 import express, { NextFunction } from 'express';
 import { Op } from 'sequelize';
-import { filterForDays, HOUR_MINUTE_FORMAT } from '../../utils';
 import { retrieveAvailability } from '../helpers/retrieveAvaliability';
 import { WorkSetting } from '../types/types';
 const avalDefault = require('../config/availabilitiesDefault.config.json');
@@ -26,12 +25,23 @@ export const bookExist = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const { start, end } = req.body;
+  const startRange = req.body.start;
+  const endRange = req.body.end;
   try {
-    const bookingAlreadyExist = await Bookings.findOne({
-      where: { start, end },
+    // const bookingAlreadyExist = await Bookings.findOne({
+    //   where: { start, end },
+    // });
+    const bookingsAlreadyExist = await Bookings.findAll({
+      where: {
+        start: {
+          [Op.gte]: startRange,
+        },
+        end: {
+          [Op.lte]: endRange,
+        },
+      },
     });
-    if (bookingAlreadyExist) {
+    if (bookingsAlreadyExist.length > 0) {
       res.status(404).send({
         success: false,
         error: {
@@ -49,64 +59,75 @@ export const bookExist = async (
   }
 };
 
-export const bookOutRange = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
-  const { start, end } = req.body;
-  const TimeRangeType = [{ start, end }];
-  const r = filterForDays(result, TimeRangeType);
-  // we assume that the range is not bigger than one day
-  const findedSlot = _.intersectionWith(
-    r[0].availability,
-    [{ start, end }],
-    (a: any, b: any) => {
-      return (
-        HOUR_MINUTE_FORMAT(a.start) == HOUR_MINUTE_FORMAT(b.start) &&
-        HOUR_MINUTE_FORMAT(a.end) == HOUR_MINUTE_FORMAT(b.end)
-      );
-    }
-  );
-  if (findedSlot.length === 0) {
-    res.status(404).send({
-      success: false,
-      error: {
-        message: 'the booking doesnt match a slot',
-      },
-    });
-  } else {
-    next();
-  }
-};
-
 const getAvailability = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const TimeRangeType = [...req.body.TimeRangeType];
+  const avalRange = [...req.body.TimeRangeType];
   try {
     const myBookings = await Bookings.findAll({
       where: {
         start: {
-          [Op.gte]: TimeRangeType[0].start,
+          [Op.gte]: avalRange[0].start,
         },
         end: {
-          [Op.lte]: TimeRangeType[0].end,
+          [Op.lte]: avalRange[0].end,
         },
       },
     }).catch((e: any) => {
       throw e;
     });
 
-    const parseBooking = _.map(myBookings, (e: any) => {
-      return {
-        ...e,
-        start: DateTime.fromJSDate(e.start).toISO(),
-        end: DateTime.fromJSDate(e.end).toISO(),
-      };
+    const myBookings2 = await Bookings.findAll({
+      where: {
+        start: {
+          [Op.lte]: avalRange[0].start,
+        },
+        end: {
+          [Op.between]: [avalRange[0].start, avalRange[0].end],
+        },
+      },
+    }).catch((e: any) => {
+      throw e;
     });
+
+    const myBookings3 = await Bookings.findAll({
+      where: {
+        start: {
+          [Op.lte]: avalRange[0].start,
+        },
+        end: {
+          [Op.gte]: avalRange[0].end,
+        },
+      },
+    }).catch((e: any) => {
+      throw e;
+    });
+
+    const myBookings4 = await Bookings.findAll({
+      where: {
+        start: {
+          [Op.between]: [avalRange[0].start, avalRange[0].end],
+        },
+        end: {
+          [Op.gte]: avalRange[0].end,
+        },
+      },
+    }).catch((e: any) => {
+      throw e;
+    });
+
+    const parseBooking = _.map(
+      [...myBookings, ...myBookings2, ...myBookings3, ...myBookings4],
+      (e: any) => {
+        return {
+          ...e,
+          start: DateTime.fromJSDate(e.start).toISO(),
+          end: DateTime.fromJSDate(e.end).toISO(),
+        };
+      }
+    );
 
     const weekavalSetting = await WeekavalSettings.findAll()
       .then((daySetting: WorkSetting[]) => {
@@ -157,13 +178,12 @@ const getAvailability = async (
         bookings: parseBooking,
       },
       { weekAvalSettings: weekavalSetting },
-      TimeRangeType
+      avalRange
     );
     //@ts-expect-error
     res.availabilities = availabilities;
     next();
   } catch (e: any) {
-    console.log(e, 'e');
     res.status(500).send({
       success: false,
       error: {
@@ -283,6 +303,5 @@ module.exports = {
   userExist,
   getAvailability,
   bookExist,
-  bookOutRange,
   authenticateToken,
 };

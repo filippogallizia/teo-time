@@ -133,7 +133,6 @@ const BookingManager = ({ dispatch, state }: BookingComponentType) => {
               },
               []
             );
-            console.log(allBookingsParsedByDate, 'ciao');
             dispatch({
               type: SET_BKGS_AND_USERS,
               payload: allBookingsParsedByDate,
