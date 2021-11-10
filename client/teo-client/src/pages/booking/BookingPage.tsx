@@ -1,36 +1,12 @@
-import { DateTime } from 'luxon';
-import React, { useEffect, useState, useReducer } from 'react';
-import BookingComponentDesktop from '../../component/BookingComponent_Desktop';
-import BookingComponentMobile from '../../component/BookingComponent_Mobile';
-import { TAILWIND_MOBILE_BREAKPOINT } from '../../constant';
-import { parseHoursToObject } from '../../helpers/helpers';
-import bookingReducer from './bookingReducer';
+import React, { useEffect, useState } from 'react';
+import AvailabilitiesContainer from '../../component/AvailabilitiesContainer';
+import CalendarComponent from '../../component/Caledar';
+import EventInformations from '../../component/EventInformations';
+import { TAILWIND_MOBILE_BREAKPOINT } from '../../shared/locales/constant';
+import { BookingComponentType } from './BookingPageTypes';
 
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-
-const startingAvailabilities = new Date();
-startingAvailabilities.setHours(7, 0, 0, 0);
-
-const endAvailabilities = new Date();
-endAvailabilities.setHours(20, 30, 0, 0);
-
-const initialState = {
-  schedules: {
-    selectedDate: today,
-    selectedHour: '00:00',
-    availabilities: [
-      {
-        start: startingAvailabilities.toISOString(),
-        end: endAvailabilities.toISOString(),
-      },
-    ],
-  },
-};
-
-function BookingPage() {
-  const [isMobile, setIsMobile] = useState({ width: window.innerWidth });
-  const [state, dispatch] = useReducer(bookingReducer, initialState);
+function BookingPage({ dispatch, state }: BookingComponentType) {
+  const [dimensions, setDimensions] = useState({ width: window.innerWidth });
 
   function debounce(fn: () => void, ms: number) {
     let timer: any;
@@ -46,7 +22,7 @@ function BookingPage() {
 
   useEffect(() => {
     const logResize = () => {
-      setIsMobile({ width: window.innerWidth });
+      setDimensions({ width: window.innerWidth });
     };
     const debouncedHandleResize = debounce(logResize, 0.5);
     window.addEventListener('resize', debouncedHandleResize);
@@ -55,15 +31,47 @@ function BookingPage() {
     };
   });
 
-  return (
-    <>
-      {isMobile.width <= TAILWIND_MOBILE_BREAKPOINT ? (
-        <BookingComponentMobile dispatch={dispatch} state={state} />
-      ) : (
-        <BookingComponentDesktop dispatch={dispatch} state={state} />
-      )}
-    </>
-  );
+  const IS_MOBILE = dimensions.width <= TAILWIND_MOBILE_BREAKPOINT;
+
+  if (IS_MOBILE) {
+    return (
+      <div className="grid grid-cols-4 gap-2">
+        <div className="col-span-4">
+          <EventInformations state={state} dispatch={dispatch} />
+        </div>
+        <div className="col-span-4">
+          {state.schedules.isRenderAvailabilities && (
+            <div>
+              <AvailabilitiesContainer dispatch={dispatch} state={state} />
+            </div>
+          )}
+          {!state.schedules.isRenderAvailabilities && (
+            <div className="flex justify-center">
+              <div style={{ maxWidth: '600px' }}>
+                <CalendarComponent state={state} dispatch={dispatch} />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div className="grid grid-cols-4 gap-2">
+        <div className="col-span-4">
+          <EventInformations state={state} dispatch={dispatch} />
+        </div>
+        <div className="col-span-2">
+          <div style={{ maxWidth: '600px' }}>
+            <CalendarComponent state={state} dispatch={dispatch} />
+          </div>
+        </div>
+        <div className="col-span-2">
+          <AvailabilitiesContainer dispatch={dispatch} state={state} />
+        </div>
+      </div>
+    );
+  }
 }
 
 export default BookingPage;

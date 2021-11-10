@@ -1,0 +1,27 @@
+- SIGNUP
+  . receive { name, email, phoneNumber}
+  . create a new user
+  . if the user exist, refresh the token
+  . send the email with link to BOOKING-page
+
+- CREATEBOOKING
+  . receive { start, end, email}
+  . create a new booking associated with an ID user
+  . check for existing booking in the same slot ( bookExist )
+  . check if the { start, end } coming from client is in the range of availability ( bookOutRange )
+  
+
+- RETRIEVEAVAILABILITY
+  . receive {timeRange: {start, end}[] }
+  . compare the bookings existing with the timeRange and retrieve all the availability inside the timeRange.
+  . FOR NOW MAX ONE DAY 
+
+
+- BOOKINGFROMUSER
+  . receive { email }
+  . retrieve all booking associated with that email
+
+
+- DELETE
+  . receive { start, end, email }
+  . delete booking associated with email

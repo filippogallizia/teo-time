@@ -1,0 +1,46 @@
+{
+  "form": {
+    "email": "Email",
+    "password": "Password"
+  },
+  "toastMessages": {
+    "errors": {
+      "notAuthorized": "Non autorizzato"
+    },
+    "other": {
+      "logOut": "Logout effettutato"
+    }
+  },
+  "loginPage": {
+    "title": "LOGIN",
+    "passwordLost": "Hai perso la password?"
+  },
+  "signUp": {
+    "title": "SIGN UP",
+    "mainButton": "Sign up"
+  },
+  "forgotPassword": {
+    "title": "RECUPERA PASSWORD",
+    "buttonReset": "Recupera password",
+    "onSuccess": {
+      "body": "Richiesta inviata con successo, controlla la tua email"
+    }
+  },
+  "resetPassword": {
+    "title": "RESET PASSWORD",
+    "form": {
+      "newPassword": "Nuova password",
+      "newPasswordRepeat": "Ripeti nuova password"
+    }
+  },
+  "succesfulPage": {
+    "succesfullMessage": "Appuntamento registrato con successo ",
+    "date": "Data: ",
+    "backToBookingButton": "Torna alle prenotazioni"
+  },
+  "confirmPage": {
+    "confirmDatas": "Conferma i dati",
+    "date": "Data: ",
+    "bookButton": "PRENOTA"
+  }
+}

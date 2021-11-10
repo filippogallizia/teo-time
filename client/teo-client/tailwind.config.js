@@ -4,14 +4,28 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        blue: {
-          'custom-blue': '#85d7ff',
+        celest: {
+          light: '#C2D3DA',
+          dark: '#81A3A7',
+        },
+        gray: {
+          dark: '#585A56',
+        },
+        black: {
+          dark: '#272424',
+        },
+        white: {
+          light: '#F1F3F2',
         },
       },
+      borderStyle: ['responsive', 'hover'],
+      borderWidth: ['responsive', 'hover'],
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      opacity: ['disabled'],
+    },
   },
   plugins: [],
 };

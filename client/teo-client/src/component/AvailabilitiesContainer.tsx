@@ -1,83 +1,58 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import 'react-calendar/dist/Calendar.css';
+import React, { Dispatch, useEffect, useState } from 'react';
+// import 'react-calendar/dist/Calendar.css';
 import AvailabilityHourContainer from './AvailabilityHourContainer';
-import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
-import {
-  BOLD,
-  FLEX_DIR_COL,
-  MARGIN_BOTTOM,
-  MARGIN_RIGHT,
-  GLOBAL_PADDING,
-  TITLE,
-} from '../constant';
+import { BOLD, GRID_ONE_COL, TITLE } from '../shared/locales/constant';
 import { DateTime } from 'luxon';
-import { getAvailabilities } from '../service/calendar.service';
+import { getAvailabilities } from '../services/calendar.service';
 import {
   Actions,
   InitialState,
   SET_AVAILABILITIES,
+  timeRange,
 } from '../pages/booking/bookingReducer';
-
-type BookSlotHeaderType = {
-  setRenderAvailabilities?: Dispatch<SetStateAction<boolean>>;
-};
-
-const AvailabilityContainerHeader = ({
-  setRenderAvailabilities,
-}: BookSlotHeaderType) => {
-  return (
-    <div
-      className={`w-full relative flex justify-center ${GLOBAL_PADDING} border-2 border-gray-50 md:border-none md:pt-0`}
-    >
-      <div className={`${MARGIN_BOTTOM} md:flex`}>
-        <p className={`${BOLD} ${MARGIN_BOTTOM} md:${MARGIN_RIGHT}`}>
-          Wednesday
-        </p>
-        <p>11/05/2021</p>
-      </div>
-      <div
-        className={`absolute top-4 left-3 ${MARGIN_BOTTOM} md:hidden overflow-x-auto`}
-      >
-        <BsFillArrowLeftSquareFill
-          onClick={() =>
-            setRenderAvailabilities && setRenderAvailabilities(false)
-          }
-          size="1.5em"
-          color="blue"
-        />
-      </div>
-    </div>
-  );
-};
+import {
+  FROM_DATE_TO_DAY,
+  FROM_DATE_TO_HOUR,
+  HOUR_MINUTE_FORMAT,
+} from '../shared/locales/utils';
+import EventListener from '../helpers/EventListener';
 
 type BookSlotContainerType = {
-  setRenderAvailabilities?: Dispatch<SetStateAction<boolean>> | undefined;
   state: InitialState;
   dispatch: Dispatch<Actions>;
 };
 
-function AvailabilitiesContainer({
-  setRenderAvailabilities,
-  dispatch,
-  state,
-}: BookSlotContainerType) {
+function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
   const [isClicked, setIsClicked] = useState({ id: 0, isOpen: false });
 
-  const [hours, setHours] = useState<any[]>([]);
+  const [hours, setHours] = useState<{ start: string; end: string }[]>([]);
 
   useEffect(() => {
     const setAvailabilities = (response: any) => {
       dispatch({ type: SET_AVAILABILITIES, payload: response });
     };
-    const parsedDate = DateTime.fromJSDate(state.schedules.selectedDate);
+    const parsedDate = DateTime.fromISO(state.schedules.selectedDate);
+    const startOfDay = DateTime.fromISO(state.schedules.selectedDate).set({
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+    });
     const funcAsync = async () => {
       try {
         await getAvailabilities(setAvailabilities, {
-          start: state.schedules.selectedDate.toISOString(),
-          end: parsedDate.plus({ hours: 23, minutes: 59 }).toISO(),
+          start: startOfDay.toISO(),
+          end: parsedDate
+            .set({
+              hour: 23,
+              minute: 59,
+              second: 0,
+              millisecond: 0,
+            })
+            .toISO(),
         });
-      } catch (e) {
-        console.log(e);
+      } catch (e: any) {
+        EventListener.emit('errorHandling', e.response);
       }
     };
     funcAsync();
@@ -86,44 +61,71 @@ function AvailabilitiesContainer({
   useEffect(() => {
     setHours(() => {
       if (state.schedules.availabilities.length > 0) {
-        return state.schedules.availabilities.map((av: any) => {
-          return {
-            start: DateTime.fromISO(av.start).toFormat('HH:mm'),
-          };
-        });
+        // if the date is today show availabilities just after the current hour
+        return state.schedules.availabilities.reduce(
+          (acc: { start: string; end: string }[], cv: timeRange) => {
+            const availabilitiesDay = FROM_DATE_TO_DAY(cv.start);
+            const availabilitiesHours = FROM_DATE_TO_HOUR(cv.start);
+            const currentDay = FROM_DATE_TO_DAY(new Date().toISOString());
+            const currentHour = FROM_DATE_TO_HOUR(new Date().toISOString());
+            if (
+              availabilitiesDay === currentDay &&
+              DateTime.fromISO(state.schedules.selectedDate).toFormat(
+                'yyyy LLL dd'
+              ) === DateTime.fromJSDate(new Date()).toFormat('yyyy LLL dd')
+            ) {
+              if (availabilitiesHours > currentHour) {
+                acc.push({
+                  start: HOUR_MINUTE_FORMAT(cv.start),
+                  end: DateTime.fromISO(cv.start)
+                    .plus({ hours: 1 })
+                    .toFormat('HH:mm'),
+                });
+              }
+            } else {
+              acc.push({
+                start: HOUR_MINUTE_FORMAT(cv.start),
+                end: DateTime.fromISO(cv.start)
+                  .plus({ hours: 1 })
+                  .toFormat('HH:mm'),
+              });
+            }
+            return acc;
+          },
+          []
+        );
       } else return [];
     });
-  }, [state.schedules.availabilities]);
+  }, [state.schedules.availabilities, state.schedules.selectedDate]);
 
   return (
     <div
-      className={`${FLEX_DIR_COL} w-full border-2 border-gray-50 md:border-none`}
+      className={`${GRID_ONE_COL} w-full border-2 border-gray-50 md:border-none`}
     >
-      <AvailabilityContainerHeader
-        setRenderAvailabilities={
-          setRenderAvailabilities && setRenderAvailabilities
-        }
-      />
-
-      <div
-        className={`${MARGIN_BOTTOM} ${GLOBAL_PADDING} ${FLEX_DIR_COL} md:hidden`}
-      >
-        <p className={`${BOLD} ${MARGIN_BOTTOM} ${TITLE}`}>SELECT A TIME</p>
+      <div className={` ${GRID_ONE_COL} md:hidden`}>
+        <p className={`${BOLD} ${TITLE}`}>SELECT A TIME</p>
+        <p>{`${DateTime.fromISO(state.schedules.selectedDate).year}/${
+          DateTime.fromISO(state.schedules.selectedDate).month
+        }/${DateTime.fromISO(state.schedules.selectedDate).day}`}</p>
         <p>Duration: 60 min</p>
       </div>
-      {hours.map((hour, i) => {
-        return (
-          <AvailabilityHourContainer
-            state={state}
-            dispatch={dispatch}
-            key={i + 2}
-            setIsClicked={setIsClicked}
-            isClicked={isClicked}
-            id={i}
-            hour={hour}
-          />
-        );
-      })}
+      {hours.length === 0 ? (
+        <div>NESSUNA ORA DISPONIBILE</div>
+      ) : (
+        hours.map((hour, i) => {
+          return (
+            <AvailabilityHourContainer
+              state={state}
+              dispatch={dispatch}
+              key={i + 2}
+              setIsClicked={setIsClicked}
+              isClicked={isClicked}
+              id={i}
+              hour={hour}
+            />
+          );
+        })
+      )}
     </div>
   );
 }
