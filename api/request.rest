@@ -43,7 +43,7 @@ Content-Type: application/json
 
 ###
 
-POST http://0.0.0.0:5000/createbooking
+POST http://0.0.0.0:5000/createBooking
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpemlhZmlsaXBwb0BnbWFpbC5jb20iLCJwYXNzd29yZCI6InN1cmZhbmRvIiwiaWF0IjoxNjM1NDEyMTM4fQ.4OrNWrQ3KbxgvMCboT9JL-Xj3IQ_DTz5rqlv0AYj4PI
 

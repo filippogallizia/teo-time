@@ -39,7 +39,7 @@ export const createBooking = async (
     const { start, end, email } = body;
     const response = await axios({
       method: 'post',
-      url: `${URL}/createbooking`,
+      url: `${URL}/createBooking`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
       },

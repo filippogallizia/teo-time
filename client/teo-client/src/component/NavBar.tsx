@@ -105,22 +105,19 @@ export default function Navbar({
                     </span>
                   </Link>
                 </li>
-                <li className="nav-item">
-                  <Link
-                    onClick={() => {
-                      if (!token) {
-                        toast(i18n.t('toastMessages.errors.notAuthorized'));
-                      }
-                    }}
-                    to={routes.USER}
-                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
-                  >
-                    <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
-                    <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
-                      user
-                    </span>
-                  </Link>
-                </li>
+                {token && (
+                  <li className="nav-item">
+                    <Link
+                      to={routes.USER}
+                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
+                    >
+                      <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
+                      <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
+                        user
+                      </span>
+                    </Link>
+                  </li>
+                )}
                 {user && user.role === 'admin' && (
                   <li className="nav-item">
                     <Link
@@ -133,24 +130,26 @@ export default function Navbar({
                     </Link>
                   </li>
                 )}
-                <li className="nav-item">
-                  <div className="text-white cursor-pointer">
-                    <div
-                      onClick={() => {
-                        localStorage.clear();
-                        setUser(null);
-                        setToken(null);
-                        history.push(routes.LOGIN);
-                        toast(i18n.t('toastMessages.other.logOut'));
-                      }}
-                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
-                    >
-                      <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
-                        log out
-                      </span>
+                {token && (
+                  <li className="nav-item">
+                    <div className="text-white cursor-pointer">
+                      <div
+                        onClick={() => {
+                          localStorage.clear();
+                          setUser(null);
+                          setToken(null);
+                          history.push(routes.LOGIN);
+                          toast(i18n.t('toastMessages.other.logOut'));
+                        }}
+                        className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                      >
+                        <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
+                          log out
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </li>
+                  </li>
+                )}
               </ul>
             </div>
           </div>

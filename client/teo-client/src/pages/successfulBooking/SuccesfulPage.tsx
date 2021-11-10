@@ -12,9 +12,9 @@ const SuccessfulPage = ({ dispatch, state }: BookingComponentType) => {
   const history = useHistory();
 
   return (
-    <div className="grid grid-cols-1 gap-8 justify-items-center">
-      <div className={`${TITLE} text-center ${MARGIN_BOTTOM}`}>
-        {i18n.t('succesfulPage.succesfullMessage')}
+    <div className="grid grid-cols-1 gap-6 justify-items-center">
+      <div className={`${TITLE} text-center`}>
+        <p>{i18n.t('succesfulPage.succesfullMessage')}</p>
       </div>
       <div>
         <InfoBooking

@@ -3,7 +3,7 @@ import { Op } from 'sequelize';
 import { filterForDays, HOUR_MINUTE_FORMAT } from '../../utils';
 import { retrieveAvailability } from '../helpers/retrieveAvaliability';
 import { WorkSetting } from '../types/types';
-const availabilitiesDefault = require('../config/availabilitiesDefault.config.json');
+const avalDefault = require('../config/availabilitiesDefault.config.json');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const db = require('../models/db');
@@ -18,7 +18,7 @@ const { v4 } = require('uuid');
 const ClassSgMail = require('../config/sgMail.config');
 
 const User = db.user;
-const WeekAvailabilitiesSettings = db.WeekAvailabilitiesSettings;
+const WeekavalSettings = db.WeekAvailabilitiesSettings;
 const Bookings = db.Bookings;
 
 export const bookExist = async (
@@ -108,7 +108,7 @@ const getAvailability = async (
       };
     });
 
-    const weekAvailabilitiesSetting = await WeekAvailabilitiesSettings.findAll()
+    const weekavalSetting = await WeekavalSettings.findAll()
       .then((daySetting: WorkSetting[]) => {
         if (daySetting.length > 0) {
           const result = daySetting.map((day: WorkSetting) => {
@@ -130,8 +130,8 @@ const getAvailability = async (
           });
           return result;
         } else {
-          availabilitiesDefault.weekAvalSettings.map((day: any) => {
-            WeekAvailabilitiesSettings.create({
+          avalDefault.weekAvalSettings.map((day: any) => {
+            WeekavalSettings.create({
               day: day.day,
               workTimeStart: day.parameters.workTimeRange.start,
               workTimeEnd: day.parameters.workTimeRange.end,
@@ -151,17 +151,19 @@ const getAvailability = async (
       .catch((e: any) => {
         throw e;
       });
+
     const availabilities = retrieveAvailability(
       {
         bookings: parseBooking,
       },
-      { weekAvalSettings: weekAvailabilitiesSetting },
+      { weekAvalSettings: weekavalSetting },
       TimeRangeType
     );
     //@ts-expect-error
     res.availabilities = availabilities;
     next();
   } catch (e: any) {
+    console.log(e, 'e');
     res.status(500).send({
       success: false,
       error: {

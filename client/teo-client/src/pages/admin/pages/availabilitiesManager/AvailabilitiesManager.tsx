@@ -4,7 +4,7 @@ import { BOLD, ITALIC } from '../../../../shared/locales/constant';
 import GeneralButton from '../../../../component/GeneralButton';
 import { manageAvailabilities } from './service/availabilitiesManagerService';
 
-const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
+const AvalManager = ({ dispatch, state }: BookingComponentType) => {
   const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
   return (
@@ -16,7 +16,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
           );
 
           return (
-            <div key={day} className="shadow-md">
+            <div key={day} className="shadow-md p-4">
               <div className={`grid grid-cols-1 gap-4`}>
                 <p className={`${BOLD}`}>{day}</p>
                 <div className={`grid grid-cols-3 gap-4 `}>
@@ -26,6 +26,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                     <input
                       type="time"
                       id="workTimeRange.start"
+                      className="w-32 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       required
                       value={
                         dayInfo.length > 0
@@ -45,6 +46,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                     <input
                       type="time"
                       id="workTimeRange.end"
+                      className="w-32 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       required
                       value={
                         dayInfo.length > 0
@@ -68,6 +70,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                       <input
                         type="time"
                         id="breakTimeRange.start"
+                        className="w-32 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         required
                         value={
                           dayInfo.length > 0
@@ -89,6 +92,7 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
                       <input
                         type="time"
                         id="breakTimeRange.end"
+                        className="w-32 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         required
                         value={
                           dayInfo.length > 0
@@ -112,20 +116,20 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
       </div>
       <div className="grid grid-cols-1 gap-4 p-2 shadow-md">
         <p className={`${BOLD}`}>Generali</p>
-        <div className="grid grid-cols-3 gap-4 justify-items-start ">
-          <p className={`col-span-3 ${ITALIC}`}>Pausa tra lezioni:</p>
+        <div className="grid grid-cols-2 gap-4">
+          <p className={`col-span-2 ${ITALIC}`}>Pausa tra lezioni:</p>
           <div className="col-span-3 grid grid-cols-2">
             <div className="col-span-3 grid grid-cols-2">
               <p className="self-start">ore</p>
               <input
-                className=" border border-solid border-black-dark"
+                className="w-20 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="number"
-                id="pausa-ore"
-                // value={
-                //   dayInfo.length > 0
-                //     ? dayInfo[0].parameters?.breakTimeRange.start
-                //     : ''
-                // }
+                disabled
+                id="breakTimeRange.start"
+                value={
+                  state.schedules.weekAvalSettings[0].parameters
+                    ?.breakTimeBtwEvents.hours
+                }
                 // onChange={(e) => {
                 //   dispatch({
                 //     type: SET_WEEK_AVAL_SETTINGS,
@@ -140,14 +144,14 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
               <p>minuti</p>
               <input
                 type="number"
-                className=" border border-solid border-black-dark"
+                className="w-20 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="breakTimeRange.end"
                 required
-                // value={
-                //   dayInfo.length > 0
-                //     ? dayInfo[0].parameters?.breakTimeRange.end
-                //     : ''
-                // }
+                disabled
+                value={
+                  state.schedules.weekAvalSettings[0].parameters
+                    ?.breakTimeBtwEvents.minutes
+                }
                 // onChange={(e) => {
                 //   dispatch({
                 //     type: SET_WEEK_AVAL_SETTINGS,
@@ -158,15 +162,20 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-4 justify-items-start ">
+        <div className="grid grid-cols-3 gap-4">
           <p className={`col-span-3 ${ITALIC}`}>Durata Lezione:</p>
           <div className="col-span-3 grid grid-cols-2">
             <div className="col-span-3 grid grid-cols-2">
               <p className="self-start">ore</p>
               <input
-                className=" border border-solid border-black-dark"
+                className="w-20 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="number"
                 id="pausa-ore"
+                disabled
+                value={
+                  state.schedules.weekAvalSettings[0].parameters?.eventDuration
+                    .hours
+                }
                 // value={state.schedules.manageAvailabilities}
                 // onChange={(e) => {
                 //   dispatch({
@@ -182,9 +191,14 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
               <p>minuti</p>
               <input
                 type="number"
-                className=" border border-solid border-black-dark"
+                className="w-20 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="breakTimeRange.end"
                 required
+                disabled
+                value={
+                  state.schedules.weekAvalSettings[0].parameters?.eventDuration
+                    .minutes
+                }
                 // value={
                 //   dayInfo.length > 0
                 //     ? dayInfo[0].parameters?.breakTimeRange.end
@@ -220,4 +234,4 @@ const AvailabilitiesManager = ({ dispatch, state }: BookingComponentType) => {
   );
 };
 
-export default AvailabilitiesManager;
+export default AvalManager;

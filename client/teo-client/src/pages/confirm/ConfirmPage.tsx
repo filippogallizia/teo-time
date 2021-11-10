@@ -58,9 +58,9 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
   };
 
   return (
-    <div className="grid  grid-cols-1 gap-8 justify-items-center relative">
+    <div className="grid  grid-cols-1 gap-8  justify-items-center relative">
       <div
-        className={`absolute top-0 left-3 md:static`}
+        className={`absolute top-1 left-3 md:static`}
         onClick={() => history.push(routes.HOMEPAGE_BOOKING)}
       >
         <BsFillArrowLeftSquareFill

@@ -8,7 +8,7 @@ import {
 } from '../pages/booking/stateReducer';
 import routes from '../routes';
 
-type AvailabilitiesChildType = {
+type AvalChildType = {
   hour: { start: string; end: string };
   id: number;
   setIsClicked: Dispatch<SetStateAction<{ id: number; isOpen: boolean }>>;
@@ -24,7 +24,7 @@ function AvailabilityHourContainer({
   setIsClicked,
   dispatch,
   state,
-}: AvailabilitiesChildType) {
+}: AvalChildType) {
   useEffect(() => {}, [state.schedules.selectedHour]);
   const history = useHistory();
 

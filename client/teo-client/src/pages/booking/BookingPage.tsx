@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AvailabilitiesContainer from '../../component/AvailabilitiesContainer';
+import AvalContainer from '../../component/AvailabilitiesContainer';
 import CalendarComponent from '../../component/Caledar';
 import EventInformations from '../../component/EventInformations';
 import { TAILWIND_MOBILE_BREAKPOINT } from '../../shared/locales/constant';
@@ -42,7 +42,7 @@ function BookingPage({ dispatch, state }: BookingComponentType) {
         <div className="col-span-4">
           {state.schedules.isRenderAval && (
             <div>
-              <AvailabilitiesContainer dispatch={dispatch} state={state} />
+              <AvalContainer dispatch={dispatch} state={state} />
             </div>
           )}
           {!state.schedules.isRenderAval && (
@@ -67,7 +67,7 @@ function BookingPage({ dispatch, state }: BookingComponentType) {
           </div>
         </div>
         <div className="col-span-2">
-          <AvailabilitiesContainer dispatch={dispatch} state={state} />
+          <AvalContainer dispatch={dispatch} state={state} />
         </div>
       </div>
     );

@@ -10,6 +10,7 @@ export const SET_CONFIRM_PHASE = 'SET_CONFIRM_PHASE';
 export const SET_RENDER_AVAL = 'SET_RENDER_AVAL';
 export const SET_BKGS_AND_USERS = 'SET_BKGS_AND_USERS';
 export const SET_WEEK_AVAL_SETTINGS = 'SET_WEEK_AVAL_SETTINGS';
+export const FORCE_RENDER = 'FORCE_RENDER';
 
 export type DayAvalSettingsType = {
   day: string;
@@ -37,6 +38,7 @@ export type InitialState = {
       user: UserType;
     }[][];
     weekAvalSettings: DayAvalSettingsType[];
+    forceRender: number;
   };
 };
 
@@ -69,7 +71,7 @@ type ActionSetRenderAval = {
   payload: boolean;
 };
 
-type ActionWkAvalSettings = {
+type ActionWeekAvailSettings = {
   type: typeof SET_WEEK_AVAL_SETTINGS;
   payload: { day: string; e: ChangeEvent<HTMLInputElement> };
 };
@@ -87,6 +89,11 @@ type ActionSetBookingsAndUsers = {
   payload: BookingAndUser[][];
 };
 
+type ActionForceRender = {
+  type: typeof FORCE_RENDER;
+  payload: number;
+};
+
 export type Actions =
   | ActionSetAval
   | ActionSetSelectionDate
@@ -95,7 +102,8 @@ export type Actions =
   | ActionSetRenderAval
   | ActionSetUserBookings
   | ActionSetBookingsAndUsers
-  | ActionWkAvalSettings;
+  | ActionWeekAvailSettings
+  | ActionForceRender;
 
 const stateReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
@@ -139,6 +147,10 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
             return d;
           }
         );
+      });
+    case FORCE_RENDER:
+      return produce(initialState, (draft) => {
+        draft.schedules.forceRender = action.payload;
       });
     default:
       return initialState;

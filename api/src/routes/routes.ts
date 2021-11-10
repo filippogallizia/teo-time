@@ -21,7 +21,7 @@ const { DateTime } = require('luxon');
 
 const User = db.user;
 const Bookings = db.Bookings;
-const WeekAvailabilitiesSettings = db.WeekAvailabilitiesSettings;
+const WeekavalSettings = db.WeekAvailabilitiesSettings;
 
 const router = express.Router();
 
@@ -99,7 +99,7 @@ router.post(
 );
 
 router.post(
-  '/createbooking',
+  '/createBooking',
   // [authenticateToken, bookExist, bookOutRange],
   [authenticateToken, bookExist],
 
@@ -440,7 +440,7 @@ router.post(
     const { workSettings } = req.body;
     try {
       workSettings.forEach((daySetting: any) => {
-        WeekAvailabilitiesSettings.findOne({ where: { day: daySetting.day } })
+        WeekavalSettings.findOne({ where: { day: daySetting.day } })
           .then((d: any) => {
             if (d) {
               const asyncFn = async () => {
@@ -461,9 +461,9 @@ router.post(
                 await d.save();
               };
               asyncFn();
-              res.send({ message: 'Availabilities updated' });
+              res.send({ message: 'availabilities updated' });
             } else {
-              WeekAvailabilitiesSettings.create({
+              WeekavalSettings.create({
                 day: daySetting.day,
                 workTimeStart: daySetting.parameters.workTimeRange.start,
                 workTimeEnd: daySetting.parameters.workTimeRange.end,
@@ -478,7 +478,7 @@ router.post(
                   daySetting.parameters.breakTimeBtwEvents.minutes,
               })
                 .then((user: UserType) => {
-                  res.send({ message: 'Availabilities created!' });
+                  res.send({ message: 'availabilities created!' });
                 })
                 .catch((e: any) => {
                   throw e;

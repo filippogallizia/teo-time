@@ -2,23 +2,31 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { ITALIC, MEDIUM_MARGIN_BOTTOM } from '../../../shared/locales/constant';
 import { HOUR_MINUTE_FORMAT } from '../../../shared/locales/utils';
-import { Actions, BookingAndUser } from '../../booking/stateReducer';
+import { BookingComponentType } from '../../booking/BookingPageTypes';
+import {
+  Actions,
+  BookingAndUser,
+  FORCE_RENDER,
+} from '../../booking/stateReducer';
 import { deleteBooking } from '../../user/service/userService';
 
 const EditBooking = ({
   oneBooking,
-  setForceRender,
+  dispatch,
+  state,
 }: {
   oneBooking: AllBookingInfo;
-  setForceRender: Dispatch<SetStateAction<number>>;
-}) => {
+} & BookingComponentType) => {
   const handleDelete = async () => {
     try {
       await deleteBooking((response: any) => {}, {
         start: oneBooking.start,
         end: oneBooking.end,
       });
-      setForceRender((prev: number) => prev + 1);
+      dispatch({
+        type: FORCE_RENDER,
+        payload: state.schedules.forceRender + 1,
+      });
       toast.success('prenotazione cancellata', {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -31,6 +39,7 @@ const EditBooking = ({
       <div className="flex justify-center items-center rounded-full p-2 bg-green-500  w-1/2">
         <p className="cursor-pointer self-auto">Reschedule</p>
       </div>
+      <p>{state.schedules.forceRender}</p>
       <div
         onClick={handleDelete}
         className="flex justify-center items-center rounded-full p-2 bg-yellow-500  w-1/2"
@@ -47,11 +56,11 @@ type AllBookingInfo = {
 
 const DetailedInfoBooking = ({
   booking,
-  setForceRender,
+  dispatch,
+  state,
 }: {
   booking: BookingAndUser[];
-  setForceRender: Dispatch<SetStateAction<number>>;
-}) => {
+} & BookingComponentType) => {
   const [allBookingInfo, setAllBookingInfo] = useState<Array<AllBookingInfo>>(
     []
   );
@@ -82,8 +91,9 @@ const DetailedInfoBooking = ({
               </div>
               {allBookingInfo[i].open && (
                 <EditBooking
+                  state={state}
+                  dispatch={dispatch}
                   oneBooking={allBookingInfo[i]}
-                  setForceRender={setForceRender}
                 />
               )}
             </div>

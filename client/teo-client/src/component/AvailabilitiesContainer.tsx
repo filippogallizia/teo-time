@@ -18,13 +18,13 @@ type BookSlotContainerType = {
   dispatch: Dispatch<Actions>;
 };
 
-function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
+function AvalContainer({ dispatch, state }: BookSlotContainerType) {
   const [isClicked, setIsClicked] = useState({ id: 0, isOpen: false });
 
   const [hours, setHours] = useState<{ start: string; end: string }[]>([]);
 
   useEffect(() => {
-    const setAvailabilities = (response: any) => {
+    const setaval = (response: any) => {
       dispatch({ type: SET_AVAL, payload: response });
     };
     const parsedDate = DateTime.fromISO(state.schedules.selectedDate);
@@ -36,7 +36,7 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
     });
     const funcAsync = async () => {
       try {
-        await getAvailabilities(setAvailabilities, {
+        await getAvailabilities(setaval, {
           start: startOfDay.toISO(),
           end: parsedDate
             .set({
@@ -60,17 +60,17 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
         // if the date is today show availabilities just after the current hour
         return state.schedules.availabilities.reduce(
           (acc: { start: string; end: string }[], cv: TimeRangeType) => {
-            const availabilitiesDay = FROM_DATE_TO_DAY(cv.start);
-            const availabilitiesHours = FROM_DATE_TO_HOUR(cv.start);
+            const avalDay = FROM_DATE_TO_DAY(cv.start);
+            const avalHours = FROM_DATE_TO_HOUR(cv.start);
             const currentDay = FROM_DATE_TO_DAY(new Date().toISOString());
             const currentHour = FROM_DATE_TO_HOUR(new Date().toISOString());
             if (
-              availabilitiesDay === currentDay &&
+              avalDay === currentDay &&
               DateTime.fromISO(state.schedules.selectedDate).toFormat(
                 'yyyy LLL dd'
               ) === DateTime.fromJSDate(new Date()).toFormat('yyyy LLL dd')
             ) {
-              if (availabilitiesHours > currentHour) {
+              if (avalHours > currentHour) {
                 acc.push({
                   start: HOUR_MINUTE_FORMAT(cv.start),
                   end: DateTime.fromISO(cv.start)
@@ -126,4 +126,4 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
   );
 }
 
-export default AvailabilitiesContainer;
+export default AvalContainer;

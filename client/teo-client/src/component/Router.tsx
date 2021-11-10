@@ -51,11 +51,11 @@ export const ProtectedRoute = ({
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
-const startingAvailabilities = new Date();
-startingAvailabilities.setHours(7, 0, 0, 0);
+const startingAval = new Date();
+startingAval.setHours(7, 0, 0, 0);
 
-const endAvailabilities = new Date();
-endAvailabilities.setHours(20, 30, 0, 0);
+const endAval = new Date();
+endAval.setHours(20, 30, 0, 0);
 
 const initialState = {
   schedules: {
@@ -63,8 +63,8 @@ const initialState = {
     selectedHour: '00:00',
     availabilities: [
       {
-        start: startingAvailabilities.toISOString(),
-        end: endAvailabilities.toISOString(),
+        start: startingAval.toISOString(),
+        end: endAval.toISOString(),
       },
     ],
     userBookings: [],
@@ -149,6 +149,7 @@ const initialState = {
         },
       },
     ],
+    forceRender: 0,
   },
 };
 

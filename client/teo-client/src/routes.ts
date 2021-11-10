@@ -15,7 +15,7 @@ class Routes {
   public HOMEPAGE_BOOKING = '/homepage/booking';
   public HOMEPAGE_SUCCESS = '/homepage/success';
   public ADMIN_BOOKING_MANAGER = '/homepage/admin/bookingManager';
-  public ADMIN_AVAILABILITIES_MANAGER = '/homepage/admin/availabilitiesManager';
+  public ADMIN_AVAL_MANAGER = '/homepage/admin/AvalManager';
   public ADMIN_USERS_TABLE = '/homepage/admin/usersTable';
 }
 
