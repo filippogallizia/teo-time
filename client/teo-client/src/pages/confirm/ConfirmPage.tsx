@@ -3,7 +3,7 @@ import React from 'react';
 import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { useHistory } from 'react-router-dom';
 import GeneralButton from '../../component/GeneralButton';
-import { BOLD, MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
+import { MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
 import routes from '../../routes';
 import { createBooking } from '../../services/calendar.service';
 import {
@@ -41,7 +41,6 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
       await createBooking(handleSuccess, {
         start: parsedDate.plus(mapped).toISO(),
         end: parsedDate.plus(mapped).plus(EVENT_DURATION).toISO(),
-        email: value.email,
       });
       dispatch({
         type: SET_CONFIRM_PHASE,

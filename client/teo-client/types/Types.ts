@@ -25,6 +25,7 @@ export type BookingType = {
   start: string;
   end: string;
   userId: number;
+  isHoliday: boolean;
 };
 
 export type UserType = {

@@ -13,6 +13,7 @@ import Routes from '../../routes';
 import { Link } from 'react-router-dom';
 import AvalManager from './pages/availabilitiesManager/AvailabilitiesManager';
 import { UserType } from '../../../types/Types';
+import HolidaysManager from './pages/availabilitiesManager/HolidaysManager';
 
 const AdminNav = () => {
   return (
@@ -36,6 +37,12 @@ const AdminNav = () => {
         className="px-3 py-2 flex items-center leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
       >
         <div className="font-serif cursor-pointer">Gestisci disponibilita'</div>
+      </Link>
+      <Link
+        to={Routes.ADMIN_HOLIDAY_MANAGER}
+        className="px-3 py-2 flex items-center leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
+      >
+        <div className="font-serif cursor-pointer">Gestisci vacanze</div>
       </Link>
     </div>
   );
@@ -68,6 +75,13 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
           altRoute={Routes.ADMIN}
         >
           <AvalManager state={state} dispatch={dispatch} />
+        </ProtectedRoute>
+        <ProtectedRoute
+          path={Routes.ADMIN_HOLIDAY_MANAGER}
+          condition={true}
+          altRoute={Routes.ADMIN}
+        >
+          <HolidaysManager state={state} dispatch={dispatch} />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.ADMIN}
@@ -156,19 +170,18 @@ const BookingManager = ({ dispatch, state }: BookingComponentType) => {
     <div className="grid grid-flow-row gap-8  py-2 shadow-sm">
       {state.schedules.bookingsAndUsers.length > 0 ? (
         state.schedules.bookingsAndUsers.map((booking, i: number) => {
-          return (
-            <div key={i} className="p-4 shadow-md">
-              <p className={`${BOLD} ${MEDIUM_MARGIN_BOTTOM}`}>
-                {booking[0].start && DATE_TO_CLIENT_FORMAT(booking[0].start)}
-              </p>
-              <DetailedInfoBooking
-                state={state}
-                dispatch={dispatch}
-                key={i}
-                booking={booking}
-              />
-            </div>
-          );
+          if (booking.length > 0) {
+            return (
+              <div key={i} className="p-4 shadow-md">
+                <DetailedInfoBooking
+                  state={state}
+                  dispatch={dispatch}
+                  key={i}
+                  booking={booking}
+                />
+              </div>
+            );
+          } else return [];
         })
       ) : (
         <div className="flex justify-center ">

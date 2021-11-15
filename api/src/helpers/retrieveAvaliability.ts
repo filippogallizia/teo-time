@@ -24,7 +24,11 @@ export const retrieveAvailability = (
       final[0].availability,
       bookedHours.bookings,
       (aval: any, bks: any) => {
-        return bks.start <= aval.start && bks.end >= aval.end;
+        return (
+          (bks.start <= aval.start && bks.end >= aval.end) ||
+          (bks.start >= aval.start && bks.start < aval.end) ||
+          (bks.end >= aval.start && bks.end < aval.end)
+        );
       }
     );
     return result;

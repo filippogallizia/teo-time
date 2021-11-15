@@ -11,6 +11,8 @@ export const SET_RENDER_AVAL = 'SET_RENDER_AVAL';
 export const SET_BKGS_AND_USERS = 'SET_BKGS_AND_USERS';
 export const SET_WEEK_AVAL_SETTINGS = 'SET_WEEK_AVAL_SETTINGS';
 export const FORCE_RENDER = 'FORCE_RENDER';
+export const ADD_HOLIDAYS = 'ADD_HOLIDAYS';
+export const SET_HOLIDAY = 'SET_HOLIDAY';
 
 export type DayAvalSettingsType = {
   day: string;
@@ -20,6 +22,13 @@ export type DayAvalSettingsType = {
     eventDuration: HrsAndMinsType;
     breakTimeBtwEvents: HrsAndMinsType;
   };
+};
+
+export type Holiday = {
+  id: number;
+  start: string;
+  end: string;
+  isFromServer: boolean;
 };
 
 export type InitialState = {
@@ -39,6 +48,12 @@ export type InitialState = {
     }[][];
     weekAvalSettings: DayAvalSettingsType[];
     forceRender: number;
+    holidays: Array<{
+      id: number;
+      start: string;
+      end: string;
+      isFromServer: boolean;
+    }>;
   };
 };
 
@@ -76,6 +91,25 @@ type ActionWeekAvailSettings = {
   payload: { day: string; e: ChangeEvent<HTMLInputElement> };
 };
 
+type ActionAddHoliday = {
+  type: typeof ADD_HOLIDAYS;
+  payload: {
+    id: number;
+    type: 'add' | 'delete';
+    isFromServer: boolean;
+  } & TimeRangeType;
+};
+
+export type HolidayPayload = {
+  id: number;
+  type: 'start' | 'end';
+} & TimeRangeType;
+
+type ActionSetHoliday = {
+  type: typeof SET_HOLIDAY;
+  payload: HolidayPayload;
+};
+
 export type BookingAndUser = {
   id: number;
   start: string;
@@ -103,7 +137,9 @@ export type Actions =
   | ActionSetUserBookings
   | ActionSetBookingsAndUsers
   | ActionWeekAvailSettings
-  | ActionForceRender;
+  | ActionForceRender
+  | ActionAddHoliday
+  | ActionSetHoliday;
 
 const stateReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
@@ -152,9 +188,39 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
       return produce(initialState, (draft) => {
         draft.schedules.forceRender = action.payload;
       });
+    case ADD_HOLIDAYS:
+      return produce(initialState, (draft) => {
+        if (action.payload.type === 'add') {
+          draft.schedules.holidays.push(action.payload);
+        } else {
+          const index = draft.schedules.holidays.findIndex((day) => {
+            console.log(action.payload.id);
+            return day.id === action.payload.id;
+          });
+          draft.schedules.holidays.splice(index, 1);
+        }
+      });
+    case SET_HOLIDAY:
+      return produce(initialState, (draft) => {
+        const index = draft.schedules.holidays.findIndex(
+          (day: any) => day.id === action.payload.id
+        );
+        if (index !== undefined) {
+          if (action.payload.type === 'start') {
+            draft.schedules.holidays[index].start = action.payload.start;
+          } else {
+            draft.schedules.holidays[index].end = action.payload.end;
+          }
+        }
+      });
+
     default:
       return initialState;
   }
 };
 
 export default stateReducer;
+
+// return produce(initialState, (draft) => {
+
+// });

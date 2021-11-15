@@ -1,11 +1,6 @@
 import { DateTime } from 'luxon';
 import i18n from '../../../i18n';
-import {
-  BOLD,
-  ITALIC,
-  MARGIN_BOTTOM,
-  TITLE,
-} from '../../../shared/locales/constant';
+import { BOLD, ITALIC, MARGIN_BOTTOM } from '../../../shared/locales/constant';
 
 type InfoBookingType = {
   date: string;

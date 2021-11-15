@@ -28,9 +28,6 @@ export const bookExist = async (
   const startRange = req.body.start;
   const endRange = req.body.end;
   try {
-    // const bookingAlreadyExist = await Bookings.findOne({
-    //   where: { start, end },
-    // });
     const bookingsAlreadyExist = await Bookings.findAll({
       where: {
         start: {
@@ -41,7 +38,56 @@ export const bookExist = async (
         },
       },
     });
-    if (bookingsAlreadyExist.length > 0) {
+
+    const myBookings2 = await Bookings.findAll({
+      where: {
+        start: {
+          [Op.lte]: startRange,
+        },
+        end: {
+          [Op.between]: [startRange, endRange],
+        },
+      },
+    }).catch((e: any) => {
+      throw e;
+    });
+
+    const myBookings3 = await Bookings.findAll({
+      where: {
+        start: {
+          [Op.lte]: startRange,
+        },
+        end: {
+          [Op.gte]: endRange,
+        },
+      },
+    }).catch((e: any) => {
+      throw e;
+    });
+
+    const myBookings4 = await Bookings.findAll({
+      where: {
+        start: {
+          [Op.between]: [startRange, endRange],
+        },
+        end: {
+          [Op.gte]: endRange,
+        },
+      },
+    }).catch((e: any) => {
+      throw e;
+    });
+
+    console.log(bookingsAlreadyExist, 'bookingsAlreadyExist');
+
+    const result = [
+      ...bookingsAlreadyExist,
+      ...myBookings2,
+      ...myBookings3,
+      ...myBookings4,
+    ];
+
+    if (result.length > 0) {
       res.status(404).send({
         success: false,
         error: {

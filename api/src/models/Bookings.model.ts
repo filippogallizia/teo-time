@@ -8,6 +8,10 @@ const Bookings = (sequelize: any, Sequelize: any) => {
       end: {
         type: Sequelize.DATE,
       },
+      isHoliday: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       timestamps: false,

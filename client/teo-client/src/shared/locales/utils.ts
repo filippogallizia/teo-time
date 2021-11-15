@@ -61,6 +61,7 @@ export const parseHoursToObject = (selectedHour: string): HrsAndMinsType => {
 export const handleToastInFailRequest = (error: any, toast: any) => {
   if (
     error &&
+    error.response &&
     error.response.data &&
     error.response.data.error &&
     error.response.data.error.message

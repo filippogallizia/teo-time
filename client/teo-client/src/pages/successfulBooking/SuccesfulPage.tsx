@@ -1,9 +1,8 @@
-import { DateTime } from 'luxon';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import GeneralButton from '../../component/GeneralButton';
 import i18n from '../../i18n';
 import { useHistory } from 'react-router-dom';
-import { BOLD, MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
+import { TITLE } from '../../shared/locales/constant';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import routes from '../../routes';
 import InfoBooking from '../admin/components/InfoBooking';

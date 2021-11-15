@@ -150,6 +150,7 @@ const initialState = {
       },
     ],
     forceRender: 0,
+    holidays: [],
   },
 };
 

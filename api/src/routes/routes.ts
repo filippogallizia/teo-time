@@ -100,18 +100,18 @@ router.post(
 
 router.post(
   '/createBooking',
-  // [authenticateToken, bookExist, bookOutRange],
   [authenticateToken, bookExist],
 
   (req: express.Request, res: express.Response) => {
     try {
-      const { start, end } = req.body;
+      const { start, end, isHoliday } = req.body;
       //@ts-expect-error
       const userEmail = res.user.email;
       // create a new user
       Bookings.create({
         start,
         end,
+        isHoliday,
       })
         .then((booking: any) => {
           // search the user by email
@@ -642,6 +642,29 @@ router.post(
           `,
           };
           res.status(200).send(booking);
+        })
+        .catch((e: any) => {
+          throw e;
+        });
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+
+router.get(
+  '/getHolidays',
+  [authenticateToken],
+  (req: express.Request, res: express.Response) => {
+    try {
+      Bookings.findAll({ where: { isHoliday: true } })
+        .then((bks: any) => {
+          res.send(bks);
         })
         .catch((e: any) => {
           throw e;
