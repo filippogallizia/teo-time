@@ -33,10 +33,11 @@ export const createBooking = async (
     start: string;
     end: string;
     isHoliday?: boolean;
+    localId?: number;
   }
 ) => {
   try {
-    const { start, end, isHoliday } = body;
+    const { start, end, isHoliday, localId } = body;
     const response = await axios({
       method: 'post',
       url: `${URL}/createBooking`,
@@ -47,6 +48,7 @@ export const createBooking = async (
         start,
         end,
         isHoliday,
+        localId,
       },
     });
 

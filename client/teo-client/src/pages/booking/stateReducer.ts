@@ -11,8 +11,8 @@ export const SET_RENDER_AVAL = 'SET_RENDER_AVAL';
 export const SET_BKGS_AND_USERS = 'SET_BKGS_AND_USERS';
 export const SET_WEEK_AVAL_SETTINGS = 'SET_WEEK_AVAL_SETTINGS';
 export const FORCE_RENDER = 'FORCE_RENDER';
-export const ADD_HOLIDAYS = 'ADD_HOLIDAYS';
-export const SET_HOLIDAY = 'SET_HOLIDAY';
+export const ADD_HOLIDAY = 'ADD_HOLIDAY';
+export const UPLOAD_HOLIDAY = 'UPLOAD_HOLIDAY';
 
 export type DayAvalSettingsType = {
   day: string;
@@ -25,7 +25,7 @@ export type DayAvalSettingsType = {
 };
 
 export type Holiday = {
-  id: number;
+  localId: number;
   start: string;
   end: string;
   isFromServer: boolean;
@@ -49,10 +49,10 @@ export type InitialState = {
     weekAvalSettings: DayAvalSettingsType[];
     forceRender: number;
     holidays: Array<{
-      id: number;
       start: string;
       end: string;
       isFromServer: boolean;
+      localId?: number;
     }>;
   };
 };
@@ -91,22 +91,19 @@ type ActionWeekAvailSettings = {
   payload: { day: string; e: ChangeEvent<HTMLInputElement> };
 };
 
-type ActionAddHoliday = {
-  type: typeof ADD_HOLIDAYS;
-  payload: {
-    id: number;
-    type: 'add' | 'delete';
-    isFromServer: boolean;
-  } & TimeRangeType;
+export type ActionAddHoliday = {
+  type: typeof ADD_HOLIDAY;
+  payload: HolidayPayload;
 };
 
 export type HolidayPayload = {
-  id: number;
-  type: 'start' | 'end';
+  type: 'add' | 'delete' | 'end' | 'start' | 'upload' | 'empty';
+  isFromServer: boolean;
+  localId: number;
 } & TimeRangeType;
 
 type ActionSetHoliday = {
-  type: typeof SET_HOLIDAY;
+  type: typeof UPLOAD_HOLIDAY;
   payload: HolidayPayload;
 };
 
@@ -188,26 +185,36 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
       return produce(initialState, (draft) => {
         draft.schedules.forceRender = action.payload;
       });
-    case ADD_HOLIDAYS:
+    case ADD_HOLIDAY:
       return produce(initialState, (draft) => {
+        const index = draft.schedules.holidays.findIndex((day) => {
+          return day.localId === action.payload.localId;
+        });
         if (action.payload.type === 'add') {
           draft.schedules.holidays.push(action.payload);
         } else {
-          const index = draft.schedules.holidays.findIndex((day) => {
-            console.log(action.payload.id);
-            return day.id === action.payload.id;
-          });
           draft.schedules.holidays.splice(index, 1);
         }
       });
-    case SET_HOLIDAY:
+    case UPLOAD_HOLIDAY:
       return produce(initialState, (draft) => {
-        const index = draft.schedules.holidays.findIndex(
-          (day: any) => day.id === action.payload.id
-        );
-        if (index !== undefined) {
+        const index = draft.schedules.holidays.findIndex((day: any) => {
+          return day.localId === action.payload.localId;
+        });
+        if (action.payload.type === 'empty') {
+          draft.schedules.holidays = [];
+        }
+        if (index !== -1) {
           if (action.payload.type === 'start') {
             draft.schedules.holidays[index].start = action.payload.start;
+          }
+          if (action.payload.type === 'upload') {
+            draft.schedules.holidays[index] = {
+              start: action.payload.start,
+              end: action.payload.end,
+              localId: action.payload.localId,
+              isFromServer: action.payload.isFromServer,
+            };
           } else {
             draft.schedules.holidays[index].end = action.payload.end;
           }

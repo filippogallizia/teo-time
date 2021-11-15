@@ -39,10 +39,6 @@ const EditBooking = ({
   };
   return (
     <div className="grid grid-cols-1 gap-2 place-items-start">
-      <div className="flex justify-center items-center rounded-full p-2 bg-green-500  w-1/2">
-        <p className="cursor-pointer self-auto">Reschedule</p>
-      </div>
-      <p>{state.schedules.forceRender}</p>
       <div
         onClick={handleDelete}
         className="flex justify-center items-center rounded-full p-2 bg-yellow-500  w-1/2"

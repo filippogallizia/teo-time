@@ -12,6 +12,10 @@ const Bookings = (sequelize: any, Sequelize: any) => {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
+      localId: {
+        type: Sequelize.INTEGER,
+        defaultValue: undefined,
+      },
     },
     {
       timestamps: false,

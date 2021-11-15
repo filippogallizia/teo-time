@@ -78,8 +78,6 @@ export const bookExist = async (
       throw e;
     });
 
-    console.log(bookingsAlreadyExist, 'bookingsAlreadyExist');
-
     const result = [
       ...bookingsAlreadyExist,
       ...myBookings2,

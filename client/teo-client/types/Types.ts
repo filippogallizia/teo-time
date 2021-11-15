@@ -26,6 +26,7 @@ export type BookingType = {
   end: string;
   userId: number;
   isHoliday: boolean;
+  localId?: number;
 };
 
 export type UserType = {

@@ -104,7 +104,7 @@ router.post(
 
   (req: express.Request, res: express.Response) => {
     try {
-      const { start, end, isHoliday } = req.body;
+      const { start, end, isHoliday, localId } = req.body;
       //@ts-expect-error
       const userEmail = res.user.email;
       // create a new user
@@ -112,6 +112,7 @@ router.post(
         start,
         end,
         isHoliday,
+        localId,
       })
         .then((booking: any) => {
           // search the user by email

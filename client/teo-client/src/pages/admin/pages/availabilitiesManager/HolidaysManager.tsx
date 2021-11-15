@@ -4,12 +4,10 @@ import GeneralButton from '../../../../component/GeneralButton';
 import DatePicker from 'react-datepicker';
 import { handleToastInFailRequest } from '../../../../shared/locales/utils';
 import 'react-datepicker/dist/react-datepicker.css';
-import { BookingType, TimeRangeType } from '../../../../../types/Types';
 import {
-  ADD_HOLIDAYS,
+  ADD_HOLIDAY,
   FORCE_RENDER,
-  Holiday,
-  SET_HOLIDAY,
+  UPLOAD_HOLIDAY,
 } from '../../../booking/stateReducer';
 import { DateTime } from 'luxon';
 import { createBooking } from '../../../../services/calendar.service';
@@ -31,20 +29,43 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
   useEffect(() => {
     const asyncFn = async () => {
       const handleSuccess = (response: GetHolidayResponseType) => {
-        response.forEach((holiday: BookingType) => {
+        if (response.length === 0) {
+          dispatch({
+            type: UPLOAD_HOLIDAY,
+            payload: {
+              start: '',
+              end: '',
+              localId: 0,
+              type: 'empty',
+              isFromServer: true,
+            },
+          });
+        }
+        response.forEach((holiday: any) => {
           const holidayInLocalState = _.find(state.schedules.holidays, [
-            'start',
-            holiday.start,
+            'localId',
+            holiday.localId,
           ]);
-          console.log('here');
+
           if (!holidayInLocalState) {
             dispatch({
-              type: ADD_HOLIDAYS,
+              type: ADD_HOLIDAY,
               payload: {
                 start: holiday.start,
                 end: holiday.end,
-                id: holiday.id,
+                localId: holiday.localId,
                 type: 'add',
+                isFromServer: true,
+              },
+            });
+          } else {
+            dispatch({
+              type: UPLOAD_HOLIDAY,
+              payload: {
+                start: holiday.start,
+                end: holiday.end,
+                localId: holiday.localId,
+                type: 'upload',
                 isFromServer: true,
               },
             });
@@ -54,23 +75,21 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
       await getHolidays(handleSuccess);
     };
     asyncFn();
-  }, [dispatch]);
-
-  console.log(state.schedules.holidays, 'state local');
+  }, [dispatch, state.schedules.forceRender]);
 
   return (
     <div className=" grid grid-cols-1 gap-y-6 overflow-auto px-4">
       <div className="flex justify-between items-center p-2">
-        <p className={`${BOLD}`}>Vacanze</p>
+        <p className={`${BOLD}`}>Aggiungi una vacanza</p>
         <GeneralButton
           buttonText="+"
           onClick={() => {
             dispatch({
-              type: ADD_HOLIDAYS,
+              type: ADD_HOLIDAY,
               payload: {
                 start: DateTime.fromJSDate(new Date()).toISO(),
                 end: DateTime.fromJSDate(new Date()).toISO(),
-                id: Math.random(),
+                localId: Math.floor(100000 + Math.random() * 900000),
                 type: 'add',
                 isFromServer: false,
               },
@@ -79,31 +98,28 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
         />
       </div>
 
-      {state.schedules.holidays.map((holiday: Holiday) => {
+      {state.schedules.holidays.map((holiday: any, i: number) => {
         const pickerValue = state.schedules.holidays.filter(
-          (hol) => hol.id === holiday.id
+          (hol) => hol.localId === holiday.localId
         );
         return (
           <div
-            key={holiday.id}
+            key={holiday.localId}
             className="grid grid-cols-1 gap-y-4 p-2 shadow-md"
           >
             <div className="grid grid-cols-2 gap-y-4">
               <div className="col-span-2 flex justify-between items-center">
-                <p className={`${ITALIC}`}>Pausa tra lezioni:</p>
+                <p className={`${ITALIC}`}>Vacanza {i + 1}</p>
                 <GeneralButton
                   buttonText="-"
+                  disabled={holiday.isFromServer}
                   onClick={() => {
-                    console.log(holiday, 'holiday');
-                    if (holiday.isFromServer) {
-                      console.log('is from server');
-                    }
                     dispatch({
-                      type: ADD_HOLIDAYS,
+                      type: ADD_HOLIDAY,
                       payload: {
                         start: DateTime.fromJSDate(new Date()).toISO(),
                         end: DateTime.fromJSDate(new Date()).toISO(),
-                        id: holiday.id,
+                        localId: holiday.localId,
                         type: 'delete',
                         isFromServer: false,
                       },
@@ -120,11 +136,12 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
                       selected={new Date(pickerValue[0].start)}
                       onChange={(date: Date) => {
                         dispatch({
-                          type: SET_HOLIDAY,
+                          type: UPLOAD_HOLIDAY,
                           payload: {
                             start: DateTime.fromJSDate(date).toISO(),
                             end: DateTime.fromJSDate(date).toISO(),
-                            id: holiday.id,
+                            localId: holiday.localId,
+                            isFromServer: holiday.isFromServer,
                             type: 'start',
                           },
                         });
@@ -144,11 +161,12 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
                     selected={new Date(pickerValue[0].end)}
                     onChange={(date: Date) => {
                       dispatch({
-                        type: SET_HOLIDAY,
+                        type: UPLOAD_HOLIDAY,
                         payload: {
                           start: DateTime.fromJSDate(date).toISO(),
                           end: DateTime.fromJSDate(date).toISO(),
-                          id: holiday.id,
+                          localId: holiday.localId,
+                          isFromServer: holiday.isFromServer,
                           type: 'end',
                         },
                       });
@@ -167,7 +185,7 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
       {state.schedules.holidays.length > 0 && (
         <div className="flex w-full justify-center">
           <GeneralButton
-            buttonText="Modifica disponibilita"
+            buttonText="Prenota vacanze"
             onClick={() => {
               const handleSuccess = (response: any) => {
                 return response;
@@ -180,23 +198,25 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
                       start: holiday.start,
                       end: holiday.end,
                       isHoliday: true,
+                      localId: holiday.localId,
                     })
                   );
                 }
               });
 
-              Promise.all(promises)
-                .then(() => {
-                  toast.success("Ole' vacanze prenotate! Vai a surfare zio");
-                  console.log('filo');
-                  // dispatch({
-                  //   type: FORCE_RENDER,
-                  //   payload: state.schedules.forceRender + 1,
-                  // });
-                })
-                .catch((e) => {
-                  handleToastInFailRequest(e, toast);
-                });
+              if (promises.length > 0) {
+                Promise.all(promises)
+                  .then(() => {
+                    toast.success("Ole' vacanze prenotate! Vai a surfare zio");
+                    dispatch({
+                      type: FORCE_RENDER,
+                      payload: state.schedules.forceRender + 1,
+                    });
+                  })
+                  .catch((e) => {
+                    handleToastInFailRequest(e, toast);
+                  });
+              }
             }}
           />
         </div>

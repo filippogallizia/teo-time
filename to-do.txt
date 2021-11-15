@@ -12,6 +12,7 @@ CLIENT
 - userPage style + delete / modify booking  3h
 - navbar link selected style ok
 - password forget ok
+- holidayManager , see how to handle local state and deleting booking inside bookingManager.
 
 for Admin
 - page for managing all booking ok

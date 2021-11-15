@@ -14,7 +14,6 @@ const UsersTable = () => {
   const [data1, setData] = useState<UserType[]>([]);
   useEffect(() => {
     const handleSuccess = (res: any) => {
-      console.log(res);
       setData(res);
     };
     getAllUsers(handleSuccess);
