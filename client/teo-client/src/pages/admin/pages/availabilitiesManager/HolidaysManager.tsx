@@ -5,9 +5,15 @@ import DatePicker from 'react-datepicker';
 import { handleToastInFailRequest } from '../../../../shared/locales/utils';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
-  ADD_HOLIDAY,
+  ADD,
+  ADD_OR_REMOVE_HOLIDAY,
+  DELETE,
   FORCE_RENDER,
+  NO_VALUES,
+  UPLOAD_ALL,
+  UPLOAD_END_DATE,
   UPLOAD_HOLIDAY,
+  UPLOAD_START_DATE,
 } from '../../../booking/stateReducer';
 import { DateTime } from 'luxon';
 import { createBooking } from '../../../../services/calendar.service';
@@ -36,7 +42,7 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
               start: '',
               end: '',
               localId: 0,
-              type: 'empty',
+              type: NO_VALUES,
               isFromServer: true,
             },
           });
@@ -49,12 +55,12 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
 
           if (!holidayInLocalState) {
             dispatch({
-              type: ADD_HOLIDAY,
+              type: ADD_OR_REMOVE_HOLIDAY,
               payload: {
                 start: holiday.start,
                 end: holiday.end,
                 localId: holiday.localId,
-                type: 'add',
+                type: ADD,
                 isFromServer: true,
               },
             });
@@ -65,7 +71,7 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
                 start: holiday.start,
                 end: holiday.end,
                 localId: holiday.localId,
-                type: 'upload',
+                type: UPLOAD_ALL,
                 isFromServer: true,
               },
             });
@@ -75,7 +81,10 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
       await getHolidays(handleSuccess);
     };
     asyncFn();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, state.schedules.forceRender]);
+
+  console.log(state.schedules.holidays, 'state');
 
   return (
     <div className=" grid grid-cols-1 gap-y-6 overflow-auto px-4">
@@ -85,12 +94,12 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
           buttonText="+"
           onClick={() => {
             dispatch({
-              type: ADD_HOLIDAY,
+              type: ADD_OR_REMOVE_HOLIDAY,
               payload: {
                 start: DateTime.fromJSDate(new Date()).toISO(),
                 end: DateTime.fromJSDate(new Date()).toISO(),
                 localId: Math.floor(100000 + Math.random() * 900000),
-                type: 'add',
+                type: ADD,
                 isFromServer: false,
               },
             });
@@ -115,12 +124,12 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
                   disabled={holiday.isFromServer}
                   onClick={() => {
                     dispatch({
-                      type: ADD_HOLIDAY,
+                      type: ADD_OR_REMOVE_HOLIDAY,
                       payload: {
                         start: DateTime.fromJSDate(new Date()).toISO(),
                         end: DateTime.fromJSDate(new Date()).toISO(),
                         localId: holiday.localId,
-                        type: 'delete',
+                        type: DELETE,
                         isFromServer: false,
                       },
                     });
@@ -142,7 +151,7 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
                             end: DateTime.fromJSDate(date).toISO(),
                             localId: holiday.localId,
                             isFromServer: holiday.isFromServer,
-                            type: 'start',
+                            type: UPLOAD_START_DATE,
                           },
                         });
                       }}
@@ -167,7 +176,7 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
                           end: DateTime.fromJSDate(date).toISO(),
                           localId: holiday.localId,
                           isFromServer: holiday.isFromServer,
-                          type: 'end',
+                          type: UPLOAD_END_DATE,
                         },
                       });
                     }}

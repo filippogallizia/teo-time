@@ -3,7 +3,7 @@ import React from 'react';
 import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { useHistory } from 'react-router-dom';
 import GeneralButton from '../../component/GeneralButton';
-import { MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
+import { TITLE } from '../../shared/locales/constant';
 import routes from '../../routes';
 import { createBooking } from '../../services/calendar.service';
 import {
@@ -57,7 +57,7 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
   };
 
   return (
-    <div className="grid  grid-cols-1 gap-8  justify-items-center relative">
+    <div className="flex flex-col items-center gap-8 justify-center relative">
       <div
         className={`absolute top-1 left-3 md:static`}
         onClick={() => history.push(routes.HOMEPAGE_BOOKING)}
@@ -71,9 +71,7 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
           color="#f59e0b"
         />
       </div>
-      <div className={`${TITLE} ${MARGIN_BOTTOM}`}>
-        {i18n.t('confirmPage.confirmDatas')}
-      </div>
+      <div className={`${TITLE}`}>{i18n.t('confirmPage.confirmDatas')}</div>
       <InfoBooking
         date={state.schedules.selectedDate}
         hours={state.schedules.selectedHour}

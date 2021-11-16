@@ -1,4 +1,4 @@
-import express, { NextFunction } from 'express';
+import express from 'express';
 import { Op } from 'sequelize';
 import { retrieveAvailability } from '../helpers/retrieveAvaliability';
 import { WorkSetting } from '../types/types';
@@ -7,14 +7,9 @@ const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const db = require('../models/db');
 const {
-  result,
   compareTwoDatesWithK,
 } = require('../helpers/createDynamicAvailiabilityRules');
 const { DateTime } = require('luxon');
-const sgMail = require('@sendgrid/mail');
-const weekAvalSettings = require('../config/timeConditions.config.json');
-const { v4 } = require('uuid');
-const ClassSgMail = require('../config/sgMail.config');
 
 const User = db.user;
 const WeekavalSettings = db.WeekAvailabilitiesSettings;

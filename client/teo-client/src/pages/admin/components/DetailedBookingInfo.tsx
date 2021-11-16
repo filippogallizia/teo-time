@@ -1,14 +1,16 @@
+import { DateTime } from 'luxon';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import i18n from '../../../i18n';
 import {
   BOLD,
+  EVENT_INFO_TEXT,
   ITALIC,
   MEDIUM_MARGIN_BOTTOM,
+  SECONDARY_BUTTON,
+  SECONDARY_LINK,
 } from '../../../shared/locales/constant';
-import {
-  DATE_TO_CLIENT_FORMAT,
-  HOUR_MINUTE_FORMAT,
-} from '../../../shared/locales/utils';
+import { HOUR_MINUTE_FORMAT } from '../../../shared/locales/utils';
 import { BookingComponentType } from '../../booking/BookingPageTypes';
 import { BookingAndUser, FORCE_RENDER } from '../../booking/stateReducer';
 import { deleteBooking } from '../../user/service/userService';
@@ -41,9 +43,12 @@ const EditBooking = ({
     <div className="grid grid-cols-1 gap-2 place-items-start">
       <div
         onClick={handleDelete}
-        className="flex justify-center items-center rounded-full p-2 bg-yellow-500  w-1/2"
+        // className="flex justify-center items-center rounded-full p-2 bg-yellow-500  w-1/2"
+        className={`${SECONDARY_BUTTON}`}
       >
-        <p className="cursor-pointer self-auto">Cancella</p>
+        <p className="cursor-pointer self-auto">
+          {i18n.t('adminPage.editBookingComponent.deleteButton')}
+        </p>
       </div>
     </div>
   );
@@ -75,7 +80,7 @@ const DetailedInfoBooking = ({
   }, [booking]);
 
   return (
-    <div className="">
+    <div>
       {allBookingInfo.length > 0 &&
         allBookingInfo.map((l: BookingAndUser, i: number) => {
           const { start, user } = l;
@@ -86,14 +91,16 @@ const DetailedInfoBooking = ({
                 key={start}
                 className={`grid grid-cols-5 gap-4 ${MEDIUM_MARGIN_BOTTOM}`}
               >
-                <div className="col-span-2 grid grid-cols-1 gap-4 content-start">
-                  <p className={`${BOLD} ${MEDIUM_MARGIN_BOTTOM}`}>
+                <div className="col-span-2 grid grid-cols-1 gap-4 content-start ">
+                  <p className={`${BOLD}`}>
                     {booking[0].start &&
-                      DATE_TO_CLIENT_FORMAT(booking[0].start)}
+                      DateTime.fromISO(booking[0].start).toFormat(
+                        'yyyy LLL dd '
+                      )}
                   </p>
-                  <div className="grid grid-cols-2 gap-0">
+                  <div className="grid grid-cols-2 gap-0 items-center">
                     <div className="rounded-full h-7 w-7 bg-yellow-500"></div>
-                    <p>{HOUR_MINUTE_FORMAT(start)}</p>
+                    <p>{`${HOUR_MINUTE_FORMAT(start)} h`}</p>
                   </div>
                   {allBookingInfo[i].open && (
                     <EditBooking
@@ -110,22 +117,28 @@ const DetailedInfoBooking = ({
                   {allBookingInfo[i].open && (
                     <>
                       <div>
-                        <p className={ITALIC}>Email</p>
+                        <p className={EVENT_INFO_TEXT}>
+                          {i18n.t('form.email')}
+                        </p>
                         <p>{user.email}</p>
                       </div>
                       <div>
-                        <p className={ITALIC}>Luogo</p>
-                        <p>milano</p>
+                        <p className={EVENT_INFO_TEXT}>
+                          {i18n.t('form.address')}
+                        </p>
+                        <p>{i18n.t('form.city', { cityName: 'Milano' })}</p>
                       </div>
                       <div>
-                        <p className={ITALIC}>Telefono</p>
+                        <p className={EVENT_INFO_TEXT}>
+                          {i18n.t('form.phoneNumber')}
+                        </p>
                         <p>{user.phoneNumber}</p>
                       </div>
                     </>
                   )}
                 </div>
                 <div
-                  className="col-span-1 cursor-pointer font-serif"
+                  className={`col-span-1 ${SECONDARY_LINK}`}
                   onClick={() => {
                     setAllBookingInfo((prev: any) => {
                       const mutation = [...prev];
@@ -137,7 +150,7 @@ const DetailedInfoBooking = ({
                     });
                   }}
                 >
-                  Details
+                  {i18n.t('adminPage.bookingManagerComponent.detailsButton')}
                 </div>
               </div>
             );

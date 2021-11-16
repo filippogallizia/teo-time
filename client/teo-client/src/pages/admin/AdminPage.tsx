@@ -98,6 +98,14 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
   );
 };
 
+export const CardComponent = (props: any) => {
+  return (
+    <div className="shadow-md p-4" {...props}>
+      {props.children}
+    </div>
+  );
+};
+
 const BookingManager = ({ dispatch, state }: BookingComponentType) => {
   useEffect(() => {
     const asynFn = async () => {
@@ -166,19 +174,19 @@ const BookingManager = ({ dispatch, state }: BookingComponentType) => {
   }, [dispatch, state.schedules.forceRender]);
 
   return (
-    <div className="grid grid-flow-row gap-8  py-2 shadow-sm">
+    <div className="grid grid-flow-row gap-8 py-2 shadow-sm">
       {state.schedules.bookingsAndUsers.length > 0 ? (
         state.schedules.bookingsAndUsers.map((booking, i: number) => {
           if (booking.length > 0) {
             return (
-              <div key={i} className="p-4 shadow-md">
+              <CardComponent key={i}>
                 <DetailedInfoBooking
                   state={state}
                   dispatch={dispatch}
                   key={i}
                   booking={booking}
                 />
-              </div>
+              </CardComponent>
             );
           } else return [];
         })

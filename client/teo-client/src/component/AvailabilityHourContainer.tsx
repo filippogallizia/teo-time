@@ -52,7 +52,7 @@ function AvailabilityHourContainer({
           onClick={() => {
             setIsClicked({ id: id, isOpen: true });
           }}
-          className="flex flex-col justify-center items-center border-2 border-yellow-500 hover:border-yellow-700 cursor-pointer m-2 p-4 w-11/12 md:p-4 md:w-4/5"
+          className="flex flex-col justify-center items-center border-2 border-yellow-500 hover:border-yellow-700 cursor-pointer p-4 w-11/12 md:p-4 md:w-4/5"
         >
           {`${hour.start} - ${hour.end}`}
         </div>

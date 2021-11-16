@@ -11,7 +11,7 @@ export const SET_RENDER_AVAL = 'SET_RENDER_AVAL';
 export const SET_BKGS_AND_USERS = 'SET_BKGS_AND_USERS';
 export const SET_WEEK_AVAL_SETTINGS = 'SET_WEEK_AVAL_SETTINGS';
 export const FORCE_RENDER = 'FORCE_RENDER';
-export const ADD_HOLIDAY = 'ADD_HOLIDAY';
+export const ADD_OR_REMOVE_HOLIDAY = 'ADD_OR_REMOVE_HOLIDAY';
 export const UPLOAD_HOLIDAY = 'UPLOAD_HOLIDAY';
 
 export type DayAvalSettingsType = {
@@ -92,12 +92,25 @@ type ActionWeekAvailSettings = {
 };
 
 export type ActionAddHoliday = {
-  type: typeof ADD_HOLIDAY;
+  type: typeof ADD_OR_REMOVE_HOLIDAY;
   payload: HolidayPayload;
 };
 
+export const ADD = 'ADD';
+export const DELETE = 'DELETE';
+export const UPLOAD_START_DATE = 'UPLOAD_START_DATE';
+export const UPLOAD_END_DATE = 'UPLOAD_END_DATE';
+export const UPLOAD_ALL = 'UPLOAD_ALL';
+export const NO_VALUES = 'NO_VALUES';
+
 export type HolidayPayload = {
-  type: 'add' | 'delete' | 'end' | 'start' | 'upload' | 'empty';
+  type:
+    | typeof ADD
+    | typeof DELETE
+    | typeof UPLOAD_END_DATE
+    | typeof UPLOAD_START_DATE
+    | typeof UPLOAD_ALL
+    | typeof NO_VALUES;
   isFromServer: boolean;
   localId: number;
 } & TimeRangeType;
@@ -185,13 +198,17 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
       return produce(initialState, (draft) => {
         draft.schedules.forceRender = action.payload;
       });
-    case ADD_HOLIDAY:
+    case ADD_OR_REMOVE_HOLIDAY:
       return produce(initialState, (draft) => {
         const index = draft.schedules.holidays.findIndex((day) => {
           return day.localId === action.payload.localId;
         });
-        if (action.payload.type === 'add') {
-          draft.schedules.holidays.push(action.payload);
+        if (action.payload.type === ADD) {
+          if (draft.schedules.holidays[index]?.isFromServer) {
+            draft.schedules.holidays.splice(index, 1);
+          } else {
+            draft.schedules.holidays.push(action.payload);
+          }
         } else {
           draft.schedules.holidays.splice(index, 1);
         }
@@ -201,14 +218,14 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
         const index = draft.schedules.holidays.findIndex((day: any) => {
           return day.localId === action.payload.localId;
         });
-        if (action.payload.type === 'empty') {
+        if (action.payload.type === NO_VALUES) {
           draft.schedules.holidays = [];
         }
         if (index !== -1) {
-          if (action.payload.type === 'start') {
+          if (action.payload.type === UPLOAD_START_DATE) {
             draft.schedules.holidays[index].start = action.payload.start;
           }
-          if (action.payload.type === 'upload') {
+          if (action.payload.type === UPLOAD_ALL) {
             draft.schedules.holidays[index] = {
               start: action.payload.start,
               end: action.payload.end,

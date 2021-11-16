@@ -3,6 +3,7 @@ import { SET_WEEK_AVAL_SETTINGS } from '../../../booking/stateReducer';
 import { BOLD, ITALIC } from '../../../../shared/locales/constant';
 import GeneralButton from '../../../../component/GeneralButton';
 import { manageAvailabilities } from './service/availabilitiesManagerService';
+import CardComponent from '../../components/Card';
 
 const AvalManager = ({ dispatch, state }: BookingComponentType) => {
   const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -16,7 +17,8 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
           );
 
           return (
-            <div key={day} className="shadow-md p-4">
+            // <div key={day} className="shadow-md p-4">
+            <CardComponent key={day}>
               <div className={`grid grid-cols-1 gap-4`}>
                 <p className={`${BOLD}`}>{day}</p>
                 <div className={`grid grid-cols-3 gap-4 `}>
@@ -110,7 +112,8 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </CardComponent>
+            // </div>
           );
         })}
       </div>

@@ -1,14 +1,9 @@
 import express from 'express';
 import { Op } from 'sequelize';
-import { BookingType, UserType } from '../types/types';
-const _ = require('lodash');
-
-const weekAvalSettings = require('../config/timeConditions.config.json');
-const path = require('path');
+import { UserType } from '../types/types';
 const {
   getAvailability,
   userExist,
-  bookOutRange,
   bookExist,
   createToken,
   authenticateToken,
@@ -53,7 +48,7 @@ router.post(
           phoneNumber,
           role: adminOrUser,
         })
-          .then((user: UserType) => {
+          .then(() => {
             res.send({ message: 'User was registered successfully!' });
           })
           .catch((e: any) => {

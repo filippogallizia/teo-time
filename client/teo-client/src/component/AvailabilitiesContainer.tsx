@@ -1,7 +1,14 @@
 import React, { Dispatch, useEffect, useState } from 'react';
 // import 'react-calendar/dist/Calendar.css';
 import AvailabilityHourContainer from './AvailabilityHourContainer';
-import { BOLD, GRID_ONE_COL, TITLE } from '../shared/locales/constant';
+import {
+  BIG_MARGIN_TOP,
+  BOLD,
+  EVENT_INFO_TEXT,
+  GRID_ONE_COL,
+  SUB_TITLE,
+  TITLE,
+} from '../shared/locales/constant';
 import { DateTime } from 'luxon';
 import { getAvailabilities } from '../services/calendar.service';
 import { Actions, InitialState, SET_AVAL } from '../pages/booking/stateReducer';
@@ -12,6 +19,7 @@ import {
 } from '../shared/locales/utils';
 import EventListener from '../helpers/EventListener';
 import { TimeRangeType } from '../../types/Types';
+import i18n from '../i18n';
 
 type BookSlotContainerType = {
   state: InitialState;
@@ -98,12 +106,16 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
     <div
       className={`${GRID_ONE_COL} w-full border-2 border-gray-50 md:border-none`}
     >
-      <div className={` ${GRID_ONE_COL} md:hidden`}>
-        <p className={`${BOLD} ${TITLE}`}>SELECT A TIME</p>
-        <p>{`${DateTime.fromISO(state.schedules.selectedDate).year}/${
-          DateTime.fromISO(state.schedules.selectedDate).month
-        }/${DateTime.fromISO(state.schedules.selectedDate).day}`}</p>
-        <p>Duration: 60 min</p>
+      <div className={` ${GRID_ONE_COL} ${BIG_MARGIN_TOP} md:hidden md:mt-0`}>
+        <p className={`${SUB_TITLE}`}>
+          {i18n.t('availabilitiesContainer.title')}
+        </p>
+        <p className={EVENT_INFO_TEXT}>{`${
+          DateTime.fromISO(state.schedules.selectedDate).year
+        }/${DateTime.fromISO(state.schedules.selectedDate).month}/${
+          DateTime.fromISO(state.schedules.selectedDate).day
+        }`}</p>
+        <p className={EVENT_INFO_TEXT}>Duration: 60 min</p>
       </div>
       {hours.length === 0 ? (
         <div>NESSUNA ORA DISPONIBILE</div>

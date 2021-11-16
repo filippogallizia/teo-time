@@ -11,22 +11,22 @@ const SuccessfulPage = ({ dispatch, state }: BookingComponentType) => {
   const history = useHistory();
 
   return (
-    <div className="grid grid-cols-1 gap-6 justify-items-center">
-      <div className={`${TITLE} text-center`}>
-        <p>{i18n.t('succesfulPage.succesfullMessage')}</p>
-      </div>
-      <div>
-        <InfoBooking
-          date={state.schedules.selectedDate}
-          hours={state.schedules.selectedHour}
+    <div className="flex flex-col items-center gap-8 justify-center">
+      <p className={TITLE}>{i18n.t('succesfulPage.succesfullMessage')}</p>
+      <div className="grid grid-cols-1 gap-6 justify-items-start">
+        <div>
+          <InfoBooking
+            date={state.schedules.selectedDate}
+            hours={state.schedules.selectedHour}
+          />
+        </div>
+        <GeneralButton
+          buttonText={i18n.t('succesfulPage.backToBookingButton')}
+          onClick={() => {
+            history.push(routes.HOMEPAGE_BOOKING);
+          }}
         />
       </div>
-      <GeneralButton
-        buttonText={i18n.t('succesfulPage.backToBookingButton')}
-        onClick={() => {
-          history.push(routes.HOMEPAGE_BOOKING);
-        }}
-      />
     </div>
   );
 };

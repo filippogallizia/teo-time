@@ -16,9 +16,14 @@ import Login, { ForgotPassword } from '../pages/login-signup-resetPass/Login';
 import Signup from '../pages/login-signup-resetPass/Signup';
 import Footer from './Footer';
 import stateReducer from '../pages/booking/stateReducer';
-import { ACCESS_TOKEN, USER_INFO } from '../shared/locales/constant';
+import {
+  ACCESS_TOKEN,
+  GENERAL_FONT,
+  USER_INFO,
+} from '../shared/locales/constant';
 import ResetPassword from '../pages/login-signup-resetPass/ResetPassword';
 import { UserContext } from './UserContext';
+import ContactPage from '../pages/contact/ContactPage';
 
 const GeneralLayout = ({ children }: { children: JSX.Element }) => {
   return <div className="flex flex-col md:m-auto md:max-w-2xl">{children}</div>;
@@ -178,7 +183,7 @@ const RouterComponent = (): JSX.Element => {
   return (
     <Router>
       <UserContext.Provider value={value}>
-        <div className="relative min-h-screen">
+        <div className={`relative min-h-screen ${GENERAL_FONT}`}>
           <div className="pb-20">
             <Navbar dispatch={dispatch} state={state} />
 
@@ -213,6 +218,14 @@ const RouterComponent = (): JSX.Element => {
                 altRoute={Routes.ROOT}
               >
                 <Signup />
+              </ProtectedRoute>
+
+              <ProtectedRoute
+                path={Routes.CONTACT}
+                condition={true}
+                altRoute={Routes.ROOT}
+              >
+                <ContactPage />
               </ProtectedRoute>
 
               <ProtectedRoute

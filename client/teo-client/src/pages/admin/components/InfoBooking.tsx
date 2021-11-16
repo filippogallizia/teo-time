@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import i18n from '../../../i18n';
-import { BOLD, ITALIC, MARGIN_BOTTOM } from '../../../shared/locales/constant';
+import { EVENT_INFO_TEXT } from '../../../shared/locales/constant';
 
 type InfoBookingType = {
   date: string;
@@ -9,20 +9,20 @@ type InfoBookingType = {
 
 const InfoBooking = ({ date, hours }: InfoBookingType) => {
   return (
-    <div className={`grid grid-cols-1 gap-4 ${MARGIN_BOTTOM}`}>
-      <div className={`${ITALIC} text-lg`}>
+    <div className={`grid grid-cols-1 gap-4`}>
+      <div className={`${EVENT_INFO_TEXT}`}>
         {i18n.t('confirmPage.date')}
-        <span className={`${BOLD} ml-2`}>
+        <span className={`ml-2`}>
           {`${DateTime.fromISO(date).toFormat('yyyy LLL  dd')}`}
         </span>
       </div>
-      <div className={`${ITALIC} text-lg`}>
+      <div className={`${EVENT_INFO_TEXT}`}>
         Ore:
-        <span className={`${BOLD} ml-2`}>{` ${hours}`}</span>
+        <span className={`ml-2`}>{` ${hours}`}</span>
       </div>
-      <div className={`${ITALIC} text-lg`}>
+      <div className={`${EVENT_INFO_TEXT}`}>
         Luogo:
-        <span className={`${BOLD} ml-2`}>Via Osti</span>
+        <span className={`ml-2`}>Via Osti</span>
       </div>
     </div>
   );

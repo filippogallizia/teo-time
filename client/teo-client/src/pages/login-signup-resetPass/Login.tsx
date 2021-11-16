@@ -12,6 +12,7 @@ import Routes from '../../routes';
 import {
   ACCESS_TOKEN,
   GRID_ONE_COL,
+  SECONDARY_LINK,
   TITLE,
   USER_INFO,
 } from '../../shared/locales/constant';
@@ -165,7 +166,7 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
         />
       </div>
       <div
-        className="cursor-pointer"
+        className={SECONDARY_LINK}
         onClick={() => {
           history.push(Routes.LOGIN_FORGOT_PASSWORD);
         }}
