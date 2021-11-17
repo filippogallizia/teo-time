@@ -5,7 +5,6 @@ import i18n from '../../../i18n';
 import {
   BOLD,
   EVENT_INFO_TEXT,
-  ITALIC,
   MEDIUM_MARGIN_BOTTOM,
   SECONDARY_BUTTON,
   SECONDARY_LINK,
@@ -84,7 +83,7 @@ const DetailedInfoBooking = ({
       {allBookingInfo.length > 0 &&
         allBookingInfo.map((l: BookingAndUser, i: number) => {
           const { start, user } = l;
-          if (!user) return <p>qualosa e' andato storto</p>;
+          if (!user) return <p>{i18n.t('general.somethingWentWrong')}</p>;
           else {
             return (
               <div
@@ -150,7 +149,7 @@ const DetailedInfoBooking = ({
                     });
                   }}
                 >
-                  {i18n.t('adminPage.bookingManagerComponent.detailsButton')}
+                  {i18n.t('adminPage.bookingManagerPage.detailsButton')}
                 </div>
               </div>
             );

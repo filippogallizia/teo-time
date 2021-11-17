@@ -24,6 +24,7 @@ import {
   getHolidays,
 } from '../../service/AdminPageService';
 import _ from 'lodash';
+import i18n from '../../../../i18n';
 
 const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
   const filterPassedTime = (time: any) => {
@@ -118,7 +119,10 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
           >
             <div className="grid grid-cols-2 gap-y-4">
               <div className="col-span-2 flex justify-between items-center">
-                <p className={`${ITALIC}`}>Vacanza {i + 1}</p>
+                <p className={`${ITALIC}`}>
+                  {i18n.t('adminPage.holidayManagerPage.addHolidayButton')}{' '}
+                  {i + 1}
+                </p>
                 <GeneralButton
                   buttonText="-"
                   disabled={holiday.isFromServer}
@@ -138,7 +142,9 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
               </div>
               <div className="col-span-3 grid grid-cols-2">
                 <div className="col-span-3 grid grid-cols-1">
-                  <p className="col-span-1">Inizio</p>
+                  <p className="col-span-1">
+                    {i18n.t('adminPage.holidayManagerPage.start')}{' '}
+                  </p>
                   <div className="col-span-1">
                     <DatePicker
                       // className="w-40"
@@ -164,7 +170,9 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
               </div>
               <div className="col-span-3 grid grid-cols-2">
                 <div className="col-span-3 grid grid-cols-1">
-                  <p className="self-start">Fine</p>
+                  <p className="self-start">
+                    {i18n.t('adminPage.holidayManagerPage.end')}{' '}
+                  </p>
 
                   <DatePicker
                     selected={new Date(pickerValue[0].end)}

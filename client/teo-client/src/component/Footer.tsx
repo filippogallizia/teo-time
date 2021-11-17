@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import i18n from '../i18n';
 import routes from '../routes';
 import InstagramLogo from '../shared/icons/instagram.svg';
 import { SECONDARY_LINK } from '../shared/locales/constant';
@@ -11,7 +12,7 @@ const Footer = () => {
         to={routes.CONTACT}
         // className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
       >
-        <span className={`${SECONDARY_LINK}`}>Contact</span>
+        <span className={`${SECONDARY_LINK}`}>{i18n.t('footer.contact')}</span>
       </Link>
       <Link
         to={{ pathname: 'https://www.instagram.com/bulgheronimatteo/?hl=en' }}

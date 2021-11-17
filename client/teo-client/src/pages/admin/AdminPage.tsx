@@ -13,6 +13,8 @@ import { Link } from 'react-router-dom';
 import AvalManager from './pages/availabilitiesManager/AvailabilitiesManager';
 import { UserType } from '../../../types/Types';
 import HolidaysManager from './pages/availabilitiesManager/HolidaysManager';
+import CardComponent from './components/Card';
+import i18n from '../../i18n';
 
 const AdminNav = () => {
   return (
@@ -23,25 +25,33 @@ const AdminNav = () => {
         to={Routes.ADMIN_BOOKING_MANAGER}
         className="px-3 py-2 flex items-center  leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
       >
-        <div className="font-serif cursor-pointer ">Prenotazioni</div>
+        <div className="font-serif cursor-pointer ">
+          {i18n.t('adminPage.nav.bookings')}
+        </div>
       </Link>
       <Link
         to={Routes.ADMIN_USERS_TABLE}
         className="px-3 py-2 flex items-center leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
       >
-        <div className="font-serif cursor-pointer">Users Info</div>
+        <div className="font-serif cursor-pointer">
+          {i18n.t('adminPage.nav.usersInfo')}
+        </div>
       </Link>
       <Link
         to={Routes.ADMIN_AVAL_MANAGER}
         className="px-3 py-2 flex items-center leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
       >
-        <div className="font-serif cursor-pointer">Gestisci disponibilita'</div>
+        <div className="font-serif cursor-pointer">
+          {i18n.t('adminPage.nav.avalManage')}
+        </div>
       </Link>
       <Link
         to={Routes.ADMIN_HOLIDAY_MANAGER}
         className="px-3 py-2 flex items-center leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
       >
-        <div className="font-serif cursor-pointer">Gestisci vacanze</div>
+        <div className="font-serif cursor-pointer">
+          {i18n.t('adminPage.nav.holidayManage')}
+        </div>
       </Link>
     </div>
   );
@@ -95,14 +105,6 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
         </ProtectedRoute>
       </Switch>
     </>
-  );
-};
-
-export const CardComponent = (props: any) => {
-  return (
-    <div className="shadow-md p-4" {...props}>
-      {props.children}
-    </div>
   );
 };
 
@@ -192,7 +194,7 @@ const BookingManager = ({ dispatch, state }: BookingComponentType) => {
         })
       ) : (
         <div className="flex justify-center ">
-          <div>Nessuna prenotazione</div>
+          <div>{i18n.t('adminPage.noBookings')}</div>
         </div>
       )}
     </div>

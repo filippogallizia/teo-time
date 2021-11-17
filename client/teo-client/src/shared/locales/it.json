@@ -1,4 +1,7 @@
 {
+  "general": {
+    "somethingWentWrong": "Qualcosa e' andato storto"
+  },
   "form": {
     "email": "Email",
     "password": "Password",
@@ -65,14 +68,50 @@
     }
   },
   "adminPage": {
-    "bookingManagerComponent": {
+    "noBookings": "Nessuna prenotazione",
+    "nav": {
+      "bookings": "Prenotazioni",
+      "usersInfo": "Info clienti",
+      "avalManage": "Gestisci disponibilita'",
+      "holidayManage": "Gestisci vacanze"
+    },
+    "bookingManagerPage": {
       "detailsButton": "Dettagli"
     },
     "editBookingComponent": {
       "deleteButton": "Cancella"
+    },
+    "avalManagerPage": {
+      "workingTime": "Orario di lavoro:",
+      "start": "Inizio",
+      "end": "Fine",
+      "break": "Pausa"
+    },
+    "holidayManagerPage": {
+      "addHolidayButton": "Aggiungi una vacanza",
+      "holiday": "Vacanza",
+      "start": "Inizio",
+      "end": "Fine"
+    },
+    "userInfoPage": {
+      "tableHeader": {
+        "name": "Name",
+        "email": "Email",
+        "phoneNumber": "PhoneNumber"
+      }
     }
   },
   "availabilitiesContainer": {
     "title": "Scegli un orario"
+  },
+  "nav": {
+    "bookings": "Prenotazioni",
+    "logIn": "log in",
+    "user": "Profilo",
+    "admin": "Admin",
+    "logOut": "Log out"
+  },
+  "footer": {
+    "contact": "Contatti"
   }
 }
