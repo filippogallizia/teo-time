@@ -22,6 +22,7 @@ import i18n from '../../i18n';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import { UserType } from '../../../types/Types';
 import { UserContext } from '../../component/UserContext';
+import GoogleLoginComponent from './GoogleLogin';
 
 export const ForgotPassword = () => {
   const [emailValue, setEmail] = useState('');
@@ -136,6 +137,7 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
         <input
           className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
           id="email"
+          autoComplete="email"
           {...register('email', { required: true })}
         />
         {errors.email?.type === 'required' && 'Email is required'}
@@ -156,6 +158,7 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
         />
         {errors.password?.type === 'required' && 'password is required'}
       </div>
+
       <div>
         <input className={buttonStyle(isValid)} type="submit" value="Login" />
       </div>
@@ -172,6 +175,10 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
         }}
       >
         {i18n.t('loginPage.passwordLost')}
+      </div>
+      <div className="border-b-2 border-gray-300 text-center">Oppure</div>
+      <div>
+        <GoogleLoginComponent />{' '}
       </div>
     </form>
   );

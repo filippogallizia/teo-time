@@ -35,6 +35,25 @@ export const loginService = async (
   }
 };
 
+export const googleLoginService = async (fn: any, body: { token: string }) => {
+  try {
+    const { token } = body;
+    const response = await axios({
+      method: 'get',
+      url: `${URL}/google-login`,
+      headers: {
+        Authorization: `Bearer ${token})}`,
+      },
+      data: {
+        workSettings: body,
+      },
+    });
+    fn(response.data);
+  } catch (e: any) {
+    throw e;
+  }
+};
+
 export const resetPassword = async (fn: any, body: { email: string }) => {
   const { email } = body;
   try {

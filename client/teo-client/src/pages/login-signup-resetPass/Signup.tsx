@@ -68,6 +68,7 @@ const Signup = () => {
           className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
           type="text"
           id="name"
+          autoComplete="name"
           {...register('name', { required: true })}
         />
         {errors.name?.type === 'required' && 'First name is required'}
@@ -83,6 +84,7 @@ const Signup = () => {
           className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
           id="email"
           type="email"
+          autoComplete="email"
           {...register('email', { required: true })}
         />
         {errors.email?.type === 'required' && 'Email is required'}

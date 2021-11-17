@@ -5,7 +5,12 @@ import ocean from '../../shared/images/ocean.jpg';
 
 const HomePage = () => {
   return (
-    <div className="flex flex-col items-center justify-center ">
+    <div
+      className="flex flex-col items-center justify-center"
+      // style={{
+      //   backgroundImage: `url(${ocean})`,
+      // }}
+    >
       <div
         style={{
           fontFamily: 'Delius Swash Caps, cursive',
@@ -14,7 +19,7 @@ const HomePage = () => {
           maxWidth: '300px',
           // backgroundImage: `url(${ocean})`,
         }}
-        className="flex flex-col gap-4 items-center justify-center text-center absolute top-1/3"
+        className="flex flex-col gap-4 items-center justify-center text-center"
       >
         {/* <img src={ocean} /> */}
         <p>
@@ -25,7 +30,7 @@ const HomePage = () => {
         <p>A.T. Still</p>
       </div>
       {/* // <div className="absolute top-1/3"> */}
-      {/* <img src={mainImage} alt="foto-padre-osteopatia" /> */}
+      {/* <img src={ocean} alt="foto-padre-osteopatia" /> */}
     </div>
   );
 };

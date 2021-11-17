@@ -7,6 +7,7 @@ const {
   bookExist,
   createToken,
   authenticateToken,
+  googleAuth,
 } = require('../middleware/middleware');
 const db = require('../models/db');
 const sgMail = require('@sendgrid/mail');
@@ -93,6 +94,88 @@ router.post(
   }
 );
 
+router.get('/google-login', (req: express.Request, res: express.Response) => {
+  try {
+    const authHeader = req.header('Authorization');
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token) {
+      try {
+        googleAuth(token).then((r: any) => {
+          if (!r) {
+            res.status(500).send({
+              success: false,
+              error: {
+                message: 'something went wrong',
+              },
+            });
+          } else {
+            const asyncFn = async () => {
+              const user = await User.findOne({
+                where: { email: r.email },
+              }).catch((e: any) => {
+                console.log(e, 'e1');
+                res.status(500).send({
+                  success: false,
+                  error: {
+                    message: e,
+                  },
+                });
+              });
+              if (user) {
+                res.status(200).send({ user: user, isGoogleLogin: true });
+              } else {
+                const { email, name } = r;
+                const adminOrUser =
+                  email === 'galliziafilippo@gmail.com' ? 'admin' : 'user';
+                try {
+                  User.create({
+                    email,
+                    name,
+                    role: adminOrUser,
+                  })
+                    .then((usr: any) => {
+                      res.status(200).send({ user: usr, isGoogleLogin: true });
+                    })
+                    .catch((e: any) => {
+                      res.status(500).send({
+                        success: false,
+                        error: {
+                          message: e,
+                        },
+                      });
+                    });
+                } catch (e: any) {
+                  res.status(500).send({
+                    success: false,
+                    error: {
+                      message: e,
+                    },
+                  });
+                }
+              }
+            };
+            asyncFn();
+          }
+        });
+      } catch (e) {
+        res.status(500).send({
+          success: false,
+          error: {
+            message: e,
+          },
+        });
+      }
+    }
+  } catch (e) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
+  }
+});
+
 router.post(
   '/createBooking',
   [authenticateToken, bookExist],
@@ -102,6 +185,8 @@ router.post(
       const { start, end, isHoliday, localId } = req.body;
       //@ts-expect-error
       const userEmail = res.user.email;
+      //@ts-expect-error
+      console.log(userEmail, 'userEmail', res.user);
       // create a new user
       Bookings.create({
         start,
@@ -160,7 +245,12 @@ router.post(
           res.status(200).send(booking);
         })
         .catch((e: any) => {
-          throw e;
+          res.status(500).send({
+            success: false,
+            error: {
+              message: e,
+            },
+          });
         });
     } catch (e: any) {
       res.status(500).send({
