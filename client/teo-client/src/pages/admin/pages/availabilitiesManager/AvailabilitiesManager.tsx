@@ -4,6 +4,7 @@ import { BOLD, ITALIC } from '../../../../shared/locales/constant';
 import GeneralButton from '../../../../component/GeneralButton';
 import { manageAvailabilities } from './service/availabilitiesManagerService';
 import CardComponent from '../../components/Card';
+import i18n from '../../../../i18n';
 
 const AvalManager = ({ dispatch, state }: BookingComponentType) => {
   const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -21,10 +22,12 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
             <CardComponent key={day}>
               <div className={`grid grid-cols-1 gap-4`}>
                 <p className={`${BOLD}`}>{day}</p>
-                <div className={`grid grid-cols-3 gap-4 `}>
-                  <p className={`col-span-3 ${ITALIC}`}>Orario Lavoro:</p>
-                  <div className="col-span-3 grid grid-cols-2">
-                    <p>start</p>
+                <div className={`grid grid-cols-3 gap-4`}>
+                  <p className={`col-span-3 ${ITALIC}`}>
+                    {i18n.t('adminPage.avalManagerPage.workingTime')}
+                  </p>
+                  <div className="col-span-3 grid grid-cols-2 items-center">
+                    <p>{i18n.t('adminPage.avalManagerPage.start')}</p>
                     <input
                       type="time"
                       id="workTimeRange.start"
@@ -43,8 +46,8 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
                       }}
                     />
                   </div>
-                  <div className="col-span-3 grid grid-cols-2">
-                    <p>end</p>
+                  <div className="col-span-3 grid grid-cols-2 items-center">
+                    <p>{i18n.t('adminPage.avalManagerPage.end')}</p>
                     <input
                       type="time"
                       id="workTimeRange.end"
@@ -65,10 +68,12 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
                   </div>
                 </div>
                 <div className={`grid grid-cols-3 gap-4`}>
-                  <p className={`col-span-3 ${ITALIC}`}>Pausa:</p>
+                  <p className={`col-span-3 ${ITALIC}`}>
+                    {i18n.t('adminPage.avalManagerPage.break')}
+                  </p>
                   <div className="col-span-3 grid grid-cols-2">
-                    <div className="col-span-3 grid grid-cols-2">
-                      <p className="self-start">start</p>
+                    <div className="col-span-3 grid grid-cols-2 items-center">
+                      <p>{i18n.t('adminPage.avalManagerPage.start')}</p>
                       <input
                         type="time"
                         id="breakTimeRange.start"
@@ -89,8 +94,8 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
                     </div>
                   </div>
                   <div className="col-span-3 grid grid-cols-2">
-                    <div className="col-span-3 grid grid-cols-2">
-                      <p>end</p>
+                    <div className="col-span-3 grid grid-cols-2 items-center">
+                      <p>{i18n.t('adminPage.avalManagerPage.end')}</p>
                       <input
                         type="time"
                         id="breakTimeRange.end"

@@ -91,7 +91,7 @@ export default function Navbar({
                     }}
                   >
                     <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
-                      booking
+                      {i18n.t('nav.bookings')}
                     </span>
                   </Link>
                 </li>
@@ -101,7 +101,7 @@ export default function Navbar({
                     className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white  "
                   >
                     <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
-                      log in
+                      {i18n.t('nav.logIn')}
                     </span>
                   </Link>
                 </li>
@@ -113,7 +113,7 @@ export default function Navbar({
                     >
                       <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
                       <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
-                        user
+                        {i18n.t('nav.user')}
                       </span>
                     </Link>
                   </li>
@@ -125,7 +125,7 @@ export default function Navbar({
                       className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white"
                     >
                       <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
-                        admin
+                        {i18n.t('nav.admin')}
                       </span>
                     </Link>
                   </li>
@@ -144,7 +144,7 @@ export default function Navbar({
                         className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
                       >
                         <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
-                          log out
+                          {i18n.t('nav.logOut')}
                         </span>
                       </div>
                     </div>

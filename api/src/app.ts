@@ -7,15 +7,19 @@ const db = require('./models/db');
 const routes = require('./routes/routes');
 
 const corsOptions = {
-  origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000',
+  origin:
+    process.env.CLIENT_ORIGIN ||
+    'http://localhost:3000' ||
+    'http://0.0.0.0:3000',
 };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use('/', routes);
 
 db.sequelize
-  .sync({ force: false })
+  .sync({ force: true })
   .then(() => {
     console.log('Drop and Resync Dbasssssxs');
   })
