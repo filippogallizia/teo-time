@@ -5,6 +5,15 @@ export const USER_INFO = 'USER_INFO';
 
 export const TAILWIND_MOBILE_BREAKPOINT = 768;
 
+//sharedClasses
+export const GENERAL_FONT = 'font-sans';
+export const TITLE = 'text-2xl font-bold tracking-wide';
+export const SUB_TITLE = 'text-xl';
+export const EVENT_INFO_TEXT = 'italic';
+export const SECONDARY_LINK = 'cursor-pointer hover:underline';
+export const SECONDARY_BUTTON =
+  'bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded';
+
 //padding and margins
 
 export const GLOBAL_PADDING = 'p-4';
@@ -13,6 +22,7 @@ export const BIGPADDING = 'p-8';
 export const MARGIN_BOTTOM = 'mb-2';
 export const MEDIUM_MARGIN_BOTTOM = 'mb-5';
 export const BIG_MARGIN_BOTTOM = 'mb-10';
+export const BIG_MARGIN_TOP = 'mt-10';
 export const MARGIN_RIGHT = 'mr-2';
 export const MARGIN_LEFT = 'ml-2';
 export const MARGIN_TOP = 'mt-2';
@@ -22,7 +32,6 @@ export const MARGIN_TOP = 'mt-2';
 export const PARAGRAPH_SMALL = 'text-xs';
 export const PARAGRAPH_MEDIUM = 'text-xl';
 export const PARAGRAPH_BIG = 'text-3xl';
-export const TITLE = 'text-2xl';
 export const BOLD = 'font-bold';
 export const ITALIC = 'italic';
 

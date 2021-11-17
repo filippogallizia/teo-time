@@ -12,12 +12,12 @@
   
 
 - RETRIEVEAVAILABILITY
-  . receive {timeRange: {start, end}[] }
-  . compare the bookings existing with the timeRange and retrieve all the availability inside the timeRange.
+  . receive {TimeRangeType: {start, end}[] }
+  . compare the bookings existing with the TimeRangeType and retrieve all the availability inside the TimeRangeType.
   . FOR NOW MAX ONE DAY 
 
 
-- BOOKINGFROMUSER
+- userBookings
   . receive { email }
   . retrieve all booking associated with that email
 

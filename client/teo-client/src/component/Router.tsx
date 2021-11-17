@@ -15,10 +15,15 @@ import GeneralPage from '../pages/general/GeneralPage';
 import Login, { ForgotPassword } from '../pages/login-signup-resetPass/Login';
 import Signup from '../pages/login-signup-resetPass/Signup';
 import Footer from './Footer';
-import bookingReducer from '../pages/booking/bookingReducer';
-import { ACCESS_TOKEN, USER_INFO } from '../shared/locales/constant';
+import stateReducer from '../pages/booking/stateReducer';
+import {
+  ACCESS_TOKEN,
+  GENERAL_FONT,
+  USER_INFO,
+} from '../shared/locales/constant';
 import ResetPassword from '../pages/login-signup-resetPass/ResetPassword';
 import { UserContext } from './UserContext';
+import ContactPage from '../pages/contact/ContactPage';
 
 const GeneralLayout = ({ children }: { children: JSX.Element }) => {
   return <div className="flex flex-col md:m-auto md:max-w-2xl">{children}</div>;
@@ -51,11 +56,11 @@ export const ProtectedRoute = ({
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
-const startingAvailabilities = new Date();
-startingAvailabilities.setHours(7, 0, 0, 0);
+const startingAval = new Date();
+startingAval.setHours(7, 0, 0, 0);
 
-const endAvailabilities = new Date();
-endAvailabilities.setHours(20, 30, 0, 0);
+const endAval = new Date();
+endAval.setHours(20, 30, 0, 0);
 
 const initialState = {
   schedules: {
@@ -63,20 +68,16 @@ const initialState = {
     selectedHour: '00:00',
     availabilities: [
       {
-        start: startingAvailabilities.toISOString(),
-        end: endAvailabilities.toISOString(),
+        start: startingAval.toISOString(),
+        end: endAval.toISOString(),
       },
     ],
-    specificUserBookings: [],
+    userBookings: [],
     isConfirmPhase: false,
-    isRenderAvailabilities: false,
-    appointmentDetails: {
-      id: 0,
-      start: '',
-    },
+    isRenderAval: false,
     currentUser: {},
-    allBookingsAndUsers: [],
-    manageAvailabilities: [
+    bookingsAndUsers: [],
+    weekAvalSettings: [
       {
         day: 'Monday',
         parameters: {
@@ -153,11 +154,13 @@ const initialState = {
         },
       },
     ],
+    forceRender: 0,
+    holidays: [],
   },
 };
 
 const RouterComponent = (): JSX.Element => {
-  const [state, dispatch] = useReducer(bookingReducer, initialState);
+  const [state, dispatch] = useReducer(stateReducer, initialState);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState<string | null>(null);
 
@@ -180,8 +183,8 @@ const RouterComponent = (): JSX.Element => {
   return (
     <Router>
       <UserContext.Provider value={value}>
-        <div className="relative min-h-screen">
-          <div className="pb-16">
+        <div className={`relative min-h-screen ${GENERAL_FONT}`}>
+          <div className="pb-20">
             <Navbar dispatch={dispatch} state={state} />
 
             <Switch>
@@ -215,6 +218,14 @@ const RouterComponent = (): JSX.Element => {
                 altRoute={Routes.ROOT}
               >
                 <Signup />
+              </ProtectedRoute>
+
+              <ProtectedRoute
+                path={Routes.CONTACT}
+                condition={true}
+                altRoute={Routes.ROOT}
+              >
+                <ContactPage />
               </ProtectedRoute>
 
               <ProtectedRoute

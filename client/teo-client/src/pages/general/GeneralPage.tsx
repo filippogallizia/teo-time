@@ -71,7 +71,7 @@ const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.ADMIN}
-          condition={token && user.role === 'admin' ? true : false}
+          condition={token && user && user.role === 'admin' ? true : false}
           altRoute={Routes.LOGIN}
         >
           <AdminPage dispatch={dispatch} state={state} />

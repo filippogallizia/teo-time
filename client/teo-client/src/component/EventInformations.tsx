@@ -3,29 +3,28 @@ import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { BiTime } from 'react-icons/bi';
 import { GrLocationPin } from 'react-icons/gr';
 import {
+  EVENT_INFO_TEXT,
   MARGIN_BOTTOM,
-  BOLD,
-  PARAGRAPH_BIG,
-  PARAGRAPH_MEDIUM,
+  TITLE,
 } from '../shared/locales/constant';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import {
   SET_CONFIRM_PHASE,
-  SET_RENDER_AVAILABILITIES,
-} from '../pages/booking/bookingReducer';
+  SET_RENDER_AVAL,
+} from '../pages/booking/stateReducer';
+import i18n from '../i18n';
 
 const EventInformations = ({ state, dispatch }: BookingComponentType) => {
   return (
     <div
-      className={`grid col-1 gap-4 justify-items-center relative md:static ${MARGIN_BOTTOM}`}
+      className={`grid col-1  justify-items-center relative md:static ${MARGIN_BOTTOM}`}
     >
-      {(state.schedules.isConfirmPhase ||
-        state.schedules.isRenderAvailabilities) && (
-        <div className={`absolute top-0 left-3 md:static`}>
+      {(state.schedules.isConfirmPhase || state.schedules.isRenderAval) && (
+        <div className={`absolute top-1 left-2 md:static md:hidden`}>
           <BsFillArrowLeftSquareFill
             onClick={() => {
               dispatch({ type: SET_CONFIRM_PHASE, payload: false });
-              dispatch({ type: SET_RENDER_AVAILABILITIES, payload: false });
+              dispatch({ type: SET_RENDER_AVAL, payload: false });
             }}
             size="1.5em"
             color="#f59e0b"
@@ -33,18 +32,28 @@ const EventInformations = ({ state, dispatch }: BookingComponentType) => {
         </div>
       )}
 
-      <div className="grid col-1 gap-3 justify-items-center">
-        <p className={`${PARAGRAPH_MEDIUM} md:${PARAGRAPH_BIG}`}>Matteo</p>
-        <p className={`${BOLD}  ${PARAGRAPH_MEDIUM} md:${PARAGRAPH_BIG}`}>
-          TRAINING
+      <div className="grid col-1 gap-4 justify-items-center">
+        {/* <p className={`${BOLD}  ${PARAGRAPH_MEDIUM} md:${PARAGRAPH_BIG}`}> */}
+        <p className={`${TITLE}`}>
+          {i18n.t('eventInformationComponent.eventType', {
+            catergory: 'Trattamento osteopatico',
+          })}
         </p>
         <div className={`flex align-middle`}>
           <BiTime size="1.2em" color="black" />
-          <p>1h</p>
+          <p className={EVENT_INFO_TEXT}>
+            {i18n.t('eventInformationComponent.eventTime', { duration: '1h' })}
+          </p>
         </div>
         <div className="flex align-middle">
           <GrLocationPin size="1.2em" color="black" />
-          <p>Milano</p>
+          <p>
+            <p className={EVENT_INFO_TEXT}>
+              {i18n.t('eventInformationComponent.eventLocation', {
+                location: 'Milano - via Osti',
+              })}
+            </p>
+          </p>
         </div>
       </div>
     </div>

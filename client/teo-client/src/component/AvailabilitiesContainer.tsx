@@ -1,35 +1,39 @@
 import React, { Dispatch, useEffect, useState } from 'react';
 // import 'react-calendar/dist/Calendar.css';
 import AvailabilityHourContainer from './AvailabilityHourContainer';
-import { BOLD, GRID_ONE_COL, TITLE } from '../shared/locales/constant';
+import {
+  BIG_MARGIN_TOP,
+  BOLD,
+  EVENT_INFO_TEXT,
+  GRID_ONE_COL,
+  SUB_TITLE,
+  TITLE,
+} from '../shared/locales/constant';
 import { DateTime } from 'luxon';
 import { getAvailabilities } from '../services/calendar.service';
-import {
-  Actions,
-  InitialState,
-  SET_AVAILABILITIES,
-  timeRange,
-} from '../pages/booking/bookingReducer';
+import { Actions, InitialState, SET_AVAL } from '../pages/booking/stateReducer';
 import {
   FROM_DATE_TO_DAY,
   FROM_DATE_TO_HOUR,
   HOUR_MINUTE_FORMAT,
 } from '../shared/locales/utils';
 import EventListener from '../helpers/EventListener';
+import { TimeRangeType } from '../../types/Types';
+import i18n from '../i18n';
 
 type BookSlotContainerType = {
   state: InitialState;
   dispatch: Dispatch<Actions>;
 };
 
-function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
+function AvalContainer({ dispatch, state }: BookSlotContainerType) {
   const [isClicked, setIsClicked] = useState({ id: 0, isOpen: false });
 
   const [hours, setHours] = useState<{ start: string; end: string }[]>([]);
 
   useEffect(() => {
-    const setAvailabilities = (response: any) => {
-      dispatch({ type: SET_AVAILABILITIES, payload: response });
+    const setaval = (response: any) => {
+      dispatch({ type: SET_AVAL, payload: response });
     };
     const parsedDate = DateTime.fromISO(state.schedules.selectedDate);
     const startOfDay = DateTime.fromISO(state.schedules.selectedDate).set({
@@ -40,7 +44,7 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
     });
     const funcAsync = async () => {
       try {
-        await getAvailabilities(setAvailabilities, {
+        await getAvailabilities(setaval, {
           start: startOfDay.toISO(),
           end: parsedDate
             .set({
@@ -63,18 +67,18 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
       if (state.schedules.availabilities.length > 0) {
         // if the date is today show availabilities just after the current hour
         return state.schedules.availabilities.reduce(
-          (acc: { start: string; end: string }[], cv: timeRange) => {
-            const availabilitiesDay = FROM_DATE_TO_DAY(cv.start);
-            const availabilitiesHours = FROM_DATE_TO_HOUR(cv.start);
+          (acc: { start: string; end: string }[], cv: TimeRangeType) => {
+            const avalDay = FROM_DATE_TO_DAY(cv.start);
+            const avalHours = FROM_DATE_TO_HOUR(cv.start);
             const currentDay = FROM_DATE_TO_DAY(new Date().toISOString());
             const currentHour = FROM_DATE_TO_HOUR(new Date().toISOString());
             if (
-              availabilitiesDay === currentDay &&
+              avalDay === currentDay &&
               DateTime.fromISO(state.schedules.selectedDate).toFormat(
                 'yyyy LLL dd'
               ) === DateTime.fromJSDate(new Date()).toFormat('yyyy LLL dd')
             ) {
-              if (availabilitiesHours > currentHour) {
+              if (avalHours > currentHour) {
                 acc.push({
                   start: HOUR_MINUTE_FORMAT(cv.start),
                   end: DateTime.fromISO(cv.start)
@@ -102,12 +106,16 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
     <div
       className={`${GRID_ONE_COL} w-full border-2 border-gray-50 md:border-none`}
     >
-      <div className={` ${GRID_ONE_COL} md:hidden`}>
-        <p className={`${BOLD} ${TITLE}`}>SELECT A TIME</p>
-        <p>{`${DateTime.fromISO(state.schedules.selectedDate).year}/${
-          DateTime.fromISO(state.schedules.selectedDate).month
-        }/${DateTime.fromISO(state.schedules.selectedDate).day}`}</p>
-        <p>Duration: 60 min</p>
+      <div className={` ${GRID_ONE_COL} ${BIG_MARGIN_TOP} md:hidden md:mt-0`}>
+        <p className={`${SUB_TITLE}`}>
+          {i18n.t('availabilitiesContainer.title')}
+        </p>
+        <p className={EVENT_INFO_TEXT}>{`${
+          DateTime.fromISO(state.schedules.selectedDate).year
+        }/${DateTime.fromISO(state.schedules.selectedDate).month}/${
+          DateTime.fromISO(state.schedules.selectedDate).day
+        }`}</p>
+        <p className={EVENT_INFO_TEXT}>Duration: 60 min</p>
       </div>
       {hours.length === 0 ? (
         <div>NESSUNA ORA DISPONIBILE</div>
@@ -130,4 +138,4 @@ function AvailabilitiesContainer({ dispatch, state }: BookSlotContainerType) {
   );
 }
 
-export default AvailabilitiesContainer;
+export default AvalContainer;

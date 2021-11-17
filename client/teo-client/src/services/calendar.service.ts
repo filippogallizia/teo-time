@@ -8,7 +8,7 @@ export const getAvailabilities = async (
   body: { start: string; end: string }
 ) => {
   const { start, end } = body;
-  const bodyToSend = { timeRange: [{ start, end }] };
+  const bodyToSend = { TimeRangeType: [{ start, end }] };
 
   try {
     const response = await axios({
@@ -32,21 +32,23 @@ export const createBooking = async (
   body: {
     start: string;
     end: string;
-    email: string;
+    isHoliday?: boolean;
+    localId?: number;
   }
 ) => {
   try {
-    const { start, end, email } = body;
+    const { start, end, isHoliday, localId } = body;
     const response = await axios({
       method: 'post',
-      url: `${URL}/createbooking`,
+      url: `${URL}/createBooking`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
       },
       data: {
         start,
         end,
-        email,
+        isHoliday,
+        localId,
       },
     });
 

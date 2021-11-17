@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AvailabilitiesContainer from '../../component/AvailabilitiesContainer';
+import AvalContainer from '../../component/AvailabilitiesContainer';
 import CalendarComponent from '../../component/Caledar';
 import EventInformations from '../../component/EventInformations';
 import { TAILWIND_MOBILE_BREAKPOINT } from '../../shared/locales/constant';
@@ -40,12 +40,12 @@ function BookingPage({ dispatch, state }: BookingComponentType) {
           <EventInformations state={state} dispatch={dispatch} />
         </div>
         <div className="col-span-4">
-          {state.schedules.isRenderAvailabilities && (
+          {state.schedules.isRenderAval && (
             <div>
-              <AvailabilitiesContainer dispatch={dispatch} state={state} />
+              <AvalContainer dispatch={dispatch} state={state} />
             </div>
           )}
-          {!state.schedules.isRenderAvailabilities && (
+          {!state.schedules.isRenderAval && (
             <div className="flex justify-center">
               <div style={{ maxWidth: '600px' }}>
                 <CalendarComponent state={state} dispatch={dispatch} />
@@ -67,7 +67,7 @@ function BookingPage({ dispatch, state }: BookingComponentType) {
           </div>
         </div>
         <div className="col-span-2">
-          <AvailabilitiesContainer dispatch={dispatch} state={state} />
+          <AvalContainer dispatch={dispatch} state={state} />
         </div>
       </div>
     );

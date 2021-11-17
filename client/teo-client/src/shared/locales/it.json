@@ -1,7 +1,10 @@
 {
   "form": {
     "email": "Email",
-    "password": "Password"
+    "password": "Password",
+    "address": "Indirizzo",
+    "phoneNumber": "Telefono",
+    "city": "{{cityName}}"
   },
   "toastMessages": {
     "errors": {
@@ -19,6 +22,11 @@
     "title": "SIGN UP",
     "mainButton": "Sign up"
   },
+  "eventInformationComponent": {
+    "eventType": "{{catergory}}",
+    "eventTime": "{{duration}}",
+    "eventLocation": "{{location}}"
+  },
   "forgotPassword": {
     "title": "RECUPERA PASSWORD",
     "buttonReset": "Recupera password",
@@ -34,7 +42,7 @@
     }
   },
   "succesfulPage": {
-    "succesfullMessage": "Appuntamento registrato con successo ",
+    "succesfullMessage": "Appuntamento prenotato! ",
     "date": "Data: ",
     "backToBookingButton": "Torna alle prenotazioni"
   },
@@ -42,5 +50,29 @@
     "confirmDatas": "Conferma i dati",
     "date": "Data: ",
     "bookButton": "PRENOTA"
+  },
+  "contactPage": {
+    "title": "Contatti",
+    "body": {
+      "email": "matteobulgheroni@gmail.com",
+      "address": "indirizzo"
+    }
+  },
+  "userPage": {
+    "title": "Ciao {{name}}",
+    "body": {
+      "subtitle": "Qui puoi vedere e gestire le tue prenotazioni"
+    }
+  },
+  "adminPage": {
+    "bookingManagerComponent": {
+      "detailsButton": "Dettagli"
+    },
+    "editBookingComponent": {
+      "deleteButton": "Cancella"
+    }
+  },
+  "availabilitiesContainer": {
+    "title": "Scegli un orario"
   }
 }

@@ -1,14 +1,9 @@
 import express from 'express';
 import { Op } from 'sequelize';
-import { BookingType, UserType } from '../../../types/Types';
-const _ = require('lodash');
-
-const generalAvaliabilityRules = require('../config/timeConditions.config.json');
-const path = require('path');
+import { UserType } from '../types/types';
 const {
   getAvailability,
   userExist,
-  bookOutRange,
   bookExist,
   createToken,
   authenticateToken,
@@ -21,7 +16,7 @@ const { DateTime } = require('luxon');
 
 const User = db.user;
 const Bookings = db.Bookings;
-const WorkSettings = db.WorkSettings;
+const WeekavalSettings = db.WeekAvailabilitiesSettings;
 
 const router = express.Router();
 
@@ -35,7 +30,7 @@ router.post(
   (req: express.Request, res: express.Response) => {
     //@ts-expect-error
     if (res.user) {
-      res.status(500).send({
+      return res.status(500).send({
         success: false,
         error: {
           message: 'user already Exist',
@@ -53,16 +48,11 @@ router.post(
           phoneNumber,
           role: adminOrUser,
         })
-          .then((user: UserType) => {
+          .then(() => {
             res.send({ message: 'User was registered successfully!' });
           })
           .catch((e: any) => {
-            res.status(500).send({
-              success: false,
-              error: {
-                message: e,
-              },
-            });
+            throw e;
           });
       } catch (e: any) {
         res.status(500).send({
@@ -81,7 +71,7 @@ router.post(
   (req: express.Request, res: express.Response) => {
     //@ts-expect-error
     if (!res.user) {
-      res.status(500).send({
+      return res.status(500).send({
         success: false,
         error: {
           message: "user doesn't exist",
@@ -104,26 +94,26 @@ router.post(
 );
 
 router.post(
-  '/createbooking',
-  // [authenticateToken, bookExist, bookOutRange],
+  '/createBooking',
   [authenticateToken, bookExist],
 
   (req: express.Request, res: express.Response) => {
     try {
-      const { start, end } = req.body;
+      const { start, end, isHoliday, localId } = req.body;
       //@ts-expect-error
       const userEmail = res.user.email;
       // create a new user
       Bookings.create({
         start,
         end,
+        isHoliday,
+        localId,
       })
-        .then((booking: BookingType) => {
+        .then((booking: any) => {
           // search the user by email
           User.findOne({ where: { email: userEmail } })
             .then((usr: UserType) => {
               // associate the booking with the user
-              //@ts-expect-error
               booking.setUser(usr).catch((e: any) => {
                 res.status(500).send({
                   success: false,
@@ -134,12 +124,7 @@ router.post(
               });
             })
             .catch((e: any) => {
-              res.status(500).send({
-                success: false,
-                error: {
-                  message: e,
-                },
-              });
+              throw e;
             });
           //send link
 
@@ -172,41 +157,10 @@ router.post(
           </div>
           `,
           };
-          // const sendEmail = async () => {
-          //   await sgMail
-          //     .sendMultiple(msg)
-          //     .then(
-          //       () => {
-          //         res.status(200).send(booking);
-          //       },
-          //       (e: any) => {
-          //         res.status(500).send({
-          //           success: false,
-          //           error: {
-          //             message: e,
-          //           },
-          //         });
-          //       }
-          //     )
-          //     .catch((e: any) => {
-          //       res.status(500).send({
-          //         success: false,
-          //         error: {
-          //           message: e,
-          //         },
-          //       });
-          //     });
-          // };
-          // sendEmail();
           res.status(200).send(booking);
         })
         .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({
@@ -254,15 +208,10 @@ router.post(
                 res.status(200).send('prenotazione cancellata');
               })
               .catch((e: any) => {
-                res.status(500).send({
-                  success: false,
-                  error: {
-                    message: e,
-                  },
-                });
+                throw e;
               });
           } else {
-            res.status(400).send({
+            return res.status(400).send({
               success: false,
               error: {
                 message: 'booking not found',
@@ -271,12 +220,7 @@ router.post(
           }
         })
         .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({
@@ -290,42 +234,31 @@ router.post(
 );
 
 router.get(
-  '/bookingFromUser',
+  '/userBookings',
   [authenticateToken],
   (req: express.Request, res: express.Response) => {
     //@ts-expect-error
     const userEmail = res.user.email;
     try {
-      const user = User.findOne({ where: { email: userEmail } }).catch(
-        (e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
-        }
-      );
-      user.then((u: any) => {
-        if (u) {
-          Bookings.findAll({
-            where: { userId: u.id },
-          })
-            .then((bks: any) => {
-              res.status(200).send(bks);
+      User.findOne({ where: { email: userEmail } })
+        .then((usr: any) => {
+          if (usr) {
+            Bookings.findAll({
+              where: { userId: usr.id },
             })
-            .catch((e: any) => {
-              res.status(500).send({
-                success: false,
-                error: {
-                  message: e,
-                },
+              .then((bks: any) => {
+                res.status(200).send(bks);
+              })
+              .catch((e: any) => {
+                throw e;
               });
-            });
-        } else {
-          res.status(200).send('not booking found');
-        }
-      });
+          } else {
+            res.status(200).send([]);
+          }
+        })
+        .catch((e: any) => {
+          throw e;
+        });
     } catch (e: any) {
       res.status(500).send({
         success: false,
@@ -353,12 +286,7 @@ router.get(
           res.send(bks);
         })
         .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({
@@ -390,7 +318,7 @@ router.get(
             });
             res.send(mappedUsr);
           } else {
-            res.status(500).send({
+            return res.status(500).send({
               success: false,
               error: {
                 message: 'there are no users',
@@ -399,12 +327,7 @@ router.get(
           }
         })
         .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({
@@ -445,26 +368,16 @@ router.post(
                     res.send({ message: 'succesfull sent' });
                   },
                   (e: any) => {
-                    res.status(500).send({
-                      success: false,
-                      error: {
-                        message: e,
-                      },
-                    });
+                    throw e;
                   }
                 )
                 .catch((e: any) => {
-                  res.status(500).send({
-                    success: false,
-                    error: {
-                      message: e,
-                    },
-                  });
+                  throw e;
                 });
             };
             sendEmail();
           } else {
-            res.status(400).send({
+            return res.status(400).send({
               success: false,
               error: {
                 message: "l' email non esiste",
@@ -473,12 +386,7 @@ router.post(
           }
         })
         .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({
@@ -500,7 +408,7 @@ router.post(
           if (usr) {
             res.send('allowed to reset password');
           } else {
-            res.status(400).send({
+            return res.status(400).send({
               success: false,
               error: {
                 message: 'not allowed',
@@ -509,12 +417,7 @@ router.post(
           }
         })
         .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({
@@ -533,7 +436,7 @@ router.post(
     const { workSettings } = req.body;
     try {
       workSettings.forEach((daySetting: any) => {
-        WorkSettings.findOne({ where: { day: daySetting.day } })
+        WeekavalSettings.findOne({ where: { day: daySetting.day } })
           .then((d: any) => {
             if (d) {
               const asyncFn = async () => {
@@ -554,9 +457,9 @@ router.post(
                 await d.save();
               };
               asyncFn();
-              res.send({ message: 'Availabilities updated' });
+              res.send({ message: 'availabilities updated' });
             } else {
-              WorkSettings.create({
+              WeekavalSettings.create({
                 day: daySetting.day,
                 workTimeStart: daySetting.parameters.workTimeRange.start,
                 workTimeEnd: daySetting.parameters.workTimeRange.end,
@@ -571,30 +474,18 @@ router.post(
                   daySetting.parameters.breakTimeBtwEvents.minutes,
               })
                 .then((user: UserType) => {
-                  res.send({ message: 'Availabilities created!' });
+                  res.send({ message: 'availabilities created!' });
                 })
                 .catch((e: any) => {
-                  res.status(500).send({
-                    success: false,
-                    error: {
-                      message: e,
-                    },
-                  });
+                  throw e;
                 });
             }
           })
           .catch((e: any) => {
-            console.log(e, 'sofia');
-            res.status(500).send({
-              success: false,
-              error: {
-                message: e,
-              },
-            });
+            throw e;
           });
       });
     } catch (e: any) {
-      console.log(e);
       res.status(500).send({
         success: false,
         error: {
@@ -621,7 +512,7 @@ router.post(
             };
             asyncFn();
           } else {
-            res.status(400).send({
+            return res.status(400).send({
               success: false,
               error: {
                 message: 'not allowed',
@@ -630,13 +521,149 @@ router.post(
           }
         })
         .catch((e: any) => {
-          console.log(e, 'e');
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          throw e;
+        });
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+
+export const booksExist = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  const startRange = req.body.start;
+  const endRange = req.body.end;
+  try {
+    const bookingsAlreadyExist = await Bookings.findAll({
+      where: {
+        start: {
+          [Op.gte]: startRange,
+        },
+        end: {
+          [Op.lte]: endRange,
+        },
+      },
+    });
+    if (bookingsAlreadyExist.length > 0) {
+      res.status(404).send({
+        success: false,
+        error: {
+          message: 'This hour is already booked',
+        },
+      });
+    } else {
+      console.log(bookingsAlreadyExist, 'bookingsAlreadyExist');
+
+      next();
+    }
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
+  }
+};
+
+router.post(
+  '/manageHolidays',
+  // [authenticateToken, bookExist, bookOutRange],
+  [authenticateToken, booksExist],
+
+  (req: express.Request, res: express.Response) => {
+    try {
+      const { start, end } = req.body;
+      //@ts-expect-error
+      const userEmail = res.user.email;
+      // create a new user
+      Bookings.create({
+        start,
+        end,
+      })
+        .then((booking: any) => {
+          // search the user by email
+          User.findOne({ where: { email: userEmail } })
+            .then((usr: UserType) => {
+              // associate the booking with the user
+              booking.setUser(usr).catch((e: any) => {
+                res.status(500).send({
+                  success: false,
+                  error: {
+                    message: e,
+                  },
+                });
+              });
+            })
+            .catch((e: any) => {
+              throw e;
+            });
+          //send link
+
+          const parsedData = DateTime.fromISO(booking.start).toFormat(
+            'yyyy LLL dd - t'
+          );
+
+          const msg = {
+            to: [userEmail, process.env.EMAIL],
+            from: process.env.EMAIL, // Use the email address or domain you verified above
+            subject: 'teo-time',
+            text: 'and easy to do anywhere, even with Node.js',
+            html: `
+            <div style="padding: 10px; border: 3px dashed #f59e0b; font-size: 1.1rem;">
+            <h2>
+              Ciao! Il tuo appuntamento e' stato registrato con successo.
+            </h2>
+            <p style="margin-bottom: 10px;">
+              Questi sono i dettagli:
+            </p>
+            <p>
+              EVENTO: <span style="font-weight: bold;">Trattamento osteopatico</span>
+            </p>
+            <p>
+              DATA:
+              <span style="font-weight: bold;">
+                ${parsedData}</span
+              >
+            </p>
+          </div>
+          `,
+          };
+          res.status(200).send(booking);
+        })
+        .catch((e: any) => {
+          throw e;
+        });
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+
+router.get(
+  '/getHolidays',
+  [authenticateToken],
+  (req: express.Request, res: express.Response) => {
+    try {
+      Bookings.findAll({ where: { isHoliday: true } })
+        .then((bks: any) => {
+          res.send(bks);
+        })
+        .catch((e: any) => {
+          throw e;
         });
     } catch (e: any) {
       res.status(500).send({

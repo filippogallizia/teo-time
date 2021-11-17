@@ -43,13 +43,13 @@ Content-Type: application/json
 
 ###
 
-POST http://0.0.0.0:5000/createbooking
+POST http://0.0.0.0:5000/createBooking
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpemlhZmlsaXBwb0BnbWFpbC5jb20iLCJwYXNzd29yZCI6InN1cmZhbmRvIiwiaWF0IjoxNjM1NDEyMTM4fQ.4OrNWrQ3KbxgvMCboT9JL-Xj3IQ_DTz5rqlv0AYj4PI
 
 {
-     "start": "2021-10-29T10:30:00.000Z",
-     "end": "2021-10-29T12:00:00.000Z"
+    "start": "2021-12-01T15:00:00.000+00:00",
+    "end": "2021-12-17T12:00:00.000+00:00"
 }
 
 ###
@@ -72,7 +72,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpe
 
 
 {
-    "timeRange": [
+    "TimeRangeType": [
          {
      "start": "2021-10-21T01:00:00.000Z",
      "end": "2021-10-21T23:00:00.000Z"
@@ -94,7 +94,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpe
 
 
 ###
-GET http://0.0.0.0:5000/bookingFromUser
+GET http://0.0.0.0:5000/userBookings
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNvZmlAZ21haWwuY29tIiwicGFzc3dvcmQiOiJzb2ZpIiwicm9sZSI6InVzZXIiLCJpYXQiOjE2MzU5NjA0MTZ9.hu97TwyaEvjvsarlbBPymyZa8IwDCMJSfvE2aTdQ3Xo
 

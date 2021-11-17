@@ -1,36 +1,35 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import GeneralButton from '../../component/GeneralButton';
 import {
-  GRID_ONE_COL,
+  EVENT_INFO_TEXT,
+  ITALIC,
   MEDIUM_MARGIN_BOTTOM,
+  SUB_TITLE,
   TITLE,
   USER_INFO,
 } from '../../shared/locales/constant';
 import { handleToastInFailRequest } from '../../shared/locales/utils';
 import { DATE_TO_CLIENT_FORMAT } from '../../shared/locales/utils';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import {
-  SET_SPECIFIC_USER_BOOKINGS,
-  timeRange,
-} from '../booking/bookingReducer';
+import { SET_USER_BOOKINGS } from '../booking/stateReducer';
 import { deleteBooking, retriveUserBooking } from './service/userService';
 import { toast } from 'react-toastify';
+import { TimeRangeType } from '../../../types/Types';
+import i18n from '../../i18n';
 
 const DeleteBooking = ({
   booking,
   setRender,
 }: {
-  booking: timeRange;
+  booking: TimeRangeType;
   setRender: Dispatch<SetStateAction<number>>;
 }) => {
   const handleDelete = async () => {
     try {
-      await deleteBooking(
-        (response: any) => {
-          console.log(response);
-        },
-        { start: booking.start, end: booking.end }
-      );
+      await deleteBooking((response: any) => {}, {
+        start: booking.start,
+        end: booking.end,
+      });
       setRender((prev) => prev + 1);
       toast.success('prenotazione cancellata', {
         position: toast.POSITION.TOP_CENTER,
@@ -40,10 +39,10 @@ const DeleteBooking = ({
     }
   };
   return (
-    <div
-      className={`grid grid-cols-2 gap-4 justify-items-center items-center ${MEDIUM_MARGIN_BOTTOM}`}
-    >
-      <div className="">{DATE_TO_CLIENT_FORMAT(booking.start)}</div>
+    <div className={`grid grid-cols-2 gap-4 justify-items-center items-center`}>
+      <div className={EVENT_INFO_TEXT}>
+        {DATE_TO_CLIENT_FORMAT(booking.start)}
+      </div>
       <GeneralButton buttonText="Cancella" onClick={handleDelete} />
     </div>
   );
@@ -55,7 +54,7 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
   useEffect(() => {}, [forceRender]);
   useEffect(() => {
     const handleReceiveBooking = (booking: any) => {
-      dispatch({ type: SET_SPECIFIC_USER_BOOKINGS, payload: booking });
+      dispatch({ type: SET_USER_BOOKINGS, payload: booking });
     };
     const asyncFunc = async () => {
       try {
@@ -70,19 +69,22 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
   const currentUser = localStorage.getItem(USER_INFO);
 
   return (
-    <div className={GRID_ONE_COL}>
-      <div className="grid grid-flow-col gap-4 grid-cols-1 mb-10">
+    <div className="grid grid-cols-1 gap-6 justify-items-center">
+      <div className="grid grid-cols-1">
         {currentUser && (
           <>
-            <div>{JSON.parse(currentUser).name}</div>
-            <div>{JSON.parse(currentUser).email}</div>
+            <p className={`${TITLE} `}>
+              {i18n.t('userPage.title', { name: JSON.parse(currentUser).name })}
+            </p>
           </>
         )}
       </div>
-      <p className={`${TITLE} ${MEDIUM_MARGIN_BOTTOM}`}>Le tue prenotazioni.</p>
-      {state.schedules.specificUserBookings.length > 0 ? (
-        <div>
-          {state.schedules.specificUserBookings.map((book) => {
+      <p className={`${SUB_TITLE} text-center`}>
+        {i18n.t('userPage.body.subtitle')}
+      </p>
+      {state.schedules.userBookings.length > 0 ? (
+        <div className="flex flex-col gap-6">
+          {state.schedules.userBookings.map((book) => {
             return (
               <DeleteBooking
                 setRender={setRender}
@@ -93,7 +95,7 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
           })}
         </div>
       ) : null}
-      {state.schedules.specificUserBookings.length === 0 ? (
+      {state.schedules.userBookings.length === 0 ? (
         <div className="flex justify-center">
           <p>Non hai prenotazioni marcate.</p>
         </div>

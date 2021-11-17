@@ -12,6 +12,7 @@ import Routes from '../../routes';
 import {
   ACCESS_TOKEN,
   GRID_ONE_COL,
+  SECONDARY_LINK,
   TITLE,
   USER_INFO,
 } from '../../shared/locales/constant';
@@ -19,7 +20,7 @@ import { handleToastInFailRequest } from '../../shared/locales/utils';
 import { toast } from 'react-toastify';
 import i18n from '../../i18n';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import { UserType } from '../../../../../types/Types';
+import { UserType } from '../../../types/Types';
 import { UserContext } from '../../component/UserContext';
 
 export const ForgotPassword = () => {
@@ -165,7 +166,7 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
         />
       </div>
       <div
-        className="cursor-pointer"
+        className={SECONDARY_LINK}
         onClick={() => {
           history.push(Routes.LOGIN_FORGOT_PASSWORD);
         }}

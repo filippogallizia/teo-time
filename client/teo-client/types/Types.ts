@@ -11,20 +11,22 @@ export type GeneralAvailabilityType = {
 export type GeneralAvailabilityTypes = GeneralAvailabilityType[];
 
 export type GeneralAvaliabilityRulesType = {
-  generalAvaliabilityRules: GeneralAvailabilityTypes;
+  weekAvalSettings: GeneralAvailabilityTypes;
 };
 
 export type BookedHoursType = {
   bookings: TimeRangeType[];
 };
 
-export type timeRange = { start: string; end: string };
+export type HrsAndMinsType = { hours: number; minutes: number };
 
 export type BookingType = {
   id: number;
   start: string;
   end: string;
   userId: number;
+  isHoliday: boolean;
+  localId?: number;
 };
 
 export type UserType = {

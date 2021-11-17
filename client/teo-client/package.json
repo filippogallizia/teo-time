@@ -18,6 +18,7 @@
     "luxon": "^2.0.2",
     "react": "^17.0.2",
     "react-calendar": "^3.4.0",
+    "react-datepicker": "^4.3.0",
     "react-device-detect": "^2.0.1",
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.17.4",
@@ -60,6 +61,7 @@
   "devDependencies": {
     "@types/luxon": "^2.0.5",
     "@types/react-calendar": "^3.4.3",
+    "@types/react-datepicker": "^4.1.7",
     "@types/react-router-dom": "^5.3.1",
     "@types/react-table": "^7.7.7",
     "@types/react-time-picker": "^4.0.2",

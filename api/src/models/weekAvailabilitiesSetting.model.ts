@@ -1,22 +1,6 @@
-// {
-//   day: 'Monday',
-//   parameters: {
-//     workTimeRange: {
-//       start: '2021-10-04T07:30:00.000Z',
-//       end: '2021-10-04T21:15:00.000Z',
-//     },
-//     breakTimeRange: {
-//       start: '2021-10-04T12:00:00.000Z',
-//       end: '2021-10-04T13:30:00.000Z',
-//     },
-//     eventDuration: { hours: 1, minutes: 0 },
-//     breakTimeBtwEvents: { hours: 0, minutes: 30 },
-//   },
-// },
-
-const WorkSettings = (sequelize: any, Sequelize: any) => {
-  const WorkSettings = sequelize.define(
-    'workSetting',
+const WeekavalSettings = (sequelize: any, Sequelize: any) => {
+  const WeekavalSettings = sequelize.define(
+    'weekavalSetting',
     {
       day: {
         type: Sequelize.STRING,
@@ -52,7 +36,7 @@ const WorkSettings = (sequelize: any, Sequelize: any) => {
     }
   );
 
-  return WorkSettings;
+  return WeekavalSettings;
 };
 
-export default WorkSettings;
+export default WeekavalSettings;

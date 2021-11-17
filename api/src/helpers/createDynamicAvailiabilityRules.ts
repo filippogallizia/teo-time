@@ -15,7 +15,7 @@ type TimeRangeTypeJson = {
 };
 
 type GeneralAvaliabilityRulesType = {
-  generalAvaliabilityRules: {
+  weekAvalSettings: {
     day: string;
     availability: TimeRangeTypeJson[];
   }[];
@@ -25,7 +25,7 @@ const compareTwoDatesWithK = (
   workTimeRange: TimeRangeType,
   breakTimeRange: TimeRangeType,
   eventDuration: K,
-  breakTimeBtwEvents: { hours: number; minutes: number }
+  breakTimeBtwEvents: HrsAndMinsType
 ) => {
   const dayStart = DateTime.fromISO(workTimeRange.start);
   const dayEnd = DateTime.fromISO(workTimeRange.end);
@@ -33,16 +33,16 @@ const compareTwoDatesWithK = (
   const breakStart = DateTime.fromISO(breakTimeRange.start);
   const breakEnd = DateTime.fromISO(breakTimeRange.end);
 
-  const availabilitiesBucket: any = [];
+  const avalBucket: any = [];
 
   const tmpBucket: any = [];
 
   // if thera are not slot in bucket && dayStart piu' eventDuration are smaller then breakStart, then push in the bucket
   while (
     dayStart.plus(eventDuration) <= breakStart &&
-    availabilitiesBucket.length === 0
+    avalBucket.length === 0
   ) {
-    availabilitiesBucket.push({
+    avalBucket.push({
       start: dayStart.toUTC(),
       end: dayStart.plus(eventDuration),
     });
@@ -52,10 +52,10 @@ const compareTwoDatesWithK = (
 
   while (
     dayStart.plus(eventDuration) > breakStart &&
-    availabilitiesBucket.length === 0 &&
+    avalBucket.length === 0 &&
     breakEnd.plus(eventDuration) <= dayEnd
   ) {
-    availabilitiesBucket.push({
+    avalBucket.push({
       start: breakStart.toUTC(),
       end: breakStart.plus(eventDuration),
     });
@@ -64,16 +64,13 @@ const compareTwoDatesWithK = (
   // if fineUltimoTurno plus eventDuration is smaller then breakStart, then push in bucket
 
   while (
-    availabilitiesBucket[availabilitiesBucket.length - 1].end
+    avalBucket[avalBucket.length - 1].end
       .plus(eventDuration)
       .plus(breakTimeBtwEvents) <= breakStart
   ) {
-    availabilitiesBucket.push({
-      start:
-        availabilitiesBucket[availabilitiesBucket.length - 1].end.plus(
-          breakTimeBtwEvents
-        ),
-      end: availabilitiesBucket[availabilitiesBucket.length - 1].end
+    avalBucket.push({
+      start: avalBucket[avalBucket.length - 1].end.plus(breakTimeBtwEvents),
+      end: avalBucket[avalBucket.length - 1].end
         .plus(eventDuration)
         .plus(breakTimeBtwEvents),
     });
@@ -83,8 +80,8 @@ const compareTwoDatesWithK = (
 
   while (
     breakEnd.plus(eventDuration) <= dayEnd &&
-    availabilitiesBucket[availabilitiesBucket.length - 1].end <= dayEnd &&
-    availabilitiesBucket[availabilitiesBucket.length - 1].end
+    avalBucket[avalBucket.length - 1].end <= dayEnd &&
+    avalBucket[avalBucket.length - 1].end
       .plus(eventDuration)
       .plus(breakTimeBtwEvents) <= dayEnd
   ) {
@@ -101,12 +98,12 @@ const compareTwoDatesWithK = (
           .plus(breakTimeBtwEvents),
       });
     }
-    availabilitiesBucket.push({
+    avalBucket.push({
       start: tmpBucket[tmpBucket.length - 1].start,
       end: tmpBucket[tmpBucket.length - 1].end,
     });
   }
-  return availabilitiesBucket.map((obj: { start: Date; end: Date }) => ({
+  return avalBucket.map((obj: { start: Date; end: Date }) => ({
     start: DateTime.fromISO(obj.start).toUTC().toISO(),
     end: DateTime.fromISO(obj.end).toUTC().toISO(),
   }));
@@ -172,4 +169,4 @@ const result = days.map((day: any) => {
   };
 });
 
-module.exports = { generalAvaliabilityRules: result, compareTwoDatesWithK };
+module.exports = { weekAvalSettings: result, compareTwoDatesWithK };

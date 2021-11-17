@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import { SET_ALL_BOOKINGS_AND_USERS } from '../booking/bookingReducer';
+import { SET_BKGS_AND_USERS } from '../booking/stateReducer';
 import { getUsersAndBookings } from './service/AdminPageService';
 import DetailedInfoBooking from './components/DetailedBookingInfo';
 import { DateTime } from 'luxon';
-import { DATE_TO_CLIENT_FORMAT } from '../../shared/locales/utils';
-import { UserType } from '../../../../../types/Types';
-import { BOLD, MEDIUM_MARGIN_BOTTOM } from '../../shared/locales/constant';
+import { MEDIUM_MARGIN_BOTTOM } from '../../shared/locales/constant';
 import UsersTable from './components/UsersTable';
 import { ProtectedRoute } from '../general/GeneralPage';
 import { Redirect, Switch } from 'react-router';
 import Routes from '../../routes';
 import { Link } from 'react-router-dom';
-import AvailabilitiesManager from './pages/availabilitiesManager/AvailabilitiesManager';
+import AvalManager from './pages/availabilitiesManager/AvailabilitiesManager';
+import { UserType } from '../../../types/Types';
+import HolidaysManager from './pages/availabilitiesManager/HolidaysManager';
 
 const AdminNav = () => {
   return (
@@ -32,10 +32,16 @@ const AdminNav = () => {
         <div className="font-serif cursor-pointer">Users Info</div>
       </Link>
       <Link
-        to={Routes.ADMIN_AVAILABILITIES_MANAGER}
+        to={Routes.ADMIN_AVAL_MANAGER}
         className="px-3 py-2 flex items-center leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
       >
         <div className="font-serif cursor-pointer">Gestisci disponibilita'</div>
+      </Link>
+      <Link
+        to={Routes.ADMIN_HOLIDAY_MANAGER}
+        className="px-3 py-2 flex items-center leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
+      >
+        <div className="font-serif cursor-pointer">Gestisci vacanze</div>
       </Link>
     </div>
   );
@@ -63,11 +69,18 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
           <UsersTable />
         </ProtectedRoute>
         <ProtectedRoute
-          path={Routes.ADMIN_AVAILABILITIES_MANAGER}
+          path={Routes.ADMIN_AVAL_MANAGER}
           condition={true}
           altRoute={Routes.ADMIN}
         >
-          <AvailabilitiesManager state={state} dispatch={dispatch} />
+          <AvalManager state={state} dispatch={dispatch} />
+        </ProtectedRoute>
+        <ProtectedRoute
+          path={Routes.ADMIN_HOLIDAY_MANAGER}
+          condition={true}
+          altRoute={Routes.ADMIN}
+        >
+          <HolidaysManager state={state} dispatch={dispatch} />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.ADMIN}
@@ -85,8 +98,15 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
   );
 };
 
+export const CardComponent = (props: any) => {
+  return (
+    <div className="shadow-md p-4" {...props}>
+      {props.children}
+    </div>
+  );
+};
+
 const BookingManager = ({ dispatch, state }: BookingComponentType) => {
-  const [forceRender, setForceRender] = useState(0);
   useEffect(() => {
     const asynFn = async () => {
       try {
@@ -135,8 +155,13 @@ const BookingManager = ({ dispatch, state }: BookingComponentType) => {
               []
             );
             dispatch({
-              type: SET_ALL_BOOKINGS_AND_USERS,
+              type: SET_BKGS_AND_USERS,
               payload: allBookingsParsedByDate,
+            });
+          } else {
+            dispatch({
+              type: SET_BKGS_AND_USERS,
+              payload: [],
             });
           }
         };
@@ -146,27 +171,27 @@ const BookingManager = ({ dispatch, state }: BookingComponentType) => {
       }
     };
     asynFn();
-  }, [dispatch, forceRender]);
+  }, [dispatch, state.schedules.forceRender]);
 
   return (
-    <div className="grid grid-flow-row gap-8  py-2 shadow-sm">
-      {state.schedules.allBookingsAndUsers.length > 0 &&
-        state.schedules.allBookingsAndUsers.map((booking, i: number) => {
-          return (
-            <div key={i} className="p-4 shadow-md">
-              <p className={`${BOLD} ${MEDIUM_MARGIN_BOTTOM}`}>
-                {DATE_TO_CLIENT_FORMAT(booking[0].start)}
-              </p>
-              <DetailedInfoBooking
-                key={i}
-                booking={booking}
-                setForceRender={setForceRender}
-              />
-            </div>
-          );
-        })}
-      {state.schedules.allBookingsAndUsers.length === 0 && (
-        <div className="flex justify-center">
+    <div className="grid grid-flow-row gap-8 py-2 shadow-sm">
+      {state.schedules.bookingsAndUsers.length > 0 ? (
+        state.schedules.bookingsAndUsers.map((booking, i: number) => {
+          if (booking.length > 0) {
+            return (
+              <CardComponent key={i}>
+                <DetailedInfoBooking
+                  state={state}
+                  dispatch={dispatch}
+                  key={i}
+                  booking={booking}
+                />
+              </CardComponent>
+            );
+          } else return [];
+        })
+      ) : (
+        <div className="flex justify-center ">
           <div>Nessuna prenotazione</div>
         </div>
       )}

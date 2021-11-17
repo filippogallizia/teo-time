@@ -1,27 +1,37 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { DateTime } from 'luxon';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { UserType } from '../../../../../../types/Types';
-import { ITALIC, MEDIUM_MARGIN_BOTTOM } from '../../../shared/locales/constant';
+import i18n from '../../../i18n';
+import {
+  BOLD,
+  EVENT_INFO_TEXT,
+  ITALIC,
+  MEDIUM_MARGIN_BOTTOM,
+  SECONDARY_BUTTON,
+  SECONDARY_LINK,
+} from '../../../shared/locales/constant';
 import { HOUR_MINUTE_FORMAT } from '../../../shared/locales/utils';
-import { Actions, BookingAndUser } from '../../booking/bookingReducer';
+import { BookingComponentType } from '../../booking/BookingPageTypes';
+import { BookingAndUser, FORCE_RENDER } from '../../booking/stateReducer';
 import { deleteBooking } from '../../user/service/userService';
 
 const EditBooking = ({
   oneBooking,
-  setForceRender,
+  dispatch,
+  state,
 }: {
   oneBooking: AllBookingInfo;
-  setForceRender: Dispatch<SetStateAction<number>>;
-}) => {
+} & BookingComponentType) => {
   const handleDelete = async () => {
     try {
-      await deleteBooking(
-        (response: any) => {
-          console.log(response);
-        },
-        { start: oneBooking.start, end: oneBooking.end }
-      );
-      setForceRender((prev: number) => prev + 1);
+      await deleteBooking((response: any) => {}, {
+        start: oneBooking.start,
+        end: oneBooking.end,
+      });
+      dispatch({
+        type: FORCE_RENDER,
+        payload: state.schedules.forceRender + 1,
+      });
       toast.success('prenotazione cancellata', {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -31,14 +41,14 @@ const EditBooking = ({
   };
   return (
     <div className="grid grid-cols-1 gap-2 place-items-start">
-      <div className="flex justify-center items-center rounded-full p-2 bg-green-500  w-1/2">
-        <p className="cursor-pointer self-auto">Reschedule</p>
-      </div>
       <div
         onClick={handleDelete}
-        className="flex justify-center items-center rounded-full p-2 bg-yellow-500  w-1/2"
+        // className="flex justify-center items-center rounded-full p-2 bg-yellow-500  w-1/2"
+        className={`${SECONDARY_BUTTON}`}
       >
-        <p className="cursor-pointer self-auto">Cancella</p>
+        <p className="cursor-pointer self-auto">
+          {i18n.t('adminPage.editBookingComponent.deleteButton')}
+        </p>
       </div>
     </div>
   );
@@ -50,11 +60,11 @@ type AllBookingInfo = {
 
 const DetailedInfoBooking = ({
   booking,
-  setForceRender,
+  dispatch,
+  state,
 }: {
   booking: BookingAndUser[];
-  setForceRender: Dispatch<SetStateAction<number>>;
-}) => {
+} & BookingComponentType) => {
   const [allBookingInfo, setAllBookingInfo] = useState<Array<AllBookingInfo>>(
     []
   );
@@ -70,65 +80,82 @@ const DetailedInfoBooking = ({
   }, [booking]);
 
   return (
-    <div className="">
-      {allBookingInfo.map((l: BookingAndUser, i: number) => {
-        const { start, user } = l;
-        return (
-          <div
-            key={start}
-            className={`grid grid-cols-5 gap-4 ${MEDIUM_MARGIN_BOTTOM}`}
-          >
-            <div className="col-span-2 grid grid-cols-1 gap-4 content-start">
-              <div className="grid grid-cols-2 gap-0">
-                <div className="rounded-full h-7 w-7 bg-yellow-500"></div>
-                <p>{HOUR_MINUTE_FORMAT(start)}</p>
+    <div>
+      {allBookingInfo.length > 0 &&
+        allBookingInfo.map((l: BookingAndUser, i: number) => {
+          const { start, user } = l;
+          if (!user) return <p>qualosa e' andato storto</p>;
+          else {
+            return (
+              <div
+                key={start}
+                className={`grid grid-cols-5 gap-4 ${MEDIUM_MARGIN_BOTTOM}`}
+              >
+                <div className="col-span-2 grid grid-cols-1 gap-4 content-start ">
+                  <p className={`${BOLD}`}>
+                    {booking[0].start &&
+                      DateTime.fromISO(booking[0].start).toFormat(
+                        'yyyy LLL dd '
+                      )}
+                  </p>
+                  <div className="grid grid-cols-2 gap-0 items-center">
+                    <div className="rounded-full h-7 w-7 bg-yellow-500"></div>
+                    <p>{`${HOUR_MINUTE_FORMAT(start)} h`}</p>
+                  </div>
+                  {allBookingInfo[i].open && (
+                    <EditBooking
+                      state={state}
+                      dispatch={dispatch}
+                      oneBooking={allBookingInfo[i]}
+                    />
+                  )}
+                </div>
+                <div className="col-span-2 grid grid-cols-1 gap-4">
+                  <div>
+                    <p>{user.name}</p>
+                  </div>
+                  {allBookingInfo[i].open && (
+                    <>
+                      <div>
+                        <p className={EVENT_INFO_TEXT}>
+                          {i18n.t('form.email')}
+                        </p>
+                        <p>{user.email}</p>
+                      </div>
+                      <div>
+                        <p className={EVENT_INFO_TEXT}>
+                          {i18n.t('form.address')}
+                        </p>
+                        <p>{i18n.t('form.city', { cityName: 'Milano' })}</p>
+                      </div>
+                      <div>
+                        <p className={EVENT_INFO_TEXT}>
+                          {i18n.t('form.phoneNumber')}
+                        </p>
+                        <p>{user.phoneNumber}</p>
+                      </div>
+                    </>
+                  )}
+                </div>
+                <div
+                  className={`col-span-1 ${SECONDARY_LINK}`}
+                  onClick={() => {
+                    setAllBookingInfo((prev: any) => {
+                      const mutation = [...prev];
+                      mutation[i] = {
+                        ...mutation[i],
+                        open: !mutation[i].open,
+                      };
+                      return mutation;
+                    });
+                  }}
+                >
+                  {i18n.t('adminPage.bookingManagerComponent.detailsButton')}
+                </div>
               </div>
-              {allBookingInfo[i].open && (
-                <EditBooking
-                  oneBooking={allBookingInfo[i]}
-                  setForceRender={setForceRender}
-                />
-              )}
-            </div>
-            <div className="col-span-2 grid grid-cols-1 gap-4">
-              <div>
-                <p>{user.name}</p>
-              </div>
-              {allBookingInfo[i].open && (
-                <>
-                  <div>
-                    <p className={ITALIC}>Email</p>
-                    <p>{user.email}</p>
-                  </div>
-                  <div>
-                    <p className={ITALIC}>Luogo</p>
-                    <p>milano</p>
-                  </div>
-                  <div>
-                    <p className={ITALIC}>Telefono</p>
-                    <p>{user.phoneNumber}</p>
-                  </div>
-                </>
-              )}
-            </div>
-            <div
-              className="col-span-1 cursor-pointer font-serif"
-              onClick={() => {
-                setAllBookingInfo((prev: any) => {
-                  const mutation = [...prev];
-                  mutation[i] = {
-                    ...mutation[i],
-                    open: !mutation[i].open,
-                  };
-                  return mutation;
-                });
-              }}
-            >
-              Details
-            </div>
-          </div>
-        );
-      })}
+            );
+          }
+        })}
     </div>
   );
 };

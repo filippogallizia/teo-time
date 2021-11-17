@@ -7,6 +7,7 @@ class Routes {
   public LOGIN = '/login';
   public LOGIN_FORGOT_PASSWORD = '/forgotPassword';
   public SIGNUP = '/signup';
+  public CONTACT = '/contact';
   public RESET_PASSWORD = '/resetPassword';
   public USER = '/homepage/user';
   public HOMEPAGE = '/homepage';
@@ -15,7 +16,8 @@ class Routes {
   public HOMEPAGE_BOOKING = '/homepage/booking';
   public HOMEPAGE_SUCCESS = '/homepage/success';
   public ADMIN_BOOKING_MANAGER = '/homepage/admin/bookingManager';
-  public ADMIN_AVAILABILITIES_MANAGER = '/homepage/admin/availabilitiesManager';
+  public ADMIN_AVAL_MANAGER = '/homepage/admin/avalManager';
+  public ADMIN_HOLIDAY_MANAGER = '/homepage/admin/holidayManager';
   public ADMIN_USERS_TABLE = '/homepage/admin/usersTable';
 }
 

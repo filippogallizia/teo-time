@@ -3,7 +3,7 @@ import React from 'react';
 import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { useHistory } from 'react-router-dom';
 import GeneralButton from '../../component/GeneralButton';
-import { BOLD, MARGIN_BOTTOM, TITLE } from '../../shared/locales/constant';
+import { TITLE } from '../../shared/locales/constant';
 import routes from '../../routes';
 import { createBooking } from '../../services/calendar.service';
 import {
@@ -11,13 +11,11 @@ import {
   parseHoursToObject,
 } from '../../shared/locales/utils';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import {
-  SET_APPOINTMENT_DETAILS,
-  SET_CONFIRM_PHASE,
-  SET_RENDER_AVAILABILITIES,
-} from '../booking/bookingReducer';
+import { SET_CONFIRM_PHASE, SET_RENDER_AVAL } from '../booking/stateReducer';
 import i18n from '../../i18n';
 import { toast } from 'react-toastify';
+import InfoBooking from '../admin/components/InfoBooking';
+import { HrsAndMinsType } from '../../../types/Types';
 
 type InitialFormType = {
   name: string;
@@ -29,7 +27,7 @@ const EVENT_DURATION = { hours: 1, minutes: 0 };
 
 const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
   const history = useHistory();
-  const mapped: { hours: number; minutes: number } = parseHoursToObject(
+  const mapped: HrsAndMinsType = parseHoursToObject(
     state.schedules.selectedHour
   );
   const parsedDate = DateTime.fromISO(state.schedules.selectedDate).set({
@@ -39,60 +37,45 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
   });
   const myFunc = async (value: InitialFormType) => {
     try {
-      const handleSuccess = (response: any) => {
-        dispatch({
-          type: SET_APPOINTMENT_DETAILS,
-          payload: { id: response.id, start: response.start },
-        });
-      };
+      const handleSuccess = (response: any) => {};
       await createBooking(handleSuccess, {
         start: parsedDate.plus(mapped).toISO(),
         end: parsedDate.plus(mapped).plus(EVENT_DURATION).toISO(),
-        email: value.email,
       });
       dispatch({
         type: SET_CONFIRM_PHASE,
         payload: false,
       });
       dispatch({
-        type: SET_RENDER_AVAILABILITIES,
+        type: SET_RENDER_AVAL,
         payload: false,
       });
       history.push(routes.HOMEPAGE_SUCCESS);
     } catch (e: any) {
-      console.log('here');
       handleToastInFailRequest(e, toast);
     }
   };
 
   return (
-    <div className="grid  grid-cols-1 gap-8 justify-items-center relative">
+    <div className="flex flex-col items-center gap-8 justify-center relative">
       <div
-        className={`absolute top-0 left-3 md:static`}
+        className={`absolute top-1 left-3 md:static`}
         onClick={() => history.push(routes.HOMEPAGE_BOOKING)}
       >
         <BsFillArrowLeftSquareFill
           onClick={() => {
             dispatch({ type: SET_CONFIRM_PHASE, payload: false });
-            dispatch({ type: SET_RENDER_AVAILABILITIES, payload: false });
+            dispatch({ type: SET_RENDER_AVAL, payload: false });
           }}
           size="1.5em"
           color="#f59e0b"
         />
       </div>
-      <div className={`${TITLE} ${MARGIN_BOTTOM}`}>
-        {i18n.t('confirmPage.confirmDatas')}
-      </div>
-      <div className={MARGIN_BOTTOM}>
-        <div className={TITLE}>
-          {i18n.t('confirmPage.date')}
-          <span className={`${BOLD} ml-2`}>
-            {DateTime.fromISO(state.schedules.selectedDate).toFormat(
-              'yyyy LLL  dd - t'
-            )}
-          </span>
-        </div>
-      </div>
+      <div className={`${TITLE}`}>{i18n.t('confirmPage.confirmDatas')}</div>
+      <InfoBooking
+        date={state.schedules.selectedDate}
+        hours={state.schedules.selectedHour}
+      />
       <div>
         <GeneralButton
           buttonText={i18n.t('confirmPage.bookButton')}
