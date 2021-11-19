@@ -7,6 +7,7 @@ import {
   Route,
   RouteProps,
   Redirect,
+  useLocation,
 } from 'react-router-dom';
 
 // local files
@@ -20,6 +21,7 @@ import { ACCESS_TOKEN, USER_INFO } from '../shared/locales/constant';
 import ResetPassword from '../pages/login-signup-resetPass/ResetPassword';
 import { UserContext } from './UserContext';
 import ContactPage from '../pages/contact/ContactPage';
+import { AdminNav } from '../pages/admin/AdminPage';
 
 const GeneralLayout = ({ children }: { children: JSX.Element }) => {
   return <div className="flex flex-col md:m-auto md:max-w-2xl">{children}</div>;
@@ -152,12 +154,13 @@ const initialState = {
     ],
     forceRender: 0,
     holidays: [],
+    location: '',
   },
 };
 
 const MainContentWrapper = (props: any) => {
   return (
-    <div className="flex-1 flex flex-col justify-center p-10">
+    <div className="flex-1 flex flex-col justify-center p-2">
       {props.children}
     </div>
   );
@@ -188,6 +191,7 @@ const RouterComponent = (): JSX.Element => {
     <Router>
       <UserContext.Provider value={value}>
         <Navbar dispatch={dispatch} state={state} />
+        {state.schedules.location.includes('admin') && <AdminNav />}
         <MainContentWrapper>
           <Switch>
             <ProtectedRoute

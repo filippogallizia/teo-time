@@ -13,6 +13,7 @@ export const SET_WEEK_AVAL_SETTINGS = 'SET_WEEK_AVAL_SETTINGS';
 export const FORCE_RENDER = 'FORCE_RENDER';
 export const ADD_OR_REMOVE_HOLIDAY = 'ADD_OR_REMOVE_HOLIDAY';
 export const UPLOAD_HOLIDAY = 'UPLOAD_HOLIDAY';
+export const SET_LOCATION = 'SET_LOCATION';
 
 export type DayAvalSettingsType = {
   day: string;
@@ -54,6 +55,7 @@ export type InitialState = {
       isFromServer: boolean;
       localId?: number;
     }>;
+    location: string;
   };
 };
 
@@ -91,9 +93,18 @@ type ActionWeekAvailSettings = {
   payload: { day: string; e: ChangeEvent<HTMLInputElement> };
 };
 
-export type ActionAddHoliday = {
+type ActionAddHoliday = {
   type: typeof ADD_OR_REMOVE_HOLIDAY;
   payload: HolidayPayload;
+};
+
+type LocationPayload = {
+  location: string;
+};
+
+type ActionSetLocation = {
+  type: typeof SET_LOCATION;
+  payload: LocationPayload;
 };
 
 export const ADD = 'ADD';
@@ -149,7 +160,8 @@ export type Actions =
   | ActionWeekAvailSettings
   | ActionForceRender
   | ActionAddHoliday
-  | ActionSetHoliday;
+  | ActionSetHoliday
+  | ActionSetLocation;
 
 const stateReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
@@ -237,6 +249,10 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
           }
         }
       });
+    case SET_LOCATION:
+      return produce(initialState, (draft) => {
+        draft.schedules.location = action.payload.location;
+      });
 
     default:
       return initialState;
@@ -244,7 +260,3 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
 };
 
 export default stateReducer;
-
-// return produce(initialState, (draft) => {
-
-// });

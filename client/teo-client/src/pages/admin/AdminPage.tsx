@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import { SET_BKGS_AND_USERS } from '../booking/stateReducer';
+import { SET_BKGS_AND_USERS, SET_LOCATION } from '../booking/stateReducer';
 import { getUsersAndBookings } from './service/AdminPageService';
 import DetailedInfoBooking from './components/DetailedBookingInfo';
 import { DateTime } from 'luxon';
 import { MEDIUM_MARGIN_BOTTOM } from '../../shared/locales/constant';
 import UsersTable from './components/UsersTable';
 import { ProtectedRoute } from '../general/GeneralPage';
-import { Redirect, Switch } from 'react-router';
+import { Redirect, Switch, useLocation } from 'react-router';
 import Routes from '../../routes';
 import { Link } from 'react-router-dom';
 import AvalManager from './pages/availabilitiesManager/AvailabilitiesManager';
@@ -16,7 +16,7 @@ import HolidaysManager from './pages/availabilitiesManager/HolidaysManager';
 import CardComponent from './components/Card';
 import i18n from '../../i18n';
 
-const AdminNav = () => {
+export const AdminNav = () => {
   return (
     <div
       className={`flex-0 grid grid-flow-col row-span-3 place-items-center ${MEDIUM_MARGIN_BOTTOM}`}
@@ -58,9 +58,14 @@ const AdminNav = () => {
 };
 
 const AdminPage = ({ dispatch, state }: BookingComponentType) => {
+  let location = useLocation();
+
+  useEffect(() => {
+    dispatch({ type: SET_LOCATION, payload: { location: location.pathname } });
+  }, [dispatch, location.pathname]);
   return (
     <>
-      <AdminNav />
+      {/* <AdminNav /> */}
       <Switch>
         <ProtectedRoute
           path={Routes.ADMIN_BOOKING_MANAGER}

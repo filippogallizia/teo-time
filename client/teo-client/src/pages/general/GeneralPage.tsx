@@ -1,15 +1,16 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Switch } from 'react-router';
 import BookingPage from '../booking/BookingPage';
 import SuccessfulPage from '../successfulBooking/SuccesfulPage';
 import Routes from '../../routes';
 import HomePage from '../home/HomePage';
 import UserPage from '../user/UserPage';
-import { Redirect, Route, RouteProps } from 'react-router-dom';
+import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
 import ConfirmPage from '../confirm/ConfirmPage';
 import AdminPage from '../admin/AdminPage';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import { UserContext } from '../../component/UserContext';
+import { SET_LOCATION } from '../booking/stateReducer';
 
 type ProtectedRouteType = {
   children: any;
@@ -37,6 +38,11 @@ export const ProtectedRoute = ({
 
 const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
   const { user, token } = useContext(UserContext);
+  let location = useLocation();
+
+  useEffect(() => {
+    dispatch({ type: SET_LOCATION, payload: { location: location.pathname } });
+  }, [dispatch, location.pathname]);
 
   return (
     <>
