@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { ACCESS_TOKEN } from '../../../shared/locales/constant';
-const URL = 'http://0.0.0.0:5000';
+import { ENDPOINT } from '../../../api';
 
 export const retriveUserBooking = async (fn: any) => {
   try {
     const response = await axios({
       method: 'get',
-      url: `${URL}/userBookings`,
+      url: `${ENDPOINT}/userBookings`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
       },
@@ -26,7 +26,7 @@ export const deleteBooking = async (
   try {
     const response = await axios({
       method: 'post',
-      url: `${URL}/deleteBooking`,
+      url: `${ENDPOINT}/deleteBooking`,
       data: {
         start,
         end,

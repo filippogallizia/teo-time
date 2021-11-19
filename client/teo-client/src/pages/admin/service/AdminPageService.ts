@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { BookingType } from '../../../../types/Types';
 import { ACCESS_TOKEN } from '../../../shared/locales/constant';
-const URL = 'http://0.0.0.0:5000';
+import { ENDPOINT } from '../../../api';
 
 export const getUsersAndBookings = async (fn: any) => {
   let config = {
@@ -10,7 +10,7 @@ export const getUsersAndBookings = async (fn: any) => {
     },
   };
   try {
-    const response = await axios.get(`${URL}/usersAndBookings`, config);
+    const response = await axios.get(`${ENDPOINT}/usersAndBookings`, config);
     fn(response.data);
   } catch (e: any) {
     throw e;
@@ -24,7 +24,7 @@ export const getAllUsers = async (fn: any) => {
     },
   };
   try {
-    const response = await axios.get(`${URL}/allUsers`, config);
+    const response = await axios.get(`${ENDPOINT}/allUsers`, config);
     fn(response.data);
   } catch (e: any) {
     throw e;
@@ -40,7 +40,7 @@ export const getHolidays = async (fn: any) => {
     },
   };
   try {
-    const response = await axios.get(`${URL}/getHolidays`, config);
+    const response = await axios.get(`${ENDPOINT}/getHolidays`, config);
     fn(response.data);
   } catch (e: any) {
     throw e;

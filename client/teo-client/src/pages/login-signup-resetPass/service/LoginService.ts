@@ -1,5 +1,5 @@
 import axios from 'axios';
-const URL = 'http://0.0.0.0:5000';
+import { ENDPOINT } from '../../../api';
 
 export const signupService = async (
   fn: any,
@@ -7,7 +7,7 @@ export const signupService = async (
 ) => {
   try {
     const { email, name, password, phoneNumber } = body;
-    const response = await axios.post(`${URL}/signup`, {
+    const response = await axios.post(`${ENDPOINT}/signup`, {
       email,
       name,
       password,
@@ -25,7 +25,7 @@ export const loginService = async (
 ) => {
   try {
     const { email, password } = body;
-    const response = await axios.post(`${URL}/login`, {
+    const response = await axios.post(`${ENDPOINT}/login`, {
       email,
       password,
     });
@@ -40,7 +40,7 @@ export const googleLoginService = async (fn: any, body: { token: string }) => {
     const { token } = body;
     const response = await axios({
       method: 'get',
-      url: `${URL}/google-login`,
+      url: `${ENDPOINT}/google-login`,
       headers: {
         Authorization: `Bearer ${token})}`,
       },
@@ -57,7 +57,7 @@ export const googleLoginService = async (fn: any, body: { token: string }) => {
 export const resetPassword = async (fn: any, body: { email: string }) => {
   const { email } = body;
   try {
-    const response = await axios.post(`${URL}/resetPassword`, {
+    const response = await axios.post(`${ENDPOINT}/resetPassword`, {
       email,
     });
     fn(response.data);
@@ -72,7 +72,7 @@ export const postOtpForVerification = async (
 ) => {
   try {
     const { resetPasswordToken } = body;
-    const response = await axios.post(`${URL}/password/otp`, {
+    const response = await axios.post(`${ENDPOINT}/password/otp`, {
       resetPasswordToken,
     });
     fn(response.data);
@@ -87,7 +87,7 @@ export const postNewPassword = async (
 ) => {
   try {
     const { resetPasswordToken, newPassword } = body;
-    const response = await axios.post(`${URL}/password/newPassword`, {
+    const response = await axios.post(`${ENDPOINT}/password/newPassword`, {
       resetPasswordToken,
       newPassword,
     });
@@ -103,7 +103,7 @@ export const postEmailForResetPassword = async (
 ) => {
   try {
     const { email } = body;
-    const response = await axios.post(`${URL}/resetPassword`, {
+    const response = await axios.post(`${ENDPOINT}/resetPassword`, {
       email,
     });
     fn(response.data);

@@ -10,6 +10,8 @@ services:
       - MYSQL_DATABASE=$MYSQLDB_DATABASE
     ports:
       - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+    expose:
+      - '3306'
     volumes:
       - db:/var/lib/mysql
     networks:
@@ -26,6 +28,7 @@ services:
     ports:
       - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
     environment:
+      - NODE_ENV=production
       - DB_HOST=mysqldb
       - DB_USER=$MYSQLDB_USER
       - DB_PASSWORD=$MYSQLDB_ROOT_PASSWORD
@@ -41,13 +44,13 @@ services:
       - api
     build:
       context: ./client/teo-client
-      # args:
+      # args:`
       #   - REACT_APP_API_BASE_URL=$CLIENT_API_BASE_URL
     restart: unless-stopped
     ports:
       - $REACT_LOCAL_PORT:$REACT_DOCKER_PORT
-    volumes:
-      - './client/teo-client:/app'
+    # volumes:
+    #   - './client/teo-client:/app'
     networks:
       - frontend
 

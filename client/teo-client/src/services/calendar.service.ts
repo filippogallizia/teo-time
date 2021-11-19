@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ACCESS_TOKEN } from '../shared/locales/constant';
 
-const URL = 'http://0.0.0.0:5000';
+import { ENDPOINT } from '../api';
 
 export const getAvailabilities = async (
   fn: any,
@@ -13,7 +13,7 @@ export const getAvailabilities = async (
   try {
     const response = await axios({
       method: 'post',
-      url: `${URL}/retrieveAvailability`,
+      url: `${ENDPOINT}/retrieveAvailability`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
       },
@@ -40,7 +40,7 @@ export const createBooking = async (
     const { start, end, isHoliday, localId } = body;
     const response = await axios({
       method: 'post',
-      url: `${URL}/createBooking`,
+      url: `${ENDPOINT}/createBooking`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
       },
