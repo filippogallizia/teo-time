@@ -59,7 +59,7 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
   return (
     <div className="flex flex-col items-center gap-8 justify-center relative">
       <div
-        className={`absolute top-1 left-3 md:static`}
+        className={`justify-self-start`}
         onClick={() => history.push(routes.HOMEPAGE_BOOKING)}
       >
         <BsFillArrowLeftSquareFill

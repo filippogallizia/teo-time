@@ -7,7 +7,7 @@ import { SECONDARY_LINK } from '../shared/locales/constant';
 
 const Footer = () => {
   return (
-    <div className="absolute bottom-0 grid grid-cols-2 justify-items-center items-center w-screen h-10 gap-4 bg-gray-200 text-white">
+    <div className="grid grid-cols-2 justify-items-center items-center w-screen h-10 gap-4 bg-gray-200 text-white">
       <Link
         to={routes.CONTACT}
         // className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "

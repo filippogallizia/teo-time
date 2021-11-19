@@ -19,7 +19,7 @@ import i18n from '../../i18n';
 const AdminNav = () => {
   return (
     <div
-      className={`grid grid-flow-col row-span-3 place-items-center ${MEDIUM_MARGIN_BOTTOM}`}
+      className={`flex-0 grid grid-flow-col row-span-3 place-items-center ${MEDIUM_MARGIN_BOTTOM}`}
     >
       <Link
         to={Routes.ADMIN_BOOKING_MANAGER}

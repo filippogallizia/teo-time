@@ -50,111 +50,109 @@ export default function Navbar({
 
   return (
     <OutsideAlerter setNavbarOpen={setNavbarOpen}>
-      <div className="mb-10">
-        <nav className="relative flex flex-wrap items-center justify-between px-2 py-3 shadow-md mb-3">
-          <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
-            <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
-              <Link
-                to="/homepage"
-                className="text-m font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap text-white"
-              >
-                <span className="tracking-wider">OS-</span>
-                <span className="text-yellow-500 tracking-wider">TEO</span>
-                <span className="tracking-wider">-THERAPY</span>
-              </Link>
-              <button
-                className="text-white cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
-                type="button"
-                onClick={() => setNavbarOpen(!navbarOpen)}
-              >
-                - - -
-              </button>
-            </div>
-            <div
-              className={
-                'lg:flex flex-grow items-center' +
-                (navbarOpen ? ' flex' : ' hidden')
-              }
-              id="example-navbar-danger"
+      <nav className="relative flex flex-wrap items-center justify-between px-2 py-3 shadow-md">
+        <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
+          <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
+            <Link
+              to="/homepage"
+              className="text-m font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap text-white"
             >
-              <ul className="flex flex-col lg:flex-row list-none lg:ml-auto">
-                <li className="nav-item">
-                  <Link
-                    to={routes.HOMEPAGE_BOOKING}
-                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
-                    onClick={() => {
-                      dispatch({ type: SET_CONFIRM_PHASE, payload: false });
-                      dispatch({
-                        type: SET_RENDER_AVAL,
-                        payload: false,
-                      });
-                    }}
-                  >
-                    <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
-                      {i18n.t('nav.bookings')}
-                    </span>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link
-                    to={routes.LOGIN}
-                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white  "
-                  >
-                    <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
-                      {i18n.t('nav.logIn')}
-                    </span>
-                  </Link>
-                </li>
-                {token && (
-                  <li className="nav-item">
-                    <Link
-                      to={routes.USER}
-                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
-                    >
-                      <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
-                      <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
-                        {i18n.t('nav.user')}
-                      </span>
-                    </Link>
-                  </li>
-                )}
-                {user && user.role === 'admin' && (
-                  <li className="nav-item">
-                    <Link
-                      to={routes.ADMIN}
-                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white"
-                    >
-                      <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
-                        {i18n.t('nav.admin')}
-                      </span>
-                    </Link>
-                  </li>
-                )}
-                {token && (
-                  <li className="nav-item">
-                    <div className="text-white cursor-pointer">
-                      <div
-                        onClick={() => {
-                          localStorage.clear();
-                          setUser(null);
-                          setToken(null);
-                          history.push(routes.LOGIN);
-                          toast(i18n.t('toastMessages.other.logOut'));
-                        }}
-                        className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
-                      >
-                        <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
-                          {i18n.t('nav.logOut')}
-                        </span>
-                      </div>
-                    </div>
-                  </li>
-                )}
-              </ul>
-            </div>
+              <span className="tracking-wider">OS-</span>
+              <span className="text-yellow-500 tracking-wider">TEO</span>
+              <span className="tracking-wider">-THERAPY</span>
+            </Link>
+            <button
+              className="text-white cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
+              type="button"
+              onClick={() => setNavbarOpen(!navbarOpen)}
+            >
+              - - -
+            </button>
           </div>
-        </nav>
-      </div>
+          <div
+            className={
+              'lg:flex flex-grow items-center' +
+              (navbarOpen ? ' flex' : ' hidden')
+            }
+            id="example-navbar-danger"
+          >
+            <ul className="flex flex-col lg:flex-row list-none lg:ml-auto">
+              <li className="nav-item">
+                <Link
+                  to={routes.HOMEPAGE_BOOKING}
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
+                  onClick={() => {
+                    dispatch({ type: SET_CONFIRM_PHASE, payload: false });
+                    dispatch({
+                      type: SET_RENDER_AVAL,
+                      payload: false,
+                    });
+                  }}
+                >
+                  <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
+                    {i18n.t('nav.bookings')}
+                  </span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  to={routes.LOGIN}
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white  "
+                >
+                  <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
+                    {i18n.t('nav.logIn')}
+                  </span>
+                </Link>
+              </li>
+              {token && (
+                <li className="nav-item">
+                  <Link
+                    to={routes.USER}
+                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
+                  >
+                    <i className="fab fa-twitter text-lg leading-lg text-white opacity-75"></i>
+                    <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
+                      {i18n.t('nav.user')}
+                    </span>
+                  </Link>
+                </li>
+              )}
+              {user && user.role === 'admin' && (
+                <li className="nav-item">
+                  <Link
+                    to={routes.ADMIN}
+                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white"
+                  >
+                    <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
+                      {i18n.t('nav.admin')}
+                    </span>
+                  </Link>
+                </li>
+              )}
+              {token && (
+                <li className="nav-item">
+                  <div className="text-white cursor-pointer">
+                    <div
+                      onClick={() => {
+                        localStorage.clear();
+                        setUser(null);
+                        setToken(null);
+                        history.push(routes.LOGIN);
+                        toast(i18n.t('toastMessages.other.logOut'));
+                      }}
+                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                    >
+                      <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
+                        {i18n.t('nav.logOut')}
+                      </span>
+                    </div>
+                  </div>
+                </li>
+              )}
+            </ul>
+          </div>
+        </div>
+      </nav>
     </OutsideAlerter>
   );
 }

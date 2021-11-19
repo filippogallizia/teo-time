@@ -16,11 +16,7 @@ import Login, { ForgotPassword } from '../pages/login-signup-resetPass/Login';
 import Signup from '../pages/login-signup-resetPass/Signup';
 import Footer from './Footer';
 import stateReducer from '../pages/booking/stateReducer';
-import {
-  ACCESS_TOKEN,
-  GENERAL_FONT,
-  USER_INFO,
-} from '../shared/locales/constant';
+import { ACCESS_TOKEN, USER_INFO } from '../shared/locales/constant';
 import ResetPassword from '../pages/login-signup-resetPass/ResetPassword';
 import { UserContext } from './UserContext';
 import ContactPage from '../pages/contact/ContactPage';
@@ -159,6 +155,14 @@ const initialState = {
   },
 };
 
+const MainContentWrapper = (props: any) => {
+  return (
+    <div className="flex-1 flex flex-col justify-center p-10">
+      {props.children}
+    </div>
+  );
+};
+
 const RouterComponent = (): JSX.Element => {
   const [state, dispatch] = useReducer(stateReducer, initialState);
   const [user, setUser] = useState(null);
@@ -183,75 +187,72 @@ const RouterComponent = (): JSX.Element => {
   return (
     <Router>
       <UserContext.Provider value={value}>
-        <div className={`relative min-h-screen ${GENERAL_FONT}`}>
-          <div className="pb-20">
-            <Navbar dispatch={dispatch} state={state} />
+        <Navbar dispatch={dispatch} state={state} />
+        <MainContentWrapper>
+          <Switch>
+            <ProtectedRoute
+              path={Routes.LOGIN}
+              condition={true}
+              altRoute={Routes.ROOT}
+            >
+              <Login dispatch={dispatch} state={state} />
+            </ProtectedRoute>
 
-            <Switch>
-              <ProtectedRoute
-                path={Routes.LOGIN}
-                condition={true}
-                altRoute={Routes.ROOT}
-              >
-                <Login dispatch={dispatch} state={state} />
-              </ProtectedRoute>
+            <ProtectedRoute
+              path={Routes.RESET_PASSWORD}
+              condition={true}
+              altRoute={Routes.ROOT}
+            >
+              <ResetPassword dispatch={dispatch} state={state} />
+            </ProtectedRoute>
 
-              <ProtectedRoute
-                path={Routes.RESET_PASSWORD}
-                condition={true}
-                altRoute={Routes.ROOT}
-              >
-                <ResetPassword dispatch={dispatch} state={state} />
-              </ProtectedRoute>
+            <ProtectedRoute
+              path={Routes.LOGIN_FORGOT_PASSWORD}
+              condition={true}
+              altRoute={Routes.LOGIN}
+            >
+              <ForgotPassword />
+            </ProtectedRoute>
 
-              <ProtectedRoute
-                path={Routes.LOGIN_FORGOT_PASSWORD}
-                condition={true}
-                altRoute={Routes.LOGIN}
-              >
-                <ForgotPassword />
-              </ProtectedRoute>
+            <ProtectedRoute
+              path={Routes.SIGNUP}
+              condition={true}
+              altRoute={Routes.ROOT}
+            >
+              <Signup />
+            </ProtectedRoute>
 
-              <ProtectedRoute
-                path={Routes.SIGNUP}
-                condition={true}
-                altRoute={Routes.ROOT}
-              >
-                <Signup />
-              </ProtectedRoute>
+            <ProtectedRoute
+              path={Routes.CONTACT}
+              condition={true}
+              altRoute={Routes.ROOT}
+            >
+              <ContactPage />
+            </ProtectedRoute>
 
-              <ProtectedRoute
-                path={Routes.CONTACT}
-                condition={true}
-                altRoute={Routes.ROOT}
-              >
-                <ContactPage />
-              </ProtectedRoute>
-
-              <ProtectedRoute
-                path={Routes.HOMEPAGE}
-                condition={true}
-                altRoute={Routes.LOGIN}
-              >
-                <GeneralLayout>
-                  <GeneralPage dispatch={dispatch} state={state} />
-                </GeneralLayout>
-              </ProtectedRoute>
-              <ProtectedRoute
-                path={Routes.ROOT}
-                condition={true}
-                altRoute={Routes.LOGIN}
-              >
-                <Redirect
-                  to={{
-                    pathname: Routes.HOMEPAGE,
-                  }}
-                />
-              </ProtectedRoute>
-            </Switch>
-            <Footer />
-          </div>
-        </div>
+            <ProtectedRoute
+              path={Routes.HOMEPAGE}
+              condition={true}
+              altRoute={Routes.LOGIN}
+            >
+              <GeneralLayout>
+                <GeneralPage dispatch={dispatch} state={state} />
+              </GeneralLayout>
+            </ProtectedRoute>
+            <ProtectedRoute
+              path={Routes.ROOT}
+              condition={true}
+              altRoute={Routes.LOGIN}
+            >
+              <Redirect
+                to={{
+                  pathname: Routes.HOMEPAGE,
+                }}
+              />
+            </ProtectedRoute>
+          </Switch>
+        </MainContentWrapper>
+        <Footer />
       </UserContext.Provider>
     </Router>
   );

@@ -33,12 +33,12 @@ const EventInformations = ({ state, dispatch }: BookingComponentType) => {
       )}
 
       <div className="grid col-1 gap-4 justify-items-center">
-        {/* <p className={`${BOLD}  ${PARAGRAPH_MEDIUM} md:${PARAGRAPH_BIG}`}> */}
-        <p className={`${TITLE}`}>
+        <p className={`${TITLE} text-center`}>
           {i18n.t('eventInformationComponent.eventType', {
             catergory: 'Trattamento osteopatico',
           })}
         </p>
+
         <div className={`flex align-middle`}>
           <BiTime size="1.2em" color="black" />
           <p className={EVENT_INFO_TEXT}>
