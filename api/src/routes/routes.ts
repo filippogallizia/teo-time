@@ -29,6 +29,9 @@ router.post(
   '/signup',
   [userExist],
   (req: express.Request, res: express.Response) => {
+    console.log('here');
+    //@ts-expect-error
+    console.log(res.user, 'user');
     //@ts-expect-error
     if (res.user) {
       return res.status(500).send({
@@ -53,7 +56,13 @@ router.post(
             res.send({ message: 'User was registered successfully!' });
           })
           .catch((e: any) => {
-            throw e;
+            console.log(e);
+            res.status(500).send({
+              success: false,
+              error: {
+                message: e,
+              },
+            });
           });
       } catch (e: any) {
         res.status(500).send({

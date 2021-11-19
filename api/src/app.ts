@@ -5,6 +5,8 @@ const port = process.env.PORT || 5000;
 const cors = require('cors');
 const db = require('./models/db');
 const routes = require('./routes/routes');
+const { NODE_ENV } = process.env;
+export const ENDPOINT = NODE_ENV === 'test' ? '/api' : '/';
 
 const corsOptions = {
   origin:
@@ -14,9 +16,10 @@ const corsOptions = {
 };
 
 // app.use(cors(corsOptions));
+
 app.use(cors());
 app.use(express.json());
-app.use('/api', routes);
+app.use(ENDPOINT, routes);
 
 db.sequelize
   .sync({ force: false })

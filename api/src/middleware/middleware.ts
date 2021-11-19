@@ -270,7 +270,7 @@ const userExist = async (
   }
   try {
     const user = await User.findOne({
-      where: { email, password },
+      where: { email },
     }).catch((e: any) => {
       throw e;
     });
