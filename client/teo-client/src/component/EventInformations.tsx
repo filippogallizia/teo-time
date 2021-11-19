@@ -47,13 +47,13 @@ const EventInformations = ({ state, dispatch }: BookingComponentType) => {
         </div>
         <div className="flex align-middle">
           <GrLocationPin size="1.2em" color="black" />
-          <p>
+          <div>
             <p className={EVENT_INFO_TEXT}>
               {i18n.t('eventInformationComponent.eventLocation', {
                 location: 'Milano - via Osti',
               })}
             </p>
-          </p>
+          </div>
         </div>
       </div>
     </div>

@@ -44,18 +44,20 @@ services:
       - api
     build:
       context: ./client/teo-client
+    environment:
+      - NODE_ENV=test
       # args:`
       #   - REACT_APP_API_BASE_URL=$CLIENT_API_BASE_URL
-    restart: unless-stopped
+    # restart: unless-stopped
     ports:
       - $REACT_LOCAL_PORT:$REACT_DOCKER_PORT
-    # volumes:
-    #   - './client/teo-client:/app'
-    networks:
-      - frontend
+    volumes:
+      # - './client/teo-client:/app'
+      - client:/app/node_modules
 
 volumes:
   db:
+  client:
 
 networks:
   backend:
