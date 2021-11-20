@@ -11,6 +11,10 @@ import AdminPage from '../admin/AdminPage';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import { UserContext } from '../../component/UserContext';
 import { SET_LOCATION } from '../booking/stateReducer';
+import {
+  SelfCenterLayout,
+  SelfTopLayout,
+} from '../../component/GeneralLayouts';
 
 type ProtectedRouteType = {
   children: any;
@@ -52,42 +56,54 @@ const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
           condition={true}
           altRoute={Routes.LOGIN}
         >
-          <BookingPage dispatch={dispatch} state={state} />
+          <SelfTopLayout>
+            <BookingPage dispatch={dispatch} state={state} />
+          </SelfTopLayout>
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.HOMEPAGE_SUCCESS}
           condition={token ? true : false}
           altRoute={Routes.LOGIN}
         >
-          <SuccessfulPage dispatch={dispatch} state={state} />
+          <SelfCenterLayout>
+            <SuccessfulPage dispatch={dispatch} state={state} />
+          </SelfCenterLayout>
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.USER}
           condition={token ? true : false}
           altRoute={Routes.LOGIN}
         >
-          <UserPage dispatch={dispatch} state={state} />
+          <SelfCenterLayout>
+            <UserPage dispatch={dispatch} state={state} />
+          </SelfCenterLayout>
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.CONFIRM_PAGE}
           condition={token ? true : false}
           altRoute={Routes.LOGIN}
         >
-          <ConfirmPage dispatch={dispatch} state={state} />
+          <SelfCenterLayout>
+            <ConfirmPage dispatch={dispatch} state={state} />
+          </SelfCenterLayout>
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.ADMIN}
           condition={token && user && user.role === 'admin' ? true : false}
           altRoute={Routes.LOGIN}
         >
+          {/* <SelfTopLayout> */}
           <AdminPage dispatch={dispatch} state={state} />
+          {/* </SelfTopLayout> */}
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.HOMEPAGE}
           condition={true}
           altRoute={Routes.LOGIN}
         >
-          <HomePage />
+          <SelfCenterLayout>
+            <HomePage />
+          </SelfCenterLayout>
         </ProtectedRoute>
       </Switch>
     </>

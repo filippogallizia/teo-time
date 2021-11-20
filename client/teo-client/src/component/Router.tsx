@@ -7,7 +7,6 @@ import {
   Route,
   RouteProps,
   Redirect,
-  useLocation,
 } from 'react-router-dom';
 
 // local files
@@ -21,11 +20,8 @@ import { ACCESS_TOKEN, USER_INFO } from '../shared/locales/constant';
 import ResetPassword from '../pages/login-signup-resetPass/ResetPassword';
 import { UserContext } from './UserContext';
 import ContactPage from '../pages/contact/ContactPage';
-import { AdminNav } from '../pages/admin/AdminPage';
-
-const GeneralLayout = ({ children }: { children: JSX.Element }) => {
-  return <div className="flex flex-col md:m-auto md:max-w-2xl">{children}</div>;
-};
+import { initialState } from '../pages/booking/initialState';
+import { ShrinkHeigthLayout } from './GeneralLayouts';
 
 type ProtectedRouteType = {
   children: JSX.Element;
@@ -51,119 +47,8 @@ export const ProtectedRoute = ({
   );
 };
 
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-
-const startingAval = new Date();
-startingAval.setHours(7, 0, 0, 0);
-
-const endAval = new Date();
-endAval.setHours(20, 30, 0, 0);
-
-const initialState = {
-  schedules: {
-    selectedDate: today.toISOString(),
-    selectedHour: '00:00',
-    availabilities: [
-      {
-        start: startingAval.toISOString(),
-        end: endAval.toISOString(),
-      },
-    ],
-    userBookings: [],
-    isConfirmPhase: false,
-    isRenderAval: false,
-    currentUser: {},
-    bookingsAndUsers: [],
-    weekAvalSettings: [
-      {
-        day: 'Monday',
-        parameters: {
-          workTimeRange: {
-            start: '07:30',
-            end: '21:00',
-          },
-          breakTimeRange: {
-            start: '12:00',
-            end: '13:30',
-          },
-          eventDuration: { hours: 1, minutes: 0 },
-          breakTimeBtwEvents: { hours: 0, minutes: 30 },
-        },
-      },
-      {
-        day: 'Tuesday',
-        parameters: {
-          workTimeRange: {
-            start: '07:30',
-            end: '21:00',
-          },
-          breakTimeRange: {
-            start: '12:00',
-            end: '13:30',
-          },
-          eventDuration: { hours: 1, minutes: 0 },
-          breakTimeBtwEvents: { hours: 0, minutes: 30 },
-        },
-      },
-      {
-        day: 'Wednesday',
-        parameters: {
-          workTimeRange: {
-            start: '07:30',
-            end: '21:00',
-          },
-          breakTimeRange: {
-            start: '12:00',
-            end: '13:30',
-          },
-          eventDuration: { hours: 1, minutes: 0 },
-          breakTimeBtwEvents: { hours: 0, minutes: 30 },
-        },
-      },
-      {
-        day: 'Thursday',
-        parameters: {
-          workTimeRange: {
-            start: '07:30',
-            end: '21:00',
-          },
-          breakTimeRange: {
-            start: '12:00',
-            end: '13:30',
-          },
-          eventDuration: { hours: 1, minutes: 0 },
-          breakTimeBtwEvents: { hours: 0, minutes: 30 },
-        },
-      },
-      {
-        day: 'Friday',
-        parameters: {
-          workTimeRange: {
-            start: '07:30',
-            end: '21:00',
-          },
-          breakTimeRange: {
-            start: '12:00',
-            end: '13:30',
-          },
-          eventDuration: { hours: 1, minutes: 0 },
-          breakTimeBtwEvents: { hours: 0, minutes: 30 },
-        },
-      },
-    ],
-    forceRender: 0,
-    holidays: [],
-    location: '',
-  },
-};
-
 const MainContentWrapper = (props: any) => {
-  return (
-    <div className="flex-1 flex flex-col justify-center p-2">
-      {props.children}
-    </div>
-  );
+  return <div className="flex-1 flex flex-col p-2">{props.children}</div>;
 };
 
 const RouterComponent = (): JSX.Element => {
@@ -191,7 +76,6 @@ const RouterComponent = (): JSX.Element => {
     <Router>
       <UserContext.Provider value={value}>
         <Navbar dispatch={dispatch} state={state} />
-        {state.schedules.location.includes('admin') && <AdminNav />}
         <MainContentWrapper>
           <Switch>
             <ProtectedRoute
@@ -199,7 +83,9 @@ const RouterComponent = (): JSX.Element => {
               condition={true}
               altRoute={Routes.ROOT}
             >
-              <Login dispatch={dispatch} state={state} />
+              <ShrinkHeigthLayout>
+                <Login dispatch={dispatch} state={state} />
+              </ShrinkHeigthLayout>
             </ProtectedRoute>
 
             <ProtectedRoute
@@ -223,7 +109,9 @@ const RouterComponent = (): JSX.Element => {
               condition={true}
               altRoute={Routes.ROOT}
             >
-              <Signup />
+              <ShrinkHeigthLayout>
+                <Signup />
+              </ShrinkHeigthLayout>
             </ProtectedRoute>
 
             <ProtectedRoute
@@ -239,9 +127,9 @@ const RouterComponent = (): JSX.Element => {
               condition={true}
               altRoute={Routes.LOGIN}
             >
-              <GeneralLayout>
+              <ShrinkHeigthLayout>
                 <GeneralPage dispatch={dispatch} state={state} />
-              </GeneralLayout>
+              </ShrinkHeigthLayout>
             </ProtectedRoute>
             <ProtectedRoute
               path={Routes.ROOT}

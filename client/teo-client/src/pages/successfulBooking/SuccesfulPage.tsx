@@ -11,9 +11,9 @@ const SuccessfulPage = ({ dispatch, state }: BookingComponentType) => {
   const history = useHistory();
 
   return (
-    <div className="flex flex-col items-center gap-8 justify-center">
+    <div className="flex flex-col gap-8 ">
       <p className={TITLE}>{i18n.t('succesfulPage.succesfullMessage')}</p>
-      <div className="grid grid-cols-1 gap-6 justify-items-start">
+      <div className="grid grid-cols-1 gap-8 justify-items-start">
         <div>
           <InfoBooking
             date={state.schedules.selectedDate}

@@ -2,11 +2,7 @@ import React from 'react';
 import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { BiTime } from 'react-icons/bi';
 import { GrLocationPin } from 'react-icons/gr';
-import {
-  EVENT_INFO_TEXT,
-  MARGIN_BOTTOM,
-  TITLE,
-} from '../shared/locales/constant';
+import { EVENT_INFO_TEXT, TITLE } from '../shared/locales/constant';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import {
   SET_CONFIRM_PHASE,
@@ -16,11 +12,9 @@ import i18n from '../i18n';
 
 const EventInformations = ({ state, dispatch }: BookingComponentType) => {
   return (
-    <div
-      className={`grid col-1  justify-items-center relative md:static ${MARGIN_BOTTOM}`}
-    >
+    <div className={`grid col-1 gap-4  justify-items-center  md:static `}>
       {(state.schedules.isConfirmPhase || state.schedules.isRenderAval) && (
-        <div className={`absolute top-1 left-2 md:static md:hidden`}>
+        <div className={`justify-self-start md:static md:hidden`}>
           <BsFillArrowLeftSquareFill
             onClick={() => {
               dispatch({ type: SET_CONFIRM_PHASE, payload: false });

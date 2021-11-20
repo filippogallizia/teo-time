@@ -69,13 +69,18 @@ const DetailedInfoBooking = ({
   );
 
   useEffect(() => {
-    const addOpenProp = booking.map((a: any) => {
-      return {
-        ...a,
-        open: false,
-      };
-    });
-    setAllBookingInfo(addOpenProp);
+    if (booking.length) {
+      const addOpenProp = booking.map((a: any) => {
+        return {
+          ...a,
+          open: false,
+        };
+      });
+      setAllBookingInfo(addOpenProp);
+    }
+    return () => {
+      setAllBookingInfo([]);
+    };
   }, [booking]);
 
   return (

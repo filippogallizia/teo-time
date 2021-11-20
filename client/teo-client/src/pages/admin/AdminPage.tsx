@@ -64,52 +64,54 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
     dispatch({ type: SET_LOCATION, payload: { location: location.pathname } });
   }, [dispatch, location.pathname]);
   return (
-    <>
-      {/* <AdminNav /> */}
-      <Switch>
-        <ProtectedRoute
-          path={Routes.ADMIN_BOOKING_MANAGER}
-          condition={true}
-          altRoute={Routes.HOMEPAGE_BOOKING}
-        >
-          <BookingManager state={state} dispatch={dispatch} />
-        </ProtectedRoute>
-      </Switch>
-      <Switch>
-        <ProtectedRoute
-          path={Routes.ADMIN_USERS_TABLE}
-          condition={true}
-          altRoute={Routes.ADMIN}
-        >
-          <UsersTable />
-        </ProtectedRoute>
-        <ProtectedRoute
-          path={Routes.ADMIN_AVAL_MANAGER}
-          condition={true}
-          altRoute={Routes.ADMIN}
-        >
-          <AvalManager state={state} dispatch={dispatch} />
-        </ProtectedRoute>
-        <ProtectedRoute
-          path={Routes.ADMIN_HOLIDAY_MANAGER}
-          condition={true}
-          altRoute={Routes.ADMIN}
-        >
-          <HolidaysManager state={state} dispatch={dispatch} />
-        </ProtectedRoute>
-        <ProtectedRoute
-          path={Routes.ADMIN}
-          condition={true}
-          altRoute={Routes.LOGIN}
-        >
-          <Redirect
-            to={{
-              pathname: Routes.ADMIN_BOOKING_MANAGER,
-            }}
-          />
-        </ProtectedRoute>
-      </Switch>
-    </>
+    <div>
+      <AdminNav />
+      <div>
+        <Switch>
+          <ProtectedRoute
+            path={Routes.ADMIN_BOOKING_MANAGER}
+            condition={true}
+            altRoute={Routes.HOMEPAGE_BOOKING}
+          >
+            <BookingManager state={state} dispatch={dispatch} />
+          </ProtectedRoute>
+        </Switch>
+        <Switch>
+          <ProtectedRoute
+            path={Routes.ADMIN_USERS_TABLE}
+            condition={true}
+            altRoute={Routes.ADMIN}
+          >
+            <UsersTable />
+          </ProtectedRoute>
+          <ProtectedRoute
+            path={Routes.ADMIN_AVAL_MANAGER}
+            condition={true}
+            altRoute={Routes.ADMIN}
+          >
+            <AvalManager state={state} dispatch={dispatch} />
+          </ProtectedRoute>
+          <ProtectedRoute
+            path={Routes.ADMIN_HOLIDAY_MANAGER}
+            condition={true}
+            altRoute={Routes.ADMIN}
+          >
+            <HolidaysManager state={state} dispatch={dispatch} />
+          </ProtectedRoute>
+          <ProtectedRoute
+            path={Routes.ADMIN}
+            condition={true}
+            altRoute={Routes.LOGIN}
+          >
+            <Redirect
+              to={{
+                pathname: Routes.ADMIN_BOOKING_MANAGER,
+              }}
+            />
+          </ProtectedRoute>
+        </Switch>
+      </div>
+    </div>
   );
 };
 

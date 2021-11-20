@@ -10,6 +10,7 @@ import { TITLE } from '../../shared/locales/constant';
 import { toast } from 'react-toastify';
 import { handleToastInFailRequest } from '../../shared/locales/utils';
 import routes from '../../routes';
+import { SelfCenterLayout } from '../../component/GeneralLayouts';
 
 type InitialFormType = {
   name: string;
@@ -51,86 +52,92 @@ const Signup = () => {
   };
 
   return (
-    <form
-      className="grid col-1 gap-4 justify-items-center"
-      onSubmit={handleSubmit(myFunc)}
-    >
-      <p className={`${TITLE}`}>SIGN UP</p>
+    <SelfCenterLayout>
+      <form
+        className="grid col-1 gap-4 justify-items-center"
+        onSubmit={handleSubmit(myFunc)}
+      >
+        <p className={`${TITLE}`}>SIGN UP</p>
 
-      <div>
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="name"
-        >
-          Nome
-        </label>
-        <input
-          className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
-          type="text"
-          id="name"
-          autoComplete="name"
-          {...register('name', { required: true })}
-        />
-        {errors.name?.type === 'required' && 'First name is required'}
-      </div>
-      <div>
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="email"
-        >
-          Email
-        </label>
-        <input
-          className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
-          id="email"
-          type="email"
-          autoComplete="email"
-          {...register('email', { required: true })}
-        />
-        {errors.email?.type === 'required' && 'Email is required'}
-      </div>
-      <div>
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="phoneNumber"
-        >
-          Numero di telefono
-        </label>
-        <input
-          className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
-          id="phoneNumber"
-          type="tel"
-          {...register('phoneNumber', { required: true })}
-        />
-        {errors.email?.type === 'required' && 'Email is required'}
-      </div>
-      <div>
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="password"
-        >
-          Password
-        </label>
-        <input
-          className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
-          id="password"
-          autoComplete="current-password"
-          type="password"
-          {...register('password', { required: true })}
-        />
-        {errors.password?.type === 'required' && 'password is required'}
-      </div>
+        <div>
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="name"
+          >
+            Nome
+          </label>
+          <input
+            className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
+            type="text"
+            id="name"
+            autoComplete="name"
+            {...register('name', { required: true })}
+          />
+          {errors.name?.type === 'required' && 'First name is required'}
+        </div>
+        <div>
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="email"
+          >
+            Email
+          </label>
+          <input
+            className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
+            id="email"
+            type="email"
+            autoComplete="email"
+            {...register('email', { required: true })}
+          />
+          {errors.email?.type === 'required' && 'Email is required'}
+        </div>
+        <div>
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="phoneNumber"
+          >
+            Numero di telefono
+          </label>
+          <input
+            className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
+            id="phoneNumber"
+            type="tel"
+            {...register('phoneNumber', { required: true })}
+          />
+          {errors.email?.type === 'required' && 'Email is required'}
+        </div>
+        <div>
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="password"
+          >
+            Password
+          </label>
+          <input
+            className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
+            id="password"
+            autoComplete="current-password"
+            type="password"
+            {...register('password', { required: true })}
+          />
+          {errors.password?.type === 'required' && 'password is required'}
+        </div>
 
-      <div>
-        <input className={buttonStyle(isValid)} type="submit" value="Sign up" />
-      </div>
-      <div>
-        <GeneralButton
-          buttonText="Login"
-          onClick={() => history.push(Routes.LOGIN)}
-        />
-      </div>
-    </form>
+        <div>
+          <input
+            className={buttonStyle(isValid)}
+            type="submit"
+            value="Sign up"
+          />
+        </div>
+        <div>
+          <GeneralButton
+            buttonText="Login"
+            onClick={() => history.push(Routes.LOGIN)}
+          />
+        </div>
+      </form>
+    </SelfCenterLayout>
   );
 };
 

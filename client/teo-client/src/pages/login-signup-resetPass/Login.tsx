@@ -23,6 +23,7 @@ import { BookingComponentType } from '../booking/BookingPageTypes';
 import { UserType } from '../../../types/Types';
 import { UserContext } from '../../component/UserContext';
 import GoogleLoginComponent from './GoogleLogin';
+import { SelfCenterLayout } from '../../component/GeneralLayouts';
 
 export const ForgotPassword = () => {
   const [emailValue, setEmail] = useState('');
@@ -125,62 +126,64 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
   };
 
   return (
-    <form className={GRID_ONE_COL} onSubmit={handleSubmit(myFunc)}>
-      <p className={`${TITLE}`}>{i18n.t('loginPage.title')}</p>
-      <div>
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="email"
-        >
-          {i18n.t('form.email')}
-        </label>
-        <input
-          className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
-          id="email"
-          autoComplete="email"
-          {...register('email', { required: true })}
-        />
-        {errors.email?.type === 'required' && 'Email is required'}
-      </div>
-      <div>
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="password"
-        >
-          {i18n.t('form.password')}
-        </label>
-        <input
-          className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
-          id="password"
-          autoComplete="current-password"
-          type="password"
-          {...register('password', { required: true })}
-        />
-        {errors.password?.type === 'required' && 'password is required'}
-      </div>
+    <SelfCenterLayout>
+      <form className={GRID_ONE_COL} onSubmit={handleSubmit(myFunc)}>
+        <p className={`${TITLE}`}>{i18n.t('loginPage.title')}</p>
+        <div>
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="email"
+          >
+            {i18n.t('form.email')}
+          </label>
+          <input
+            className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
+            id="email"
+            autoComplete="email"
+            {...register('email', { required: true })}
+          />
+          {errors.email?.type === 'required' && 'Email is required'}
+        </div>
+        <div>
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="password"
+          >
+            {i18n.t('form.password')}
+          </label>
+          <input
+            className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
+            id="password"
+            autoComplete="current-password"
+            type="password"
+            {...register('password', { required: true })}
+          />
+          {errors.password?.type === 'required' && 'password is required'}
+        </div>
 
-      <div>
-        <input className={buttonStyle(isValid)} type="submit" value="Login" />
-      </div>
-      <div>
-        <GeneralButton
-          buttonText={i18n.t('signUp.mainButton')}
-          onClick={() => history.push(Routes.SIGNUP)}
-        />
-      </div>
-      <div
-        className={SECONDARY_LINK}
-        onClick={() => {
-          history.push(Routes.LOGIN_FORGOT_PASSWORD);
-        }}
-      >
-        {i18n.t('loginPage.passwordLost')}
-      </div>
-      <div className="border-b-2 border-gray-300 text-center">Oppure</div>
-      <div>
-        <GoogleLoginComponent />{' '}
-      </div>
-    </form>
+        <div>
+          <input className={buttonStyle(isValid)} type="submit" value="Login" />
+        </div>
+        <div>
+          <GeneralButton
+            buttonText={i18n.t('signUp.mainButton')}
+            onClick={() => history.push(Routes.SIGNUP)}
+          />
+        </div>
+        <div
+          className={SECONDARY_LINK}
+          onClick={() => {
+            history.push(Routes.LOGIN_FORGOT_PASSWORD);
+          }}
+        >
+          {i18n.t('loginPage.passwordLost')}
+        </div>
+        <div className="border-b-2 border-gray-300 text-center">Oppure</div>
+        <div>
+          <GoogleLoginComponent />{' '}
+        </div>
+      </form>
+    </SelfCenterLayout>
   );
 };
 

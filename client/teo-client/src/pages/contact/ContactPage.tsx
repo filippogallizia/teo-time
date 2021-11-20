@@ -4,9 +4,9 @@ import { ITALIC, SECONDARY_LINK, TITLE } from '../../shared/locales/constant';
 
 const ContactPage = () => {
   return (
-    <div className="flex flex-col items-center gap-6 justify-center">
+    <div className="flex flex-col items-center gap-8 justify-center">
       <p className={TITLE}>{i18n.t('contactPage.title')}</p>
-      <div className="grid grid-cols-1 gap-6 justify-items-start">
+      <div className="grid grid-cols-1 gap-8 justify-items-start">
         <p>
           <span className={`mr-2 ${ITALIC}`}>email:</span>{' '}
           {i18n.t('contactPage.body.email')}

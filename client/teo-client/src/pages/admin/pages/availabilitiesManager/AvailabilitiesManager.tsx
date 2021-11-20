@@ -10,7 +10,7 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
   const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
   return (
-    <div className=" grid grid-cols-1 gap-6 overflow-auto px-4">
+    <div className=" grid grid-cols-1 gap-8 overflow-auto px-4">
       <div className="grid grid-cols-1 gap-4">
         {weekDays.map((day: string) => {
           const dayInfo = state.schedules.weekAvalSettings.filter(

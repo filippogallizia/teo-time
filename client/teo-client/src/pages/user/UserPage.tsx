@@ -16,6 +16,7 @@ import { deleteBooking, retriveUserBooking } from './service/userService';
 import { toast } from 'react-toastify';
 import { TimeRangeType } from '../../../types/Types';
 import i18n from '../../i18n';
+import { SelfCenterLayout } from '../../component/GeneralLayouts';
 
 const DeleteBooking = ({
   booking,
@@ -69,12 +70,14 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
   const currentUser = localStorage.getItem(USER_INFO);
 
   return (
-    <div className="grid grid-cols-1 gap-6 justify-items-center">
+    <div className="grid grid-cols-1 gap-8 justify-items-center">
       <div className="grid grid-cols-1">
         {currentUser && (
           <>
             <p className={`${TITLE} `}>
-              {i18n.t('userPage.title', { name: JSON.parse(currentUser).name })}
+              {i18n.t('userPage.title', {
+                name: JSON.parse(currentUser).name,
+              })}
             </p>
           </>
         )}
@@ -83,7 +86,7 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
         {i18n.t('userPage.body.subtitle')}
       </p>
       {state.schedules.userBookings.length > 0 ? (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-8">
           {state.schedules.userBookings.map((book) => {
             return (
               <DeleteBooking
