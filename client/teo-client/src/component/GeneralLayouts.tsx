@@ -1,6 +1,6 @@
 export const ShrinkHeigthLayout = ({ children }: { children: JSX.Element }) => {
   return (
-    <div className="flex-1 flex justify-center md:m-auto md:max-w-2xl">
+    <div className="flex-1 flex justify-center md:m-auto md:max-w-2xl pb-10 px-10 md:px-none">
       {children}
     </div>
   );
