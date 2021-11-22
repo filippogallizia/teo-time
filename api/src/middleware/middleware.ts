@@ -13,7 +13,7 @@ const {
 const { DateTime } = require('luxon');
 
 const User = db.user;
-const WeekavalSettings = db.WeekAvailabilitiesSettings;
+const WeekavalSettings = db.WeekavalSettings;
 const Bookings = db.Bookings;
 
 // google verify token

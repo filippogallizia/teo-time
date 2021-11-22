@@ -31,7 +31,7 @@ db.user = require('./user.model.ts')(sequelize, Sequelize);
 //@ts-expect-error
 db.Bookings = BookedHoursModel(sequelize, Sequelize);
 //@ts-expect-error
-db.WeekAvailabilitiesSettings = WorkSettingsModel(sequelize, Sequelize);
+db.WeekavalSettings = WorkSettingsModel(sequelize, Sequelize);
 //@ts-expect-error
 db.user.hasMany(db.Bookings, { as: 'bookings' });
 //@ts-expect-error

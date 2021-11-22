@@ -98,7 +98,8 @@
         "name": "Name",
         "email": "Email",
         "phoneNumber": "PhoneNumber"
-      }
+      },
+      "noUsers": "Non ci sono utenti registrati"
     }
   },
   "availabilitiesContainer": {

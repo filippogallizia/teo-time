@@ -17,7 +17,7 @@ const { DateTime } = require('luxon');
 
 const User = db.user;
 const Bookings = db.Bookings;
-const WeekavalSettings = db.WeekAvailabilitiesSettings;
+const WeekavalSettings = db.WeekavalSettings;
 
 const router = express.Router();
 
@@ -405,25 +405,26 @@ router.get(
     try {
       User.findAll()
         .then((usr: any) => {
-          if (usr.length > 0) {
-            const mappedUsr = usr.map((us: any) => {
-              return {
-                name: us.name,
-                id: us.id,
-                email: us.email,
-                role: us.email,
-                phoneNumber: us.phoneNumber,
-              };
-            });
-            res.send(mappedUsr);
-          } else {
-            return res.status(500).send({
-              success: false,
-              error: {
-                message: 'there are no users',
-              },
-            });
-          }
+          res.send(usr);
+          // if (usr.length > 0) {
+          //   const mappedUsr = usr.map((us: any) => {
+          //     return {
+          //       name: us.name,
+          //       id: us.id,
+          //       email: us.email,
+          //       role: us.email,
+          //       phoneNumber: us.phoneNumber,
+          //     };
+          //   });
+          //   res.send(mappedUsr);
+          // } else {
+          //   return res.status(500).send({
+          //     success: false,
+          //     error: {
+          //       message: 'there are no users',
+          //     },
+          //   });
+          // }
         })
         .catch((e: any) => {
           throw e;
@@ -584,6 +585,33 @@ router.post(
             throw e;
           });
       });
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+
+router.get(
+  '/workingHours',
+  async (req: express.Request, res: express.Response) => {
+    try {
+      WeekavalSettings.findAll()
+        .then((worksHours: any) => {
+          res.send(worksHours);
+        })
+        .catch((e: any) => {
+          res.status(500).send({
+            success: false,
+            error: {
+              message: e,
+            },
+          });
+        });
     } catch (e: any) {
       res.status(500).send({
         success: false,

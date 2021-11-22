@@ -6,6 +6,7 @@ import i18n from '../i18n';
 import 'react-toastify/dist/ReactToastify.css';
 import { UserContext } from './UserContext';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
+import hamburgerIcon from '../shared/icons/hamburgerIcon.svg';
 import {
   SET_CONFIRM_PHASE,
   SET_RENDER_AVAL,
@@ -66,7 +67,7 @@ export default function Navbar({
               type="button"
               onClick={() => setNavbarOpen(!navbarOpen)}
             >
-              - - -
+              <img src={hamburgerIcon} alt="menu-icon" />
             </button>
           </div>
           <div

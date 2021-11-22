@@ -40,6 +40,7 @@ function GoogleLoginComponent() {
   const history = useHistory();
   const { setUser, setToken } = useContext(UserContext);
   const responseGoogle = (response: any) => {
+    console.log(response, 'google res');
     googleLoginService(
       (res: any) => {
         localStorage.setItem(ACCESS_TOKEN, response.tokenId);

@@ -24,3 +24,18 @@ export const manageAvailabilities = async (
     throw e;
   }
 };
+
+export const getGeneralWorkingHrs = async (fn: any) => {
+  try {
+    const response = await axios({
+      method: 'get',
+      url: `${ENDPOINT}/workingHours`,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+      },
+    });
+    fn(response.data);
+  } catch (e) {
+    throw e;
+  }
+};

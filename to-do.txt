@@ -3,7 +3,7 @@ API
 - add google calendar event 4h
 - UNDERSTAND DOCKER COMPOSE AND PORT NUMBERS AND VARIABLES
 - eslint-plugin-import  https://www.npmjs.com/package/eslint-plugin-import
-- see CORS options 
+- gestisciDisponibilita' is not fetching
 
 CLIENT
 - holidayManager , see how to handle local state and deleting booking inside bookingManager.

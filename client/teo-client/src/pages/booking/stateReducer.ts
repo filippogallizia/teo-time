@@ -10,6 +10,7 @@ export const SET_CONFIRM_PHASE = 'SET_CONFIRM_PHASE';
 export const SET_RENDER_AVAL = 'SET_RENDER_AVAL';
 export const SET_BKGS_AND_USERS = 'SET_BKGS_AND_USERS';
 export const SET_WEEK_AVAL_SETTINGS = 'SET_WEEK_AVAL_SETTINGS';
+export const SET_ALL_WEEK_AVAL_SETTINGS = 'SET_ALL_WEEK_AVAL_SETTINGS';
 export const FORCE_RENDER = 'FORCE_RENDER';
 export const ADD_OR_REMOVE_HOLIDAY = 'ADD_OR_REMOVE_HOLIDAY';
 export const UPLOAD_HOLIDAY = 'UPLOAD_HOLIDAY';
@@ -93,6 +94,11 @@ type ActionWeekAvailSettings = {
   payload: { day: string; e: ChangeEvent<HTMLInputElement> };
 };
 
+type ActionAllWeekAvailSettings = {
+  type: typeof SET_ALL_WEEK_AVAL_SETTINGS;
+  payload: DayAvalSettingsType[];
+};
+
 type ActionAddHoliday = {
   type: typeof ADD_OR_REMOVE_HOLIDAY;
   payload: HolidayPayload;
@@ -161,7 +167,8 @@ export type Actions =
   | ActionForceRender
   | ActionAddHoliday
   | ActionSetHoliday
-  | ActionSetLocation;
+  | ActionSetLocation
+  | ActionAllWeekAvailSettings;
 
 const stateReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
@@ -193,18 +200,20 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
       return produce(initialState, (draft) => {
         draft.schedules.bookingsAndUsers = action.payload;
       });
+    case SET_ALL_WEEK_AVAL_SETTINGS:
+      return produce(initialState, (draft) => {
+        draft.schedules.weekAvalSettings = action.payload;
+      });
     case SET_WEEK_AVAL_SETTINGS:
       return produce(initialState, (draft) => {
         const day = action.payload.day;
         const x = action.payload.e.target.id.split('.');
-        draft.schedules.bookingsAndUsers = draft.schedules.weekAvalSettings.map(
-          (d: any) => {
-            if (d.day === day) {
-              return (d.parameters[x[0]][x[1]] = action.payload.e.target.value);
-            }
-            return d;
+        draft.schedules.weekAvalSettings.map((d: any) => {
+          if (d.day === day) {
+            return (d.parameters[x[0]][x[1]] = action.payload.e.target.value);
           }
-        );
+          return d;
+        });
       });
     case FORCE_RENDER:
       return produce(initialState, (draft) => {

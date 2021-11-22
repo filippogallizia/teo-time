@@ -8,13 +8,14 @@ import {
   Column,
 } from 'react-table';
 import { UserType } from '../../../../types/Types';
+import i18n from '../../../i18n';
 import { getAllUsers } from '../service/AdminPageService';
 
 const UsersTable = () => {
-  const [data1, setData] = useState<UserType[]>([]);
+  const [users, setUsers] = useState<UserType[]>([]);
   useEffect(() => {
     const handleSuccess = (res: any) => {
-      setData(res);
+      setUsers(res);
     };
     getAllUsers(handleSuccess);
   }, []);
@@ -40,7 +41,7 @@ const UsersTable = () => {
     []
   );
   const data = React.useMemo(() => {
-    return data1
+    return users
       .map((usr) => {
         return {
           col1: usr.name,
@@ -49,7 +50,7 @@ const UsersTable = () => {
         };
       })
       .flat(1);
-  }, [data1]);
+  }, [users]);
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
@@ -65,7 +66,11 @@ const UsersTable = () => {
 
   const firstPageRows = rows.slice(0, 20);
 
-  return (
+  return users.length === 0 ? (
+    <div className="text-center">
+      <p>{i18n.t('adminPage.userInfoPage.noUsers')}</p>
+    </div>
+  ) : (
     <div className="max-w-sm md:max-w-none">
       <div className="mt-2 flex flex-col overflow-auto">
         <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">

@@ -184,7 +184,8 @@ const BookingManager = ({ dispatch, state }: BookingComponentType) => {
 
   return (
     <div className="grid grid-flow-row gap-8 py-2 shadow-sm">
-      {state.schedules.bookingsAndUsers.length > 0 ? (
+      {state.schedules.bookingsAndUsers.length > 0 &&
+      Array.isArray(state.schedules.bookingsAndUsers) ? (
         state.schedules.bookingsAndUsers.map((booking, i: number) => {
           if (booking.length > 0) {
             return (

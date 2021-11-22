@@ -1,13 +1,66 @@
 import { BookingComponentType } from '../../../booking/BookingPageTypes';
-import { SET_WEEK_AVAL_SETTINGS } from '../../../booking/stateReducer';
+import {
+  DayAvalSettingsType,
+  SET_ALL_WEEK_AVAL_SETTINGS,
+  SET_WEEK_AVAL_SETTINGS,
+} from '../../../booking/stateReducer';
 import { BOLD, ITALIC } from '../../../../shared/locales/constant';
 import GeneralButton from '../../../../component/GeneralButton';
-import { manageAvailabilities } from './service/availabilitiesManagerService';
+import {
+  getGeneralWorkingHrs,
+  manageAvailabilities,
+} from './service/availabilitiesManagerService';
 import CardComponent from '../../components/Card';
 import i18n from '../../../../i18n';
+import { useEffect } from 'react';
 
 const AvalManager = ({ dispatch, state }: BookingComponentType) => {
   const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+  type ResponseType = {
+    breakTimeBtwEventsHours: string;
+    breakTimeBtwEventsMinutes: string;
+    breakTimeEnd: string;
+    breakTimeStart: string;
+    day: string;
+    eventDurationHours: string;
+    eventDurationMinutes: string;
+    id: number;
+    workTimeEnd: string;
+    workTimeStart: string;
+  };
+
+  useEffect(() => {
+    const handleSuccess = (response: ResponseType[]) => {
+      const mappedResponse: DayAvalSettingsType[] = response.map(
+        (dailyHours: ResponseType) => {
+          return {
+            day: dailyHours.day,
+            parameters: {
+              workTimeRange: {
+                start: dailyHours.workTimeStart,
+                end: dailyHours.workTimeEnd,
+              },
+              breakTimeRange: {
+                start: dailyHours.breakTimeStart,
+                end: dailyHours.breakTimeEnd,
+              },
+              eventDuration: {
+                hours: Number(dailyHours.eventDurationHours),
+                minutes: Number(dailyHours.eventDurationMinutes),
+              },
+              breakTimeBtwEvents: {
+                hours: Number(dailyHours.breakTimeBtwEventsHours),
+                minutes: Number(dailyHours.breakTimeBtwEventsMinutes),
+              },
+            },
+          };
+        }
+      );
+      dispatch({ type: SET_ALL_WEEK_AVAL_SETTINGS, payload: mappedResponse });
+    };
+    getGeneralWorkingHrs(handleSuccess);
+  }, [dispatch]);
 
   return (
     <div className=" grid grid-cols-1 gap-8 overflow-auto px-4">

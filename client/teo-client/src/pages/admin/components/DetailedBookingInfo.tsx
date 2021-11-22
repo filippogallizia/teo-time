@@ -69,7 +69,7 @@ const DetailedInfoBooking = ({
   );
 
   useEffect(() => {
-    if (booking.length) {
+    if (booking.length > 0) {
       const addOpenProp = booking.map((a: any) => {
         return {
           ...a,
