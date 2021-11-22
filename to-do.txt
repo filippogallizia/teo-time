@@ -1,9 +1,7 @@
 API
 - mail a teo con booking 1h ok
-- add google calendar event 4h
-- UNDERSTAND DOCKER COMPOSE AND PORT NUMBERS AND VARIABLES
+- google log in check response on docker
 - eslint-plugin-import  https://www.npmjs.com/package/eslint-plugin-import
-- gestisciDisponibilita' is not fetching
 
 CLIENT
 - holidayManager , see how to handle local state and deleting booking inside bookingManager.
