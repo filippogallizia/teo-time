@@ -68,6 +68,8 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
   }, [dispatch, forceRender]);
 
   const currentUser = localStorage.getItem(USER_INFO);
+  //@ts-expect-error
+  console.log(JSON.parse(currentUser).email.includes('gmail'), 'currnet');
 
   return (
     <div className="grid grid-cols-1 gap-8 justify-items-center">

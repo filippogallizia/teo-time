@@ -162,7 +162,7 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
         </div>
 
         <div>
-          <input className={buttonStyle(isValid)} type="submit" value="Login" />
+          <input className={buttonStyle(isValid)} type="submit" value="Accedi" />
         </div>
         <div>
           <GeneralButton
@@ -178,7 +178,7 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
         >
           {i18n.t('loginPage.passwordLost')}
         </div>
-        <div className="border-b-2 border-gray-300 text-center">Oppure</div>
+        <div className="border-b-2 border-black	text-center">Oppure</div>
         <div>
           <GoogleLoginComponent />{' '}
         </div>

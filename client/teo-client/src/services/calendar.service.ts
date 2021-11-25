@@ -11,8 +11,6 @@ export const getAvailabilities = async (
   const bodyToSend = { TimeRangeType: [{ start, end }] };
 
   try {
-    console.log(ENDPOINT, 'ENDPOINT');
-
     const response = await axios({
       method: 'post',
       url: `${ENDPOINT}/retrieveAvailability`,

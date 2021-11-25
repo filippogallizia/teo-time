@@ -37,9 +37,9 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
     };
     const parsedDate = DateTime.fromISO(state.schedules.selectedDate);
     const startOfDay = DateTime.fromISO(state.schedules.selectedDate).set({
-      hour: 0,
-      minute: 0,
-      second: 0,
+      hour: 1,
+      minute: 1,
+      second: 1,
       millisecond: 0,
     });
     const funcAsync = async () => {

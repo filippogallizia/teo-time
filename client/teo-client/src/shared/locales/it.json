@@ -18,12 +18,12 @@
     }
   },
   "loginPage": {
-    "title": "LOGIN",
+    "title": "ACCEDI",
     "passwordLost": "Hai perso la password?"
   },
   "signUp": {
-    "title": "SIGN UP",
-    "mainButton": "Sign up"
+    "title": "REGISTRATI",
+    "mainButton": "Registrati"
   },
   "eventInformationComponent": {
     "eventType": "{{catergory}}",
@@ -106,11 +106,11 @@
     "title": "Scegli un orario"
   },
   "nav": {
-    "bookings": "Prenotazioni",
-    "logIn": "log in",
-    "user": "Profilo",
+    "bookings": "Prenota",
+    "logIn": "Accedi",
+    "user": "I tuoi appuntamenti",
     "admin": "Admin",
-    "logOut": "Log out"
+    "logOut": "Esci"
   },
   "footer": {
     "contact": "Contatti"

@@ -132,7 +132,7 @@ const Signup = () => {
         </div>
         <div>
           <GeneralButton
-            buttonText="Login"
+            buttonText="Accedi"
             onClick={() => history.push(Routes.LOGIN)}
           />
         </div>

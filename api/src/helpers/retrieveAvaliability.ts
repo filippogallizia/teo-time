@@ -18,6 +18,8 @@ export const retrieveAvailability = (
   //@ts-expect-error
   const final = filterForDays(genAval, avalTimeRange);
 
+  if (final.length === 0) return [];
+
   try {
     const result = _.differenceWith(
       // scenario one day
