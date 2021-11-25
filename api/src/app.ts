@@ -17,9 +17,11 @@ const corsOptions = {
 
 // app.use(cors(corsOptions));
 
+console.log(ENDPOINT, 'ENDPOINT');
+
 app.use(cors());
 app.use(express.json());
-app.use(ENDPOINT, routes);
+app.use('/api', routes);
 
 db.sequelize
   .sync({ force: false })
