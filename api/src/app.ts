@@ -21,7 +21,7 @@ console.log(ENDPOINT, 'ENDPOINT');
 
 app.use(cors());
 app.use(express.json());
-app.use('/api', routes);
+app.use(ENDPOINT, routes);
 
 db.sequelize
   .sync({ force: false })
