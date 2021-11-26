@@ -22,6 +22,7 @@ import { UserContext } from './UserContext';
 import ContactPage from '../pages/contact/ContactPage';
 import { initialState } from '../pages/booking/initialState';
 import { ShrinkHeigthLayout } from './GeneralLayouts';
+import PrivacyPolicy from '../pages/privacyPolicy/PrivacyPolicy';
 
 type ProtectedRouteType = {
   children: JSX.Element;
@@ -120,6 +121,14 @@ const RouterComponent = (): JSX.Element => {
               altRoute={Routes.ROOT}
             >
               <ContactPage />
+            </ProtectedRoute>
+
+            <ProtectedRoute
+              path={Routes.PRIVACY_POLICY}
+              condition={true}
+              altRoute={Routes.ROOT}
+            >
+              <PrivacyPolicy />
             </ProtectedRoute>
 
             <ProtectedRoute

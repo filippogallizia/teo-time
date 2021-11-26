@@ -8,10 +8,8 @@ export type GeneralAvailabilityType = {
   availability: TimeRangeType[];
 };
 
-export type GeneralAvailabilityTypes = GeneralAvailabilityType[];
-
 export type GeneralAvaliabilityRulesType = {
-  weekAvalSettings: GeneralAvailabilityTypes;
+  weekAvalSettings: GeneralAvailabilityType[];
 };
 
 export type BookedHoursType = {

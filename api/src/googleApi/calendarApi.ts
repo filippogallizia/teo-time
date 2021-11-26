@@ -3,10 +3,9 @@ require('dotenv').config();
 
 // insert calendar events using a service account authentication
 
-//const CREDENTIALS = JSON.parse(service_account_secret);
-const client_email = process.env.CLIENT_EMAIL;
-
 const CREDENTIALS = process.env.CREDENTIALS;
+//@ts-expect-error
+const client_email = JSON.parse(CREDENTIALS).client_email;
 //@ts-expect-error
 const private_key = JSON.parse(CREDENTIALS).private_key;
 
@@ -15,6 +14,8 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 const calendar = google.calendar({ version: 'v3' });
 
 const auth = new google.auth.JWT(client_email, null, private_key, SCOPES);
+
+console.log(client_email, 'client_email');
 
 const calendarId =
   process.env.GOOGLE_CALENDAR_ID || 'galliziafilippo@gmail.com';

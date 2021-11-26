@@ -8,6 +8,7 @@ class Routes {
   public LOGIN_FORGOT_PASSWORD = '/forgotPassword';
   public SIGNUP = '/signup';
   public CONTACT = '/contact';
+  public PRIVACY_POLICY = '/privacyPolicy';
   public RESET_PASSWORD = '/resetPassword';
   public USER = '/homepage/user';
   public HOMEPAGE = '/homepage';

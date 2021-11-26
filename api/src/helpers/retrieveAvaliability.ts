@@ -1,4 +1,5 @@
 const _ = require('lodash');
+
 import { filterForDays } from '../../utils';
 import { GeneralAvaliabilityRulesType } from '../types/types';
 
