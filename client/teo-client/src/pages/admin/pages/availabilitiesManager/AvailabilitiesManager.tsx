@@ -13,6 +13,8 @@ import {
 import CardComponent from '../../components/Card';
 import i18n from '../../../../i18n';
 import { useEffect } from 'react';
+import { handleToastInFailRequest } from '../../../../shared/locales/utils';
+import { toast } from 'react-toastify';
 
 const AvalManager = ({ dispatch, state }: BookingComponentType) => {
   const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -282,10 +284,17 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
           onClick={() => {
             const asyncFn = async () => {
               const handleSuccess = (response: any) => {};
-              await manageAvailabilities(
-                handleSuccess,
-                state.schedules.weekAvalSettings
-              );
+              try {
+                await manageAvailabilities(
+                  handleSuccess,
+                  state.schedules.weekAvalSettings
+                );
+                toast.success("Disponibilita' cambiate!", {
+                  position: toast.POSITION.TOP_CENTER,
+                });
+              } catch (e: any) {
+                handleToastInFailRequest(e, toast);
+              }
             };
             asyncFn();
           }}

@@ -545,7 +545,7 @@ router.post(
           .then((d: any) => {
             if (d) {
               const asyncFn = async () => {
-                d.update({
+                d.set({
                   day: daySetting.day,
                   workTimeStart: daySetting.parameters.workTimeRange.start,
                   workTimeEnd: daySetting.parameters.workTimeRange.end,
@@ -562,7 +562,6 @@ router.post(
                 await d.save();
               };
               asyncFn();
-              res.send({ message: 'availabilities updated' });
             } else {
               WeekavalSettings.create({
                 day: daySetting.day,
@@ -578,18 +577,30 @@ router.post(
                 breakTimeBtwEventsMinutes:
                   daySetting.parameters.breakTimeBtwEvents.minutes,
               })
-                .then(() => {
-                  res.send({ message: 'availabilities created!' });
+                .then((data: any) => {
+                  console.log(data);
                 })
                 .catch((e: any) => {
-                  throw e;
+                  return res.status(500).send({
+                    success: false,
+                    error: {
+                      message: e,
+                    },
+                  });
+                  console.log(e, 'badOne');
                 });
             }
           })
           .catch((e: any) => {
-            throw e;
+            return res.status(500).send({
+              success: false,
+              error: {
+                message: e,
+              },
+            });
           });
       });
+      res.send({ message: 'availabilities created!' });
     } catch (e: any) {
       res.status(500).send({
         success: false,
