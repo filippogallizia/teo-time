@@ -7,9 +7,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { UserContext } from './UserContext';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import hamburgerIcon from '../shared/icons/hamburgerIcon.svg';
-import { AiOutlineCalendar, AiOutlineUser } from "react-icons/ai";
-import { GrUserAdmin } from "react-icons/gr";
-import { BiLogIn, BiLogOut } from "react-icons/bi";
+import { AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
+import { GrUserAdmin } from 'react-icons/gr';
+import { BiLogIn, BiLogOut } from 'react-icons/bi';
 
 import {
   SET_CONFIRM_PHASE,
@@ -53,11 +53,9 @@ export default function Navbar({
   const [navbarOpen, setNavbarOpen] = React.useState(false);
   const { user, setUser, token, setToken } = useContext(UserContext);
 
-  console.log(navbarOpen, 'navbarOpen')
-
   return (
     <OutsideAlerter setNavbarOpen={setNavbarOpen}>
-      <nav className="relative flex flex-wrap items-center justify-between px-2 py-3 shadow-md ">
+      <nav className="relative flex flex-wrap items-center justify-between px-2 py-3 md:shadow-md">
         <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
           <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
             <Link
@@ -79,7 +77,7 @@ export default function Navbar({
           <div
             className={
               'lg:flex flex-grow items-center' +
-              (navbarOpen ? ' flex' : ' hidden') 
+              (navbarOpen ? ' flex' : ' hidden')
             }
             id="example-navbar-danger"
           >
@@ -96,7 +94,7 @@ export default function Navbar({
                     });
                   }}
                 >
-                  <AiOutlineCalendar className="md:hidden"/>
+                  <AiOutlineCalendar className="md:hidden" />
                   <span className="flex items-center ml-2  border-b-4 text-center border-transparent hover:border-yellow-500">
                     {i18n.t('nav.bookings')}
                   </span>
@@ -119,7 +117,7 @@ export default function Navbar({
                     to={routes.USER}
                     className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
                   >
-                  <AiOutlineUser className="md:hidden"/>
+                    <AiOutlineUser className="md:hidden" />
                     <span className="ml-2 border-b-4 border-transparent hover:border-yellow-500">
                       {i18n.t('nav.user')}
                     </span>
@@ -132,7 +130,7 @@ export default function Navbar({
                     to={routes.ADMIN}
                     className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white"
                   >
-                  <GrUserAdmin className="md:hidden"/>
+                    <GrUserAdmin className="md:hidden" />
 
                     <span className="ml-2  border-b-4 border-transparent hover:border-yellow-500">
                       {i18n.t('nav.admin')}
@@ -153,7 +151,7 @@ export default function Navbar({
                       }}
                       className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
                     >
-                  <BiLogOut className="md:hidden"/>
+                      <BiLogOut className="md:hidden" />
 
                       <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
                         {i18n.t('nav.logOut')}
@@ -164,6 +162,10 @@ export default function Navbar({
               )}
             </ul>
           </div>
+        </div>
+        <div className="w-full md:hidden">
+          <div className="border-2 border-gray-900"></div>
+          <div className="border-4 border-yellow-500"></div>
         </div>
       </nav>
     </OutsideAlerter>

@@ -64,7 +64,6 @@ export const googleCalendarInsertEvent = async (
 ) => {
   try {
     const { token, event } = body;
-    console.log(token, 'token');
     const response = await axios({
       method: 'post',
       url: `https://www.googleapis.com/calendar/v3/calendars/${(userId =
@@ -96,7 +95,6 @@ export const googleCalendarList = async (
 ) => {
   try {
     const { token } = body;
-    console.log(token, 'token');
     const response = await axios({
       method: 'get',
       url: `https://www.googleapis.com/calendar/v3/calendars/primary/events`,

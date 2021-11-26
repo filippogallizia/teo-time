@@ -1,5 +1,7 @@
-import { DateTime } from 'luxon';
 import { stringify } from 'querystring';
+
+import { DateTime } from 'luxon';
+
 import {
   GeneralAvailabilityType,
   GeneralAvaliabilityRulesType,
@@ -30,6 +32,10 @@ export const TODAY_AT_MIDNIGHT = () => {
 
 export const FROM_DATE_TO_DAY = (date: string) => {
   return DateTime.fromISO(date).weekdayLong;
+};
+
+export const DATE_TO_CLIENT_FORMAT = (date: string) => {
+  return DateTime.fromISO(date).toFormat('yyyy LLL dd t');
 };
 
 export const filterForDays = (

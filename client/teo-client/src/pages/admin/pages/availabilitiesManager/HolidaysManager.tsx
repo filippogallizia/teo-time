@@ -85,8 +85,6 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, state.schedules.forceRender]);
 
-  console.log(state.schedules.holidays, 'state');
-
   return (
     <div className=" grid grid-cols-1 gap-y-6 overflow-auto px-4">
       <div className="flex justify-between items-center p-2">

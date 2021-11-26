@@ -1,4 +1,5 @@
 import express from 'express';
+
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -16,8 +17,6 @@ const corsOptions = {
 };
 
 // app.use(cors(corsOptions));
-
-console.log(ENDPOINT, 'ENDPOINT');
 
 app.use(cors());
 app.use(express.json());

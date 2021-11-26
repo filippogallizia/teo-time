@@ -1,18 +1,10 @@
-import React, { useContext, useEffect } from 'react';
-import { GoogleLogin, useGoogleLogin } from 'react-google-login';
+import React, { useContext } from 'react';
+import { GoogleLogin } from 'react-google-login';
 import { ACCESS_TOKEN, USER_INFO } from '../../shared/locales/constant';
 import { useHistory } from 'react-router-dom';
-import {
-  googleCalendarInsertEvent,
-  googleCalendarList,
-  googleLoginService,
-} from './service/LoginService';
+import { googleLoginService } from './service/LoginService';
 import routes from '../../routes';
 import { UserContext } from '../../component/UserContext';
-//import { gapi } from 'gapi-script';
-
-// refresh token
-// import { refreshTokenSetup } from '../utils/refreshToken';
 
 export const refreshTokenSetup = (res: any) => {
   // Timing to renew access token
@@ -21,54 +13,25 @@ export const refreshTokenSetup = (res: any) => {
   const refreshToken = async () => {
     const newAuthRes = await res.reloadAuthResponse();
     refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
-    console.log('newAuthRes:', newAuthRes);
-    // saveUserToken(newAuthRes.access_token);  <-- save new token
-    localStorage.setItem('authToken', newAuthRes.id_token);
 
     // manage own token
-    localStorage.removeItem(ACCESS_TOKEN);
-    localStorage.setItem(ACCESS_TOKEN, newAuthRes.id_token);
+    localStorage.removeItem('google_token');
+    localStorage.setItem('google_token', newAuthRes.id_token);
+    localStorage.setItem(ACCESS_TOKEN, newAuthRes.access_token);
 
     // Setup the other timer after the first one
-
     setTimeout(refreshToken, refreshTiming);
   };
-
   // Setup first refresh timer
   setTimeout(refreshToken, refreshTiming);
 };
 const clientId =
   '345460796534-lfe6gvqmqijc5g6h0l813gm82q1m7cl5.apps.googleusercontent.com';
 
-const apiKey = 'AIzaSyDEQDDO1RB83m8FiQl4Wfl13LKG4wP2RKo';
-var SCOPES = 'https://www.googleapis.com/auth/calendar.events';
-
-const eventStartTime = new Date();
-
-eventStartTime.setDate(eventStartTime.getDate() + 2);
-
-const eventEndtime = new Date();
-
-const event = {
-  summary: 'OSTEOPATIA CON TEO',
-  location: 'via Osti',
-  description: 'trattamento osteopatico',
-  start: {
-    dateTime: eventStartTime,
-    timeZone: 'Europe/Lisbon',
-  },
-  end: {
-    dateTime: eventEndtime,
-    timeZone: 'Europe/Lisbon',
-  },
-  colorId: 1,
-};
-
 function GoogleLoginComponent() {
   const history = useHistory();
   const { setUser, setToken } = useContext(UserContext);
   const responseGoogle = (response: any) => {
-    console.log(response, 'response');
     googleLoginService(
       (res: any) => {
         localStorage.setItem(ACCESS_TOKEN, response.tokenId);
@@ -78,8 +41,7 @@ function GoogleLoginComponent() {
           localStorage.setItem(USER_INFO, JSON.stringify(res.user));
           setUser(res.user);
         }
-
-        // history.push(routes.HOMEPAGE_BOOKING);
+        history.push(routes.HOMEPAGE_BOOKING);
       },
       { token: response.tokenId }
     );
@@ -96,32 +58,6 @@ function GoogleLoginComponent() {
         cookiePolicy={'single_host_origin'}
         scope="https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar"
       />
-      {/* <GoogleLogout
-        clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-        buttonText="Logout"
-        onLogoutSuccess={() => {
-          console.log('successfull logout');
-        }}
-      ></GoogleLogout> */}
-      {/*<button
-        onClick={() =>
-          googleCalendarList((r: any) => console.log(r), {
-            token: localStorage.getItem('google_token'),
-          })
-        }
-      >
-        get list
-      </button>*/}
-      {/* <button
-        onClick={() =>
-          googleCalendarInsertEvent((r: any) => console.log(r), {
-            token: localStorage.getItem('google_token'),
-          })
-        }
-      >
-        insert google event
-        
-      </button> */}
     </>
   );
 }

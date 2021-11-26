@@ -1,8 +1,10 @@
 import express from 'express';
+import { OAuth2Client } from 'google-auth-library';
 import { Op } from 'sequelize';
+
 import { retrieveAvailability } from '../helpers/retrieveAvaliability';
 import { WorkSetting } from '../types/types';
-import { OAuth2Client } from 'google-auth-library';
+
 const avalDefault = require('../config/availabilitiesDefault.config.json');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
@@ -344,7 +346,6 @@ const authenticateToken = (
   googleAuth(token)
     .then((payload: any) => {
       if (payload) {
-        console.log(payload, 'payload');
         res.user = { email: payload.email };
         next();
       } else {
@@ -359,7 +360,6 @@ const authenticateToken = (
                   message: 'accesso non autorizzato',
                 },
               });
-            console.log(decoded, 'decoded');
             res.user = decoded;
             next();
           }

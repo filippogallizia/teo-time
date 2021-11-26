@@ -3,7 +3,7 @@ import React from 'react';
 import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { useHistory } from 'react-router-dom';
 import GeneralButton from '../../component/GeneralButton';
-import { TITLE } from '../../shared/locales/constant';
+import { TITLE, USER_INFO } from '../../shared/locales/constant';
 import routes from '../../routes';
 import { createBooking } from '../../services/calendar.service';
 import {
@@ -16,6 +16,7 @@ import i18n from '../../i18n';
 import { toast } from 'react-toastify';
 import InfoBooking from '../admin/components/InfoBooking';
 import { HrsAndMinsType } from '../../../types/Types';
+import { googleCalendarInsertEvent } from '../login-signup-resetPass/service/LoginService';
 
 type InitialFormType = {
   name: string;
@@ -24,6 +25,8 @@ type InitialFormType = {
 };
 
 const EVENT_DURATION = { hours: 1, minutes: 0 };
+
+const currentUser = localStorage.getItem(USER_INFO);
 
 const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
   const history = useHistory();
@@ -35,7 +38,22 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
     minute: 0,
     millisecond: 0,
   });
+
+  const event = {
+    summary: 'OSTEOPATIA CON TEO',
+    location: 'via Osti',
+    description: 'trattamento osteopatico',
+    start: {
+      dateTime: parsedDate.plus(mapped).toISO(),
+    },
+    end: {
+      dateTime: parsedDate.plus(mapped).plus(EVENT_DURATION).toISO(),
+    },
+    colorId: 1,
+  };
+
   const myFunc = async (value: InitialFormType) => {
+    const google_token = localStorage.getItem('google_token');
     try {
       const handleSuccess = (response: any) => {};
       await createBooking(handleSuccess, {
@@ -50,6 +68,12 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
         type: SET_RENDER_AVAL,
         payload: false,
       });
+      if (google_token && google_token !== undefined) {
+        await googleCalendarInsertEvent((r: any) => console.log(r), {
+          token: localStorage.getItem('google_token'),
+          event: event,
+        });
+      }
       history.push(routes.HOMEPAGE_SUCCESS);
     } catch (e: any) {
       handleToastInFailRequest(e, toast);

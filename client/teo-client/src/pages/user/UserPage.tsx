@@ -2,8 +2,6 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import GeneralButton from '../../component/GeneralButton';
 import {
   EVENT_INFO_TEXT,
-  ITALIC,
-  MEDIUM_MARGIN_BOTTOM,
   SUB_TITLE,
   TITLE,
   USER_INFO,
@@ -16,7 +14,6 @@ import { deleteBooking, retriveUserBooking } from './service/userService';
 import { toast } from 'react-toastify';
 import { TimeRangeType } from '../../../types/Types';
 import i18n from '../../i18n';
-import { SelfCenterLayout } from '../../component/GeneralLayouts';
 
 const DeleteBooking = ({
   booking,
@@ -68,8 +65,6 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
   }, [dispatch, forceRender]);
 
   const currentUser = localStorage.getItem(USER_INFO);
-  //@ts-expect-error
-  console.log(JSON.parse(currentUser).email.includes('gmail'), 'currnet');
 
   return (
     <div className="grid grid-cols-1 gap-8 justify-items-center">

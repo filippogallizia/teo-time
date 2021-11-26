@@ -1,6 +1,11 @@
 import express from 'express';
 import { Op } from 'sequelize';
+
+import { DATE_TO_CLIENT_FORMAT } from '../../utils';
+import { deleteEvent, getEvents, insertEvent } from '../googleApi/calendarApi';
+import { changePwdEmail, sendEmail, successBkgEmail } from '../sendGrid/config';
 import { UserType } from '../types/types';
+
 const {
   getAvailability,
   userExist,
@@ -29,9 +34,6 @@ router.post(
   '/signup',
   [userExist],
   (req: express.Request, res: express.Response) => {
-    console.log('here');
-    //@ts-expect-error
-    console.log(res.user, 'user');
     //@ts-expect-error
     if (res.user) {
       return res.status(500).send({
@@ -56,7 +58,6 @@ router.post(
             res.send({ message: 'User was registered successfully!' });
           })
           .catch((e: any) => {
-            console.log(e);
             res.status(500).send({
               success: false,
               error: {
@@ -122,7 +123,6 @@ router.get('/google-login', (req: express.Request, res: express.Response) => {
               const user = await User.findOne({
                 where: { email: r.email },
               }).catch((e: any) => {
-                console.log(e, 'e1');
                 res.status(500).send({
                   success: false,
                   error: {
@@ -194,8 +194,7 @@ router.post(
       const { start, end, isHoliday, localId } = req.body;
       //@ts-expect-error
       const userEmail = res.user.email;
-      //@ts-expect-error
-      console.log(userEmail, 'userEmail', res.user);
+      let userName: string | undefined;
       // create a new user
       Bookings.create({
         start,
@@ -207,6 +206,7 @@ router.post(
           // search the user by email
           User.findOne({ where: { email: userEmail } })
             .then((usr: UserType) => {
+              userName = usr.name;
               // associate the booking with the user
               booking.setUser(usr).catch((e: any) => {
                 res.status(500).send({
@@ -220,38 +220,49 @@ router.post(
             .catch((e: any) => {
               throw e;
             });
-          //send link
 
-          const parsedData = DateTime.fromISO(booking.start).toFormat(
-            'yyyy LLL dd - t'
+          // insert the booking to admin google calendar
+
+          const e = {
+            summary: process.env.EVENT_TYPE,
+            location: process.env.EVENT_LOCATION,
+            description: `${process.env.EVENT_DESCRIPTION} con ${userEmail}`,
+            organizer: {
+              email: process.env.ADMIN_EMAIL,
+              displayName: process.env.ADMIN_NAME,
+            },
+            start: {
+              dateTime: start,
+            },
+            end: {
+              dateTime: end,
+            },
+            colorId: 1,
+          };
+
+          insertEvent(e)
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+
+          //send email to client and admin
+
+          const email = successBkgEmail(
+            userEmail,
+            DateTime.fromISO(booking.start).toFormat('yyyy LLL dd t')
           );
 
-          const msg = {
-            to: [userEmail, process.env.EMAIL],
-            from: process.env.EMAIL, // Use the email address or domain you verified above
-            subject: 'teo-time',
-            text: 'and easy to do anywhere, even with Node.js',
-            html: `
-            <div style="padding: 10px; border: 3px dashed #f59e0b; font-size: 1.1rem;">
-            <h2>
-              Ciao! Il tuo appuntamento e' stato registrato con successo.
-            </h2>
-            <p style="margin-bottom: 10px;">
-              Questi sono i dettagli:
-            </p>
-            <p>
-              EVENTO: <span style="font-weight: bold;">Trattamento osteopatico</span>
-            </p>
-            <p>
-              DATA:
-              <span style="font-weight: bold;">
-                ${parsedData}</span
-              >
-            </p>
-          </div>
-          `,
-          };
           res.status(200).send(booking);
+          sendEmail(email)
+            .then((r: any) => {
+              console.log(r);
+            })
+            .catch((err: any) => {
+              console.log(err);
+            });
         })
         .catch((e: any) => {
           res.status(500).send({
@@ -304,6 +315,23 @@ router.post(
             bks
               .destroy()
               .then(() => {
+                // find the corresponding event on google calendar
+                getEvents(start, end)
+                  .then((res) => {
+                    // if the event exists, delete it
+                    if (res.length > 0) {
+                      deleteEvent(res[0].id)
+                        .then((r) => {
+                          console.log(r);
+                        })
+                        .catch((err) => {
+                          console.log(err);
+                        });
+                    }
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
                 res.status(200).send('prenotazione cancellata');
               })
               .catch((e: any) => {
@@ -319,7 +347,12 @@ router.post(
           }
         })
         .catch((e: any) => {
-          throw e;
+          res.status(500).send({
+            success: false,
+            error: {
+              message: e,
+            },
+          });
         });
     } catch (e: any) {
       res.status(500).send({
@@ -406,25 +439,6 @@ router.get(
       User.findAll()
         .then((usr: any) => {
           res.send(usr);
-          // if (usr.length > 0) {
-          //   const mappedUsr = usr.map((us: any) => {
-          //     return {
-          //       name: us.name,
-          //       id: us.id,
-          //       email: us.email,
-          //       role: us.email,
-          //       phoneNumber: us.phoneNumber,
-          //     };
-          //   });
-          //   res.send(mappedUsr);
-          // } else {
-          //   return res.status(500).send({
-          //     success: false,
-          //     error: {
-          //       message: 'there are no users',
-          //     },
-          //   });
-          // }
         })
         .catch((e: any) => {
           throw e;
@@ -453,29 +467,20 @@ router.post(
               await usr.save();
             };
             updateUser();
-            const msg = {
-              to: userEmail,
-              from: process.env.EMAIL, // Use the email address or domain you verified above
-              subject: 'teo-time',
-              text: 'and easy to do anywhere, even with Node.js',
-              html: `<a href=${URL}?resetPasswordToken=${OTP}>reset your password here</a>`,
-            };
-            const sendEmail = async () => {
-              await sgMail
-                .send(msg)
-                .then(
-                  () => {
-                    res.send({ message: 'succesfull sent' });
+
+            const EMAIL = changePwdEmail(userEmail, OTP);
+            sendEmail(EMAIL)
+              .then(() => {
+                res.send('Check your email!');
+              })
+              .catch(() => {
+                return res.status(400).send({
+                  success: false,
+                  error: {
+                    message: "l' email non esiste",
                   },
-                  (e: any) => {
-                    throw e;
-                  }
-                )
-                .catch((e: any) => {
-                  throw e;
                 });
-            };
-            sendEmail();
+              });
           } else {
             return res.status(400).send({
               success: false,
@@ -573,7 +578,7 @@ router.post(
                 breakTimeBtwEventsMinutes:
                   daySetting.parameters.breakTimeBtwEvents.minutes,
               })
-                .then((user: UserType) => {
+                .then(() => {
                   res.send({ message: 'availabilities created!' });
                 })
                 .catch((e: any) => {
@@ -687,8 +692,6 @@ export const booksExist = async (
         },
       });
     } else {
-      console.log(bookingsAlreadyExist, 'bookingsAlreadyExist');
-
       next();
     }
   } catch (e: any) {
@@ -740,8 +743,8 @@ router.post(
           );
 
           const msg = {
-            to: [userEmail, process.env.EMAIL],
-            from: process.env.EMAIL, // Use the email address or domain you verified above
+            to: [userEmail, process.env.ADMIN_EMAIL],
+            from: process.env.ADMIN_EMAIL, // Use the email address or domain you verified above
             subject: 'teo-time',
             text: 'and easy to do anywhere, even with Node.js',
             html: `

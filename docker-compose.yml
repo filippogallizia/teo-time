@@ -35,6 +35,8 @@ services:
       - DB_NAME=$MYSQLDB_DATABASE
       - DB_PORT=$MYSQLDB_DOCKER_PORT
       - CLIENT_ORIGIN=$CLIENT_ORIGIN
+      - CLIENT_EMAIL=$CLIENT_EMAIL
+      - PRIVATE_KEY=$PRIVATE_KEY
     networks:
       - backend
       - frontend
