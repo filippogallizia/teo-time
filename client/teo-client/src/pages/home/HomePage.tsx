@@ -1,8 +1,5 @@
 import React from 'react';
 import foto_profilo from '../../shared/images/foto_profilo.jpeg';
-import { TITLE } from '../../shared/locales/constant';
-import ocean from '../../shared/images/ocean.jpg';
-import { SelfCenterLayout } from '../../component/GeneralLayouts';
 
 const HomePage = () => {
   return (

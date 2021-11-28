@@ -1,10 +1,9 @@
-import { stringify } from 'querystring';
-
 import { DateTime } from 'luxon';
 
 import {
+  BookingType,
   GeneralAvailabilityType,
-  GeneralAvaliabilityRulesType,
+  HrsAndMinsType,
   TimeRangeType,
 } from './src/types/types';
 
@@ -38,39 +37,28 @@ export const DATE_TO_CLIENT_FORMAT = (date: string) => {
   return DateTime.fromISO(date).toFormat('yyyy LLL dd t');
 };
 
-export const filterForDays = (
-  genAv: GeneralAvaliabilityRulesType,
+// loop throug general Aval, filter for day with timerange, return availabilities with uploaded date
+
+export const filterDays_updateDate = (
+  genAv: GeneralAvailabilityType,
   timerange: TimeRangeType[]
 ): {
   day: string;
   availability: TimeRangeType[];
 }[] => {
   return _.intersectionWith(
-    genAv.weekAvalSettings,
+    genAv,
     timerange,
     (a: GeneralAvailabilityType, b: TimeRangeType) => {
       return a.day == FROM_DATE_TO_DAY(b.start);
     }
   ).map((day: GeneralAvailabilityType) => {
+    // update the date
     const parseAvailabilities = day.availability.map(
       (a: { start: string; end: string }) => {
         return {
-          start: DateTime.fromISO(timerange[0].start)
-            .set({
-              hour: FROM_DATE_TO_HOUR(a.start),
-              minute: FROM_DATE_TO_MINUTES(a.start),
-              second: 0,
-              millisecond: 0,
-            })
-            .toISO(),
-          end: DateTime.fromISO(timerange[0].end)
-            .set({
-              hour: FROM_DATE_TO_HOUR(a.end),
-              minute: FROM_DATE_TO_MINUTES(a.end),
-              second: 0,
-              millisecond: 0,
-            })
-            .toISO(),
+          start: joinDayAndTime(timerange[0].start, a.start),
+          end: joinDayAndTime(timerange[0].end, a.end),
         };
       }
     );
@@ -80,4 +68,125 @@ export const filterForDays = (
       availability: parseAvailabilities,
     };
   });
+};
+
+// use this function to create availabilities after comparing them with existing bookings
+
+export const createAvalFromBks = (
+  availabilities: TimeRangeType[],
+  bookings: BookingType[]
+) => {
+  return _.differenceWith(
+    // scenario one day
+    availabilities,
+    bookings,
+    (aval: any, bks: any) => {
+      return (
+        (bks.start <= aval.start && bks.end >= aval.end) ||
+        (bks.start >= aval.start && bks.start < aval.end) ||
+        (bks.end >= aval.start && bks.end < aval.end)
+      );
+    }
+  );
+};
+
+export const joinDayAndTime = (date_day: string, date_time: string) => {
+  return DateTime.fromISO(date_day)
+    .set({
+      hour: FROM_DATE_TO_HOUR(date_time),
+      minute: FROM_DATE_TO_MINUTES(date_time),
+      second: 0,
+      millisecond: 0,
+    })
+    .toISO();
+};
+
+// this function create aval slot given the following inputs
+
+export const createDynamicAval = (
+  workTimeRange: TimeRangeType,
+  breakTimeRange: TimeRangeType,
+  eventDuration: HrsAndMinsType,
+  breakTimeBtwEvents: HrsAndMinsType
+) => {
+  const dayStart = DateTime.fromISO(workTimeRange.start);
+  const dayEnd = DateTime.fromISO(workTimeRange.end);
+
+  const breakStart = DateTime.fromISO(breakTimeRange.start);
+  const breakEnd = DateTime.fromISO(breakTimeRange.end);
+
+  const avalBucket: any = [];
+
+  const tmpBucket: any = [];
+
+  // if thera are not slot in bucket && dayStart piu' eventDuration are smaller then breakStart, then push in the bucket
+  while (
+    dayStart.plus(eventDuration) <= breakStart &&
+    avalBucket.length === 0
+  ) {
+    avalBucket.push({
+      start: dayStart.toUTC(),
+      end: dayStart.plus(eventDuration),
+    });
+  }
+
+  // if thera are not slot in bucket && dayStart piu' eventDuration is bigger then breakStart but breakEnd plus eventDuration is smaller the dayEnd, then push in the bucket
+
+  while (
+    dayStart.plus(eventDuration) > breakStart &&
+    avalBucket.length === 0 &&
+    breakEnd.plus(eventDuration) <= dayEnd
+  ) {
+    avalBucket.push({
+      start: breakStart.toUTC(),
+      end: breakStart.plus(eventDuration),
+    });
+  }
+
+  // if fineUltimoTurno plus eventDuration is smaller then breakStart, then push in bucket
+
+  while (
+    avalBucket[avalBucket.length - 1].end
+      .plus(eventDuration)
+      .plus(breakTimeBtwEvents) <= breakStart
+  ) {
+    avalBucket.push({
+      start: avalBucket[avalBucket.length - 1].end.plus(breakTimeBtwEvents),
+      end: avalBucket[avalBucket.length - 1].end
+        .plus(eventDuration)
+        .plus(breakTimeBtwEvents),
+    });
+  }
+
+  // if breakEnd plus eventDuration is smaller then dayEnd, then push in bucket
+
+  while (
+    breakEnd.plus(eventDuration) <= dayEnd &&
+    avalBucket[avalBucket.length - 1].end <= dayEnd &&
+    avalBucket[avalBucket.length - 1].end
+      .plus(eventDuration)
+      .plus(breakTimeBtwEvents) <= dayEnd
+  ) {
+    if (tmpBucket.length === 0) {
+      tmpBucket.push({
+        start: breakEnd,
+        end: breakEnd.plus(eventDuration),
+      });
+    } else {
+      tmpBucket.push({
+        start: tmpBucket[tmpBucket.length - 1].end.plus(breakTimeBtwEvents),
+        end: tmpBucket[tmpBucket.length - 1].end
+          .plus(eventDuration)
+          .plus(breakTimeBtwEvents),
+      });
+    }
+    avalBucket.push({
+      start: tmpBucket[tmpBucket.length - 1].start,
+      end: tmpBucket[tmpBucket.length - 1].end,
+    });
+  }
+  return avalBucket.map((obj: { start: string; end: string }) => ({
+    start: DateTime.fromISO(obj.start).toUTC().toISO(),
+    end: DateTime.fromISO(obj.end).toUTC().toISO(),
+  }));
 };

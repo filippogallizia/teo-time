@@ -2,6 +2,9 @@ import express from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import { Op } from 'sequelize';
 
+import { createDynamicAval, filterDays_updateDate } from '../../utils';
+//@ts-expect-error
+import fixedBookings from '../config/fixedBookings.json';
 import { retrieveAvailability } from '../helpers/retrieveAvaliability';
 import { WorkSetting } from '../types/types';
 
@@ -9,9 +12,6 @@ const avalDefault = require('../config/availabilitiesDefault.config.json');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const db = require('../models/db');
-const {
-  compareTwoDatesWithK,
-} = require('../helpers/createDynamicAvailiabilityRules');
 const { DateTime } = require('luxon');
 
 const User = db.user;
@@ -129,6 +129,8 @@ const getAvailability = async (
 ) => {
   const avalRange = [...req.body.TimeRangeType];
   try {
+    // check conditions inside bookings
+
     const myBookings = await Bookings.findAll({
       where: {
         start: {
@@ -181,7 +183,9 @@ const getAvailability = async (
       throw e;
     });
 
-    const parseBooking = _.map(
+    // parse bookings from JS object date to string
+
+    const parsedBookings = _.map(
       [...myBookings, ...myBookings2, ...myBookings3, ...myBookings4],
       (e: any) => {
         return {
@@ -192,22 +196,35 @@ const getAvailability = async (
       }
     );
 
+    // get fixedBooking from database and change their date using avalRange date
+
+    const parsedFixedBookings = filterDays_updateDate(
+      fixedBookings,
+      avalRange
+    ).map((day) => day.availability);
+
+    // join all bookings in a single array
+
+    const joinedBookings = [...parsedBookings, ...parsedFixedBookings.flat()];
+
+    // get weekAvalSetting and create dynamicAval. If there are not weekAvalSetting create them.
+
     const weekavalSetting = await WeekavalSettings.findAll()
       .then((daySetting: WorkSetting[]) => {
         if (daySetting.length > 0) {
           const result = daySetting.map((day: WorkSetting) => {
             return {
               day: day.day,
-              availability: compareTwoDatesWithK(
+              availability: createDynamicAval(
                 { start: day.workTimeStart, end: day.workTimeEnd },
                 { start: day.breakTimeStart, end: day.breakTimeEnd },
                 {
-                  hours: day.eventDurationHours,
-                  minutes: day.eventDurationMinutes,
+                  hours: Number(day.eventDurationHours),
+                  minutes: Number(day.eventDurationMinutes),
                 },
                 {
-                  hours: day.breakTimeBtwEventsHours,
-                  minutes: day.breakTimeBtwEventsMinutes,
+                  hours: Number(day.breakTimeBtwEventsHours),
+                  minutes: Number(day.breakTimeBtwEventsMinutes),
                 }
               ),
             };
@@ -236,9 +253,11 @@ const getAvailability = async (
         throw e;
       });
 
+    // joing all the datas togheter and get availabilities, hopefully all works
+
     const availabilities = retrieveAvailability(
       {
-        bookings: parseBooking,
+        bookings: joinedBookings,
       },
       { weekAvalSettings: weekavalSetting },
       avalRange
@@ -385,3 +404,11 @@ module.exports = {
 
   googleAuth,
 };
+function GeneralAvailabilityType(
+  fixedBookings: any,
+  GeneralAvailabilityType: any,
+  avalRange: any[],
+  arg3: any
+) {
+  throw new Error('Function not implemented.');
+}

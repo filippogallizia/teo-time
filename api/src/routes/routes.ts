@@ -587,7 +587,6 @@ router.post(
                       message: e,
                     },
                   });
-                  console.log(e, 'badOne');
                 });
             }
           })
