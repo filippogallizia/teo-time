@@ -128,7 +128,9 @@ const RouterComponent = (): JSX.Element => {
               condition={true}
               altRoute={Routes.ROOT}
             >
-              <PrivacyPolicy />
+              <ShrinkHeigthLayout>
+                <PrivacyPolicy />
+              </ShrinkHeigthLayout>
             </ProtectedRoute>
 
             <ProtectedRoute
