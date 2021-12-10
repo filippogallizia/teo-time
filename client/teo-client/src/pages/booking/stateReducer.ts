@@ -1,6 +1,8 @@
 import produce from 'immer';
 import { ChangeEvent } from 'react';
 import { HrsAndMinsType, TimeRangeType, UserType } from '../../../types/Types';
+import { HOUR_MINUTE_FORMAT } from '../../shared/locales/utils';
+import { weekDays } from '../admin/adminPages/availabilitiesManager/AvailabilitiesManager';
 
 export const SET_AVAL = 'SET_AVAL';
 export const SET_USER_BOOKINGS = 'SET_USER_BOOKINGS';
@@ -15,6 +17,17 @@ export const FORCE_RENDER = 'FORCE_RENDER';
 export const ADD_OR_REMOVE_HOLIDAY = 'ADD_OR_REMOVE_HOLIDAY';
 export const UPLOAD_HOLIDAY = 'UPLOAD_HOLIDAY';
 export const SET_LOCATION = 'SET_LOCATION';
+export const SET_FIXED_BKS = 'SET_FIXED_BKS';
+export const ADD_OR_REMOVE_FIXED_BKS = 'ADD_OR_REMOVE_FIXED_BKS';
+export const UPLOAD_FIXED_BKS = 'UPLOAD_FIXED_BKS';
+
+export const ADD = 'ADD';
+export const DELETE = 'DELETE';
+export const UPLOAD_START_DATE = 'UPLOAD_START_DATE';
+export const UPLOAD_END_DATE = 'UPLOAD_END_DATE';
+export const UPLOAD_EMAIL_CLIENT = 'UPLOAD_EMAIL_CLIENT';
+export const UPLOAD_ALL = 'UPLOAD_ALL';
+export const NO_VALUES = 'NO_VALUES';
 
 export type DayAvalSettingsType = {
   day: string;
@@ -24,6 +37,22 @@ export type DayAvalSettingsType = {
     eventDuration: HrsAndMinsType;
     breakTimeBtwEvents: HrsAndMinsType;
   };
+};
+
+export type FixedBookType = TimeRangeType & { id: number; email: string };
+
+export type FixedBksType = {
+  day: string;
+  bookings: Array<FixedBookType>;
+};
+
+export type FixedBksFromApi = {
+  id: number;
+  start: string;
+  end: string;
+  email: string;
+  day: string;
+  localId: number;
 };
 
 export type Holiday = {
@@ -49,6 +78,7 @@ export type InitialState = {
       user: UserType;
     }[][];
     weekAvalSettings: DayAvalSettingsType[];
+    fixedBks: FixedBksType[];
     forceRender: number;
     holidays: Array<{
       start: string;
@@ -99,6 +129,25 @@ type ActionAllWeekAvailSettings = {
   payload: DayAvalSettingsType[];
 };
 
+type ActionAddFixedBks = {
+  type: typeof ADD_OR_REMOVE_FIXED_BKS;
+  payload: {
+    day: string;
+    booking: TimeRangeType & { id: number; email: string };
+    type:
+      | typeof ADD
+      | typeof DELETE
+      | typeof UPLOAD_START_DATE
+      | typeof UPLOAD_END_DATE
+      | typeof UPLOAD_EMAIL_CLIENT;
+  };
+};
+
+type ActionSetFixedBks = {
+  type: typeof SET_FIXED_BKS;
+  payload: FixedBksFromApi[];
+};
+
 type ActionAddHoliday = {
   type: typeof ADD_OR_REMOVE_HOLIDAY;
   payload: HolidayPayload;
@@ -112,13 +161,6 @@ type ActionSetLocation = {
   type: typeof SET_LOCATION;
   payload: LocationPayload;
 };
-
-export const ADD = 'ADD';
-export const DELETE = 'DELETE';
-export const UPLOAD_START_DATE = 'UPLOAD_START_DATE';
-export const UPLOAD_END_DATE = 'UPLOAD_END_DATE';
-export const UPLOAD_ALL = 'UPLOAD_ALL';
-export const NO_VALUES = 'NO_VALUES';
 
 export type HolidayPayload = {
   type:
@@ -168,7 +210,9 @@ export type Actions =
   | ActionAddHoliday
   | ActionSetHoliday
   | ActionSetLocation
-  | ActionAllWeekAvailSettings;
+  | ActionAllWeekAvailSettings
+  | ActionAddFixedBks
+  | ActionSetFixedBks;
 
 const stateReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
@@ -262,7 +306,73 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
       return produce(initialState, (draft) => {
         draft.schedules.location = action.payload.location;
       });
-
+    case ADD_OR_REMOVE_FIXED_BKS:
+      return produce(initialState, (draft) => {
+        const index = draft.schedules.fixedBks.findIndex(
+          (x) => x.day === action.payload.day
+        );
+        if (index > -1) {
+          if (action.payload.type === ADD) {
+            draft.schedules.fixedBks[index].bookings.push(
+              action.payload.booking
+            );
+          }
+          if (action.payload.type === DELETE) {
+            const i = draft.schedules.fixedBks[index].bookings.findIndex(
+              (book) => {
+                return book.id === action.payload.booking.id;
+              }
+            );
+            draft.schedules.fixedBks[index].bookings.splice(i, 1);
+          }
+          if (action.payload.type === UPLOAD_START_DATE) {
+            const i = draft.schedules.fixedBks[index].bookings.findIndex(
+              (book) => {
+                return book.id === action.payload.booking.id;
+              }
+            );
+            draft.schedules.fixedBks[index].bookings[i].start =
+              action.payload.booking.start;
+          }
+          if (action.payload.type === UPLOAD_END_DATE) {
+            const i = draft.schedules.fixedBks[index].bookings.findIndex(
+              (book) => {
+                return book.id === action.payload.booking.id;
+              }
+            );
+            draft.schedules.fixedBks[index].bookings[i].end =
+              action.payload.booking.end;
+          }
+          if (action.payload.type === UPLOAD_EMAIL_CLIENT) {
+            const i = draft.schedules.fixedBks[index].bookings.findIndex(
+              (book) => {
+                return book.id === action.payload.booking.id;
+              }
+            );
+            draft.schedules.fixedBks[index].bookings[i].email =
+              action.payload.booking.email;
+          }
+        }
+      });
+    case SET_FIXED_BKS:
+      return produce(initialState, (draft) => {
+        const result = weekDays.map((weekDay) => {
+          return {
+            day: weekDay,
+            bookings: action.payload
+              .filter((day) => day.day === weekDay)
+              .map((d) => {
+                return {
+                  start: HOUR_MINUTE_FORMAT(d.start),
+                  end: HOUR_MINUTE_FORMAT(d.end),
+                  id: d.localId,
+                  email: d.email,
+                };
+              }),
+          };
+        });
+        draft.schedules.fixedBks = result;
+      });
     default:
       return initialState;
   }

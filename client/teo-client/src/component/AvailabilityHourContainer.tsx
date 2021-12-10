@@ -33,7 +33,7 @@ function AvailabilityHourContainer({
       {isClicked.isOpen && isClicked.id === id ? (
         <div className={`${FLEX_DIR_ROW} w-11/12`}>
           <div
-            className={`${FLEX_DIR_ROW} text-white border-2 border-gray-500 bg-gray-300  mr-1 p-4 w-full md:p-4`}
+            className={`${FLEX_DIR_ROW} border-2 border-gray-500 bg-gray-300  mr-1 p-4 w-full md:p-4`}
           >
             {`${hour.start}`}
           </div>
@@ -42,7 +42,7 @@ function AvailabilityHourContainer({
               dispatch({ type: SET_SELECTION_HOUR, payload: hour.start });
               history.push(routes.CONFIRM_PAGE);
             }}
-            className={`${FLEX_DIR_ROW} text-white border-2 border-yellow-500  bg-yellow-500 hover:bg-yellow-700 cursor-pointer  ml-1  p-4 w-full md:p-4`}
+            className={`${FLEX_DIR_ROW} border-2 border-yellow-500  bg-yellow-500 hover:bg-yellow-700 cursor-pointer  ml-1  p-4 w-full md:p-4`}
           >
             confirm
           </div>

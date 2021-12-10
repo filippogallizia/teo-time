@@ -20,8 +20,8 @@ const HomePage = () => {
       </div>
       <div className="just flex self-stretch items-center gap-4">
         <div className="w-10">
-          <div className="border-2 border-gray-900"></div>
-          <div className="border-4 border-yellow-500"></div>
+          <div className="border-2 border-gray-900 bg-gray-900"></div>
+          <div className="border-4 border-yellow-500 bg-yellow-500"></div>
         </div>
         <div className="text-bold">CHI SONO</div>
       </div>

@@ -7,11 +7,8 @@ import { SECONDARY_LINK } from '../shared/locales/constant';
 
 const Footer = () => {
   return (
-    <div className="grid grid-cols-3 justify-items-center items-center w-screen h-10 gap-2 bg-gray-200 text-white">
-      <Link
-        to={routes.CONTACT}
-        // className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
-      >
+    <div className="grid grid-cols-3 justify-items-center items-center w-screen h-10 gap-2 bg-gray-200 ">
+      <Link to={routes.CONTACT}>
         <span className={`${SECONDARY_LINK}`}>{i18n.t('footer.contact')}</span>
       </Link>
       <Link to={routes.PRIVACY_POLICY}>

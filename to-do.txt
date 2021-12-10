@@ -1,11 +1,7 @@
 API
-- mail a teo con booking 1h ok
-- google log in check response on docker
-- calendars events
-- fixed env variables
-- remove api from github
-- eslint-plugin-import  https://www.npmjs.com/package/eslint-plugin-import
+
 - Of course, checking the audience is just one of the checks that your API should do to prevent unauthorized access.  https://auth0.com/blog/id-token-access-token-what-is-the-difference/
+- 
 
 
 

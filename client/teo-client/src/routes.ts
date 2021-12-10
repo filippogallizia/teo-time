@@ -20,6 +20,7 @@ class Routes {
   public ADMIN_AVAL_MANAGER = '/homepage/admin/avalManager';
   public ADMIN_HOLIDAY_MANAGER = '/homepage/admin/holidayManager';
   public ADMIN_USERS_TABLE = '/homepage/admin/usersTable';
+  public FIXED_BKS_MANAGER = '/homepage/admin/fixedBksManager';
 }
 
 export default new Routes();

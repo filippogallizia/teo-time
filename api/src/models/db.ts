@@ -1,5 +1,7 @@
 const dbConfig = require('../config/db.config.js');
-import BookedHoursModel from './Bookings.model';
+
+import BookingsModel from './Bookings.model';
+import FixedBookingsModel from './fixedBookings.model';
 import WorkSettingsModel from './weekAvailabilitiesSetting.model';
 
 const Sequelize = require('sequelize');
@@ -29,7 +31,9 @@ db.sequelize = sequelize;
 //@ts-expect-error
 db.user = require('./user.model.ts')(sequelize, Sequelize);
 //@ts-expect-error
-db.Bookings = BookedHoursModel(sequelize, Sequelize);
+db.Bookings = BookingsModel(sequelize, Sequelize);
+//@ts-expect-error
+db.FixedBookings = FixedBookingsModel(sequelize, Sequelize);
 //@ts-expect-error
 db.WeekavalSettings = WorkSettingsModel(sequelize, Sequelize);
 //@ts-expect-error

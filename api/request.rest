@@ -57,8 +57,8 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpemlhZmlsaXBwb0BnbWFpbC5jb20iLCJwYXNzd29yZCI6InN1cmZhbmRvIiwiaWF0IjoxNjM1NDEyMTM4fQ.4OrNWrQ3KbxgvMCboT9JL-Xj3IQ_DTz5rqlv0AYj4PI
 
 {
-    "start": "2021-12-01T15:00:00.000+00:00",
-    "end": "2021-12-17T12:00:00.000+00:00"
+    "start": "2021-09-01T15:00:00.000+00:00",
+    "end": "2021-09-17T12:00:00.000+00:00"
 }
 
 ###
@@ -177,4 +177,61 @@ Content-Type: application/json
 GET http://0.0.0.0:5000/workingHours
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNvZmlAZ21haWwuY29tIiwicGFzc3dvcmQiOiJzb2ZpIiwicm9sZSI6InVzZXIiLCJpYXQiOjE2MzU5NjA0MTZ9.hu97TwyaEvjvsarlbBPymyZa8IwDCMJSfvE2aTdQ3Xo
+
+
+###
+GET http://0.0.0.0:5000/fixedBookings
+
+
+###
+POST http://0.0.0.0:5000/fixedBookings
+Content-Type: application/json
+
+{
+   "fixedBks":[
+      {
+         "day":"Monday",
+         "bookings":[
+            {
+               "start":"2021-10-04T06:30:00.000Z",
+               "end":"2021-10-04T21:15:00.000Z",
+               "id":1,
+               "email":"filo"
+            },
+            {
+               "start":"2021-10-04T12:00:00.000Z",
+               "end":"2021-10-04T16:30:00.000Z",
+               "id":2,
+               "email":"gio"
+            }
+         ]
+      }
+   ]
+}
+
+###
+PUT http://0.0.0.0:5000/fixedBookings
+Content-Type: application/json
+
+{
+   "fixedBks":[
+      {
+         "day":"Monday",
+         "bookings":[
+            {
+               "start":"2021-10-04T06:30:00.000Z",
+               "end":"2021-10-04T21:15:00.000Z",
+               "id":1,
+               "email":"filo"
+            },
+            {
+               "start":"2021-10-04T15:00:00.000Z",
+               "end":"2021-10-04T16:30:00.000Z",
+               "id":2,
+               "email":"gio"
+            }
+         ]
+      }
+   ]
+}
 

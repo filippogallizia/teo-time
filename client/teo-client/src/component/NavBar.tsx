@@ -60,14 +60,14 @@ export default function Navbar({
           <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
             <Link
               to="/homepage"
-              className="text-m font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap text-white"
+              className="text-m font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap"
             >
               <span className="tracking-wider">OS-</span>
               <span className="text-yellow-500 tracking-wider">TEO</span>
               <span className="tracking-wider">-THERAPY</span>
             </Link>
             <button
-              className="text-white cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
+              className="cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
               type="button"
               onClick={() => setNavbarOpen(!navbarOpen)}
             >
@@ -85,7 +85,7 @@ export default function Navbar({
               <li className="nav-item">
                 <Link
                   to={routes.HOMEPAGE_BOOKING}
-                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug"
                   onClick={() => {
                     dispatch({ type: SET_CONFIRM_PHASE, payload: false });
                     dispatch({
@@ -103,7 +103,7 @@ export default function Navbar({
               <li className="nav-item">
                 <Link
                   to={routes.LOGIN}
-                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug  "
                 >
                   <BiLogIn className="md:hidden" />
                   <span className="ml-2   border-b-4 border-transparent hover:border-yellow-500">
@@ -115,7 +115,7 @@ export default function Navbar({
                 <li className="nav-item">
                   <Link
                     to={routes.USER}
-                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white "
+                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug  "
                   >
                     <AiOutlineUser className="md:hidden" />
                     <span className="ml-2 border-b-4 border-transparent hover:border-yellow-500">
@@ -128,7 +128,7 @@ export default function Navbar({
                 <li className="nav-item">
                   <Link
                     to={routes.ADMIN}
-                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white"
+                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug "
                   >
                     <GrUserAdmin className="md:hidden" />
 
@@ -140,7 +140,7 @@ export default function Navbar({
               )}
               {token && (
                 <li className="nav-item">
-                  <div className="text-white cursor-pointer">
+                  <div className=" cursor-pointer">
                     <div
                       onClick={() => {
                         localStorage.clear();
@@ -149,7 +149,7 @@ export default function Navbar({
                         history.push(routes.LOGIN);
                         toast(i18n.t('toastMessages.other.logOut'));
                       }}
-                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug hover:opacity-75"
                     >
                       <BiLogOut className="md:hidden" />
 
@@ -164,8 +164,8 @@ export default function Navbar({
           </div>
         </div>
         <div className="w-full md:hidden">
-          <div className="border-2 border-gray-900"></div>
-          <div className="border-4 border-yellow-500"></div>
+          <div className="border-2 border-gray-900 bg-gray-900"></div>
+          <div className="border-4 border-yellow-500 bg-yellow-500"></div>
         </div>
       </nav>
     </OutsideAlerter>

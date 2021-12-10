@@ -15,10 +15,15 @@ import i18n from '../../../../i18n';
 import { useEffect } from 'react';
 import { handleToastInFailRequest } from '../../../../shared/locales/utils';
 import { toast } from 'react-toastify';
+export const weekDays = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+];
 
 const AvalManager = ({ dispatch, state }: BookingComponentType) => {
-  const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
   type ResponseType = {
     breakTimeBtwEventsHours: string;
     breakTimeBtwEventsMinutes: string;

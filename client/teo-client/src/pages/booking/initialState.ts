@@ -99,6 +99,28 @@ export const initialState = {
         },
       },
     ],
+    fixedBks: [
+      {
+        day: 'Monday',
+        bookings: [],
+      },
+      {
+        day: 'Tuesday',
+        bookings: [],
+      },
+      {
+        day: 'Wednesday',
+        bookings: [],
+      },
+      {
+        day: 'Thursday',
+        bookings: [],
+      },
+      {
+        day: 'Friday',
+        bookings: [],
+      },
+    ],
     forceRender: 0,
     holidays: [],
     location: '',

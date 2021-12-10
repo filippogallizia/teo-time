@@ -10,11 +10,12 @@ import { ProtectedRoute } from '../general/GeneralPage';
 import { Redirect, Switch, useLocation } from 'react-router';
 import Routes from '../../routes';
 import { Link } from 'react-router-dom';
-import AvalManager from './pages/availabilitiesManager/AvailabilitiesManager';
+import AvalManager from './adminPages/availabilitiesManager/AvailabilitiesManager';
 import { UserType } from '../../../types/Types';
-import HolidaysManager from './pages/availabilitiesManager/HolidaysManager';
+import HolidaysManager from './adminPages/holidaysManager/HolidaysManager';
 import CardComponent from './components/Card';
 import i18n from '../../i18n';
+import FixedBksManager from './adminPages/fixedBookingsManager/FixedBookingsManager';
 
 export const AdminNav = () => {
   return (
@@ -23,7 +24,7 @@ export const AdminNav = () => {
     >
       <Link
         to={Routes.ADMIN_BOOKING_MANAGER}
-        className="px-3 py-2 flex items-center  leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
+        className="px-3 py-2 flex items-center  leading-snug  border-b-4  border-transparent hover:border-yellow-500 "
       >
         <div className="font-serif cursor-pointer ">
           {i18n.t('adminPage.nav.bookings')}
@@ -31,7 +32,7 @@ export const AdminNav = () => {
       </Link>
       <Link
         to={Routes.ADMIN_USERS_TABLE}
-        className="px-3 py-2 flex items-center leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
+        className="px-3 py-2 flex items-center leading-snug  border-b-4  border-transparent hover:border-yellow-500 "
       >
         <div className="font-serif cursor-pointer">
           {i18n.t('adminPage.nav.usersInfo')}
@@ -39,15 +40,23 @@ export const AdminNav = () => {
       </Link>
       <Link
         to={Routes.ADMIN_AVAL_MANAGER}
-        className="px-3 py-2 flex items-center leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
+        className="px-3 py-2 flex items-center leading-snug  border-b-4  border-transparent hover:border-yellow-500 "
       >
         <div className="font-serif cursor-pointer">
           {i18n.t('adminPage.nav.avalManage')}
         </div>
       </Link>
       <Link
+        to={Routes.FIXED_BKS_MANAGER}
+        className="px-3 py-2 flex items-center leading-snug  border-b-4  border-transparent hover:border-yellow-500 "
+      >
+        <div className="font-serif cursor-pointer">
+          {i18n.t('adminPage.nav.fixedBksManage')}
+        </div>
+      </Link>
+      <Link
         to={Routes.ADMIN_HOLIDAY_MANAGER}
-        className="px-3 py-2 flex items-center leading-snug text-white border-b-4  border-transparent hover:border-yellow-500 "
+        className="px-3 py-2 flex items-center leading-snug  border-b-4  border-transparent hover:border-yellow-500 "
       >
         <div className="font-serif cursor-pointer">
           {i18n.t('adminPage.nav.holidayManage')}
@@ -97,6 +106,13 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
             altRoute={Routes.ADMIN}
           >
             <HolidaysManager state={state} dispatch={dispatch} />
+          </ProtectedRoute>
+          <ProtectedRoute
+            path={Routes.FIXED_BKS_MANAGER}
+            condition={true}
+            altRoute={Routes.ADMIN}
+          >
+            <FixedBksManager state={state} dispatch={dispatch} />
           </ProtectedRoute>
           <ProtectedRoute
             path={Routes.ADMIN}

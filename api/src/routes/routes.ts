@@ -4,7 +4,7 @@ import { Op } from 'sequelize';
 import { DATE_TO_CLIENT_FORMAT } from '../../utils';
 import { deleteEvent, getEvents, insertEvent } from '../googleApi/calendarApi';
 import { changePwdEmail, sendEmail, successBkgEmail } from '../sendGrid/config';
-import { UserType } from '../types/types';
+import { TimeRangeType, UserType } from '../types/types';
 
 const {
   getAvailability,
@@ -23,6 +23,7 @@ const { DateTime } = require('luxon');
 const User = db.user;
 const Bookings = db.Bookings;
 const WeekavalSettings = db.WeekavalSettings;
+const FixedBookings = db.FixedBookings;
 
 const router = express.Router();
 
@@ -816,4 +817,152 @@ router.get(
   }
 );
 
-module.exports = router;
+type FixedBookType = TimeRangeType & { id: number; email: string };
+
+type FixedBksType = {
+  day: string;
+  bookings: Array<FixedBookType>;
+};
+
+router.get(
+  '/fixedBookings',
+  async (req: express.Request, res: express.Response) => {
+    try {
+      FixedBookings.findAll()
+        .then((data: any) => {
+          res.send(data);
+        })
+        .catch((e: any) => {
+          return res.status(500).send({
+            success: false,
+            error: {
+              message: e,
+            },
+          });
+        });
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+
+router.post(
+  '/fixedBookings',
+  async (req: express.Request, res: express.Response) => {
+    const { fixedBks } = req.body;
+    const errors: any = [];
+    try {
+      const asyncFn = () => {
+        for (const fixedBook of fixedBks) {
+          //fixedBks.forEach((fixedBook: FixedBksType) => {
+          for (const book of fixedBook.bookings) {
+            return FixedBookings.create({
+              day: fixedBook.day,
+              start: book.start,
+              end: book.end,
+              localId: book.id,
+              email: book.email,
+            })
+              .then((data: any) => {
+                console.log(data);
+              })
+              .catch((e: any) => {
+                console.log('aliiii');
+                errors.push(e);
+                return;
+              });
+          }
+        }
+      };
+      try {
+        await asyncFn();
+        if (errors.length > 0) {
+          res.status(500).send(errors[0]);
+          return;
+        }
+        res.send({ message: 'fixedBookings created!' });
+      } catch (e: any) {
+        res.status(500).send({
+          success: false,
+          error: {
+            message: e,
+          },
+        });
+      }
+    } catch (e: any) {
+      console.log(e, 'e');
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+
+router.put(
+  '/fixedBookings',
+  async (req: express.Request, res: express.Response) => {
+    const { fixedBks } = req.body;
+    try {
+      const errors: any = [];
+      const mainAsyncFn = () => {
+        //fixedBks.forEach((fixedBook: FixedBksType) => {
+        for (const fixedBook of fixedBks) {
+          fixedBook.bookings.forEach((book: any) => {
+            FixedBookings.findOne({
+              where: { localId: book.id },
+            })
+              .then((bk: any) => {
+                if (bk) {
+                  const asyncFn = async () => {
+                    try {
+                      bk.set({
+                        ...book,
+                        day: fixedBook.day,
+                        start: book.start,
+                        end: book.end,
+                        email: book.email,
+                      });
+                      await bk.save().catch((e: any) => {
+                        errors.push(e);
+                      });
+                    } catch (e) {
+                      errors.push(e);
+                    }
+                  };
+                  asyncFn();
+                } else {
+                  //res.status(400).send('book not found');
+                  errors.push('book not found');
+                }
+              })
+              .catch((e: any) => {
+                errors.push(e);
+              });
+          });
+        }
+      };
+      mainAsyncFn();
+      if (errors.length > 0) {
+        res.status(500).send(errors[0]);
+      }
+      res.send('book updated');
+    } catch (e: any) {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    }
+  }
+);
+
+export default router;

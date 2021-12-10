@@ -72,8 +72,9 @@
     "nav": {
       "bookings": "Prenotazioni",
       "usersInfo": "Info clienti",
-      "avalManage": "Gestisci disponibilita'",
-      "holidayManage": "Gestisci vacanze"
+      "avalManage": "Disponibilita'",
+      "holidayManage": "Vacanze",
+      "fixedBksManage": "Appuntamenti fissi"
     },
     "bookingManagerPage": {
       "detailsButton": "Dettagli"

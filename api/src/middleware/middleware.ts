@@ -1,5 +1,8 @@
 import express from 'express';
 import { OAuth2Client } from 'google-auth-library';
+import jwt from 'jsonwebtoken';
+import _ from 'lodash';
+import { DateTime } from 'luxon';
 import { Op } from 'sequelize';
 
 import { createDynamicAval, filterDays_updateDate } from '../../utils';
@@ -9,14 +12,14 @@ import { retrieveAvailability } from '../helpers/retrieveAvaliability';
 import { WorkSetting } from '../types/types';
 
 const avalDefault = require('../config/availabilitiesDefault.config.json');
-const jwt = require('jsonwebtoken');
-const _ = require('lodash');
 const db = require('../models/db');
-const { DateTime } = require('luxon');
 
 const User = db.user;
 const WeekavalSettings = db.WeekavalSettings;
 const Bookings = db.Bookings;
+const FixedBookings = db.FixedBookings;
+
+// chronJob to delete past bookings
 
 // google verify token
 
@@ -198,10 +201,13 @@ const getAvailability = async (
 
     // get fixedBooking from database and change their date using avalRange date
 
-    const parsedFixedBookings = filterDays_updateDate(
-      fixedBookings,
-      avalRange
-    ).map((day) => day.availability);
+    const fixedBks = await FixedBookings.findAll().catch((e: any) =>
+      console.log(e)
+    );
+
+    const parsedFixedBookings = filterDays_updateDate(fixedBks, avalRange).map(
+      (day) => day.availability
+    );
 
     // join all bookings in a single array
 
@@ -404,11 +410,3 @@ module.exports = {
 
   googleAuth,
 };
-function GeneralAvailabilityType(
-  fixedBookings: any,
-  GeneralAvailabilityType: any,
-  avalRange: any[],
-  arg3: any
-) {
-  throw new Error('Function not implemented.');
-}
