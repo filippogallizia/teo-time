@@ -24,6 +24,10 @@ const InfoBooking = ({ date, hours }: InfoBookingType) => {
         Luogo:
         <span className={`ml-2`}>Via Osti</span>
       </div>
+      <div className={`${EVENT_INFO_TEXT}`}>
+        Prezzo:
+        <span className={`ml-2`}>50 Euro</span>
+      </div>
     </div>
   );
 };

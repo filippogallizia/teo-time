@@ -1,7 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 
-import { runEveryMinute } from './helpers/cronJobs';
+import { runEveryDay } from './helpers/cronJobs';
 import routes from './routes/routes';
 
 require('dotenv').config();
@@ -28,7 +28,7 @@ db.sequelize
   .sync({ force: false })
   .then(() => {
     // chronJob to delete past bookings
-    runEveryMinute();
+    runEveryDay(db);
     console.log('Drop and Resync Dbasssssxs');
   })
   .catch((e: any) => console.log(e));

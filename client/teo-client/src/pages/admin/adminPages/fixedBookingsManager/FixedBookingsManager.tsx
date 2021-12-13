@@ -10,7 +10,7 @@ import {
   UPLOAD_END_DATE,
   UPLOAD_START_DATE,
 } from '../../../booking/stateReducer';
-import { BOLD, ITALIC } from '../../../../shared/locales/constant';
+import { ITALIC } from '../../../../shared/locales/constant';
 import GeneralButton from '../../../../component/GeneralButton';
 
 import CardComponent from '../../components/Card';

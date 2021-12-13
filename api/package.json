@@ -42,7 +42,8 @@
     "mysql": "^2.18.1",
     "mysql2": "^2.3.2",
     "node-cron": "^3.0.0",
-    "sequelize": "^6.7.0"
+    "sequelize": "^6.7.0",
+    "stripe": "^8.193.0"
   },
   "importSort": {
     ".js, .ts": {

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import GeneralButton, { buttonStyle } from '../../component/GeneralButton';
 import {
   loginService,
@@ -24,12 +24,11 @@ import { UserType } from '../../../types/Types';
 import { UserContext } from '../../component/UserContext';
 import GoogleLoginComponent from './GoogleLogin';
 import { SelfCenterLayout } from '../../component/GeneralLayouts';
+import LoadingService from '../../component/loading/LoadingService';
 
 export const ForgotPassword = () => {
   const [emailValue, setEmail] = useState('');
   const [requestSuccess, setSuccess] = useState(false);
-
-  useEffect(() => {}, []);
 
   return (
     <>
@@ -115,12 +114,15 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
       }
     };
     try {
+      LoadingService.show();
       await loginService(handleSuccess, {
         email: value.email,
         password: value.password,
       });
+      LoadingService.hide();
       history.push(Routes.HOMEPAGE_BOOKING);
     } catch (e: any) {
+      LoadingService.hide();
       handleToastInFailRequest(e, toast);
     }
   };
@@ -162,7 +164,11 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
         </div>
 
         <div>
-          <input className={buttonStyle(isValid)} type="submit" value="Accedi" />
+          <input
+            className={buttonStyle(isValid)}
+            type="submit"
+            value="Accedi"
+          />
         </div>
         <div>
           <GeneralButton

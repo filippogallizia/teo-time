@@ -4,6 +4,7 @@ import { BiTime } from 'react-icons/bi';
 import { GrLocationPin } from 'react-icons/gr';
 import { EVENT_INFO_TEXT, TITLE } from '../shared/locales/constant';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
+import { BiEuro } from 'react-icons/bi';
 import {
   SET_CONFIRM_PHASE,
   SET_RENDER_AVAL,
@@ -33,20 +34,26 @@ const EventInformations = ({ state, dispatch }: BookingComponentType) => {
           })}
         </p>
 
-        <div className={`flex align-middle`}>
-          <BiTime size="1.2em" color="black" />
+        <div className={`flex items-center`}>
+          <BiTime size="1em" color="black" />
           <p className={EVENT_INFO_TEXT}>
             {i18n.t('eventInformationComponent.eventTime', { duration: '1h' })}
           </p>
         </div>
-        <div className="flex align-middle">
-          <GrLocationPin size="1.2em" color="black" />
+        <div className="flex items-center">
+          <GrLocationPin size="1em" color="black" />
           <div>
             <p className={EVENT_INFO_TEXT}>
               {i18n.t('eventInformationComponent.eventLocation', {
                 location: 'Milano - via Osti',
               })}
             </p>
+          </div>
+        </div>
+        <div className="flex items-center">
+          <BiEuro size="1em" color="black" />
+          <div>
+            <p className={EVENT_INFO_TEXT}>50</p>
           </div>
         </div>
       </div>

@@ -3,11 +3,9 @@ import React, { Dispatch, useEffect, useState } from 'react';
 import AvailabilityHourContainer from './AvailabilityHourContainer';
 import {
   BIG_MARGIN_TOP,
-  BOLD,
   EVENT_INFO_TEXT,
   GRID_ONE_COL,
   SUB_TITLE,
-  TITLE,
 } from '../shared/locales/constant';
 import { DateTime } from 'luxon';
 import { getAvailabilities } from '../services/calendar.service';

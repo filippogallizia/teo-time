@@ -15,6 +15,8 @@ import {
   SelfCenterLayout,
   SelfTopLayout,
 } from '../../component/GeneralLayouts';
+import PaymentPage from '../payment/PaymentPage';
+import { ACCESS_TOKEN } from '../../shared/locales/constant';
 
 type ProtectedRouteType = {
   children: any;
@@ -43,10 +45,11 @@ export const ProtectedRoute = ({
 const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
   const { user, token } = useContext(UserContext);
   let location = useLocation();
-
   useEffect(() => {
     dispatch({ type: SET_LOCATION, payload: { location: location.pathname } });
   }, [dispatch, location.pathname]);
+
+  const tokenParam = new URLSearchParams(window.location.search).get('token');
 
   return (
     <>
@@ -62,11 +65,20 @@ const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.HOMEPAGE_SUCCESS}
-          condition={token ? true : false}
+          condition={token || tokenParam ? true : false}
           altRoute={Routes.LOGIN}
         >
           <SelfCenterLayout>
             <SuccessfulPage dispatch={dispatch} state={state} />
+          </SelfCenterLayout>
+        </ProtectedRoute>
+        <ProtectedRoute
+          path={Routes.PAYMENT}
+          condition={true}
+          altRoute={Routes.LOGIN}
+        >
+          <SelfCenterLayout>
+            <PaymentPage dispatch={dispatch} state={state} />
           </SelfCenterLayout>
         </ProtectedRoute>
         <ProtectedRoute
@@ -80,7 +92,7 @@ const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.CONFIRM_PAGE}
-          condition={token ? true : false}
+          condition={token || localStorage.getItem(ACCESS_TOKEN) ? true : false}
           altRoute={Routes.LOGIN}
         >
           <SelfCenterLayout>
@@ -92,9 +104,7 @@ const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
           condition={token && user && user.role === 'admin' ? true : false}
           altRoute={Routes.LOGIN}
         >
-          {/* <SelfTopLayout> */}
           <AdminPage dispatch={dispatch} state={state} />
-          {/* </SelfTopLayout> */}
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.HOMEPAGE}

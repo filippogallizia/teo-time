@@ -54,6 +54,12 @@
     "date": "Data: ",
     "bookButton": "PRENOTA"
   },
+  "paymentPage": {
+    "orderSummary": "Riepilogo della prenotazione",
+    "date": "Data: ",
+    "prezzo": "Prezzo",
+    "bookButton": "PRENOTA"
+  },
   "contactPage": {
     "title": "Contatti",
     "body": {

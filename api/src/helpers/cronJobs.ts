@@ -1,8 +1,7 @@
 import cron from 'node-cron';
 import { Op } from 'sequelize';
-const db = require('../models/db');
 
-export const deleteOldBookings = async () => {
+export const deleteOldBookings = async (db: any) => {
   const Bookings = db.Bookings;
 
   const currentTime = new Date();
@@ -18,9 +17,9 @@ export const deleteOldBookings = async () => {
   }
 };
 
-export const runEveryMinute = () => {
-  cron.schedule('0 0 0 * * *', function () {
-    deleteOldBookings();
+export const runEveryDay = (db: any) => {
+  cron.schedule('0 0 1 * * *', function () {
+    deleteOldBookings(db);
   });
 };
-//export default runEveryMinute;
+//export default runEveryDay;

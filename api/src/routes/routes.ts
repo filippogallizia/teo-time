@@ -1,10 +1,13 @@
 import express from 'express';
 import { Op } from 'sequelize';
 
-import { DATE_TO_CLIENT_FORMAT } from '../../utils';
 import { deleteEvent, getEvents, insertEvent } from '../googleApi/calendarApi';
 import { changePwdEmail, sendEmail, successBkgEmail } from '../sendGrid/config';
 import { TimeRangeType, UserType } from '../types/types';
+
+const stripe = require('stripe')(
+  'sk_test_51K5AW1G4kWNoryvxAZVOFwVPZ6qyVKUqZJslh0UYiNlU0aDb3hd0ksS0zCBWbyXUvDKB6f9CA9RvU3Gwc2rfBtsw00lC98E85E'
+);
 
 const {
   getAvailability,
@@ -26,8 +29,6 @@ const WeekavalSettings = db.WeekavalSettings;
 const FixedBookings = db.FixedBookings;
 
 const router = express.Router();
-
-const URL = 'http://localhost:3000/resetPassword';
 
 const OTP = v4();
 
@@ -257,13 +258,13 @@ router.post(
           );
 
           res.status(200).send(booking);
-          sendEmail(email)
-            .then((r: any) => {
-              console.log(r);
-            })
-            .catch((err: any) => {
-              console.log(err);
-            });
+          //sendEmail(email)
+          //  .then((r: any) => {
+          //    console.log(r);
+          //  })
+          //  .catch((err: any) => {
+          //    console.log(err);
+          //  });
         })
         .catch((e: any) => {
           res.status(500).send({
@@ -964,5 +965,56 @@ router.put(
     }
   }
 );
+
+//router.post('/payment', async (req, res) => {
+//  const { amount, id } = req.body;
+//  try {
+//    const payment = await Stripe.paymentIntents.create({
+//      amount,
+//      currency: 'eur',
+//      description: 'Spatula company',
+//      payment_method: id,
+//      confirm: true,
+//    });
+//    console.log('Payment', payment);
+//    res.json({
+//      message: 'Payment successful',
+//      payment: payment,
+//      success: true,
+//    });
+//  } catch (error) {
+//    console.log('Error', error);
+//    res.json({
+//      message: 'Payment failed',
+//      success: false,
+//    });
+//  }
+//});
+
+const calculateOrderAmount = (ammount: any) => {
+  console.log(ammount, 'ammount');
+  // Replace this constant with a calculation of the order's amount
+  // Calculate the order total on the server to prevent
+  // people from directly manipulating the amount on the client
+  return ammount * 10;
+};
+
+router.post('/create-payment-intent', async (req, res) => {
+  const { ammount } = req.body;
+
+  // Create a PaymentIntent with the order amount and currency
+  const paymentIntent = await stripe.paymentIntents.create({
+    setup_future_usage: 'off_session',
+    amount: calculateOrderAmount(ammount),
+    currency: 'eur',
+    automatic_payment_methods: {
+      enabled: true,
+    },
+  });
+
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+  });
+});
 
 export default router;

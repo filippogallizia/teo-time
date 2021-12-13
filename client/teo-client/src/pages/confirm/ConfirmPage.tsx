@@ -74,7 +74,7 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
           event: event,
         });
       }
-      history.push(routes.HOMEPAGE_SUCCESS);
+      history.push(routes.PAYMENT);
     } catch (e: any) {
       handleToastInFailRequest(e, toast);
     }
