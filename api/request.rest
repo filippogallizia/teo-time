@@ -83,8 +83,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpe
 {
     "TimeRangeType": [
          {
-     "start": "2021-10-21T01:00:00.000Z",
-     "end": "2021-10-21T23:00:00.000Z"
+     "start": "2021-12-27T01:00:00.000Z",
+     "end": "2021-12-27T23:00:00.000Z"
     }
     ] 
 }

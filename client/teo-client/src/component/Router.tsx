@@ -24,7 +24,6 @@ import { initialState } from '../pages/booking/initialState';
 import { ShrinkHeigthLayout } from './GeneralLayouts';
 import PrivacyPolicy from '../pages/privacyPolicy/PrivacyPolicy';
 import ErrorHanlder from './ErrorHandler';
-import Modal from './Modal';
 import ErrorsAndWarningsModal from './ErrorsAndWarningsModal';
 
 type ProtectedRouteType = {

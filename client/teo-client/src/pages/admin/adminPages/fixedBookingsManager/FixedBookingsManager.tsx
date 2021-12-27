@@ -16,7 +16,10 @@ import GeneralButton from '../../../../component/GeneralButton';
 import CardComponent from '../../components/Card';
 import i18n from '../../../../i18n';
 import { Dispatch, useEffect } from 'react';
-import { handleToastInFailRequest } from '../../../../shared/locales/utils';
+import {
+  handleToastInFailRequest,
+  promptConfirmation,
+} from '../../../../shared/locales/utils';
 import { toast } from 'react-toastify';
 import { getFixedBookings } from './fixedBookingsManagerService';
 const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -28,9 +31,8 @@ type BookDetailsType = {
 };
 
 const BookDetails = ({ dispatch, bks, day }: BookDetailsType) => {
-  console.log(bks.start, 'bks start');
   return (
-    <div className={`grid grid-cols-3 gap-4`}>
+    <div className={`grid grid-cols-3 gap-4 border-b-4 pb-2`}>
       <p className={`col-span-3 ${ITALIC}`}>
         {/*{i18n.t('adminPage.avalManagerPage.workingTime')}
          */}
@@ -105,24 +107,32 @@ const BookDetails = ({ dispatch, bks, day }: BookDetailsType) => {
           }}
         />
       </div>
-      <GeneralButton
-        buttonText="-"
-        onClick={() => {
-          dispatch({
-            type: ADD_OR_REMOVE_FIXED_BKS,
-            payload: {
-              day: day,
-              booking: {
-                id: bks.id,
-                start: '',
-                end: '',
-                email: '',
-              },
-              type: DELETE,
-            },
-          });
-        }}
-      />
+      <div className="col-span-3 red-200">
+        <button
+          className="text-red-600"
+          onClick={() => {
+            const isConfirmed = promptConfirmation();
+            if (!isConfirmed) return;
+            else {
+              dispatch({
+                type: ADD_OR_REMOVE_FIXED_BKS,
+                payload: {
+                  day: day,
+                  booking: {
+                    id: bks.id,
+                    start: '',
+                    end: '',
+                    email: '',
+                  },
+                  type: DELETE,
+                },
+              });
+            }
+          }}
+        >
+          Remove
+        </button>
+      </div>
     </div>
   );
 };

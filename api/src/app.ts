@@ -11,15 +11,6 @@ const db = require('./models/db');
 const { NODE_ENV } = process.env;
 export const ENDPOINT = NODE_ENV === 'test' ? '/api' : '/';
 
-const corsOptions = {
-  origin:
-    process.env.CLIENT_ORIGIN ||
-    'http://localhost:3000' ||
-    'http://0.0.0.0:3000',
-};
-
-// app.use(cors(corsOptions));
-
 app.use(cors());
 app.use(express.json());
 app.use(ENDPOINT, routes);

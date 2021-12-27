@@ -199,11 +199,15 @@ const getAvailability = async (
       }
     );
 
+    console.log(parsedBookings, 'parsedBookings');
+
     // get fixedBooking from database and change their date using avalRange date
 
     const fixedBks = await FixedBookings.findAll().catch((e: any) =>
       console.log(e)
     );
+
+    console.log(fixedBks, 'fixedBks', avalRange);
 
     const parsedFixedBookings = filterDays_updateDate(fixedBks, avalRange).map(
       (day) => day.availability
@@ -237,6 +241,7 @@ const getAvailability = async (
           });
           return result;
         } else {
+          console.log(avalDefault, 'PORCO CULO');
           avalDefault.weekAvalSettings.map((day: any) => {
             WeekavalSettings.create({
               day: day.day,
@@ -261,6 +266,8 @@ const getAvailability = async (
 
     // joing all the datas togheter and get availabilities, hopefully all works
 
+    console.log(weekavalSetting, 'zioCANE');
+
     const availabilities = retrieveAvailability(
       {
         bookings: joinedBookings,
@@ -272,6 +279,7 @@ const getAvailability = async (
     res.availabilities = availabilities;
     next();
   } catch (e: any) {
+    console.log(e, 'e');
     res.status(500).send({
       success: false,
       error: {

@@ -36,7 +36,7 @@ const ErrorHanlder = () => {
           zIndex: 10000,
         }}
       >
-        qualcosa e' andato stortooo
+        qualcosa e' andato storto
       </p>
     </div>
   );

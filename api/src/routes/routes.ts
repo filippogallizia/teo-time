@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 
 import { deleteEvent, getEvents, insertEvent } from '../googleApi/calendarApi';
 import { changePwdEmail, sendEmail, successBkgEmail } from '../sendGrid/config';
+import Auth from '../services/auth';
 import { TimeRangeType, UserType } from '../types/types';
 
 const stripe = require('stripe')(
@@ -31,53 +32,25 @@ const FixedBookings = db.FixedBookings;
 const router = express.Router();
 
 const OTP = v4();
-
 router.post(
   '/signup',
   [userExist],
   (req: express.Request, res: express.Response) => {
-    //@ts-expect-error
-    if (res.user) {
-      return res.status(500).send({
+    try {
+      //@ts-expect-error
+      Auth.signUp(res.user, req.body);
+      res.send({ message: 'User was registered successfully!' });
+    } catch (e: any) {
+      res.status(500).send({
         success: false,
         error: {
-          message: 'user already Exist',
+          message: e,
         },
       });
-    } else {
-      const { email, phoneNumber, name, password } = req.body;
-      const adminOrUser =
-        email === 'galliziafilippo@gmail.com' ? 'admin' : 'user';
-      try {
-        User.create({
-          email,
-          name,
-          password,
-          phoneNumber,
-          role: adminOrUser,
-        })
-          .then(() => {
-            res.send({ message: 'User was registered successfully!' });
-          })
-          .catch((e: any) => {
-            res.status(500).send({
-              success: false,
-              error: {
-                message: e,
-              },
-            });
-          });
-      } catch (e: any) {
-        res.status(500).send({
-          success: false,
-          error: {
-            message: e,
-          },
-        });
-      }
     }
   }
 );
+
 router.post(
   '/login',
   [userExist, createToken],
@@ -91,6 +64,8 @@ router.post(
         },
       });
     } else {
+      //@ts-expect-error
+      Auth.userDoesntExist(res.user);
       try {
         //@ts-expect-error
         res.status(200).send({ user: res.user, token: res.locals.jwt_secret });
@@ -966,33 +941,7 @@ router.put(
   }
 );
 
-//router.post('/payment', async (req, res) => {
-//  const { amount, id } = req.body;
-//  try {
-//    const payment = await Stripe.paymentIntents.create({
-//      amount,
-//      currency: 'eur',
-//      description: 'Spatula company',
-//      payment_method: id,
-//      confirm: true,
-//    });
-//    console.log('Payment', payment);
-//    res.json({
-//      message: 'Payment successful',
-//      payment: payment,
-//      success: true,
-//    });
-//  } catch (error) {
-//    console.log('Error', error);
-//    res.json({
-//      message: 'Payment failed',
-//      success: false,
-//    });
-//  }
-//});
-
 const calculateOrderAmount = (ammount: any) => {
-  console.log(ammount, 'ammount');
   // Replace this constant with a calculation of the order's amount
   // Calculate the order total on the server to prevent
   // people from directly manipulating the amount on the client
@@ -1000,21 +949,55 @@ const calculateOrderAmount = (ammount: any) => {
 };
 
 router.post('/create-payment-intent', async (req, res) => {
-  const { ammount } = req.body;
+  const { ammount, email, name } = req.body;
+  let id = '';
 
-  // Create a PaymentIntent with the order amount and currency
-  const paymentIntent = await stripe.paymentIntents.create({
-    setup_future_usage: 'off_session',
-    amount: calculateOrderAmount(ammount),
-    currency: 'eur',
-    automatic_payment_methods: {
-      enabled: true,
-    },
-  });
+  try {
+    const customerExist = await stripe.customers.list({
+      //email: email,
+      email: 'filo@filo.com',
+    });
+    if (customerExist && customerExist.data.length > 0) {
+      id = customerExist.data[0].id;
+    }
 
-  res.send({
-    clientSecret: paymentIntent.client_secret,
-  });
+    if (!customerExist || customerExist.data.length === 0) {
+      const customer = await stripe.customers.create({
+        description: 'My First Test Customer (created for API docs)',
+        email: email,
+        sucea: 'jfdsafjds',
+        name: name,
+      });
+      id = customer.id;
+    }
+    console.log('here');
+    const paymentIntent = await stripe.paymentIntents.create({
+      setup_future_usage: 'off_session',
+      customer: id,
+      amount: calculateOrderAmount(ammount),
+      currency: 'eur',
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    console.log('aqui', paymentIntent);
+
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (e: any) {
+    console.log('here backedn');
+
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
+  }
 });
+
+// Create a PaymentIntent with the order amount and currency
 
 export default router;
