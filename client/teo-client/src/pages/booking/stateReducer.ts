@@ -20,6 +20,7 @@ export const SET_LOCATION = 'SET_LOCATION';
 export const SET_FIXED_BKS = 'SET_FIXED_BKS';
 export const ADD_OR_REMOVE_FIXED_BKS = 'ADD_OR_REMOVE_FIXED_BKS';
 export const UPLOAD_FIXED_BKS = 'UPLOAD_FIXED_BKS';
+export const SET_SHOW_MODAL = 'SET_SHOW_MODAL';
 
 export const ADD = 'ADD';
 export const DELETE = 'DELETE';
@@ -87,6 +88,7 @@ export type InitialState = {
       localId?: number;
     }>;
     location: string;
+    showModal: boolean;
   };
 };
 
@@ -162,6 +164,15 @@ type ActionSetLocation = {
   payload: LocationPayload;
 };
 
+type ShowModalPayload = {
+  showModal: boolean;
+};
+
+type ActionSetModal = {
+  type: typeof SET_SHOW_MODAL;
+  payload: ShowModalPayload;
+};
+
 export type HolidayPayload = {
   type:
     | typeof ADD
@@ -212,7 +223,8 @@ export type Actions =
   | ActionSetLocation
   | ActionAllWeekAvailSettings
   | ActionAddFixedBks
-  | ActionSetFixedBks;
+  | ActionSetFixedBks
+  | ActionSetModal;
 
 const stateReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
@@ -372,6 +384,10 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
           };
         });
         draft.schedules.fixedBks = result;
+      });
+    case SET_SHOW_MODAL:
+      return produce(initialState, (draft) => {
+        draft.schedules.showModal = action.payload.showModal;
       });
     default:
       return initialState;

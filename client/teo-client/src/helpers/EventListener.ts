@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-type EventListenerType = 'errorHandling';
+type EventListenerType = 'errorHandling' | 'loading';
 type EventListenerValues = boolean;
 
 export type EventListenerCb = (value: EventListenerValues) => void;
@@ -12,7 +12,7 @@ class EventListener {
   private events: { [eventName: string]: EventListenerCb[] } = {};
 
   public addListener(
-    eventName: 'errorHandling',
+    eventName: 'errorHandling' | 'loading',
     cb: (errorHandling: boolean) => void
   ): EventListenerSubscription;
 
@@ -38,7 +38,7 @@ class EventListener {
     };
   }
 
-  public emit(eventName: 'errorHandling', errorHandling: any): void;
+  public emit(eventName: 'errorHandling' | 'loading', errorHandling: any): void;
   public emit(eventName: EventListenerType, values: EventListenerValues): void {
     if (this.events[eventName] && this.events[eventName].length > 0) {
       this.events[eventName].forEach((cb: EventListenerCb) => {

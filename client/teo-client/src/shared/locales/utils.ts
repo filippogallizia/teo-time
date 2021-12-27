@@ -77,3 +77,10 @@ export const handleToastInFailRequest = (error: any, toast: any) => {
     });
   }
 };
+
+export const promptConfirmation = (): boolean => {
+  // eslint-disable-next-line no-restricted-globals
+  const confirmation = confirm('Sei sicuro che voui cancellare?');
+  if (!confirmation) return false;
+  else return true;
+};

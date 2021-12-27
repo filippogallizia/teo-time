@@ -25,6 +25,7 @@ import { UserContext } from '../../component/UserContext';
 import GoogleLoginComponent from './GoogleLogin';
 import { SelfCenterLayout } from '../../component/GeneralLayouts';
 import LoadingService from '../../component/loading/LoadingService';
+import EventListener from '../../helpers/EventListener';
 
 export const ForgotPassword = () => {
   const [emailValue, setEmail] = useState('');

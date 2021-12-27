@@ -1,6 +1,5 @@
 import React from 'react';
 import Calendar from 'react-calendar';
-// import 'react-calendar/dist/Calendar.css';
 import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import {
   SET_RENDER_AVAL,
@@ -19,9 +18,9 @@ function CalendarComponent({ dispatch, state }: BookingComponentType) {
       })
       .then(() => {
         dispatch({ type: SET_RENDER_AVAL, payload: true });
-        // history.push(routes.CONFIRM_PAGE);
       });
   };
+
   return (
     <Calendar
       minDate={new Date()}

@@ -5,7 +5,11 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import routes from '../../routes';
-import { ACCESS_TOKEN, EVENT_INFO_TEXT } from '../../shared/locales/constant';
+import {
+  ACCESS_TOKEN,
+  EVENT_INFO_TEXT,
+  TITLE,
+} from '../../shared/locales/constant';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import LoadingService from '../../component/loading/LoadingService';
 
@@ -74,51 +78,31 @@ export default function CheckoutForm({
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // Make sure to change this to your payment completion page
         return_url: `http://localhost:3000${routes.HOMEPAGE_SUCCESS}?token=${token}`,
       },
     });
-
-    LoadingService.hide();
-
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
     if (error.type === 'card_error' || error.type === 'validation_error') {
       error.message && setMessage(error.message);
     } else {
       setMessage('An unexpected error occured.');
     }
 
+    LoadingService.hide();
     setIsLoading(false);
   };
 
   return (
-    <div>
-      <div className={`${EVENT_INFO_TEXT}`}>
-        Prezzo:
-        <span className={`ml-2`}>50 Euro</span>
-      </div>
-      <form id="payment-form" onSubmit={handleSubmit}>
-        <PaymentElement id="payment-element" />
-        <button
-          disabled={isLoading || !stripe || !elements}
-          id="submit"
-          className="payment-button"
-        >
-          <span id="button-text">
-            {isLoading ? (
-              <div className="spinner" id="spinner"></div>
-            ) : (
-              'Pay now'
-            )}
-          </span>
-        </button>
-        {/* Show any error or success messages */}
-        {message && <div id="payment-message">{message}</div>}
-      </form>
-    </div>
+    <form id="payment-form" onSubmit={handleSubmit}>
+      <PaymentElement id="payment-element" />
+      <button
+        disabled={isLoading || !stripe || !elements}
+        id="submit"
+        className="payment-button"
+      >
+        <span id="button-text">Paga - 50.00 euro </span>
+      </button>
+      {/* Show any error or success messages */}
+      {message && <div id="payment-message">{message}</div>}
+    </form>
   );
 }

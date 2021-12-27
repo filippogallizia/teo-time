@@ -20,7 +20,7 @@ import FixedBksManager from './adminPages/fixedBookingsManager/FixedBookingsMana
 export const AdminNav = () => {
   return (
     <div
-      className={`flex-0 grid grid-flow-col row-span-3 place-items-center ${MEDIUM_MARGIN_BOTTOM}`}
+      className={`grid grid-flow-row  md:grid-flow-col row-span-3 place-items-center ${MEDIUM_MARGIN_BOTTOM}`}
     >
       <Link
         to={Routes.ADMIN_BOOKING_MANAGER}
@@ -73,7 +73,7 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
     dispatch({ type: SET_LOCATION, payload: { location: location.pathname } });
   }, [dispatch, location.pathname]);
   return (
-    <div>
+    <div className="flex-1">
       <AdminNav />
       <div>
         <Switch>

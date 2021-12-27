@@ -15,7 +15,11 @@ class ErrorBoundary extends React.Component {
     //@ts-expect-error
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
+      return (
+        <div className="flex items-center justify-center">
+          <p>Something went wrong.</p>
+        </div>
+      );
     }
 
     return this.props.children;

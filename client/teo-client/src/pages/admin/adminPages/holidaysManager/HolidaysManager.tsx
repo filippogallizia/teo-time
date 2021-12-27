@@ -86,8 +86,8 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
   }, [dispatch, state.schedules.forceRender]);
 
   return (
-    <div className=" grid grid-cols-1 gap-y-6 overflow-auto px-4">
-      <div className="flex justify-between items-center p-2">
+    <div className="grid grid-cols-1 gap-y-6 overflow-auto px-4">
+      <div className="flex justify-between items-center p-2 gap-8">
         <p className={`${BOLD}`}>Aggiungi una vacanza</p>
         <GeneralButton
           buttonText="+"

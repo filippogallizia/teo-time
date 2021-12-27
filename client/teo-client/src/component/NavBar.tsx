@@ -27,7 +27,6 @@ function useOutsideAlerter(ref: any, fn: any) {
       }
     }
 
-    // const event = new Event('ciao')
     // Bind the event listener
     document.addEventListener('click', handleClickOutside);
     return () => {
@@ -52,6 +51,8 @@ export default function Navbar({
   const history = useHistory();
   const [navbarOpen, setNavbarOpen] = React.useState(false);
   const { user, setUser, token, setToken } = useContext(UserContext);
+
+  const onHoverStyle = 'border-yellow-500';
 
   return (
     <OutsideAlerter setNavbarOpen={setNavbarOpen}>
@@ -94,10 +95,10 @@ export default function Navbar({
                     });
                   }}
                 >
-                  <AiOutlineCalendar className="md:hidden" />
-                  <span className="flex items-center ml-2  border-b-4 text-center border-transparent hover:border-yellow-500">
-                    {i18n.t('nav.bookings')}
-                  </span>
+                  <div className="flex  border-b-4 border-transparent hover:border-yellow-500">
+                    <AiOutlineCalendar className="md:hidden mr-2" />
+                    <div>{i18n.t('nav.bookings')}</div>
+                  </div>
                 </Link>
               </li>
               <li className="nav-item">
@@ -105,10 +106,10 @@ export default function Navbar({
                   to={routes.LOGIN}
                   className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug  "
                 >
-                  <BiLogIn className="md:hidden" />
-                  <span className="ml-2   border-b-4 border-transparent hover:border-yellow-500">
-                    {i18n.t('nav.logIn')}
-                  </span>
+                  <div className="flex border-b-4 border-transparent hover:border-yellow-500">
+                    <BiLogIn className="md:hidden mr-2" />
+                    <div>{i18n.t('nav.logIn')}</div>
+                  </div>
                 </Link>
               </li>
               {token && (
@@ -117,10 +118,10 @@ export default function Navbar({
                     to={routes.USER}
                     className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug  "
                   >
-                    <AiOutlineUser className="md:hidden" />
-                    <span className="ml-2 border-b-4 border-transparent hover:border-yellow-500">
-                      {i18n.t('nav.user')}
-                    </span>
+                    <div className="flex border-b-4 border-transparent hover:border-yellow-500">
+                      <AiOutlineUser className="md:hidden mr-2" />
+                      <p>{i18n.t('nav.user')}</p>
+                    </div>
                   </Link>
                 </li>
               )}
@@ -130,11 +131,10 @@ export default function Navbar({
                     to={routes.ADMIN}
                     className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug "
                   >
-                    <GrUserAdmin className="md:hidden" />
-
-                    <span className="ml-2  border-b-4 border-transparent hover:border-yellow-500">
-                      {i18n.t('nav.admin')}
-                    </span>
+                    <div className="flex  border-b-4 border-transparent hover:border-yellow-500">
+                      <GrUserAdmin className="md:hidden mr-2" />
+                      <div>{i18n.t('nav.admin')}</div>
+                    </div>
                   </Link>
                 </li>
               )}
@@ -151,11 +151,10 @@ export default function Navbar({
                       }}
                       className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug hover:opacity-75"
                     >
-                      <BiLogOut className="md:hidden" />
-
-                      <span className="ml-2  border-b-4  border-transparent hover:border-yellow-500">
-                        {i18n.t('nav.logOut')}
-                      </span>
+                      <div className="flex  border-b-4 border-transparent hover:border-yellow-500">
+                        <BiLogOut className="md:hidden mr-2" />
+                        <div>{i18n.t('nav.logOut')}</div>
+                      </div>
                     </div>
                   </div>
                 </li>

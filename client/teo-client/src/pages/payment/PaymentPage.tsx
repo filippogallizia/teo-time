@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 
@@ -6,6 +6,13 @@ import CheckoutForm from './CheckoutForm';
 import './payment.css';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import LoadingService from '../../component/loading/LoadingService';
+import { UserContext } from '../../component/UserContext';
+import { CreatePaymentIntent } from './PaymentService';
+import { toast } from 'react-toastify';
+import { handleToastInFailRequest } from '../../shared/locales/utils';
+import { SET_SHOW_MODAL } from '../booking/stateReducer';
+import Modal from '../../component/Modal';
+import EventListener from '../../helpers/EventListener';
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
@@ -17,23 +24,30 @@ const stripePromise = loadStripe(
 
 export default function App({ dispatch, state }: BookingComponentType) {
   const [clientSecret, setClientSecret] = useState('');
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
+    const payload = {
+      ammount: 50,
+      email: user.email,
+      name: user.name,
+    };
     LoadingService.show();
-    // Create PaymentIntent as soon as the page loads
-    fetch('http://localhost:5000/create-payment-intent', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ammount: 10 }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
+
+    const handleSuccess = (response: any) => {
+      setClientSecret(response.clientSecret);
+      LoadingService.hide();
+    };
+    const asyncFn = async () => {
+      try {
+        await CreatePaymentIntent(handleSuccess, payload);
+      } catch (e) {
         LoadingService.hide();
-        setClientSecret(data.clientSecret);
-      });
-  }, []);
+        EventListener.emit('errorHandling', true);
+      }
+    };
+    asyncFn();
+  }, [user]);
 
   const appearance = {
     theme: 'stripe',
@@ -51,6 +65,9 @@ export default function App({ dispatch, state }: BookingComponentType) {
           <CheckoutForm dispatch={dispatch} state={state} />
         </Elements>
       )}
+      {/*<Modal state={state} dispatch={dispatch}>
+        <p>qualcosa e' andato stroto</p>
+      </Modal>*/}
     </div>
   );
 }

@@ -124,5 +124,6 @@ export const initialState = {
     forceRender: 0,
     holidays: [],
     location: '',
+    showModal: false,
   },
 };

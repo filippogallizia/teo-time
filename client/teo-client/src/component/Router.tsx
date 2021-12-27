@@ -23,6 +23,9 @@ import ContactPage from '../pages/contact/ContactPage';
 import { initialState } from '../pages/booking/initialState';
 import { ShrinkHeigthLayout } from './GeneralLayouts';
 import PrivacyPolicy from '../pages/privacyPolicy/PrivacyPolicy';
+import ErrorHanlder from './ErrorHandler';
+import Modal from './Modal';
+import ErrorsAndWarningsModal from './ErrorsAndWarningsModal';
 
 type ProtectedRouteType = {
   children: JSX.Element;
@@ -79,6 +82,9 @@ const RouterComponent = (): JSX.Element => {
         <Navbar dispatch={dispatch} state={state} />
         <MainContentWrapper>
           <Switch>
+            <Route path={Routes.ERRORS_AND_WARNINGS}>
+              <ErrorsAndWarningsModal />
+            </Route>
             <ProtectedRoute
               path={Routes.LOGIN}
               condition={true}
@@ -155,6 +161,7 @@ const RouterComponent = (): JSX.Element => {
             </ProtectedRoute>
           </Switch>
         </MainContentWrapper>
+        <ErrorHanlder />
         <Footer />
       </UserContext.Provider>
     </Router>
