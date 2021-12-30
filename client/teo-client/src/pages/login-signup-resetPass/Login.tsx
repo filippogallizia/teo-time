@@ -25,7 +25,6 @@ import { UserContext } from '../../component/UserContext';
 import GoogleLoginComponent from './GoogleLogin';
 import { SelfCenterLayout } from '../../component/GeneralLayouts';
 import LoadingService from '../../component/loading/LoadingService';
-import EventListener from '../../helpers/EventListener';
 
 export const ForgotPassword = () => {
   const [emailValue, setEmail] = useState('');
@@ -120,11 +119,11 @@ const Login = ({ dispatch, state }: BookingComponentType) => {
         email: value.email,
         password: value.password,
       });
-      LoadingService.hide();
       history.push(Routes.HOMEPAGE_BOOKING);
     } catch (e: any) {
-      LoadingService.hide();
       handleToastInFailRequest(e, toast);
+    } finally {
+      LoadingService.hide();
     }
   };
 

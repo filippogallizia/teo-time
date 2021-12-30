@@ -6,9 +6,8 @@ import { DateTime } from 'luxon';
 import { Op } from 'sequelize';
 
 import { createDynamicAval, filterDays_updateDate } from '../../utils';
-//@ts-expect-error
-import fixedBookings from '../config/fixedBookings.json';
 import { retrieveAvailability } from '../helpers/retrieveAvaliability';
+import { ResponseWithAvalType } from '../routes/interfaces/interfaces';
 import { WorkSetting } from '../types/types';
 
 const avalDefault = require('../config/availabilitiesDefault.config.json');
@@ -127,7 +126,7 @@ export const bookExist = async (
 
 const getAvailability = async (
   req: express.Request,
-  res: express.Response,
+  res: ResponseWithAvalType,
   next: express.NextFunction
 ) => {
   const avalRange = [...req.body.TimeRangeType];
@@ -207,8 +206,6 @@ const getAvailability = async (
       console.log(e)
     );
 
-    console.log(fixedBks, 'fixedBks', avalRange);
-
     const parsedFixedBookings = filterDays_updateDate(fixedBks, avalRange).map(
       (day) => day.availability
     );
@@ -266,8 +263,6 @@ const getAvailability = async (
 
     // joing all the datas togheter and get availabilities, hopefully all works
 
-    console.log(weekavalSetting, 'zioCANE');
-
     const availabilities = retrieveAvailability(
       {
         bookings: joinedBookings,
@@ -275,7 +270,6 @@ const getAvailability = async (
       { weekAvalSettings: weekavalSetting },
       avalRange
     );
-    //@ts-expect-error
     res.availabilities = availabilities;
     next();
   } catch (e: any) {
@@ -324,7 +318,7 @@ const userExist = async (
 // LOG: anyIN
 
 function generateAccessToken(value: any) {
-  return jwt.sign(value, process.env.ACCESS_TOKEN_SECRET);
+  return jwt.sign(value, process.env.ACCESS_TOKEN_SECRET as string);
 }
 
 const createToken = (
@@ -384,7 +378,7 @@ const authenticateToken = (
       } else {
         jwt.verify(
           token,
-          process.env.ACCESS_TOKEN_SECRET,
+          process.env.ACCESS_TOKEN_SECRET as string,
           (err: any, decoded: any) => {
             if (err)
               return res.status(500).send({

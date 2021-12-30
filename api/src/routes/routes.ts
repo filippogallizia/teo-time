@@ -5,6 +5,10 @@ import { deleteEvent, getEvents, insertEvent } from '../googleApi/calendarApi';
 import { changePwdEmail, sendEmail, successBkgEmail } from '../sendGrid/config';
 import Auth from '../services/auth';
 import { TimeRangeType, UserType } from '../types/types';
+import {
+  ResponseWithAvalType,
+  ResponseWithUserType,
+} from './interfaces/interfaces';
 
 const stripe = require('stripe')(
   'sk_test_51K5AW1G4kWNoryvxAZVOFwVPZ6qyVKUqZJslh0UYiNlU0aDb3hd0ksS0zCBWbyXUvDKB6f9CA9RvU3Gwc2rfBtsw00lC98E85E'
@@ -35,9 +39,8 @@ const OTP = v4();
 router.post(
   '/signup',
   [userExist],
-  (req: express.Request, res: express.Response) => {
+  (req: express.Request, res: ResponseWithUserType) => {
     try {
-      //@ts-expect-error
       Auth.signUp(res.user, req.body);
       res.send({ message: 'User was registered successfully!' });
     } catch (e: any) {
@@ -54,29 +57,17 @@ router.post(
 router.post(
   '/login',
   [userExist, createToken],
-  (req: express.Request, res: express.Response) => {
-    //@ts-expect-error
-    if (!res.user) {
-      return res.status(500).send({
+  (req: express.Request, res: ResponseWithUserType) => {
+    try {
+      Auth.userDoesntExist(res.user);
+      res.status(200).send({ user: res.user, token: res.locals.jwt_secret });
+    } catch (e) {
+      res.status(500).send({
         success: false,
         error: {
-          message: "user doesn't exist",
+          message: e,
         },
       });
-    } else {
-      //@ts-expect-error
-      Auth.userDoesntExist(res.user);
-      try {
-        //@ts-expect-error
-        res.status(200).send({ user: res.user, token: res.locals.jwt_secret });
-      } catch (e) {
-        res.status(500).send({
-          success: false,
-          error: {
-            message: e,
-          },
-        });
-      }
     }
   }
 );
@@ -166,11 +157,10 @@ router.post(
   '/createBooking',
   [authenticateToken, bookExist],
 
-  (req: express.Request, res: express.Response) => {
+  (req: express.Request, res: ResponseWithUserType) => {
     try {
       const { start, end, isHoliday, localId } = req.body;
-      //@ts-expect-error
-      const userEmail = res.user.email;
+      const userEmail = res.user?.email;
       let userName: string | undefined;
       // create a new user
       Bookings.create({
@@ -228,7 +218,7 @@ router.post(
           //send email to client and admin
 
           const email = successBkgEmail(
-            userEmail,
+            userEmail as string,
             DateTime.fromISO(booking.start).toFormat('yyyy LLL dd t')
           );
 
@@ -263,9 +253,8 @@ router.post(
 router.post(
   '/retrieveAvailability',
   [getAvailability],
-  (req: express.Request, res: express.Response) => {
+  (req: express.Request, res: ResponseWithAvalType) => {
     try {
-      //@ts-expect-error
       res.status(200).send(res.availabilities);
     } catch (e: any) {
       res.status(500).send({
@@ -281,10 +270,9 @@ router.post(
 router.post(
   '/deleteBooking',
   [authenticateToken],
-  (req: express.Request, res: express.Response) => {
+  (req: express.Request, res: ResponseWithUserType) => {
     const { start, end } = req.body;
-    //@ts-expect-error
-    const userEmail = res.user.email;
+    const userEmail = res.user?.email;
     try {
       Bookings.findOne({ where: { start, end } })
         .then((bks: any) => {
@@ -696,11 +684,10 @@ router.post(
   // [authenticateToken, bookExist, bookOutRange],
   [authenticateToken, booksExist],
 
-  (req: express.Request, res: express.Response) => {
+  (req: express.Request, res: ResponseWithUserType) => {
     try {
       const { start, end } = req.body;
-      //@ts-expect-error
-      const userEmail = res.user.email;
+      const userEmail = res.user?.email;
       // create a new user
       Bookings.create({
         start,
@@ -889,7 +876,6 @@ router.put(
     try {
       const errors: any = [];
       const mainAsyncFn = () => {
-        //fixedBks.forEach((fixedBook: FixedBksType) => {
         for (const fixedBook of fixedBks) {
           fixedBook.bookings.forEach((book: any) => {
             FixedBookings.findOne({
@@ -915,7 +901,6 @@ router.put(
                   };
                   asyncFn();
                 } else {
-                  //res.status(400).send('book not found');
                   errors.push('book not found');
                 }
               })

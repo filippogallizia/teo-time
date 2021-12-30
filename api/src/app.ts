@@ -2,7 +2,7 @@ import cors from 'cors';
 import express from 'express';
 
 import { runEveryDay } from './helpers/cronJobs';
-import routes from './routes/routes';
+import mainRoutes from './routes/routes';
 
 require('dotenv').config();
 const app = express();
@@ -13,7 +13,7 @@ export const ENDPOINT = NODE_ENV === 'test' ? '/api' : '/';
 
 app.use(cors());
 app.use(express.json());
-app.use(ENDPOINT, routes);
+app.use(ENDPOINT, mainRoutes);
 
 db.sequelize
   .sync({ force: false })

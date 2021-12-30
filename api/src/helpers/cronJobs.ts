@@ -22,4 +22,3 @@ export const runEveryDay = (db: any) => {
     deleteOldBookings(db);
   });
 };
-//export default runEveryDay;
