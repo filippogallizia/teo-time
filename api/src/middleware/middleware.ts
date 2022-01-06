@@ -24,39 +24,18 @@ const FixedBookings = db.FixedBookings;
 
 const client = new OAuth2Client(process.env.GOOGLE_CALENDAR_CLIENT_ID);
 
-//export const googleAuth = async (token: string) => {
-//  try {
-//    const ticket = await client.verifyIdToken({
-//      idToken: token,
-//      //@ts-expect-error
-//      audience: process.env.GOOGLE_CALENDAR_CLIENT_ID,
-//    });
-//    const payload: any = ticket.getPayload();
-//    if (payload) {
-//      const { email, name } = payload;
-//      return { email, name };
-//    } else return undefined;
-//  } catch (e) {
-//    console.log(e);
-//  }
-//};
-
 export const googleAuth = async (token: string) => {
   try {
-    const ticket = client.verifyIdToken({
+    const ticket = await client.verifyIdToken({
       idToken: token,
       //@ts-expect-error
       audience: process.env.GOOGLE_CALENDAR_CLIENT_ID,
     });
-    ticket
-      .then((payload) => {
-        //@ts-expect-error
-        const { email, name } = payload;
-        return { email, name };
-      })
-      .catch((e) => {
-        console.log(e, 'aiaiaiai');
-      });
+    const payload: any = ticket.getPayload();
+    if (payload) {
+      const { email, name } = payload;
+      return { email, name };
+    } else return undefined;
   } catch (e) {
     console.log(e);
   }
@@ -321,39 +300,37 @@ const authenticateToken = (
         message: 'non hai effettuato il login',
       },
     });
-  next();
-  //googleAuth(token)
-  //  .then((payload: any) => {
-  //    console.log('caralhoooooooooo');
-  //    if (payload) {
-  //      res.user = { email: payload.email };
-  //      next();
-  //    } else {
-  //      jwt.verify(
-  //        token,
-  //        process.env.ACCESS_TOKEN_SECRET as string,
-  //        (err: any, decoded: any) => {
-  //          if (err)
-  //            return res.status(500).send({
-  //              success: false,
-  //              error: {
-  //                message: 'accesso non autorizzato',
-  //              },
-  //            });
-  //          res.user = decoded;
-  //          next();
-  //        }
-  //      );
-  //    }
-  //  })
-  //  .catch((e: any) => {
-  //    res.status(500).send({
-  //      success: false,
-  //      error: {
-  //        message: e,
-  //      },
-  //    });
-  //  });
+  googleAuth(token)
+    .then((payload: any) => {
+      if (payload) {
+        res.user = { email: payload.email };
+        next();
+      } else {
+        jwt.verify(
+          token,
+          process.env.ACCESS_TOKEN_SECRET as string,
+          (err: any, decoded: any) => {
+            if (err)
+              return res.status(500).send({
+                success: false,
+                error: {
+                  message: 'accesso non autorizzato',
+                },
+              });
+            res.user = decoded;
+            next();
+          }
+        );
+      }
+    })
+    .catch((e: any) => {
+      res.status(500).send({
+        success: false,
+        error: {
+          message: e,
+        },
+      });
+    });
 };
 
 module.exports = {

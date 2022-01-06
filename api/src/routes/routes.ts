@@ -952,7 +952,7 @@ router.post('/create-payment-intent', async (req, res) => {
       const customer = await stripe.customers.create({
         description: 'My First Test Customer (created for API docs)',
         email: email,
-        source: 'jfdsafjds',
+        //source: 'jfdsafjds',
         name: name,
       });
       id = customer.id;
