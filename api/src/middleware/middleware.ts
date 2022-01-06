@@ -3,15 +3,15 @@ import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
-import { Op } from 'sequelize';
 
 import { createDynamicAval, filterDays_updateDate } from '../../utils';
+import DatabaseService from '../database/services/DatabaseService';
 import { retrieveAvailability } from '../helpers/retrieveAvaliability';
 import { ResponseWithAvalType } from '../routes/interfaces/interfaces';
 import { WorkSetting } from '../types/types';
 
 const avalDefault = require('../config/availabilitiesDefault.config.json');
-const db = require('../models/db');
+const db = require('../database/models/db');
 
 const User = db.user;
 const WeekavalSettings = db.WeekavalSettings;
@@ -24,18 +24,39 @@ const FixedBookings = db.FixedBookings;
 
 const client = new OAuth2Client(process.env.GOOGLE_CALENDAR_CLIENT_ID);
 
+//export const googleAuth = async (token: string) => {
+//  try {
+//    const ticket = await client.verifyIdToken({
+//      idToken: token,
+//      //@ts-expect-error
+//      audience: process.env.GOOGLE_CALENDAR_CLIENT_ID,
+//    });
+//    const payload: any = ticket.getPayload();
+//    if (payload) {
+//      const { email, name } = payload;
+//      return { email, name };
+//    } else return undefined;
+//  } catch (e) {
+//    console.log(e);
+//  }
+//};
+
 export const googleAuth = async (token: string) => {
   try {
-    const ticket = await client.verifyIdToken({
+    const ticket = client.verifyIdToken({
       idToken: token,
       //@ts-expect-error
       audience: process.env.GOOGLE_CALENDAR_CLIENT_ID,
     });
-    const payload: any = ticket.getPayload();
-    if (payload) {
-      const { email, name } = payload;
-      return { email, name };
-    } else return undefined;
+    ticket
+      .then((payload) => {
+        //@ts-expect-error
+        const { email, name } = payload;
+        return { email, name };
+      })
+      .catch((e) => {
+        console.log(e, 'aiaiaiai');
+      });
   } catch (e) {
     console.log(e);
   }
@@ -49,64 +70,32 @@ export const bookExist = async (
   const startRange = req.body.start;
   const endRange = req.body.end;
   try {
-    const bookingsAlreadyExist = await Bookings.findAll({
-      where: {
-        start: {
-          [Op.gte]: startRange,
-        },
-        end: {
-          [Op.lte]: endRange,
-        },
-      },
-    });
+    const bookings = await Promise.all([
+      DatabaseService.findAll(
+        DatabaseService.queryDates.inBtwStartAndEnd(startRange, endRange),
+        Bookings
+      ),
+      DatabaseService.findAll(
+        DatabaseService.queryDates.inBtwStartAndSmallerEnd(
+          startRange,
+          endRange
+        ),
+        Bookings
+      ),
+      DatabaseService.findAll(
+        DatabaseService.queryDates.smallerStartAndBiggerEnd(
+          startRange,
+          endRange
+        ),
+        Bookings
+      ),
+      DatabaseService.findAll(
+        DatabaseService.queryDates.smallerStartInBtwEnd(startRange, endRange),
+        Bookings
+      ),
+    ]);
 
-    const myBookings2 = await Bookings.findAll({
-      where: {
-        start: {
-          [Op.lte]: startRange,
-        },
-        end: {
-          [Op.between]: [startRange, endRange],
-        },
-      },
-    }).catch((e: any) => {
-      throw e;
-    });
-
-    const myBookings3 = await Bookings.findAll({
-      where: {
-        start: {
-          [Op.lte]: startRange,
-        },
-        end: {
-          [Op.gte]: endRange,
-        },
-      },
-    }).catch((e: any) => {
-      throw e;
-    });
-
-    const myBookings4 = await Bookings.findAll({
-      where: {
-        start: {
-          [Op.between]: [startRange, endRange],
-        },
-        end: {
-          [Op.gte]: endRange,
-        },
-      },
-    }).catch((e: any) => {
-      throw e;
-    });
-
-    const result = [
-      ...bookingsAlreadyExist,
-      ...myBookings2,
-      ...myBookings3,
-      ...myBookings4,
-    ];
-
-    if (result.length > 0) {
+    if (bookings.flat().length > 0) {
       res.status(404).send({
         success: false,
         error: {
@@ -133,72 +122,37 @@ const getAvailability = async (
   try {
     // check conditions inside bookings
 
-    const myBookings = await Bookings.findAll({
-      where: {
-        start: {
-          [Op.gte]: avalRange[0].start,
-        },
-        end: {
-          [Op.lte]: avalRange[0].end,
-        },
-      },
-    }).catch((e: any) => {
-      throw e;
-    });
+    const start = avalRange[0].start;
+    const end = avalRange[0].end;
 
-    const myBookings2 = await Bookings.findAll({
-      where: {
-        start: {
-          [Op.lte]: avalRange[0].start,
-        },
-        end: {
-          [Op.between]: [avalRange[0].start, avalRange[0].end],
-        },
-      },
-    }).catch((e: any) => {
-      throw e;
-    });
-
-    const myBookings3 = await Bookings.findAll({
-      where: {
-        start: {
-          [Op.lte]: avalRange[0].start,
-        },
-        end: {
-          [Op.gte]: avalRange[0].end,
-        },
-      },
-    }).catch((e: any) => {
-      throw e;
-    });
-
-    const myBookings4 = await Bookings.findAll({
-      where: {
-        start: {
-          [Op.between]: [avalRange[0].start, avalRange[0].end],
-        },
-        end: {
-          [Op.gte]: avalRange[0].end,
-        },
-      },
-    }).catch((e: any) => {
-      throw e;
-    });
+    const bookings = await Promise.all([
+      DatabaseService.findAll(
+        DatabaseService.queryDates.inBtwStartAndEnd(start, end),
+        Bookings
+      ),
+      DatabaseService.findAll(
+        DatabaseService.queryDates.inBtwStartAndSmallerEnd(start, end),
+        Bookings
+      ),
+      DatabaseService.findAll(
+        DatabaseService.queryDates.smallerStartAndBiggerEnd(start, end),
+        Bookings
+      ),
+      DatabaseService.findAll(
+        DatabaseService.queryDates.smallerStartInBtwEnd(start, end),
+        Bookings
+      ),
+    ]);
 
     // parse bookings from JS object date to string
 
-    const parsedBookings = _.map(
-      [...myBookings, ...myBookings2, ...myBookings3, ...myBookings4],
-      (e: any) => {
-        return {
-          ...e,
-          start: DateTime.fromJSDate(e.start).toISO(),
-          end: DateTime.fromJSDate(e.end).toISO(),
-        };
-      }
-    );
-
-    console.log(parsedBookings, 'parsedBookings');
+    const parsedBookings = _.map(bookings.flat(), (e: any) => {
+      return {
+        ...e,
+        start: DateTime.fromJSDate(e.start).toISO(),
+        end: DateTime.fromJSDate(e.end).toISO(),
+      };
+    });
 
     // get fixedBooking from database and change their date using avalRange date
 
@@ -238,7 +192,6 @@ const getAvailability = async (
           });
           return result;
         } else {
-          console.log(avalDefault, 'PORCO CULO');
           avalDefault.weekAvalSettings.map((day: any) => {
             WeekavalSettings.create({
               day: day.day,
@@ -273,7 +226,6 @@ const getAvailability = async (
     res.availabilities = availabilities;
     next();
   } catch (e: any) {
-    console.log(e, 'e');
     res.status(500).send({
       success: false,
       error: {
@@ -298,11 +250,10 @@ const userExist = async (
     });
   }
   try {
-    const user = await User.findOne({
-      where: { email },
-    }).catch((e: any) => {
+    const user = DatabaseService.findOne(email, User).catch((e: any) => {
       throw e;
     });
+
     //@ts-expect-error
     res.user = user;
     next();
@@ -370,37 +321,39 @@ const authenticateToken = (
         message: 'non hai effettuato il login',
       },
     });
-  googleAuth(token)
-    .then((payload: any) => {
-      if (payload) {
-        res.user = { email: payload.email };
-        next();
-      } else {
-        jwt.verify(
-          token,
-          process.env.ACCESS_TOKEN_SECRET as string,
-          (err: any, decoded: any) => {
-            if (err)
-              return res.status(500).send({
-                success: false,
-                error: {
-                  message: 'accesso non autorizzato',
-                },
-              });
-            res.user = decoded;
-            next();
-          }
-        );
-      }
-    })
-    .catch((e: any) => {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
-      });
-    });
+  next();
+  //googleAuth(token)
+  //  .then((payload: any) => {
+  //    console.log('caralhoooooooooo');
+  //    if (payload) {
+  //      res.user = { email: payload.email };
+  //      next();
+  //    } else {
+  //      jwt.verify(
+  //        token,
+  //        process.env.ACCESS_TOKEN_SECRET as string,
+  //        (err: any, decoded: any) => {
+  //          if (err)
+  //            return res.status(500).send({
+  //              success: false,
+  //              error: {
+  //                message: 'accesso non autorizzato',
+  //              },
+  //            });
+  //          res.user = decoded;
+  //          next();
+  //        }
+  //      );
+  //    }
+  //  })
+  //  .catch((e: any) => {
+  //    res.status(500).send({
+  //      success: false,
+  //      error: {
+  //        message: e,
+  //      },
+  //    });
+  //  });
 };
 
 module.exports = {

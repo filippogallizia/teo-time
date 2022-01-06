@@ -1,13 +1,14 @@
-const express = require('express');
-const router = express.Router();
+import { Router } from 'express';
 
-import routes from './routes';
-const app = express();
+import mainRoute from './routes';
 
-app.use('/', routes);
-// Home page route.
-//router.get('/', function (req: any, res: any) {
-//  res.send('Wiki home page');
-//});
+//const db = require('../database/models/db');
 
-export default router;
+//export default () => {
+//  const app = Router();
+//  app.use(mainRoute);
+//  // why doesn't fodes work ?
+//  return app;
+//};
+
+export default {};

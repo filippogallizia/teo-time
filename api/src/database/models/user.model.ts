@@ -1,25 +1,25 @@
-const user = (sequelize: any, Sequelize: any) => {
+const user = (sequelize: any, DataTypes: any) => {
   const User = sequelize.define(
     'users',
     {
       password: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
       },
       email: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         unique: true,
       },
       name: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
       },
       phoneNumber: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
       },
       role: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
       },
       resetPasswordToken: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
       },
     },
     {

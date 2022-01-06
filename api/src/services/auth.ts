@@ -1,8 +1,12 @@
+import events from 'events';
+
 import { UserDTO, UserInputDTO } from '../interfaces/UserDTO';
 
-const db = require('../models/db');
+const db = require('../database/models/db');
 
 const UserModel = db.user;
+
+const eventEmitter = new events.EventEmitter();
 
 class Auth {
   public userExist(user: UserDTO | undefined) {
@@ -15,6 +19,7 @@ class Auth {
       throw new Error("user doesn't exist").toString();
     }
   }
+
   public signUp(user: UserDTO | undefined, userInput: UserInputDTO) {
     this.userExist(user);
     const { email } = userInput;

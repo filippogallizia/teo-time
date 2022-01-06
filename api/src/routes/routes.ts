@@ -1,7 +1,12 @@
+import events from 'events';
+
 import express from 'express';
 import { Op } from 'sequelize';
 
+import DatabaseService from '../database/services/DatabaseService';
 import { deleteEvent, getEvents, insertEvent } from '../googleApi/calendarApi';
+import { BookingDTO } from '../interfaces/BookingDTO';
+import { UserDTO } from '../interfaces/UserDTO';
 import { changePwdEmail, sendEmail, successBkgEmail } from '../sendGrid/config';
 import Auth from '../services/auth';
 import { TimeRangeType, UserType } from '../types/types';
@@ -22,7 +27,7 @@ const {
   authenticateToken,
   googleAuth,
 } = require('../middleware/middleware');
-const db = require('../models/db');
+const db = require('../database/models/db');
 const sgMail = require('@sendgrid/mail');
 const { v4 } = require('uuid');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY_2);
@@ -88,9 +93,10 @@ router.get('/google-login', (req: express.Request, res: express.Response) => {
             });
           } else {
             const asyncFn = async () => {
-              const user = await User.findOne({
-                where: { email: r.email },
-              }).catch((e: any) => {
+              const user = await DatabaseService.findOne(
+                { email: r.email },
+                User
+              ).catch((e: any) => {
                 res.status(500).send({
                   success: false,
                   error: {
@@ -161,7 +167,6 @@ router.post(
     try {
       const { start, end, isHoliday, localId } = req.body;
       const userEmail = res.user?.email;
-      let userName: string | undefined;
       // create a new user
       Bookings.create({
         start,
@@ -170,23 +175,22 @@ router.post(
         localId,
       })
         .then((booking: any) => {
-          // search the user by email
-          User.findOne({ where: { email: userEmail } })
-            .then((usr: UserType) => {
-              userName = usr.name;
-              // associate the booking with the user
-              booking.setUser(usr).catch((e: any) => {
-                res.status(500).send({
-                  success: false,
-                  error: {
-                    message: e,
-                  },
+          userEmail &&
+            DatabaseService.findOne({ email: userEmail }, user)
+              .then((usr: any) => {
+                // associate the booking with the user
+                booking.setUser(usr).catch((e: any) => {
+                  res.status(500).send({
+                    success: false,
+                    error: {
+                      message: e,
+                    },
+                  });
                 });
+              })
+              .catch((e: any) => {
+                throw e;
               });
-            })
-            .catch((e: any) => {
-              throw e;
-            });
 
           // insert the booking to admin google calendar
 
@@ -212,7 +216,7 @@ router.post(
               console.log(res);
             })
             .catch((err) => {
-              console.log(err);
+              console.log(err, 'coapfjsadfdsfd');
             });
 
           //send email to client and admin
@@ -272,7 +276,6 @@ router.post(
   [authenticateToken],
   (req: express.Request, res: ResponseWithUserType) => {
     const { start, end } = req.body;
-    const userEmail = res.user?.email;
     try {
       Bookings.findOne({ where: { start, end } })
         .then((bks: any) => {
@@ -337,7 +340,7 @@ router.get(
     //@ts-expect-error
     const userEmail = res.user.email;
     try {
-      User.findOne({ where: { email: userEmail } })
+      DatabaseService.findOne({ email: userEmail }, User)
         .then((usr: any) => {
           if (usr) {
             Bookings.findAll({
@@ -858,7 +861,6 @@ router.post(
         });
       }
     } catch (e: any) {
-      console.log(e, 'e');
       res.status(500).send({
         success: false,
         error: {
@@ -950,7 +952,7 @@ router.post('/create-payment-intent', async (req, res) => {
       const customer = await stripe.customers.create({
         description: 'My First Test Customer (created for API docs)',
         email: email,
-        sucea: 'jfdsafjds',
+        source: 'jfdsafjds',
         name: name,
       });
       id = customer.id;
@@ -966,13 +968,11 @@ router.post('/create-payment-intent', async (req, res) => {
       },
     });
 
-    console.log('aqui', paymentIntent);
-
     res.send({
       clientSecret: paymentIntent.client_secret,
     });
   } catch (e: any) {
-    console.log('here backedn');
+    console.log(e, 'here backedn');
 
     res.status(500).send({
       success: false,
