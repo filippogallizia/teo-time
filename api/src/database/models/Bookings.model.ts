@@ -1,3 +1,13 @@
+import { DataTypes, Model, Sequelize } from 'sequelize';
+
+export interface BookingModel extends Model {
+  id?: number;
+  start: string;
+  end: string;
+  isHoliday: boolean;
+  localId: number;
+}
+
 const Bookings = (sequelize: any, Sequelize: any) => {
   const bookings = sequelize.define(
     'bookings',

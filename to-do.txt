@@ -1,14 +1,11 @@
 API
-
-- Of course, checking the audience is just one of the checks that your API should do to prevent unauthorized access.  https://auth0.com/blog/id-token-access-token-what-is-the-difference/
-- 
-
+- google calendar remove events
+- middleware authenticateToken in createBooking
+- payments in general
 
 
 CLIENT
 - holidayManager , see how to handle local state and deleting booking inside bookingManager.
-- fix scroolover in homepage 
-- contact page
 
 for Admin
 

@@ -17,7 +17,7 @@ export default {};
 //    [userExist, createToken],
 //    (req: Request, res: ResponseWithUserType) => {
 //      try {
-//        Auth.userDoesntExist(res.user);
+//        Auth.errorUserNotFound(res.user);
 //        res.status(200).send({ user: res.user, token: res.locals.jwt_secret });
 //      } catch (e) {
 //        console.log(e, 'aqui');

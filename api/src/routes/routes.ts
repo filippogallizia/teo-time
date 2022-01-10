@@ -1,6 +1,6 @@
 import events from 'events';
 
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { Op } from 'sequelize';
 
 import DatabaseService from '../database/services/DatabaseService';
@@ -8,7 +8,7 @@ import { deleteEvent, getEvents, insertEvent } from '../googleApi/calendarApi';
 import { BookingDTO } from '../interfaces/BookingDTO';
 import { UserDTO } from '../interfaces/UserDTO';
 import { changePwdEmail, sendEmail, successBkgEmail } from '../sendGrid/config';
-import Auth from '../services/auth';
+import AuthService from '../services/auth';
 import { TimeRangeType, UserType } from '../types/types';
 import {
   ResponseWithAvalType,
@@ -44,17 +44,12 @@ const OTP = v4();
 router.post(
   '/signup',
   [userExist],
-  (req: express.Request, res: ResponseWithUserType) => {
+  (req: Request, res: ResponseWithUserType, next: NextFunction) => {
     try {
-      Auth.signUp(res.user, req.body);
+      AuthService.signUp(res.user, req.body);
       res.send({ message: 'User was registered successfully!' });
     } catch (e: any) {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
-      });
+      next(e);
     }
   }
 );
@@ -62,134 +57,113 @@ router.post(
 router.post(
   '/login',
   [userExist, createToken],
-  (req: express.Request, res: ResponseWithUserType) => {
+  (req: Request, res: ResponseWithUserType, next: NextFunction) => {
     try {
-      Auth.userDoesntExist(res.user);
+      AuthService.errorUserNotFound(res.user);
       res.status(200).send({ user: res.user, token: res.locals.jwt_secret });
     } catch (e) {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
-      });
+      next(e);
     }
   }
 );
 
-router.get('/google-login', (req: express.Request, res: express.Response) => {
-  try {
-    const authHeader = req.header('Authorization');
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token) {
-      try {
-        googleAuth(token).then((r: any) => {
-          if (!r) {
-            res.status(500).send({
-              success: false,
-              error: {
-                message: 'something went wrong',
-              },
-            });
-          } else {
-            const asyncFn = async () => {
-              const user = await DatabaseService.findOne(
-                { email: r.email },
-                User
-              ).catch((e: any) => {
-                res.status(500).send({
-                  success: false,
-                  error: {
-                    message: e,
-                  },
-                });
+router.get(
+  '/google-login',
+  (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const authHeader = req.header('Authorization');
+      const token = authHeader && authHeader.split(' ')[1];
+      if (token) {
+        try {
+          googleAuth(token).then((r: any) => {
+            if (!r) {
+              res.status(500).send({
+                success: false,
+                error: {
+                  message: 'something went wrong',
+                },
               });
-              if (user) {
-                res.status(200).send({ user: user, isGoogleLogin: true });
-              } else {
-                const { email, name } = r;
-                const adminOrUser =
-                  email === 'galliziafilippo@gmail.com' ? 'admin' : 'user';
-                try {
-                  User.create({
-                    email,
-                    name,
-                    role: adminOrUser,
-                  })
-                    .then((usr: any) => {
-                      res.status(200).send({ user: usr, isGoogleLogin: true });
+            } else {
+              const asyncFn = async () => {
+                const user = await DatabaseService.findOne(
+                  { email: r.email },
+                  User
+                ).catch((e: any) => {
+                  next(e);
+                });
+                if (user) {
+                  res.status(200).send({ user: user, isGoogleLogin: true });
+                } else {
+                  const { email, name } = r;
+                  const adminOrUser =
+                    email === 'galliziafilippo@gmail.com' ? 'admin' : 'user';
+                  try {
+                    User.create({
+                      email,
+                      name,
+                      role: adminOrUser,
                     })
-                    .catch((e: any) => {
-                      res.status(500).send({
-                        success: false,
-                        error: {
-                          message: e,
-                        },
+                      .then((usr: any) => {
+                        res
+                          .status(200)
+                          .send({ user: usr, isGoogleLogin: true });
+                      })
+                      .catch((e: any) => {
+                        next(e);
                       });
-                    });
-                } catch (e: any) {
-                  res.status(500).send({
-                    success: false,
-                    error: {
-                      message: e,
-                    },
-                  });
+                  } catch (e: any) {
+                    next(e);
+                  }
                 }
-              }
-            };
-            asyncFn();
-          }
-        });
-      } catch (e) {
-        res.status(500).send({
-          success: false,
-          error: {
-            message: e,
-          },
-        });
+              };
+              asyncFn();
+            }
+          });
+        } catch (e) {
+          next(e);
+        }
       }
+    } catch (e) {
+      next(e);
     }
-  } catch (e) {
-    res.status(500).send({
-      success: false,
-      error: {
-        message: e,
-      },
-    });
   }
-});
+);
 
 router.post(
   '/createBooking',
-  [authenticateToken, bookExist],
+  [
+    //authenticateToken,
+    bookExist,
+  ],
 
-  (req: express.Request, res: ResponseWithUserType) => {
+  (req: Request, res: ResponseWithUserType, next: NextFunction) => {
     try {
       const { start, end, isHoliday, localId } = req.body;
       const userEmail = res.user?.email;
-      // create a new user
-      Bookings.create({
-        start,
-        end,
-        isHoliday,
-        localId,
-      })
+
+      DatabaseService.create(
+        {
+          start,
+          end,
+          isHoliday,
+          localId,
+        },
+        Bookings
+      )
         .then((booking: any) => {
           userEmail &&
             DatabaseService.findOne({ email: userEmail }, user)
               .then((usr: any) => {
                 // associate the booking with the user
                 booking.setUser(usr).catch((e: any) => {
-                  res.status(500).send({
-                    success: false,
-                    error: {
-                      message: e,
-                    },
-                  });
+                  next(e);
                 });
+                //DatabaseService.associate(usr).catch((e: any) => {
+                //  next(e);
+                //});
               })
               .catch((e: any) => {
-                throw e;
+                next(e);
               });
 
           // insert the booking to admin google calendar
@@ -215,8 +189,8 @@ router.post(
             .then((res) => {
               console.log(res);
             })
-            .catch((err) => {
-              console.log(err, 'coapfjsadfdsfd');
+            .catch((e) => {
+              next(e);
             });
 
           //send email to client and admin
@@ -236,20 +210,10 @@ router.post(
           //  });
         })
         .catch((e: any) => {
-          res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
+          next(e);
         });
     } catch (e: any) {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
-      });
+      next(e);
     }
   }
 );
@@ -257,16 +221,11 @@ router.post(
 router.post(
   '/retrieveAvailability',
   [getAvailability],
-  (req: express.Request, res: ResponseWithAvalType) => {
+  (req: Request, res: ResponseWithAvalType, next: NextFunction) => {
     try {
       res.status(200).send(res.availabilities);
     } catch (e: any) {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
-      });
+      next(e);
     }
   }
 );
@@ -274,7 +233,7 @@ router.post(
 router.post(
   '/deleteBooking',
   [authenticateToken],
-  (req: express.Request, res: ResponseWithUserType) => {
+  (req: Request, res: ResponseWithUserType, next: NextFunction) => {
     const { start, end } = req.body;
     try {
       Bookings.findOne({ where: { start, end } })
@@ -303,7 +262,7 @@ router.post(
                 res.status(200).send('prenotazione cancellata');
               })
               .catch((e: any) => {
-                throw e;
+                next(e);
               });
           } else {
             return res.status(400).send({
@@ -336,7 +295,7 @@ router.post(
 router.get(
   '/userBookings',
   [authenticateToken],
-  (req: express.Request, res: express.Response) => {
+  (req: Request, res: Response) => {
     //@ts-expect-error
     const userEmail = res.user.email;
     try {
@@ -373,7 +332,7 @@ router.get(
 router.get(
   '/usersAndBookings',
   [authenticateToken],
-  (req: express.Request, res: express.Response) => {
+  (req: Request, res: Response) => {
     try {
       Bookings.findAll({
         include: {
@@ -399,139 +358,109 @@ router.get(
   }
 );
 
-router.get(
-  '/allUsers',
-  [authenticateToken],
-  (req: express.Request, res: express.Response) => {
-    try {
-      User.findAll()
-        .then((usr: any) => {
-          res.send(usr);
-        })
-        .catch((e: any) => {
-          throw e;
-        });
-    } catch (e: any) {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
+router.get('/allUsers', [authenticateToken], (req: Request, res: Response) => {
+  try {
+    User.findAll()
+      .then((usr: any) => {
+        res.send(usr);
+      })
+      .catch((e: any) => {
+        throw e;
       });
-    }
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
   }
-);
+});
 
-router.post(
-  '/resetPassword',
-  async (req: express.Request, res: express.Response) => {
-    const userEmail = req.body.email;
-    try {
-      User.findOne({ where: { email: userEmail } })
-        .then((usr: any) => {
-          if (usr) {
-            const updateUser = async () => {
-              usr.set({ resetPasswordToken: OTP });
-              await usr.save();
-            };
-            updateUser();
+router.post('/resetPassword', async (req: Request, res: Response) => {
+  const userEmail = req.body.email;
+  try {
+    User.findOne({ where: { email: userEmail } })
+      .then((usr: any) => {
+        if (usr) {
+          const updateUser = async () => {
+            usr.set({ resetPasswordToken: OTP });
+            await usr.save();
+          };
+          updateUser();
 
-            const EMAIL = changePwdEmail(userEmail, OTP);
-            sendEmail(EMAIL)
-              .then(() => {
-                res.send('Check your email!');
-              })
-              .catch(() => {
-                return res.status(400).send({
-                  success: false,
-                  error: {
-                    message: "l' email non esiste",
-                  },
-                });
+          const EMAIL = changePwdEmail(userEmail, OTP);
+          sendEmail(EMAIL)
+            .then(() => {
+              res.send('Check your email!');
+            })
+            .catch(() => {
+              return res.status(400).send({
+                success: false,
+                error: {
+                  message: "l' email non esiste",
+                },
               });
-          } else {
-            return res.status(400).send({
-              success: false,
-              error: {
-                message: "l' email non esiste",
-              },
             });
-          }
-        })
-        .catch((e: any) => {
-          throw e;
-        });
-    } catch (e: any) {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
+        } else {
+          return res.status(400).send({
+            success: false,
+            error: {
+              message: "l' email non esiste",
+            },
+          });
+        }
+      })
+      .catch((e: any) => {
+        throw e;
       });
-    }
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
   }
-);
-router.post(
-  '/password/otp',
-  async (req: express.Request, res: express.Response) => {
-    const resetPasswordToken = req.body.resetPasswordToken;
-    try {
-      User.findOne({ where: { resetPasswordToken } })
-        .then((usr: any) => {
-          if (usr) {
-            res.send('allowed to reset password');
-          } else {
-            return res.status(400).send({
-              success: false,
-              error: {
-                message: 'not allowed',
-              },
-            });
-          }
-        })
-        .catch((e: any) => {
-          throw e;
-        });
-    } catch (e: any) {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
+});
+router.post('/password/otp', async (req: Request, res: Response) => {
+  const resetPasswordToken = req.body.resetPasswordToken;
+  try {
+    User.findOne({ where: { resetPasswordToken } })
+      .then((usr: any) => {
+        if (usr) {
+          res.send('allowed to reset password');
+        } else {
+          return res.status(400).send({
+            success: false,
+            error: {
+              message: 'not allowed',
+            },
+          });
+        }
+      })
+      .catch((e: any) => {
+        throw e;
       });
-    }
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
   }
-);
+});
 
-router.post(
-  '/manageAvailabilities',
-  async (req: express.Request, res: express.Response) => {
-    const { workSettings } = req.body;
-    try {
-      workSettings.forEach((daySetting: any) => {
-        WeekavalSettings.findOne({ where: { day: daySetting.day } })
-          .then((d: any) => {
-            if (d) {
-              const asyncFn = async () => {
-                d.set({
-                  day: daySetting.day,
-                  workTimeStart: daySetting.parameters.workTimeRange.start,
-                  workTimeEnd: daySetting.parameters.workTimeRange.end,
-                  breakTimeStart: daySetting.parameters.breakTimeRange.start,
-                  breakTimeEnd: daySetting.parameters.breakTimeRange.end,
-                  eventDurationHours: daySetting.parameters.eventDuration.hours,
-                  eventDurationMinutes:
-                    daySetting.parameters.eventDuration.minutes,
-                  breakTimeBtwEventsHours:
-                    daySetting.parameters.breakTimeBtwEvents.hours,
-                  breakTimeBtwEventsMinutes:
-                    daySetting.parameters.breakTimeBtwEvents.minutes,
-                });
-                await d.save();
-              };
-              asyncFn();
-            } else {
-              WeekavalSettings.create({
+router.post('/manageAvailabilities', async (req: Request, res: Response) => {
+  const { workSettings } = req.body;
+  try {
+    workSettings.forEach((daySetting: any) => {
+      WeekavalSettings.findOne({ where: { day: daySetting.day } })
+        .then((d: any) => {
+          if (d) {
+            const asyncFn = async () => {
+              d.set({
                 day: daySetting.day,
                 workTimeStart: daySetting.parameters.workTimeRange.start,
                 workTimeEnd: daySetting.parameters.workTimeRange.end,
@@ -544,110 +473,120 @@ router.post(
                   daySetting.parameters.breakTimeBtwEvents.hours,
                 breakTimeBtwEventsMinutes:
                   daySetting.parameters.breakTimeBtwEvents.minutes,
+              });
+              await d.save();
+            };
+            asyncFn();
+          } else {
+            WeekavalSettings.create({
+              day: daySetting.day,
+              workTimeStart: daySetting.parameters.workTimeRange.start,
+              workTimeEnd: daySetting.parameters.workTimeRange.end,
+              breakTimeStart: daySetting.parameters.breakTimeRange.start,
+              breakTimeEnd: daySetting.parameters.breakTimeRange.end,
+              eventDurationHours: daySetting.parameters.eventDuration.hours,
+              eventDurationMinutes: daySetting.parameters.eventDuration.minutes,
+              breakTimeBtwEventsHours:
+                daySetting.parameters.breakTimeBtwEvents.hours,
+              breakTimeBtwEventsMinutes:
+                daySetting.parameters.breakTimeBtwEvents.minutes,
+            })
+              .then((data: any) => {
+                console.log(data);
               })
-                .then((data: any) => {
-                  console.log(data);
-                })
-                .catch((e: any) => {
-                  return res.status(500).send({
-                    success: false,
-                    error: {
-                      message: e,
-                    },
-                  });
+              .catch((e: any) => {
+                return res.status(500).send({
+                  success: false,
+                  error: {
+                    message: e,
+                  },
                 });
-            }
-          })
-          .catch((e: any) => {
-            return res.status(500).send({
-              success: false,
-              error: {
-                message: e,
-              },
-            });
-          });
-      });
-      res.send({ message: 'availabilities created!' });
-    } catch (e: any) {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
-      });
-    }
-  }
-);
-
-router.get(
-  '/workingHours',
-  async (req: express.Request, res: express.Response) => {
-    try {
-      WeekavalSettings.findAll()
-        .then((worksHours: any) => {
-          res.send(worksHours);
+              });
+          }
         })
         .catch((e: any) => {
-          res.status(500).send({
+          return res.status(500).send({
             success: false,
             error: {
               message: e,
             },
           });
         });
-    } catch (e: any) {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
-      });
-    }
+    });
+    res.send({ message: 'availabilities created!' });
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
   }
-);
+});
 
-router.post(
-  '/password/newPassword',
-  async (req: express.Request, res: express.Response) => {
-    const resetPasswordToken = req.body.resetPasswordToken;
-    const newPassword = req.body.newPassword;
-    try {
-      User.findOne({ where: { resetPasswordToken } })
-        .then((usr: any) => {
-          if (usr) {
-            const asyncFn = async () => {
-              usr.set({ password: newPassword });
-              await usr.save();
-              res.send('password changed');
-            };
-            asyncFn();
-          } else {
-            return res.status(400).send({
-              success: false,
-              error: {
-                message: 'not allowed',
-              },
-            });
-          }
-        })
-        .catch((e: any) => {
-          throw e;
+router.get('/workingHours', async (req: Request, res: Response) => {
+  try {
+    WeekavalSettings.findAll()
+      .then((worksHours: any) => {
+        res.send(worksHours);
+      })
+      .catch((e: any) => {
+        res.status(500).send({
+          success: false,
+          error: {
+            message: e,
+          },
         });
-    } catch (e: any) {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
       });
-    }
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
   }
-);
+});
+
+router.post('/password/newPassword', async (req: Request, res: Response) => {
+  const resetPasswordToken = req.body.resetPasswordToken;
+  const newPassword = req.body.newPassword;
+  try {
+    User.findOne({ where: { resetPasswordToken } })
+      .then((usr: any) => {
+        if (usr) {
+          const asyncFn = async () => {
+            usr.set({ password: newPassword });
+            await usr.save();
+            res.send('password changed');
+          };
+          asyncFn();
+        } else {
+          return res.status(400).send({
+            success: false,
+            error: {
+              message: 'not allowed',
+            },
+          });
+        }
+      })
+      .catch((e: any) => {
+        throw e;
+      });
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
+  }
+});
 
 export const booksExist = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
   const startRange = req.body.start;
   const endRange = req.body.end;
@@ -687,7 +626,7 @@ router.post(
   // [authenticateToken, bookExist, bookOutRange],
   [authenticateToken, booksExist],
 
-  (req: express.Request, res: ResponseWithUserType) => {
+  (req: Request, res: ResponseWithUserType) => {
     try {
       const { start, end } = req.body;
       const userEmail = res.user?.email;
@@ -763,7 +702,7 @@ router.post(
 router.get(
   '/getHolidays',
   [authenticateToken],
-  (req: express.Request, res: express.Response) => {
+  (req: Request, res: Response) => {
     try {
       Bookings.findAll({ where: { isHoliday: true } })
         .then((bks: any) => {
@@ -790,133 +729,63 @@ type FixedBksType = {
   bookings: Array<FixedBookType>;
 };
 
-router.get(
-  '/fixedBookings',
-  async (req: express.Request, res: express.Response) => {
-    try {
-      FixedBookings.findAll()
-        .then((data: any) => {
-          res.send(data);
-        })
-        .catch((e: any) => {
-          return res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
-        });
-    } catch (e: any) {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
-      });
-    }
-  }
-);
-
-router.post(
-  '/fixedBookings',
-  async (req: express.Request, res: express.Response) => {
-    const { fixedBks } = req.body;
-    const errors: any = [];
-    try {
-      const asyncFn = () => {
-        for (const fixedBook of fixedBks) {
-          //fixedBks.forEach((fixedBook: FixedBksType) => {
-          for (const book of fixedBook.bookings) {
-            return FixedBookings.create({
-              day: fixedBook.day,
-              start: book.start,
-              end: book.end,
-              localId: book.id,
-              email: book.email,
-            })
-              .then((data: any) => {
-                console.log(data);
-              })
-              .catch((e: any) => {
-                console.log('aliiii');
-                errors.push(e);
-                return;
-              });
-          }
-        }
-      };
-      try {
-        await asyncFn();
-        if (errors.length > 0) {
-          res.status(500).send(errors[0]);
-          return;
-        }
-        res.send({ message: 'fixedBookings created!' });
-      } catch (e: any) {
-        res.status(500).send({
+router.get('/fixedBookings', async (req: Request, res: Response) => {
+  try {
+    FixedBookings.findAll()
+      .then((data: any) => {
+        res.send(data);
+      })
+      .catch((e: any) => {
+        return res.status(500).send({
           success: false,
           error: {
             message: e,
           },
         });
-      }
-    } catch (e: any) {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
       });
-    }
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
   }
-);
+});
 
-router.put(
-  '/fixedBookings',
-  async (req: express.Request, res: express.Response) => {
-    const { fixedBks } = req.body;
-    try {
-      const errors: any = [];
-      const mainAsyncFn = () => {
-        for (const fixedBook of fixedBks) {
-          fixedBook.bookings.forEach((book: any) => {
-            FixedBookings.findOne({
-              where: { localId: book.id },
+router.post('/fixedBookings', async (req: Request, res: Response) => {
+  const { fixedBks } = req.body;
+  const errors: any = [];
+  try {
+    const asyncFn = () => {
+      for (const fixedBook of fixedBks) {
+        //fixedBks.forEach((fixedBook: FixedBksType) => {
+        for (const book of fixedBook.bookings) {
+          return FixedBookings.create({
+            day: fixedBook.day,
+            start: book.start,
+            end: book.end,
+            localId: book.id,
+            email: book.email,
+          })
+            .then((data: any) => {
+              console.log(data);
             })
-              .then((bk: any) => {
-                if (bk) {
-                  const asyncFn = async () => {
-                    try {
-                      bk.set({
-                        ...book,
-                        day: fixedBook.day,
-                        start: book.start,
-                        end: book.end,
-                        email: book.email,
-                      });
-                      await bk.save().catch((e: any) => {
-                        errors.push(e);
-                      });
-                    } catch (e) {
-                      errors.push(e);
-                    }
-                  };
-                  asyncFn();
-                } else {
-                  errors.push('book not found');
-                }
-              })
-              .catch((e: any) => {
-                errors.push(e);
-              });
-          });
+            .catch((e: any) => {
+              console.log('aliiii');
+              errors.push(e);
+              return;
+            });
         }
-      };
-      mainAsyncFn();
+      }
+    };
+    try {
+      await asyncFn();
       if (errors.length > 0) {
         res.status(500).send(errors[0]);
+        return;
       }
-      res.send('book updated');
+      res.send({ message: 'fixedBookings created!' });
     } catch (e: any) {
       res.status(500).send({
         success: false,
@@ -925,8 +794,69 @@ router.put(
         },
       });
     }
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
   }
-);
+});
+
+router.put('/fixedBookings', async (req: Request, res: Response) => {
+  const { fixedBks } = req.body;
+  try {
+    const errors: any = [];
+    const mainAsyncFn = () => {
+      for (const fixedBook of fixedBks) {
+        fixedBook.bookings.forEach((book: any) => {
+          FixedBookings.findOne({
+            where: { localId: book.id },
+          })
+            .then((bk: any) => {
+              if (bk) {
+                const asyncFn = async () => {
+                  try {
+                    bk.set({
+                      ...book,
+                      day: fixedBook.day,
+                      start: book.start,
+                      end: book.end,
+                      email: book.email,
+                    });
+                    await bk.save().catch((e: any) => {
+                      errors.push(e);
+                    });
+                  } catch (e) {
+                    errors.push(e);
+                  }
+                };
+                asyncFn();
+              } else {
+                errors.push('book not found');
+              }
+            })
+            .catch((e: any) => {
+              errors.push(e);
+            });
+        });
+      }
+    };
+    mainAsyncFn();
+    if (errors.length > 0) {
+      res.status(500).send(errors[0]);
+    }
+    res.send('book updated');
+  } catch (e: any) {
+    res.status(500).send({
+      success: false,
+      error: {
+        message: e,
+      },
+    });
+  }
+});
 
 const calculateOrderAmount = (ammount: any) => {
   // Replace this constant with a calculation of the order's amount

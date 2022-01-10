@@ -1,6 +1,9 @@
 import events from 'events';
 
+import jwt from 'jsonwebtoken';
+
 import { UserDTO, UserInputDTO } from '../interfaces/UserDTO';
+import { ApiError } from './ErrorHanlderService';
 
 const db = require('../database/models/db');
 
@@ -8,15 +11,16 @@ const UserModel = db.user;
 
 const eventEmitter = new events.EventEmitter();
 
-class Auth {
+class AuthService {
   public userExist(user: UserDTO | undefined) {
     if (user) {
-      throw new Error('user already Exist').toString();
+      throw ApiError.badRequest('User already Exist');
     }
   }
-  public userDoesntExist(user: UserDTO | undefined) {
+
+  public errorUserNotFound(user: UserDTO | undefined) {
     if (!user) {
-      throw new Error("user doesn't exist").toString();
+      throw ApiError.badRequest('User not found');
     }
   }
 
@@ -33,6 +37,10 @@ class Auth {
       throw e.toString();
     });
   }
+
+  public generateAccessToken(value: any) {
+    return jwt.sign(value, process.env.ACCESS_TOKEN_SECRET as string);
+  }
 }
 
-export default new Auth();
+export default new AuthService();

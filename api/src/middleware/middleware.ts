@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
@@ -7,7 +7,12 @@ import { DateTime } from 'luxon';
 import { createDynamicAval, filterDays_updateDate } from '../../utils';
 import DatabaseService from '../database/services/DatabaseService';
 import { retrieveAvailability } from '../helpers/retrieveAvaliability';
-import { ResponseWithAvalType } from '../routes/interfaces/interfaces';
+import {
+  ResponseWithAvalType,
+  ResponseWithUserType,
+} from '../routes/interfaces/interfaces';
+import AuthService from '../services/auth';
+import { ApiError } from '../services/ErrorHanlderService';
 import { WorkSetting } from '../types/types';
 
 const avalDefault = require('../config/availabilitiesDefault.config.json');
@@ -42,9 +47,9 @@ export const googleAuth = async (token: string) => {
 };
 
 export const bookExist = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
   const startRange = req.body.start;
   const endRange = req.body.end;
@@ -93,9 +98,9 @@ export const bookExist = async (
 };
 
 const getAvailability = async (
-  req: express.Request,
+  req: Request,
   res: ResponseWithAvalType,
-  next: express.NextFunction
+  next: NextFunction
 ) => {
   const avalRange = [...req.body.TimeRangeType];
   try {
@@ -214,82 +219,51 @@ const getAvailability = async (
   }
 };
 
-const userExist = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
+const userExist = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
   if (!password) {
-    res.status(500).send({
-      success: false,
-      error: {
-        message: 'password is missing',
-      },
-    });
+    next(ApiError.badRequest('password is missing'));
   }
   try {
-    const user = DatabaseService.findOne(email, User).catch((e: any) => {
-      throw e;
+    const user = DatabaseService.findOne({ email }, User).catch((e: any) => {
+      next(e);
     });
-
     //@ts-expect-error
     res.user = user;
     next();
   } catch (e) {
-    res.status(500).send({
-      success: false,
-      error: {
-        message: e,
-      },
-    });
+    next(e);
   }
 };
-// LOG: anyIN
-
-function generateAccessToken(value: any) {
-  return jwt.sign(value, process.env.ACCESS_TOKEN_SECRET as string);
-}
 
 const createToken = (
-  req: express.Request,
-  res: express.Response & { user: any },
-  next: express.NextFunction
+  req: Request,
+  res: ResponseWithUserType,
+  next: NextFunction
 ) => {
   const { email } = req.body;
 
-  User.findOne({
-    where: { email },
-  })
+  DatabaseService.findOne({ email }, User)
     .then((usr: any) => {
       if (usr) {
         const userToSign = { email };
-        res.locals.jwt_secret = generateAccessToken(userToSign);
+        const token = AuthService.generateAccessToken(userToSign);
+        res.locals.jwt_secret = token;
         res.locals.jwt_type = 'Bearer';
         next();
       } else {
-        return res.status(500).send({
-          success: false,
-          error: {
-            message: 'nessun user trovato',
-          },
-        });
+        next(ApiError.badRequest('User not found'));
       }
     })
     .catch((e: any) => {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
-      });
+      next(e);
     });
 };
 
 const authenticateToken = (
-  req: express.Request,
-  res: express.Response & { user: any },
-  next: express.NextFunction
+  req: Request,
+  res: Response & { user: any },
+  next: NextFunction
 ) => {
   const authHeader = req.header('Authorization');
   const token = authHeader && authHeader.split(' ')[1];

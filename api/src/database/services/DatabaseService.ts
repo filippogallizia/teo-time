@@ -2,6 +2,7 @@ import { Op } from 'sequelize';
 
 import { BookingDTO } from '../../interfaces/BookingDTO';
 import { UserDTO } from '../../interfaces/UserDTO';
+import { BookingModel } from '../models/Bookings.model';
 
 export type RecordType = UserDTO | BookingDTO;
 
@@ -50,6 +51,7 @@ class QueryDates {
 
 class DatabaseService {
   public queryDates = new QueryDates();
+
   public findOne(
     searchParam: Record<string, unknown>,
     Model: any
@@ -58,6 +60,7 @@ class DatabaseService {
       where: searchParam,
     });
   }
+
   public findAll(
     searchParam: Record<string, unknown>,
     Model: any
@@ -65,6 +68,21 @@ class DatabaseService {
     return Model.findAll({
       where: { ...searchParam },
     });
+  }
+
+  public create(
+    params: Record<string, unknown>,
+    Model: any
+  ): Promise<RecordType> {
+    return Model.create(params);
+  }
+
+  public associate(
+    record: BookingModel,
+    recordToBeAssigned: Record<string, unknown>,
+    setFn: () => void
+  ): Promise<RecordType> {
+    return record.setFn(recordToBeAssigned);
   }
 }
 

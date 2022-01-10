@@ -3,6 +3,7 @@ import express from 'express';
 
 import { runEveryDay } from './helpers/cronJobs';
 import mainRoutes from './routes/routes';
+import { apiErrorHandler } from './services/ErrorHanlderService';
 
 require('dotenv').config();
 const app = express();
@@ -23,6 +24,10 @@ db.sequelize
     console.log('Drop and Resync Dbasssssxs');
   })
   .catch((e: any) => console.log(e));
+
+// Express error handlers
+
+app.use(apiErrorHandler);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
