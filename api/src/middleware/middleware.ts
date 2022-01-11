@@ -5,7 +5,8 @@ import _ from 'lodash';
 import { DateTime } from 'luxon';
 
 import { createDynamicAval, filterDays_updateDate } from '../../utils';
-import DatabaseService from '../database/services/DatabaseService';
+import BookingService from '../database/services/BookingService';
+import UserService from '../database/services/UserService';
 import { retrieveAvailability } from '../helpers/retrieveAvaliability';
 import {
   ResponseWithAvalType,
@@ -15,13 +16,16 @@ import AuthService from '../services/auth';
 import { ApiError } from '../services/ErrorHanlderService';
 import { WorkSetting } from '../types/types';
 
-const avalDefault = require('../config/availabilitiesDefault.config.json');
+//const db = require('../database/models/db');
 const db = require('../database/models/db');
 
-const User = db.user;
+const avalDefault = require('../config/availabilitiesDefault.config.json');
+
 const WeekavalSettings = db.WeekavalSettings;
-const Bookings = db.Bookings;
 const FixedBookings = db.FixedBookings;
+
+const bookingService = new BookingService(db.Bookings);
+const userService = new UserService(db.user);
 
 // chronJob to delete past bookings
 
@@ -55,45 +59,25 @@ export const bookExist = async (
   const endRange = req.body.end;
   try {
     const bookings = await Promise.all([
-      DatabaseService.findAll(
-        DatabaseService.queryDates.inBtwStartAndEnd(startRange, endRange),
-        Bookings
+      bookingService.findAll(
+        bookingService.queryDates.inBtwStartAndEnd(startRange, endRange)
       ),
-      DatabaseService.findAll(
-        DatabaseService.queryDates.inBtwStartAndSmallerEnd(
-          startRange,
-          endRange
-        ),
-        Bookings
+      bookingService.findAll(
+        bookingService.queryDates.inBtwStartAndSmallerEnd(startRange, endRange)
       ),
-      DatabaseService.findAll(
-        DatabaseService.queryDates.smallerStartAndBiggerEnd(
-          startRange,
-          endRange
-        ),
-        Bookings
+      bookingService.findAll(
+        bookingService.queryDates.smallerStartAndBiggerEnd(startRange, endRange)
       ),
-      DatabaseService.findAll(
-        DatabaseService.queryDates.smallerStartInBtwEnd(startRange, endRange),
-        Bookings
+      bookingService.findAll(
+        bookingService.queryDates.smallerStartInBtwEnd(startRange, endRange)
       ),
     ]);
 
     if (bookings.flat().length > 0) {
-      res.status(404).send({
-        success: false,
-        error: {
-          message: 'This hour is already booked',
-        },
-      });
+      ApiError.badRequest('this hour is already booked');
     } else next();
   } catch (e: any) {
-    res.status(500).send({
-      success: false,
-      error: {
-        message: e,
-      },
-    });
+    next(e);
   }
 };
 
@@ -110,21 +94,17 @@ const getAvailability = async (
     const end = avalRange[0].end;
 
     const bookings = await Promise.all([
-      DatabaseService.findAll(
-        DatabaseService.queryDates.inBtwStartAndEnd(start, end),
-        Bookings
+      bookingService.findAll(
+        bookingService.queryDates.inBtwStartAndEnd(start, end)
       ),
-      DatabaseService.findAll(
-        DatabaseService.queryDates.inBtwStartAndSmallerEnd(start, end),
-        Bookings
+      bookingService.findAll(
+        bookingService.queryDates.inBtwStartAndSmallerEnd(start, end)
       ),
-      DatabaseService.findAll(
-        DatabaseService.queryDates.smallerStartAndBiggerEnd(start, end),
-        Bookings
+      bookingService.findAll(
+        bookingService.queryDates.smallerStartAndBiggerEnd(start, end)
       ),
-      DatabaseService.findAll(
-        DatabaseService.queryDates.smallerStartInBtwEnd(start, end),
-        Bookings
+      bookingService.findAll(
+        bookingService.queryDates.smallerStartInBtwEnd(start, end)
       ),
     ]);
 
@@ -225,7 +205,7 @@ const userExist = async (req: Request, res: Response, next: NextFunction) => {
     next(ApiError.badRequest('password is missing'));
   }
   try {
-    const user = DatabaseService.findOne({ email }, User).catch((e: any) => {
+    const user = userService.findOne(email).catch((e: any) => {
       next(e);
     });
     //@ts-expect-error
@@ -243,7 +223,8 @@ const createToken = (
 ) => {
   const { email } = req.body;
 
-  DatabaseService.findOne({ email }, User)
+  userService
+    .findOne(email)
     .then((usr: any) => {
       if (usr) {
         const userToSign = { email };

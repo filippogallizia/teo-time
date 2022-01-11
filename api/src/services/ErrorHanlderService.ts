@@ -31,6 +31,6 @@ export function apiErrorHandler(err: any, req: any, res: any, next: any) {
     res.status(err.code).json(err.message);
     return;
   }
-  //  LoggerService.error(err);
+  console.log(err, 'ERROR');
   res.status(500).json('something went wrong');
 }

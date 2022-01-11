@@ -3,8 +3,14 @@ import events from 'events';
 import express, { NextFunction, Request, Response } from 'express';
 import { Op } from 'sequelize';
 
-import DatabaseService from '../database/services/DatabaseService';
-import { deleteEvent, getEvents, insertEvent } from '../googleApi/calendarApi';
+import BookingService from '../database/services/BookingService';
+import EmailService from '../database/services/EmailService';
+import UserService from '../database/services/UserService';
+import GoogleCalendarService, {
+  deleteEvent,
+  getEvents,
+  insertEvent,
+} from '../googleApi/GoogleCalendarService';
 import { BookingDTO } from '../interfaces/BookingDTO';
 import { UserDTO } from '../interfaces/UserDTO';
 import { changePwdEmail, sendEmail, successBkgEmail } from '../sendGrid/config';
@@ -14,6 +20,9 @@ import {
   ResponseWithAvalType,
   ResponseWithUserType,
 } from './interfaces/interfaces';
+
+//const db = require('../database/models/db');
+const db = require('../database/models/db');
 
 const stripe = require('stripe')(
   'sk_test_51K5AW1G4kWNoryvxAZVOFwVPZ6qyVKUqZJslh0UYiNlU0aDb3hd0ksS0zCBWbyXUvDKB6f9CA9RvU3Gwc2rfBtsw00lC98E85E'
@@ -27,7 +36,6 @@ const {
   authenticateToken,
   googleAuth,
 } = require('../middleware/middleware');
-const db = require('../database/models/db');
 const sgMail = require('@sendgrid/mail');
 const { v4 } = require('uuid');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY_2);
@@ -37,6 +45,9 @@ const User = db.user;
 const Bookings = db.Bookings;
 const WeekavalSettings = db.WeekavalSettings;
 const FixedBookings = db.FixedBookings;
+
+const bookingService = new BookingService(db.Bookings);
+const userService = new UserService(db.user);
 
 const router = express.Router();
 
@@ -85,12 +96,11 @@ router.get(
               });
             } else {
               const asyncFn = async () => {
-                const user = await DatabaseService.findOne(
-                  { email: r.email },
-                  User
-                ).catch((e: any) => {
-                  next(e);
-                });
+                const user = await userService
+                  .findOne(r.email)
+                  .catch((e: any) => {
+                    next(e);
+                  });
                 if (user) {
                   res.status(200).send({ user: user, isGoogleLogin: true });
                 } else {
@@ -131,87 +141,36 @@ router.get(
 
 router.post(
   '/createBooking',
-  [
-    //authenticateToken,
-    bookExist,
-  ],
+  [authenticateToken, bookExist],
 
-  (req: Request, res: ResponseWithUserType, next: NextFunction) => {
+  async (req: Request, res: ResponseWithUserType, next: NextFunction) => {
     try {
-      const { start, end, isHoliday, localId } = req.body;
-      const userEmail = res.user?.email;
+      const { start, end } = req.body;
+      const userEmail = res.user?.email || '';
 
-      DatabaseService.create(
-        {
-          start,
-          end,
-          isHoliday,
-          localId,
-        },
-        Bookings
-      )
-        .then((booking: any) => {
-          userEmail &&
-            DatabaseService.findOne({ email: userEmail }, user)
-              .then((usr: any) => {
-                // associate the booking with the user
-                booking.setUser(usr).catch((e: any) => {
-                  next(e);
-                });
-                //DatabaseService.associate(usr).catch((e: any) => {
-                //  next(e);
-                //});
-              })
-              .catch((e: any) => {
-                next(e);
-              });
+      // create booking
+      const booking = await bookingService.create(req);
 
-          // insert the booking to admin google calendar
+      // associate the booking with the user
+      const usr = await userService.findOne(userEmail);
+      await booking.setUser(usr);
 
-          const e = {
-            summary: process.env.EVENT_TYPE,
-            location: process.env.EVENT_LOCATION,
-            description: `${process.env.EVENT_DESCRIPTION} con ${userEmail}`,
-            organizer: {
-              email: process.env.ADMIN_EMAIL,
-              displayName: process.env.ADMIN_NAME,
-            },
-            start: {
-              dateTime: start,
-            },
-            end: {
-              dateTime: end,
-            },
-            colorId: 1,
-          };
+      // insert the booking to admin google calendar
+      const googleCalendarService = new GoogleCalendarService(
+        userEmail as string,
+        start,
+        end
+      );
+      await googleCalendarService.insertEvent();
 
-          insertEvent(e)
-            .then((res) => {
-              console.log(res);
-            })
-            .catch((e) => {
-              next(e);
-            });
+      // send email to client and admin
+      //await EmailService.sendEmail(
+      //  userEmail,
+      //  DateTime.fromISO(booking.start).toFormat('yyyy LLL dd t')
+      //);
 
-          //send email to client and admin
-
-          const email = successBkgEmail(
-            userEmail as string,
-            DateTime.fromISO(booking.start).toFormat('yyyy LLL dd t')
-          );
-
-          res.status(200).send(booking);
-          //sendEmail(email)
-          //  .then((r: any) => {
-          //    console.log(r);
-          //  })
-          //  .catch((err: any) => {
-          //    console.log(err);
-          //  });
-        })
-        .catch((e: any) => {
-          next(e);
-        });
+      // send booking to client
+      res.status(200).send(booking);
     } catch (e: any) {
       next(e);
     }
@@ -236,7 +195,9 @@ router.post(
   (req: Request, res: ResponseWithUserType, next: NextFunction) => {
     const { start, end } = req.body;
     try {
-      Bookings.findOne({ where: { start, end } })
+      bookingService
+        .findOne(req)
+        //Bookings.findOne({ where: { start, end } })
         .then((bks: any) => {
           if (bks) {
             bks
@@ -299,7 +260,8 @@ router.get(
     //@ts-expect-error
     const userEmail = res.user.email;
     try {
-      DatabaseService.findOne({ email: userEmail }, User)
+      userService
+        .findOne(userEmail)
         .then((usr: any) => {
           if (usr) {
             Bookings.findAll({
