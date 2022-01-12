@@ -10,6 +10,8 @@ export type WorkSetting = {
   breakTimeBtwEventsMinutes: string;
 };
 
+export type 
+
 export type TimeRangeType = {
   start: string;
   end: string;
@@ -17,13 +19,13 @@ export type TimeRangeType = {
 
 export type HrsAndMinsType = { hours: number; minutes: number };
 
-export type GeneralAvailabilityType = {
+export type DayAvailabilityType = {
   day: string;
   availability: TimeRangeType[];
 };
 
 export type GeneralAvaliabilityRulesType = {
-  weekAvalSettings: GeneralAvailabilityType[];
+  weekAvalSettings: DayAvailabilityType[];
 };
 
 export type BookedHoursType = {

@@ -1,22 +1,20 @@
 /* eslint-disable no-useless-catch */
 
-import { BookingDTO } from '../../interfaces/BookingDTO';
-import { UserDTO, UserInputDTO } from '../../interfaces/UserDTO';
-import { ApiError } from '../../services/ErrorHanlderService';
+import { BookingDTO } from '../interfaces/BookingDTO';
+import { UserDTO, UserInputDTO } from '../interfaces/UserDTO';
+import { ErrorService } from './ErrorService';
+const db = require('../database/models/db');
 
 export type RecordType = UserDTO | BookingDTO;
 
 class UserService {
-  userModel: any;
-  constructor(model: any) {
-    this.userModel = model;
-  }
+  userModel = db.user;
 
   public async findOne(email: string): Promise<any> {
     try {
       return await this.userModel.findOne({ where: { email } });
     } catch (error) {
-      throw ApiError.badRequest('User not found');
+      throw ErrorService.badRequest('User not found');
     }
   }
 
@@ -32,10 +30,7 @@ class UserService {
     return email === 'galliziafilippo@gmail.com' ? 'admin' : 'user';
   }
 
-  public async create(
-    user: UserDTO | undefined,
-    userInput: UserInputDTO
-  ): Promise<any> {
+  public async create(userInput: UserInputDTO): Promise<any> {
     const { email } = userInput;
     try {
       return await this.userModel.create({
@@ -48,4 +43,4 @@ class UserService {
   }
 }
 
-export default UserService;
+export default new UserService();

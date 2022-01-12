@@ -3,18 +3,15 @@ import events from 'events';
 import express, { NextFunction, Request, Response } from 'express';
 import { Op } from 'sequelize';
 
-import BookingService from '../database/services/BookingService';
 import EmailService from '../database/services/EmailService';
-import UserService from '../database/services/UserService';
 import GoogleCalendarService, {
   deleteEvent,
   getEvents,
-  insertEvent,
 } from '../googleApi/GoogleCalendarService';
-import { BookingDTO } from '../interfaces/BookingDTO';
-import { UserDTO } from '../interfaces/UserDTO';
-import { changePwdEmail, sendEmail, successBkgEmail } from '../sendGrid/config';
-import AuthService from '../services/auth';
+import { changePwdEmail, sendEmail } from '../sendGrid/config';
+import authService from '../services/AuthService';
+import bookingService from '../services/BookingService';
+import userService from '../services/UserService';
 import { TimeRangeType, UserType } from '../types/types';
 import {
   ResponseWithAvalType,
@@ -46,18 +43,15 @@ const Bookings = db.Bookings;
 const WeekavalSettings = db.WeekavalSettings;
 const FixedBookings = db.FixedBookings;
 
-const bookingService = new BookingService(db.Bookings);
-const userService = new UserService(db.user);
-
 const router = express.Router();
 
 const OTP = v4();
 router.post(
   '/signup',
   [userExist],
-  (req: Request, res: ResponseWithUserType, next: NextFunction) => {
+  async (req: Request, res: ResponseWithUserType, next: NextFunction) => {
     try {
-      AuthService.signUp(res.user, req.body);
+      await authService.signUp(res.user, req.body);
       res.send({ message: 'User was registered successfully!' });
     } catch (e: any) {
       next(e);
@@ -70,7 +64,7 @@ router.post(
   [userExist, createToken],
   (req: Request, res: ResponseWithUserType, next: NextFunction) => {
     try {
-      AuthService.errorUserNotFound(res.user);
+      authService.errorUserNotFound(res.user);
       res.status(200).send({ user: res.user, token: res.locals.jwt_secret });
     } catch (e) {
       next(e);
@@ -181,6 +175,7 @@ router.post(
   '/retrieveAvailability',
   [getAvailability],
   (req: Request, res: ResponseWithAvalType, next: NextFunction) => {
+    console.log('here');
     try {
       res.status(200).send(res.availabilities);
     } catch (e: any) {

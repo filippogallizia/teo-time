@@ -3,13 +3,13 @@ export type TimeRangeType = {
   end: string;
 };
 
-export type GeneralAvailabilityType = {
+export type DayAvailabilityType = {
   day: string;
   availability: TimeRangeType[];
 };
 
 export type GeneralAvaliabilityRulesType = {
-  weekAvalSettings: GeneralAvailabilityType[];
+  weekAvalSettings: DayAvailabilityType[];
 };
 
 export type BookedHoursType = {

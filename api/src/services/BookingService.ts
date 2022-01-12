@@ -1,9 +1,11 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { Op } from 'sequelize';
 
-import { BookingDTO } from '../../interfaces/BookingDTO';
-import { UserDTO } from '../../interfaces/UserDTO';
-import { ApiError } from '../../services/ErrorHanlderService';
+import { BookingDTO } from '../interfaces/BookingDTO';
+import { UserDTO } from '../interfaces/UserDTO';
+import { ErrorService } from './ErrorService';
+
+const db = require('../database/models/db');
 
 export type RecordType = UserDTO | BookingDTO;
 
@@ -51,18 +53,15 @@ class QueryDates {
 }
 
 class BookingService {
-  bookingModel: any;
+  bookingModel = db.Bookings;
   public queryDates = new QueryDates();
-  constructor(model?: any) {
-    this.bookingModel = model;
-  }
 
   public async findOne(req: Request): Promise<any> {
     const { start, end } = req.body;
     try {
       return await this.bookingModel.findOne({ where: { start, end } });
     } catch (error) {
-      throw ApiError.badRequest('Booking not found');
+      throw ErrorService.badRequest('Booking not found');
     }
   }
 
@@ -82,17 +81,19 @@ class BookingService {
   }
 
   public async findAll(
-    searchParam: Record<string, unknown>
+    searchParam?: Record<string, unknown>
   ): Promise<RecordType[]> {
     // eslint-disable-next-line no-useless-catch
     try {
-      return await this.bookingModel.findAll({
-        where: { ...searchParam },
-      });
+      if (searchParam) {
+        return await this.bookingModel.findAll({
+          where: { ...searchParam },
+        });
+      } else return await this.bookingModel.findAll();
     } catch (e) {
       throw e;
     }
   }
 }
 
-export default BookingService;
+export default new BookingService();

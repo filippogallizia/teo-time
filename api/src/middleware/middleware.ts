@@ -4,16 +4,20 @@ import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 
-import { createDynamicAval, filterDays_updateDate } from '../../utils';
-import BookingService from '../database/services/BookingService';
-import UserService from '../database/services/UserService';
-import { retrieveAvailability } from '../helpers/retrieveAvaliability';
+import {
+  createDynamicAval,
+  filterDays_updateDate,
+  retrieveAvailability,
+} from '../../utils';
 import {
   ResponseWithAvalType,
   ResponseWithUserType,
 } from '../routes/interfaces/interfaces';
-import AuthService from '../services/auth';
-import { ApiError } from '../services/ErrorHanlderService';
+import AuthService from '../services/AuthService';
+import bookingService from '../services/BookingService';
+import { ErrorService } from '../services/ErrorService';
+import fixedBookingService from '../services/FixedBookingService';
+import userService from '../services/UserService';
 import { WorkSetting } from '../types/types';
 
 //const db = require('../database/models/db');
@@ -23,9 +27,6 @@ const avalDefault = require('../config/availabilitiesDefault.config.json');
 
 const WeekavalSettings = db.WeekavalSettings;
 const FixedBookings = db.FixedBookings;
-
-const bookingService = new BookingService(db.Bookings);
-const userService = new UserService(db.user);
 
 // chronJob to delete past bookings
 
@@ -74,7 +75,7 @@ export const bookExist = async (
     ]);
 
     if (bookings.flat().length > 0) {
-      ApiError.badRequest('this hour is already booked');
+      ErrorService.badRequest('this hour is already booked');
     } else next();
   } catch (e: any) {
     next(e);
@@ -120,9 +121,7 @@ const getAvailability = async (
 
     // get fixedBooking from database and change their date using avalRange date
 
-    const fixedBks = await FixedBookings.findAll().catch((e: any) =>
-      console.log(e)
-    );
+    const fixedBks = await fixedBookingService.findAll();
 
     const parsedFixedBookings = filterDays_updateDate(fixedBks, avalRange).map(
       (day) => day.availability
@@ -133,7 +132,6 @@ const getAvailability = async (
     const joinedBookings = [...parsedBookings, ...parsedFixedBookings.flat()];
 
     // get weekAvalSetting and create dynamicAval. If there are not weekAvalSetting create them.
-
     const weekavalSetting = await WeekavalSettings.findAll()
       .then((daySetting: WorkSetting[]) => {
         if (daySetting.length > 0) {
@@ -175,10 +173,12 @@ const getAvailability = async (
         }
       })
       .catch((e: any) => {
-        throw e;
+        next(e);
       });
 
-    // joing all the datas togheter and get availabilities, hopefully all works
+    // join all the datas togheter and get availabilities, hopefully all works
+
+    console.log(weekavalSetting, 'weekavalSetting');
 
     const availabilities = retrieveAvailability(
       {
@@ -190,22 +190,17 @@ const getAvailability = async (
     res.availabilities = availabilities;
     next();
   } catch (e: any) {
-    res.status(500).send({
-      success: false,
-      error: {
-        message: e,
-      },
-    });
+    next(e);
   }
 };
 
 const userExist = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
   if (!password) {
-    next(ApiError.badRequest('password is missing'));
+    next(ErrorService.badRequest('password is missing'));
   }
   try {
-    const user = userService.findOne(email).catch((e: any) => {
+    const user = await userService.findOne(email).catch((e: any) => {
       next(e);
     });
     //@ts-expect-error
@@ -216,14 +211,14 @@ const userExist = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const createToken = (
+const createToken = async (
   req: Request,
   res: ResponseWithUserType,
   next: NextFunction
 ) => {
   const { email } = req.body;
 
-  userService
+  await userService
     .findOne(email)
     .then((usr: any) => {
       if (usr) {
@@ -233,7 +228,7 @@ const createToken = (
         res.locals.jwt_type = 'Bearer';
         next();
       } else {
-        next(ApiError.badRequest('User not found'));
+        next(ErrorService.badRequest('User not found'));
       }
     })
     .catch((e: any) => {

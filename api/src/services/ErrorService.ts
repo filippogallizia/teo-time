@@ -7,7 +7,7 @@ export enum HttpStatusCode {
   INTERNAL_SERVER = 500,
 }
 
-export class ApiError {
+export class ErrorService {
   code: any;
   message: any;
   constructor(code: any, message: any) {
@@ -16,18 +16,18 @@ export class ApiError {
   }
 
   static badRequest(msg: any) {
-    return new ApiError(400, msg);
+    return new ErrorService(400, msg);
   }
 
   static internal(msg: any) {
-    return new ApiError(500, msg);
+    return new ErrorService(500, msg);
   }
 }
 
 export function apiErrorHandler(err: any, req: any, res: any, next: any) {
   // in prod, don't use console.log or console.err because
   // it is not async
-  if (err instanceof ApiError) {
+  if (err instanceof ErrorService) {
     res.status(err.code).json(err.message);
     return;
   }

@@ -2,7 +2,8 @@ import { DateTime } from 'luxon';
 
 import {
   BookingType,
-  GeneralAvailabilityType,
+  DayAvailabilityType,
+  GeneralAvaliabilityRulesType,
   HrsAndMinsType,
   TimeRangeType,
 } from './src/types/types';
@@ -40,7 +41,7 @@ export const DATE_TO_CLIENT_FORMAT = (date: string) => {
 // loop throug general Aval, filter for day with timerange, return availabilities with uploaded date
 
 export const filterDays_updateDate = (
-  genAv: GeneralAvailabilityType,
+  genAv: DayAvailabilityType,
   timerange: TimeRangeType[]
 ): {
   day: string;
@@ -49,10 +50,10 @@ export const filterDays_updateDate = (
   return _.intersectionWith(
     genAv,
     timerange,
-    (a: GeneralAvailabilityType, b: TimeRangeType) => {
+    (a: DayAvailabilityType, b: TimeRangeType) => {
       return a.day == FROM_DATE_TO_DAY(b.start);
     }
-  ).map((day: GeneralAvailabilityType) => {
+  ).map((day: DayAvailabilityType) => {
     // update the date
     const parseAvailabilities = day.availability.map(
       (a: { start: string; end: string }) => {
@@ -91,6 +92,8 @@ export const createAvalFromBks = (
 };
 
 export const joinDayAndTime = (date_day: string, date_time: string) => {
+  console.log(date_day, 'date day');
+  console.log(date_time, 'date time');
   return DateTime.fromISO(date_day)
     .set({
       hour: FROM_DATE_TO_HOUR(date_time),
@@ -119,7 +122,7 @@ export const createDynamicAval = (
 
   const tmpBucket: any = [];
 
-  // if thera are not slot in bucket && dayStart piu' eventDuration are smaller then breakStart, then push in the bucket
+  // if thera are not slot in bucket && dayStart plus eventDuration are smaller then breakStart, then push in the bucket
   while (
     dayStart.plus(eventDuration) <= breakStart &&
     avalBucket.length === 0
@@ -131,7 +134,6 @@ export const createDynamicAval = (
   }
 
   // if thera are not slot in bucket && dayStart piu' eventDuration is bigger then breakStart but breakEnd plus eventDuration is smaller the dayEnd, then push in the bucket
-
   while (
     dayStart.plus(eventDuration) > breakStart &&
     avalBucket.length === 0 &&
@@ -144,7 +146,6 @@ export const createDynamicAval = (
   }
 
   // if fineUltimoTurno plus eventDuration is smaller then breakStart, then push in bucket
-
   while (
     avalBucket[avalBucket.length - 1].end
       .plus(eventDuration)
@@ -159,7 +160,6 @@ export const createDynamicAval = (
   }
 
   // if breakEnd plus eventDuration is smaller then dayEnd, then push in bucket
-
   while (
     breakEnd.plus(eventDuration) <= dayEnd &&
     avalBucket[avalBucket.length - 1].end <= dayEnd &&
@@ -189,4 +189,25 @@ export const createDynamicAval = (
     start: DateTime.fromISO(obj.start).toUTC().toISO(),
     end: DateTime.fromISO(obj.end).toUTC().toISO(),
   }));
+};
+
+export const retrieveAvailability = (
+  bookedHours: {
+    bookings: BookingType[];
+  },
+  genAval: GeneralAvaliabilityRulesType,
+  avalTimeRange?: { start: string; end: string }[]
+) => {
+  //@ts-expect-error
+  const final = filterDays_updateDate(genAval.weekAvalSettings, avalTimeRange);
+  if (final.length === 0) return [];
+  try {
+    const result = createAvalFromBks(
+      final[0].availability,
+      bookedHours.bookings
+    );
+    return result;
+  } catch (e) {
+    console.log(e);
+  }
 };

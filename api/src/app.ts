@@ -3,7 +3,7 @@ import express from 'express';
 
 import { runEveryDay } from './helpers/cronJobs';
 import mainRoutes from './routes/routes';
-import { apiErrorHandler } from './services/ErrorHanlderService';
+import { apiErrorHandler } from './services/ErrorService';
 
 require('dotenv').config();
 const app = express();
