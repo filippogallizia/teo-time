@@ -1,6 +1,6 @@
-const WeekavalSettings = (sequelize: any, Sequelize: any) => {
-  const WeekavalSettings = sequelize.define(
-    'weekavalSetting',
+const DatabaseAvailabilty = (sequelize: any, Sequelize: any) => {
+  const databaseAvailabilty = sequelize.define(
+    'databaseAvailabilty',
     {
       day: {
         type: Sequelize.STRING,
@@ -36,7 +36,7 @@ const WeekavalSettings = (sequelize: any, Sequelize: any) => {
     }
   );
 
-  return WeekavalSettings;
+  return databaseAvailabilty;
 };
 
-export default WeekavalSettings;
+export default DatabaseAvailabilty;

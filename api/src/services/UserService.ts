@@ -19,18 +19,33 @@ class UserService {
   }
 
   public async findAll(
-    searchParam: Record<string, unknown>
+    searchParam?: Record<string, unknown>,
+    isInclude?: boolean
   ): Promise<RecordType[]> {
-    return await this.userModel.findAll({
-      where: { ...searchParam },
-    });
+    if (searchParam && !isInclude) {
+      return await this.userModel.findAll({
+        where: { ...searchParam },
+      });
+    }
+    if (searchParam && isInclude) {
+      return await this.userModel.findAll({
+        ...searchParam,
+      });
+    } else {
+      return await this.userModel.findAll();
+    }
   }
 
   public getRole(email: string) {
     return email === 'galliziafilippo@gmail.com' ? 'admin' : 'user';
   }
 
-  public async create(userInput: UserInputDTO): Promise<any> {
+  public async create(userInput: {
+    email: string;
+    password?: string;
+    phoneNumber?: string;
+    name: string;
+  }): Promise<any> {
     const { email } = userInput;
     try {
       return await this.userModel.create({

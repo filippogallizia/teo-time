@@ -1,5 +1,5 @@
-const FixedBookings = (sequelize: any, Sequelize: any) => {
-  const fixedBookings = sequelize.define(
+const FixedBooking = (sequelize: any, Sequelize: any) => {
+  const fixedBooking = sequelize.define(
     'fixedBook',
     {
       start: {
@@ -24,7 +24,7 @@ const FixedBookings = (sequelize: any, Sequelize: any) => {
     }
   );
 
-  return fixedBookings;
+  return fixedBooking;
 };
 
-export default FixedBookings;
+export default FixedBooking;

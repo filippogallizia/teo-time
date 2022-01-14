@@ -1,8 +1,8 @@
 const dbConfig = require('../../config/db.config.js');
 
-import BookingsModel from './Bookings.model';
-import FixedBookingsModel from './fixedBookings.model';
-import WorkSettingsModel from './weekAvailabilitiesSetting.model';
+import BookingsModel from './booking.model';
+import DatabaseAvailabiltyModel from './databaseAvailabilty.model';
+import FixedBookingsModel from './fixedBooking.model';
 
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize(
@@ -35,7 +35,7 @@ db.Bookings = BookingsModel(sequelize, Sequelize);
 //@ts-expect-error
 db.FixedBookings = FixedBookingsModel(sequelize, Sequelize);
 //@ts-expect-error
-db.WeekavalSettings = WorkSettingsModel(sequelize, Sequelize);
+db.DatabaseAvailabilty = DatabaseAvailabiltyModel(sequelize, Sequelize);
 //@ts-expect-error
 db.user.hasMany(db.Bookings, { as: 'bookings' });
 //@ts-expect-error

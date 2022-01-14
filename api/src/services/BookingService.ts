@@ -81,13 +81,22 @@ class BookingService {
   }
 
   public async findAll(
-    searchParam?: Record<string, unknown>
+    searchParam?: Record<string, unknown>,
+    isInclude?: boolean
   ): Promise<RecordType[]> {
     // eslint-disable-next-line no-useless-catch
     try {
-      if (searchParam) {
+      if (searchParam && !isInclude) {
         return await this.bookingModel.findAll({
           where: { ...searchParam },
+        });
+      }
+      if (searchParam && isInclude) {
+        /**
+          todo: add logic of include here
+         */
+        return await this.bookingModel.findAll({
+          ...searchParam,
         });
       } else return await this.bookingModel.findAll();
     } catch (e) {

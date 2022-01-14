@@ -38,10 +38,21 @@ export const DATE_TO_CLIENT_FORMAT = (date: string) => {
   return DateTime.fromISO(date).toFormat('yyyy LLL dd t');
 };
 
+export const joinDayAndTime = (date_day: string, date_time: string) => {
+  return DateTime.fromISO(date_day)
+    .set({
+      hour: FROM_DATE_TO_HOUR(date_time),
+      minute: FROM_DATE_TO_MINUTES(date_time),
+      second: 0,
+      millisecond: 0,
+    })
+    .toISO();
+};
+
 // loop throug general Aval, filter for day with timerange, return availabilities with uploaded date
 
 export const filterDays_updateDate = (
-  genAv: DayAvailabilityType,
+  genAv: DayAvailabilityType[],
   timerange: TimeRangeType[]
 ): {
   day: string;
@@ -73,7 +84,9 @@ export const filterDays_updateDate = (
 
 // use this function to create availabilities after comparing them with existing bookings
 
-export const createAvalFromBks = (
+/** */
+
+export const removeBksFromAval = (
   availabilities: TimeRangeType[],
   bookings: BookingType[]
 ) => {
@@ -91,36 +104,45 @@ export const createAvalFromBks = (
   );
 };
 
-export const joinDayAndTime = (date_day: string, date_time: string) => {
-  console.log(date_day, 'date day');
-  console.log(date_time, 'date time');
-  return DateTime.fromISO(date_day)
-    .set({
-      hour: FROM_DATE_TO_HOUR(date_time),
-      minute: FROM_DATE_TO_MINUTES(date_time),
-      second: 0,
-      millisecond: 0,
-    })
-    .toISO();
+export const retrieveAvailability = (
+  bookedHours: {
+    bookings: BookingType[];
+  },
+  genAval: DayAvailabilityType[],
+  avalTimeRange: { start: string; end: string }[]
+) => {
+  const final = filterDays_updateDate(genAval, avalTimeRange);
+  if (final.length === 0) return [];
+  try {
+    return removeBksFromAval(final[0].availability, bookedHours.bookings);
+  } catch (e) {
+    console.log(e);
+  }
 };
 
-// this function create aval slot given the following inputs
+/**
+ * this function create aval slots given the following inputs
+ * @param workTimeRange
+ * @param breakTimeRange
+ * @param eventDuration
+ * @param breakTimeBtwEvents
+ */
 
-export const createDynamicAval = (
+export const avalSlotsFromTimeRange = (
   workTimeRange: TimeRangeType,
   breakTimeRange: TimeRangeType,
   eventDuration: HrsAndMinsType,
   breakTimeBtwEvents: HrsAndMinsType
-) => {
+): TimeRangeType[] => {
   const dayStart = DateTime.fromISO(workTimeRange.start);
   const dayEnd = DateTime.fromISO(workTimeRange.end);
 
   const breakStart = DateTime.fromISO(breakTimeRange.start);
   const breakEnd = DateTime.fromISO(breakTimeRange.end);
 
-  const avalBucket: any = [];
+  const avalBucket: { start: DateTime; end: DateTime }[] = [];
 
-  const tmpBucket: any = [];
+  const tmpBucket: { start: DateTime; end: DateTime }[] = [];
 
   // if thera are not slot in bucket && dayStart plus eventDuration are smaller then breakStart, then push in the bucket
   while (
@@ -185,29 +207,10 @@ export const createDynamicAval = (
       end: tmpBucket[tmpBucket.length - 1].end,
     });
   }
-  return avalBucket.map((obj: { start: string; end: string }) => ({
-    start: DateTime.fromISO(obj.start).toUTC().toISO(),
-    end: DateTime.fromISO(obj.end).toUTC().toISO(),
-  }));
-};
-
-export const retrieveAvailability = (
-  bookedHours: {
-    bookings: BookingType[];
-  },
-  genAval: GeneralAvaliabilityRulesType,
-  avalTimeRange?: { start: string; end: string }[]
-) => {
-  //@ts-expect-error
-  const final = filterDays_updateDate(genAval.weekAvalSettings, avalTimeRange);
-  if (final.length === 0) return [];
-  try {
-    const result = createAvalFromBks(
-      final[0].availability,
-      bookedHours.bookings
-    );
-    return result;
-  } catch (e) {
-    console.log(e);
-  }
+  return avalBucket.map((obj: { start: DateTime; end: DateTime }) => {
+    return {
+      start: obj.start.toUTC().toISO(),
+      end: obj.end.toUTC().toISO(),
+    };
+  });
 };

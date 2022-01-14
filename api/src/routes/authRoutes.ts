@@ -4,11 +4,9 @@ import Auth from '../services/AuthService';
 import { ResponseWithUserType } from './interfaces/interfaces';
 
 const { userExist, createToken } = require('../middleware/middleware');
-//const db = require('../database/models//db');
+const db = require('../database/models/db');
 
 const route = Router();
-
-export default {};
 
 //export default (app: Router) => {
 //  app.use('/login', route);

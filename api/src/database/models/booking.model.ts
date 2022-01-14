@@ -1,4 +1,4 @@
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Model } from 'sequelize';
 
 export interface BookingModel extends Model {
   id?: number;
@@ -8,9 +8,9 @@ export interface BookingModel extends Model {
   localId: number;
 }
 
-const Bookings = (sequelize: any, Sequelize: any) => {
-  const bookings = sequelize.define(
-    'bookings',
+const Booking = (sequelize: any, Sequelize: any) => {
+  const booking = sequelize.define(
+    'booking',
     {
       start: {
         type: Sequelize.DATE,
@@ -32,7 +32,7 @@ const Bookings = (sequelize: any, Sequelize: any) => {
     }
   );
 
-  return bookings;
+  return booking;
 };
 
-export default Bookings;
+export default Booking;

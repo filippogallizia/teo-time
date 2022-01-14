@@ -1,22 +1,25 @@
-import { createDynamicAval, retrieveAvailability } from '../../utils';
+import { avalSlotsFromTimeRange, retrieveAvailability } from '../../utils';
+import { DatabaseAvailabilityType } from '../types/types';
 const db = require('../database/models/db');
-const WeekavalSettings = db.WeekavalSettings;
+const DatabaseAvailabilty = db.DatabaseAvailabilty;
 
 class AvailabilitiesService {
-  createDynamicAval = createDynamicAval;
+  avalSlotsFromTimeRange = avalSlotsFromTimeRange;
   retrieveAvailability = retrieveAvailability;
 }
 
-export default AvailabilitiesService;
+//export default AvailabilitiesService;
 
-const weekavalSetting = async () => {
-  await WeekavalSettings.findAll()
-    .then((daySetting: WorkSetting[]) => {
+const parseDatabaseAvailability = async (
+  availDefault: DatabaseAvailabilityType[]
+) => {
+  return await DatabaseAvailabilty.findAll()
+    .then((daySetting: DatabaseAvailabilityType[]) => {
       if (daySetting.length > 0) {
-        const result = daySetting.map((day: WorkSetting) => {
+        const result = daySetting.map((day: DatabaseAvailabilityType) => {
           return {
             day: day.day,
-            availability: createDynamicAval(
+            availability: avalSlotsFromTimeRange(
               { start: day.workTimeStart, end: day.workTimeEnd },
               { start: day.breakTimeStart, end: day.breakTimeEnd },
               {
@@ -32,18 +35,27 @@ const weekavalSetting = async () => {
         });
         return result;
       } else {
-        avalDefault.weekAvalSettings.map((day: any) => {
-          WeekavalSettings.create({
+        availDefault.map((day: DatabaseAvailabilityType) => {
+          const {
+            workTimeStart,
+            workTimeEnd,
+            breakTimeStart,
+            breakTimeEnd,
+            eventDurationHours,
+            eventDurationMinutes,
+            breakTimeBtwEventsHours,
+            breakTimeBtwEventsMinutes,
+          } = day;
+          DatabaseAvailabilty.create({
             day: day.day,
-            workTimeStart: day.parameters.workTimeRange.start,
-            workTimeEnd: day.parameters.workTimeRange.end,
-            breakTimeStart: day.parameters.breakTimeRange.start,
-            breakTimeEnd: day.parameters.breakTimeRange.end,
-            eventDurationHours: day.parameters.eventDuration.hours,
-            eventDurationMinutes: day.parameters.eventDuration.minutes,
-            breakTimeBtwEventsHours: day.parameters.breakTimeBtwEvents.hours,
-            breakTimeBtwEventsMinutes:
-              day.parameters.breakTimeBtwEvents.minutes,
+            workTimeStart,
+            workTimeEnd,
+            breakTimeStart,
+            breakTimeEnd,
+            eventDurationHours,
+            eventDurationMinutes,
+            breakTimeBtwEventsHours,
+            breakTimeBtwEventsMinutes,
           }).catch((e: any) => {
             throw e;
           });
@@ -51,6 +63,8 @@ const weekavalSetting = async () => {
       }
     })
     .catch((e: any) => {
-      next(e);
+      console.log(e);
     });
 };
+
+export default parseDatabaseAvailability;

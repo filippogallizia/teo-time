@@ -1,4 +1,4 @@
-export type WorkSetting = {
+export type DatabaseAvailabilityType = {
   day: string;
   workTimeStart: string;
   workTimeEnd: string;
@@ -9,8 +9,6 @@ export type WorkSetting = {
   breakTimeBtwEventsHours: string;
   breakTimeBtwEventsMinutes: string;
 };
-
-export type 
 
 export type TimeRangeType = {
   start: string;

@@ -4,29 +4,23 @@ import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 
-import {
-  createDynamicAval,
-  filterDays_updateDate,
-  retrieveAvailability,
-} from '../../utils';
+import { filterDays_updateDate, retrieveAvailability } from '../../utils';
 import {
   ResponseWithAvalType,
   ResponseWithUserType,
 } from '../routes/interfaces/interfaces';
 import AuthService from '../services/AuthService';
+import parseDatabaseAvailability from '../services/AvailabilitiesService';
 import bookingService from '../services/BookingService';
 import { ErrorService } from '../services/ErrorService';
 import fixedBookingService from '../services/FixedBookingService';
 import userService from '../services/UserService';
-import { WorkSetting } from '../types/types';
+import { DatabaseAvailabilityType, DayAvailabilityType } from '../types/types';
 
 //const db = require('../database/models/db');
 const db = require('../database/models/db');
 
 const avalDefault = require('../config/availabilitiesDefault.config.json');
-
-const WeekavalSettings = db.WeekavalSettings;
-const FixedBookings = db.FixedBookings;
 
 // chronJob to delete past bookings
 
@@ -132,61 +126,19 @@ const getAvailability = async (
     const joinedBookings = [...parsedBookings, ...parsedFixedBookings.flat()];
 
     // get weekAvalSetting and create dynamicAval. If there are not weekAvalSetting create them.
-    const weekavalSetting = await WeekavalSettings.findAll()
-      .then((daySetting: WorkSetting[]) => {
-        if (daySetting.length > 0) {
-          const result = daySetting.map((day: WorkSetting) => {
-            return {
-              day: day.day,
-              availability: createDynamicAval(
-                { start: day.workTimeStart, end: day.workTimeEnd },
-                { start: day.breakTimeStart, end: day.breakTimeEnd },
-                {
-                  hours: Number(day.eventDurationHours),
-                  minutes: Number(day.eventDurationMinutes),
-                },
-                {
-                  hours: Number(day.breakTimeBtwEventsHours),
-                  minutes: Number(day.breakTimeBtwEventsMinutes),
-                }
-              ),
-            };
-          });
-          return result;
-        } else {
-          avalDefault.weekAvalSettings.map((day: any) => {
-            WeekavalSettings.create({
-              day: day.day,
-              workTimeStart: day.parameters.workTimeRange.start,
-              workTimeEnd: day.parameters.workTimeRange.end,
-              breakTimeStart: day.parameters.breakTimeRange.start,
-              breakTimeEnd: day.parameters.breakTimeRange.end,
-              eventDurationHours: day.parameters.eventDuration.hours,
-              eventDurationMinutes: day.parameters.eventDuration.minutes,
-              breakTimeBtwEventsHours: day.parameters.breakTimeBtwEvents.hours,
-              breakTimeBtwEventsMinutes:
-                day.parameters.breakTimeBtwEvents.minutes,
-            }).catch((e: any) => {
-              throw e;
-            });
-          });
-        }
-      })
-      .catch((e: any) => {
-        next(e);
-      });
+
+    const daysAvailabilities: DayAvailabilityType[] =
+      await parseDatabaseAvailability(avalDefault);
 
     // join all the datas togheter and get availabilities, hopefully all works
-
-    console.log(weekavalSetting, 'weekavalSetting');
-
     const availabilities = retrieveAvailability(
       {
         bookings: joinedBookings,
       },
-      { weekAvalSettings: weekavalSetting },
+      daysAvailabilities,
       avalRange
     );
+
     res.availabilities = availabilities;
     next();
   } catch (e: any) {
@@ -218,40 +170,33 @@ const createToken = async (
 ) => {
   const { email } = req.body;
 
-  await userService
-    .findOne(email)
-    .then((usr: any) => {
-      if (usr) {
-        const userToSign = { email };
-        const token = AuthService.generateAccessToken(userToSign);
-        res.locals.jwt_secret = token;
-        res.locals.jwt_type = 'Bearer';
-        next();
-      } else {
-        next(ErrorService.badRequest('User not found'));
-      }
-    })
-    .catch((e: any) => {
-      next(e);
-    });
+  const usr = await userService.findOne(email);
+  try {
+    if (usr) {
+      const userToSign = { email };
+      const token = AuthService.generateAccessToken(userToSign);
+      res.locals.jwt_secret = token;
+      res.locals.jwt_type = 'Bearer';
+      next();
+    } else {
+      next(ErrorService.badRequest('User not found'));
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 
-const authenticateToken = (
+const authenticateToken = async (
   req: Request,
   res: Response & { user: any },
   next: NextFunction
 ) => {
   const authHeader = req.header('Authorization');
   const token = authHeader && authHeader.split(' ')[1];
-  if (!token)
-    return res.status(500).send({
-      success: false,
-      error: {
-        message: 'non hai effettuato il login',
-      },
-    });
-  googleAuth(token)
-    .then((payload: any) => {
+  if (!token) next(ErrorService.badRequest('User not logged in'));
+  else {
+    const payload = token && (await googleAuth(token));
+    try {
       if (payload) {
         res.user = { email: payload.email };
         next();
@@ -260,27 +205,18 @@ const authenticateToken = (
           token,
           process.env.ACCESS_TOKEN_SECRET as string,
           (err: any, decoded: any) => {
-            if (err)
-              return res.status(500).send({
-                success: false,
-                error: {
-                  message: 'accesso non autorizzato',
-                },
-              });
+            if (err) {
+              next(ErrorService.badRequest('Access not authorized'));
+            }
             res.user = decoded;
             next();
           }
         );
       }
-    })
-    .catch((e: any) => {
-      res.status(500).send({
-        success: false,
-        error: {
-          message: e,
-        },
-      });
-    });
+    } catch (error) {
+      next(error);
+    }
+  }
 };
 
 module.exports = {
@@ -289,6 +225,5 @@ module.exports = {
   getAvailability,
   bookExist,
   authenticateToken,
-
   googleAuth,
 };
