@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import GeneralButton from '../../component/GeneralButton';
 import {
   EVENT_INFO_TEXT,
@@ -8,19 +8,17 @@ import {
 } from '../../shared/locales/constant';
 import { handleToastInFailRequest } from '../../shared/locales/utils';
 import { DATE_TO_CLIENT_FORMAT } from '../../shared/locales/utils';
-import { BookingComponentType } from '../booking/BookingPageTypes';
-import { SET_USER_BOOKINGS } from '../booking/stateReducer';
 import { deleteBooking, retriveUserBooking } from './service/userService';
 import { toast } from 'react-toastify';
-import { TimeRangeType } from '../../../types/Types';
+import { BookingAndUser, TimeRangeType } from '../../../types/Types';
 import i18n from '../../i18n';
 
 const DeleteBooking = ({
   booking,
-  setRender,
+  fetchAndSetBookings,
 }: {
   booking: TimeRangeType;
-  setRender: Dispatch<SetStateAction<number>>;
+  fetchAndSetBookings: () => void;
 }) => {
   const handleDelete = async () => {
     try {
@@ -28,7 +26,7 @@ const DeleteBooking = ({
         start: booking.start,
         end: booking.end,
       });
-      setRender((prev) => prev + 1);
+      fetchAndSetBookings();
       toast.success('prenotazione cancellata', {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -46,23 +44,20 @@ const DeleteBooking = ({
   );
 };
 
-const UserPage = ({ dispatch, state }: BookingComponentType) => {
-  const [forceRender, setRender] = useState(0);
+const UserPage = () => {
+  const [bookings, setBookings] = useState<BookingAndUser[]>([]);
 
-  useEffect(() => {}, [forceRender]);
+  const fetchAndSetBookings = async () => {
+    try {
+      await retriveUserBooking(setBookings);
+    } catch (error) {
+      handleToastInFailRequest(error, toast);
+    }
+  };
+
   useEffect(() => {
-    const handleReceiveBooking = (booking: any) => {
-      dispatch({ type: SET_USER_BOOKINGS, payload: booking });
-    };
-    const asyncFunc = async () => {
-      try {
-        await retriveUserBooking(handleReceiveBooking);
-      } catch (e: any) {
-        handleToastInFailRequest(e, toast);
-      }
-    };
-    asyncFunc();
-  }, [dispatch, forceRender]);
+    fetchAndSetBookings();
+  }, []);
 
   const currentUser = localStorage.getItem(USER_INFO);
 
@@ -82,12 +77,12 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
       <p className={`${SUB_TITLE} text-center`}>
         {i18n.t('userPage.body.subtitle')}
       </p>
-      {state.schedules.userBookings.length > 0 ? (
+      {bookings.length > 0 ? (
         <div className="flex flex-col gap-8">
-          {state.schedules.userBookings.map((book) => {
+          {bookings.map((book) => {
             return (
               <DeleteBooking
-                setRender={setRender}
+                fetchAndSetBookings={fetchAndSetBookings}
                 key={book.start}
                 booking={book}
               />
@@ -95,7 +90,7 @@ const UserPage = ({ dispatch, state }: BookingComponentType) => {
           })}
         </div>
       ) : null}
-      {state.schedules.userBookings.length === 0 ? (
+      {bookings.length === 0 ? (
         <div className="flex justify-center">
           <p>Non hai prenotazioni marcate.</p>
         </div>

@@ -13,7 +13,6 @@ import { GRID_ONE_COL, TITLE } from '../../shared/locales/constant';
 import { handleToastInFailRequest } from '../../shared/locales/utils';
 import { toast } from 'react-toastify';
 import i18n from '../../i18n';
-import { BookingComponentType } from '../booking/BookingPageTypes';
 import { useLocation } from 'react-router-dom';
 import { buttonStyle } from '../../component/GeneralButton';
 
@@ -27,7 +26,7 @@ let schema = yup.object().shape({
   newPasswordRepeat: yup.string().required(),
 });
 
-const ResetPassword = ({ dispatch, state }: BookingComponentType) => {
+const ResetPassword = () => {
   const { register, handleSubmit, formState } = useForm<InitialFormType>({
     mode: 'onChange',
     resolver: yupResolver(schema),

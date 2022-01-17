@@ -5,16 +5,10 @@ import { toast } from 'react-toastify';
 import i18n from '../i18n';
 import 'react-toastify/dist/ReactToastify.css';
 import { UserContext } from './UserContext';
-import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import hamburgerIcon from '../shared/icons/hamburgerIcon.svg';
 import { AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
 import { GrUserAdmin } from 'react-icons/gr';
 import { BiLogIn, BiLogOut } from 'react-icons/bi';
-
-import {
-  SET_CONFIRM_PHASE,
-  SET_RENDER_AVAL,
-} from '../pages/booking/stateReducer';
 
 function useOutsideAlerter(ref: any, fn: any) {
   useEffect(() => {
@@ -43,16 +37,10 @@ function OutsideAlerter(props: any) {
   return <div ref={wrapperRef}>{props.children}</div>;
 }
 
-export default function Navbar({
-  fixed,
-  dispatch,
-  state,
-}: { fixed?: any } & BookingComponentType) {
+export default function Navbar({ fixed }: { fixed?: any }) {
   const history = useHistory();
   const [navbarOpen, setNavbarOpen] = React.useState(false);
   const { user, setUser, token, setToken } = useContext(UserContext);
-
-  const onHoverStyle = 'border-yellow-500';
 
   return (
     <OutsideAlerter setNavbarOpen={setNavbarOpen}>
@@ -87,13 +75,6 @@ export default function Navbar({
                 <Link
                   to={routes.HOMEPAGE_BOOKING}
                   className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug"
-                  onClick={() => {
-                    dispatch({ type: SET_CONFIRM_PHASE, payload: false });
-                    dispatch({
-                      type: SET_RENDER_AVAL,
-                      payload: false,
-                    });
-                  }}
                 >
                   <div className="flex  border-b-4 border-transparent hover:border-yellow-500">
                     <AiOutlineCalendar className="md:hidden mr-2" />

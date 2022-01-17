@@ -3,6 +3,16 @@ import { BookingType } from '../../../../types/Types';
 import { ACCESS_TOKEN } from '../../../shared/locales/constant';
 import { ENDPOINT } from '../../../api';
 
+export type BookingAndUsersResponse = {
+  id: number;
+  start: string;
+  end: string;
+  isHoliday: boolean;
+  localId: number;
+  user?: any;
+  userId: number;
+};
+
 export const getUsersAndBookings = async (fn: any) => {
   let config = {
     headers: {

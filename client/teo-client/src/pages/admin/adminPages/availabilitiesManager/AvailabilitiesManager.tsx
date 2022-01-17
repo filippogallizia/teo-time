@@ -1,9 +1,4 @@
-import { BookingComponentType } from '../../../booking/BookingPageTypes';
-import {
-  DayAvalSettingsType,
-  SET_ALL_WEEK_AVAL_SETTINGS,
-  SET_WEEK_AVAL_SETTINGS,
-} from '../../../booking/stateReducer';
+import { DayAvalSettingsType } from '../../../booking/stateReducer';
 import { BOLD, ITALIC } from '../../../../shared/locales/constant';
 import GeneralButton from '../../../../component/GeneralButton';
 import {
@@ -12,9 +7,14 @@ import {
 } from './service/availabilitiesManagerService';
 import CardComponent from '../../components/Card';
 import i18n from '../../../../i18n';
-import { useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
 import { handleToastInFailRequest } from '../../../../shared/locales/utils';
 import { toast } from 'react-toastify';
+import reducer, {
+  SET_ALL_WEEK_AVAL_SETTINGS,
+  SET_WEEK_AVAL_SETTINGS,
+} from './reducer';
+
 export const weekDays = [
   'Monday',
   'Tuesday',
@@ -23,7 +23,111 @@ export const weekDays = [
   'Friday',
 ];
 
-const AvalManager = ({ dispatch, state }: BookingComponentType) => {
+const initialState = {
+  weekAvalSettings: [
+    {
+      day: 'Monday',
+      parameters: {
+        workTimeRange: {
+          start: '07:30',
+          end: '21:00',
+        },
+        breakTimeRange: {
+          start: '12:00',
+          end: '13:30',
+        },
+        eventDuration: { hours: 1, minutes: 0 },
+        breakTimeBtwEvents: { hours: 0, minutes: 30 },
+      },
+    },
+    {
+      day: 'Tuesday',
+      parameters: {
+        workTimeRange: {
+          start: '07:30',
+          end: '21:00',
+        },
+        breakTimeRange: {
+          start: '12:00',
+          end: '13:30',
+        },
+        eventDuration: { hours: 1, minutes: 0 },
+        breakTimeBtwEvents: { hours: 0, minutes: 30 },
+      },
+    },
+    {
+      day: 'Wednesday',
+      parameters: {
+        workTimeRange: {
+          start: '07:30',
+          end: '21:00',
+        },
+        breakTimeRange: {
+          start: '12:00',
+          end: '13:30',
+        },
+        eventDuration: { hours: 1, minutes: 0 },
+        breakTimeBtwEvents: { hours: 0, minutes: 30 },
+      },
+    },
+    {
+      day: 'Thursday',
+      parameters: {
+        workTimeRange: {
+          start: '07:30',
+          end: '21:00',
+        },
+        breakTimeRange: {
+          start: '12:00',
+          end: '13:30',
+        },
+        eventDuration: { hours: 1, minutes: 0 },
+        breakTimeBtwEvents: { hours: 0, minutes: 30 },
+      },
+    },
+    {
+      day: 'Friday',
+      parameters: {
+        workTimeRange: {
+          start: '07:30',
+          end: '21:00',
+        },
+        breakTimeRange: {
+          start: '12:00',
+          end: '13:30',
+        },
+        eventDuration: { hours: 1, minutes: 0 },
+        breakTimeBtwEvents: { hours: 0, minutes: 30 },
+      },
+    },
+  ],
+  fixedBks: [
+    {
+      day: 'Monday',
+      bookings: [],
+    },
+    {
+      day: 'Tuesday',
+      bookings: [],
+    },
+    {
+      day: 'Wednesday',
+      bookings: [],
+    },
+    {
+      day: 'Thursday',
+      bookings: [],
+    },
+    {
+      day: 'Friday',
+      bookings: [],
+    },
+  ],
+};
+
+const AvalManager = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   type ResponseType = {
     breakTimeBtwEventsHours: string;
     breakTimeBtwEventsMinutes: string;
@@ -73,9 +177,7 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
     <div className=" grid grid-cols-1 gap-8 overflow-auto px-4">
       <div className="grid grid-cols-1 gap-4">
         {weekDays.map((day: string) => {
-          const dayInfo = state.schedules.weekAvalSettings.filter(
-            (d) => d.day === day
-          );
+          const dayInfo = state.weekAvalSettings.filter((d) => d.day === day);
 
           return (
             // <div key={day} className="shadow-md p-4">
@@ -178,7 +280,6 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
                 </div>
               </div>
             </CardComponent>
-            // </div>
           );
         })}
       </div>
@@ -195,15 +296,8 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
                 disabled
                 id="breakTimeRange.start"
                 value={
-                  state.schedules.weekAvalSettings[0].parameters
-                    ?.breakTimeBtwEvents.hours
+                  state.weekAvalSettings[0].parameters?.breakTimeBtwEvents.hours
                 }
-                // onChange={(e) => {
-                //   dispatch({
-                //     type: SET_WEEK_AVAL_SETTINGS,
-                //     payload: { day: day, e: e },
-                //   });
-                // }}
               />
             </div>
           </div>
@@ -217,15 +311,9 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
                 required
                 disabled
                 value={
-                  state.schedules.weekAvalSettings[0].parameters
-                    ?.breakTimeBtwEvents.minutes
+                  state.weekAvalSettings[0].parameters?.breakTimeBtwEvents
+                    .minutes
                 }
-                // onChange={(e) => {
-                //   dispatch({
-                //     type: SET_WEEK_AVAL_SETTINGS,
-                //     payload: { day: day, e: e },
-                //   });
-                // }}
               />
             </div>
           </div>
@@ -241,10 +329,9 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
                 id="pausa-ore"
                 disabled
                 value={
-                  state.schedules.weekAvalSettings[0].parameters?.eventDuration
-                    .hours
+                  state.weekAvalSettings[0].parameters?.eventDuration.hours
                 }
-                // value={state.schedules.manageAvailabilities}
+                // value={state.manageAvailabilities}
                 // onChange={(e) => {
                 //   dispatch({
                 //     type: SET_WEEK_AVAL_SETTINGS,
@@ -264,8 +351,7 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
                 required
                 disabled
                 value={
-                  state.schedules.weekAvalSettings[0].parameters?.eventDuration
-                    .minutes
+                  state.weekAvalSettings[0].parameters?.eventDuration.minutes
                 }
                 // value={
                 //   dayInfo.length > 0
@@ -292,7 +378,7 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
               try {
                 await manageAvailabilities(
                   handleSuccess,
-                  state.schedules.weekAvalSettings
+                  state.weekAvalSettings
                 );
                 toast.success("Disponibilita' cambiate!", {
                   position: toast.POSITION.TOP_CENTER,
@@ -310,3 +396,6 @@ const AvalManager = ({ dispatch, state }: BookingComponentType) => {
 };
 
 export default AvalManager;
+function useDispatch(arg0: () => any) {
+  throw new Error('Function not implemented.');
+}

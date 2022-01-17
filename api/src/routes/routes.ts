@@ -203,7 +203,7 @@ router.get(
             model: User,
             as: 'user',
           },
-          order: [['start', 'ASC']],
+          order: [['start', 'DESC']],
         },
         true
       );
@@ -413,7 +413,7 @@ router.get(
   [authenticateToken],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const bks = Bookings.findAll({ where: { isHoliday: true } });
+      const bks = await Bookings.findAll({ where: { isHoliday: true } });
       res.send(bks);
     } catch (e: any) {
       next(e);

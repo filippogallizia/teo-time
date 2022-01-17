@@ -14,10 +14,7 @@ export default class Modal extends Component {
       <div
         id="overlay"
         className="min-h-screen  bg-gray-100 fixed top-0 left-0 w-full flex justify-center items-center"
-        onClick={
-          () => console.log('cioa')
-          //this.dispatch({ type: SET_SHOW_MODAL, payload: { showModal: false } })
-        }
+        onClick={() => console.log('cioa')}
       >
         <div
           id="modal-content"

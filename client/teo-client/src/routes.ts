@@ -16,6 +16,9 @@ class Routes {
   public ADMIN = '/homepage/admin';
   public PAYMENT = '/homepage/payment';
   public HOMEPAGE_BOOKING = '/homepage/booking';
+  public HOMEPAGE_BOOKING_CONFIRM = '/homepage/booking/confirm';
+  public HOMEPAGE_BOOKING_PAYMENT = '/homepage/booking/payment';
+  public HOMEPAGE_BOOKING_SUCCESS = '/homepage/booking/success';
   public HOMEPAGE_SUCCESS = '/homepage/success';
   public ADMIN_BOOKING_MANAGER = '/homepage/admin/bookingManager';
   public ADMIN_AVAL_MANAGER = '/homepage/admin/avalManager';

@@ -1,36 +1,32 @@
-import { BookingComponentType } from '../../../booking/BookingPageTypes';
-import {
-  Actions,
-  ADD,
-  ADD_OR_REMOVE_FIXED_BKS,
-  DELETE,
-  FixedBookType,
-  SET_FIXED_BKS,
-  UPLOAD_EMAIL_CLIENT,
-  UPLOAD_END_DATE,
-  UPLOAD_START_DATE,
-} from '../../../booking/stateReducer';
+import { ADD, DELETE, FixedBookType } from '../../../booking/stateReducer';
 import { ITALIC } from '../../../../shared/locales/constant';
 import GeneralButton from '../../../../component/GeneralButton';
 
 import CardComponent from '../../components/Card';
 import i18n from '../../../../i18n';
-import { Dispatch, useEffect } from 'react';
-import {
-  handleToastInFailRequest,
-  promptConfirmation,
-} from '../../../../shared/locales/utils';
-import { toast } from 'react-toastify';
+import { useEffect, useReducer } from 'react';
+import { promptConfirmation } from '../../../../shared/locales/utils';
 import { getFixedBookings } from './fixedBookingsManagerService';
+import reducer, {
+  ADD_OR_REMOVE_FIXED_BKS,
+  SET_FIXED_BKS,
+  UPLOAD_EMAIL_CLIENT,
+  UPLOAD_END_DATE,
+  UPLOAD_START_DATE,
+} from './reducer';
 const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 type BookDetailsType = {
   bks: FixedBookType;
   day: string;
-  dispatch: Dispatch<Actions>;
 };
 
-const BookDetails = ({ dispatch, bks, day }: BookDetailsType) => {
+const initialState = {
+  fixedBks: [],
+};
+
+const BookDetails = ({ bks, day }: BookDetailsType) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
   return (
     <div className={`grid grid-cols-3 gap-4 border-b-4 pb-2`}>
       <p className={`col-span-3 ${ITALIC}`}>
@@ -137,7 +133,9 @@ const BookDetails = ({ dispatch, bks, day }: BookDetailsType) => {
   );
 };
 
-const FixedBksManager = ({ dispatch, state }: BookingComponentType) => {
+const FixedBksManager = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   useEffect(() => {
     const asyncFn = async () => {
       const handleSuccess = (res: any) => {
@@ -153,9 +151,7 @@ const FixedBksManager = ({ dispatch, state }: BookingComponentType) => {
     <div className=" grid grid-cols-1 gap-8 overflow-auto px-4">
       <div className="grid grid-cols-1 gap-4">
         {weekDays.map((day: string) => {
-          const matchedDay = state.schedules.fixedBks.filter(
-            (d) => d.day === day
-          );
+          const matchedDay = state.fixedBks.filter((d) => d.day === day);
           return (
             <div key={day} className="p-4">
               <CardComponent key={day}>
@@ -187,11 +183,7 @@ const FixedBksManager = ({ dispatch, state }: BookingComponentType) => {
                     matchedDay[0].bookings.map((bks) => {
                       return (
                         <div key={bks.id}>
-                          <BookDetails
-                            dispatch={dispatch}
-                            bks={bks}
-                            day={matchedDay[0].day}
-                          />
+                          <BookDetails bks={bks} day={matchedDay[0].day} />
                         </div>
                       );
                     })}

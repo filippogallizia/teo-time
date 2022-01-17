@@ -1,22 +1,18 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import { Switch } from 'react-router';
-import BookingPage from '../booking/BookingPage';
-import SuccessfulPage from '../successfulBooking/SuccesfulPage';
 import Routes from '../../routes';
 import HomePage from '../home/HomePage';
 import UserPage from '../user/UserPage';
 import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
-import ConfirmPage from '../confirm/ConfirmPage';
 import AdminPage from '../admin/AdminPage';
-import { BookingComponentType } from '../booking/BookingPageTypes';
 import { UserContext } from '../../component/UserContext';
-import { SET_LOCATION } from '../booking/stateReducer';
+import stateReducer, { SET_LOCATION } from '../booking/stateReducer';
 import {
   SelfCenterLayout,
   SelfTopLayout,
 } from '../../component/GeneralLayouts';
-import PaymentPage from '../payment/PaymentPage';
-import { ACCESS_TOKEN } from '../../shared/locales/constant';
+import BookingRouter from '../booking/BookingRouter';
+import { initialState } from '../booking/initialState';
 
 type ProtectedRouteType = {
   children: any;
@@ -42,14 +38,13 @@ export const ProtectedRoute = ({
   );
 };
 
-const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
+const GeneralPage = () => {
   const { user, token } = useContext(UserContext);
+  const [state, dispatch] = useReducer(stateReducer, initialState);
   let location = useLocation();
   useEffect(() => {
     dispatch({ type: SET_LOCATION, payload: { location: location.pathname } });
   }, [dispatch, location.pathname]);
-
-  const tokenParam = new URLSearchParams(window.location.search).get('token');
 
   return (
     <>
@@ -60,45 +55,20 @@ const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
           altRoute={Routes.LOGIN}
         >
           <SelfTopLayout>
-            <BookingPage dispatch={dispatch} state={state} />
+            <BookingRouter dispatch={dispatch} state={state} />
           </SelfTopLayout>
         </ProtectedRoute>
-        <ProtectedRoute
-          path={Routes.HOMEPAGE_SUCCESS}
-          condition={token || tokenParam ? true : false}
-          altRoute={Routes.LOGIN}
-        >
-          <SelfCenterLayout>
-            <SuccessfulPage dispatch={dispatch} state={state} />
-          </SelfCenterLayout>
-        </ProtectedRoute>
-        <ProtectedRoute
-          path={Routes.PAYMENT}
-          condition={true}
-          altRoute={Routes.LOGIN}
-        >
-          <SelfCenterLayout>
-            <PaymentPage dispatch={dispatch} state={state} />
-          </SelfCenterLayout>
-        </ProtectedRoute>
+
         <ProtectedRoute
           path={Routes.USER}
           condition={token ? true : false}
           altRoute={Routes.LOGIN}
         >
           <SelfCenterLayout>
-            <UserPage dispatch={dispatch} state={state} />
+            <UserPage />
           </SelfCenterLayout>
         </ProtectedRoute>
-        <ProtectedRoute
-          path={Routes.CONFIRM_PAGE}
-          condition={token || localStorage.getItem(ACCESS_TOKEN) ? true : false}
-          altRoute={Routes.LOGIN}
-        >
-          <SelfCenterLayout>
-            <ConfirmPage dispatch={dispatch} state={state} />
-          </SelfCenterLayout>
-        </ProtectedRoute>
+
         <ProtectedRoute
           path={Routes.ADMIN}
           condition={token && user && user.role === 'admin' ? true : false}
@@ -106,6 +76,7 @@ const GeneralPage = ({ dispatch, state }: BookingComponentType) => {
         >
           <AdminPage dispatch={dispatch} state={state} />
         </ProtectedRoute>
+
         <ProtectedRoute
           path={Routes.HOMEPAGE}
           condition={true}

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import AvalContainer from '../../component/AvailabilitiesContainer';
 import CalendarComponent from '../../component/Caledar';
 import EventInformations from '../../component/EventInformations';
+import routes from '../../routes';
 import { TAILWIND_MOBILE_BREAKPOINT } from '../../shared/locales/constant';
 import { BookingComponentType } from './BookingPageTypes';
+import { SET_CONFIRM_PHASE, SET_RENDER_AVAL } from './stateReducer';
 
 function BookingPage({ dispatch, state }: BookingComponentType) {
   const [dimensions, setDimensions] = useState({ width: window.innerWidth });
@@ -21,6 +23,14 @@ function BookingPage({ dispatch, state }: BookingComponentType) {
   }
 
   useEffect(() => {
+    dispatch({ type: SET_CONFIRM_PHASE, payload: false });
+    dispatch({
+      type: SET_RENDER_AVAL,
+      payload: false,
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
     const logResize = () => {
       setDimensions({ width: window.innerWidth });
     };
@@ -32,6 +42,8 @@ function BookingPage({ dispatch, state }: BookingComponentType) {
   });
 
   const IS_MOBILE = dimensions.width <= TAILWIND_MOBILE_BREAKPOINT;
+
+  console.log(state, 'state');
 
   if (IS_MOBILE) {
     return (

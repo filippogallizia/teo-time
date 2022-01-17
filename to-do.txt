@@ -3,6 +3,9 @@ API
 - middleware authenticateToken in createBooking
 - payments in general
 
+EditBooking add a fetchAndSetState function 
+BookingManager refactor handleSuccess function
+
 
 CLIENT
 - holidayManager , see how to handle local state and deleting booking inside bookingManager.

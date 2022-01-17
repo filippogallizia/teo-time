@@ -92,7 +92,7 @@ let schema = yup.object().shape({
     }),
 });
 
-const Login = ({ dispatch, state }: BookingComponentType) => {
+const Login = () => {
   const { register, handleSubmit, formState } = useForm<InitialFormType>({
     mode: 'all',
     reValidateMode: 'onChange',

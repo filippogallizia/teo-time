@@ -16,6 +16,14 @@ export type BookedHoursType = {
   bookings: TimeRangeType[];
 };
 
+export type BookingAndUser = {
+  id: number;
+  start: string;
+  end: string;
+  userId: number;
+  user: UserType;
+};
+
 export type HrsAndMinsType = { hours: number; minutes: number };
 
 export type BookingType = {

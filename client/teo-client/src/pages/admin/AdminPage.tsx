@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BookingComponentType } from '../booking/BookingPageTypes';
-import { SET_BKGS_AND_USERS, SET_LOCATION } from '../booking/stateReducer';
+import { SET_LOCATION } from '../booking/stateReducer';
 import { getUsersAndBookings } from './service/AdminPageService';
 import DetailedInfoBooking from './components/DetailedBookingInfo';
-import { DateTime } from 'luxon';
 import { MEDIUM_MARGIN_BOTTOM } from '../../shared/locales/constant';
 import UsersTable from './components/UsersTable';
 import { ProtectedRoute } from '../general/GeneralPage';
@@ -82,7 +81,7 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
             condition={true}
             altRoute={Routes.HOMEPAGE_BOOKING}
           >
-            <BookingManager state={state} dispatch={dispatch} />
+            <BookingManager />
           </ProtectedRoute>
         </Switch>
         <Switch>
@@ -98,21 +97,21 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
             condition={true}
             altRoute={Routes.ADMIN}
           >
-            <AvalManager state={state} dispatch={dispatch} />
+            <AvalManager />
           </ProtectedRoute>
           <ProtectedRoute
             path={Routes.ADMIN_HOLIDAY_MANAGER}
             condition={true}
             altRoute={Routes.ADMIN}
           >
-            <HolidaysManager state={state} dispatch={dispatch} />
+            <HolidaysManager />
           </ProtectedRoute>
           <ProtectedRoute
             path={Routes.FIXED_BKS_MANAGER}
             condition={true}
             altRoute={Routes.ADMIN}
           >
-            <FixedBksManager state={state} dispatch={dispatch} />
+            <FixedBksManager />
           </ProtectedRoute>
           <ProtectedRoute
             path={Routes.ADMIN}
@@ -131,84 +130,45 @@ const AdminPage = ({ dispatch, state }: BookingComponentType) => {
   );
 };
 
-const BookingManager = ({ dispatch, state }: BookingComponentType) => {
+export type BookingsAndUsersType = {
+  id: number;
+  start: string;
+  end: string;
+  userId: number;
+  user: UserType;
+}[];
+
+const BookingManager = () => {
+  const [bookings, setBookings] = useState<BookingsAndUsersType>([]);
+
+  const fetchAndSetBookings = async () => {
+    try {
+      const handleSuccess = (response: any) => {
+        if (response && response.length > 0) {
+          setBookings(response);
+        } else {
+          setBookings([]);
+        }
+      };
+      await getUsersAndBookings(handleSuccess);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
-    const asynFn = async () => {
-      try {
-        const handleSuccess = (response: any) => {
-          if (response && response.length > 0) {
-            const allBookingsParsedByDate: [
-              {
-                id: number;
-                start: string;
-                end: string;
-                userId: number;
-                user: UserType;
-              }[]
-            ] = response.reduce(
-              (
-                acc: any,
-                cv: any
-              ): [
-                {
-                  id: number;
-                  start: string;
-                  end: string;
-                  userId: number;
-                  user: UserType;
-                }[]
-              ] => {
-                if (acc.length === 0) {
-                  acc.push([cv]);
-                }
-                const lastOne = acc[acc.length - 1];
-                if (
-                  DateTime.fromISO(lastOne[lastOne.length - 1].start).day ===
-                    DateTime.fromISO(cv.start).day &&
-                  lastOne[lastOne.length - 1].start !== cv.start
-                ) {
-                  lastOne.push(cv);
-                }
-                if (
-                  DateTime.fromISO(lastOne[lastOne.length - 1].start).day !==
-                  DateTime.fromISO(cv.start).day
-                ) {
-                  acc.push([cv]);
-                }
-                return acc;
-              },
-              []
-            );
-            dispatch({
-              type: SET_BKGS_AND_USERS,
-              payload: allBookingsParsedByDate,
-            });
-          } else {
-            dispatch({
-              type: SET_BKGS_AND_USERS,
-              payload: [],
-            });
-          }
-        };
-        await getUsersAndBookings(handleSuccess);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    asynFn();
-  }, [dispatch, state.schedules.forceRender]);
+    fetchAndSetBookings();
+  }, []);
 
   return (
     <div className="grid grid-flow-row gap-8 py-2 shadow-sm">
-      {state.schedules.bookingsAndUsers.length > 0 &&
-      Array.isArray(state.schedules.bookingsAndUsers) ? (
-        state.schedules.bookingsAndUsers.map((booking, i: number) => {
-          if (booking.length > 0) {
+      {bookings.length > 0 && Array.isArray(bookings) ? (
+        bookings.map((booking, i: number) => {
+          if (booking) {
             return (
               <CardComponent key={i}>
                 <DetailedInfoBooking
-                  state={state}
-                  dispatch={dispatch}
+                  fetchAndSetBookings={fetchAndSetBookings}
                   key={i}
                   booking={booking}
                 />

@@ -1,5 +1,5 @@
 // external libraries
-import React, { useEffect, useMemo, useReducer, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Routes from '../routes';
 import {
   BrowserRouter as Router,
@@ -15,12 +15,10 @@ import GeneralPage from '../pages/general/GeneralPage';
 import Login, { ForgotPassword } from '../pages/login-signup-resetPass/Login';
 import Signup from '../pages/login-signup-resetPass/Signup';
 import Footer from './Footer';
-import stateReducer from '../pages/booking/stateReducer';
 import { ACCESS_TOKEN, USER_INFO } from '../shared/locales/constant';
 import ResetPassword from '../pages/login-signup-resetPass/ResetPassword';
 import { UserContext } from './UserContext';
 import ContactPage from '../pages/contact/ContactPage';
-import { initialState } from '../pages/booking/initialState';
 import { ShrinkHeigthLayout } from './GeneralLayouts';
 import PrivacyPolicy from '../pages/privacyPolicy/PrivacyPolicy';
 import ErrorHanlder from './ErrorHandler';
@@ -55,7 +53,6 @@ const MainContentWrapper = (props: any) => {
 };
 
 const RouterComponent = (): JSX.Element => {
-  const [state, dispatch] = useReducer(stateReducer, initialState);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState<string | null>(null);
 
@@ -78,7 +75,7 @@ const RouterComponent = (): JSX.Element => {
   return (
     <Router>
       <UserContext.Provider value={value}>
-        <Navbar dispatch={dispatch} state={state} />
+        <Navbar />
         <MainContentWrapper>
           <Switch>
             <Route path={Routes.ERRORS_AND_WARNINGS}>
@@ -90,7 +87,7 @@ const RouterComponent = (): JSX.Element => {
               altRoute={Routes.ROOT}
             >
               <ShrinkHeigthLayout>
-                <Login dispatch={dispatch} state={state} />
+                <Login />
               </ShrinkHeigthLayout>
             </ProtectedRoute>
 
@@ -99,7 +96,7 @@ const RouterComponent = (): JSX.Element => {
               condition={true}
               altRoute={Routes.ROOT}
             >
-              <ResetPassword dispatch={dispatch} state={state} />
+              <ResetPassword />
             </ProtectedRoute>
 
             <ProtectedRoute
@@ -144,7 +141,7 @@ const RouterComponent = (): JSX.Element => {
               altRoute={Routes.LOGIN}
             >
               <ShrinkHeigthLayout>
-                <GeneralPage dispatch={dispatch} state={state} />
+                <GeneralPage />
               </ShrinkHeigthLayout>
             </ProtectedRoute>
             <ProtectedRoute

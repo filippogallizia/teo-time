@@ -1,32 +1,35 @@
-import { BookingComponentType } from '../../../booking/BookingPageTypes';
 import { BOLD, ITALIC } from '../../../../shared/locales/constant';
 import GeneralButton from '../../../../component/GeneralButton';
 import DatePicker from 'react-datepicker';
 import { handleToastInFailRequest } from '../../../../shared/locales/utils';
 import 'react-datepicker/dist/react-datepicker.css';
-import {
-  ADD,
-  ADD_OR_REMOVE_HOLIDAY,
-  DELETE,
-  FORCE_RENDER,
-  NO_VALUES,
-  UPLOAD_ALL,
-  UPLOAD_END_DATE,
-  UPLOAD_HOLIDAY,
-  UPLOAD_START_DATE,
-} from '../../../booking/stateReducer';
+import { ADD, DELETE } from '../../../booking/stateReducer';
 import { DateTime } from 'luxon';
 import { createBooking } from '../../../../services/calendar.service';
 import { toast } from 'react-toastify';
-import { useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
 import {
   GetHolidayResponseType,
   getHolidays,
 } from '../../service/AdminPageService';
 import _ from 'lodash';
 import i18n from '../../../../i18n';
+import reducer, {
+  ADD_OR_REMOVE_HOLIDAY,
+  NO_VALUES,
+  UPLOAD_ALL,
+  UPLOAD_END_DATE,
+  UPLOAD_HOLIDAY,
+  UPLOAD_START_DATE,
+} from './reducer';
 
-const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
+const initialState = {
+  holidays: [],
+};
+
+const HolidaysManager = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   const filterPassedTime = (time: any) => {
     const currentDate = new Date();
     const selectedDate = new Date(time);
@@ -36,6 +39,7 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
   useEffect(() => {
     const asyncFn = async () => {
       const handleSuccess = (response: GetHolidayResponseType) => {
+        // TO REVIEW THIS LOGIC
         if (response.length === 0) {
           dispatch({
             type: UPLOAD_HOLIDAY,
@@ -49,7 +53,7 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
           });
         }
         response.forEach((holiday: any) => {
-          const holidayInLocalState = _.find(state.schedules.holidays, [
+          const holidayInLocalState = _.find(state.holidays, [
             'localId',
             holiday.localId,
           ]);
@@ -83,7 +87,7 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
     };
     asyncFn();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, state.schedules.forceRender]);
+  }, [dispatch]);
 
   return (
     <div className="grid grid-cols-1 gap-y-6 overflow-auto px-4">
@@ -106,8 +110,8 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
         />
       </div>
 
-      {state.schedules.holidays.map((holiday: any, i: number) => {
-        const pickerValue = state.schedules.holidays.filter(
+      {state.holidays.map((holiday: any, i: number) => {
+        const pickerValue = state.holidays.filter(
           (hol) => hol.localId === holiday.localId
         );
         return (
@@ -197,7 +201,7 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
         );
       })}
 
-      {state.schedules.holidays.length > 0 && (
+      {state.holidays.length > 0 && (
         <div className="flex w-full justify-center">
           <GeneralButton
             buttonText="Prenota vacanze"
@@ -206,7 +210,7 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
                 return response;
               };
               const promises: Promise<any>[] = [];
-              state.schedules.holidays.forEach((holiday) => {
+              state.holidays.forEach((holiday) => {
                 if (!holiday.isFromServer) {
                   promises.push(
                     createBooking(handleSuccess, {
@@ -223,10 +227,10 @@ const HolidaysManager = ({ dispatch, state }: BookingComponentType) => {
                 Promise.all(promises)
                   .then(() => {
                     toast.success("Ole' vacanze prenotate! Vai a surfare zio");
-                    dispatch({
-                      type: FORCE_RENDER,
-                      payload: state.schedules.forceRender + 1,
-                    });
+                    //dispatch({
+                    //  type: FORCE_RENDER,
+                    //  payload: state.forceRender + 1,
+                    //});
                   })
                   .catch((e) => {
                     handleToastInFailRequest(e, toast);

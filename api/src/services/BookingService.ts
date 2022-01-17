@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { Op } from 'sequelize';
 
+import { BookingModel } from '../database/models/booking.model';
 import { BookingDTO } from '../interfaces/BookingDTO';
 import { UserDTO } from '../interfaces/UserDTO';
 import { ErrorService } from './ErrorService';
@@ -83,7 +84,7 @@ class BookingService {
   public async findAll(
     searchParam?: Record<string, unknown>,
     isInclude?: boolean
-  ): Promise<RecordType[]> {
+  ): Promise<BookingModel & { user?: any; userId: number }[]> {
     // eslint-disable-next-line no-useless-catch
     try {
       if (searchParam && !isInclude) {

@@ -10,8 +10,6 @@ import { UserContext } from '../../component/UserContext';
 import { CreatePaymentIntent } from './PaymentService';
 import { toast } from 'react-toastify';
 import { handleToastInFailRequest } from '../../shared/locales/utils';
-import { SET_SHOW_MODAL } from '../booking/stateReducer';
-import Modal from '../../component/Modal';
 import EventListener from '../../helpers/EventListener';
 
 // Make sure to call loadStripe outside of a component’s render to avoid
@@ -65,9 +63,6 @@ export default function App({ dispatch, state }: BookingComponentType) {
           <CheckoutForm dispatch={dispatch} state={state} />
         </Elements>
       )}
-      {/*<Modal state={state} dispatch={dispatch}>
-        <p>qualcosa e' andato stroto</p>
-      </Modal>*/}
     </div>
   );
 }
