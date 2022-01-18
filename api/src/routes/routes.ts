@@ -17,7 +17,7 @@ import {
 const db = require('../database/models/db');
 const {
   getAvailability,
-  userExist,
+  loginValidation,
   bookExist,
   createToken,
   authenticateToken,
@@ -40,10 +40,17 @@ const OTP = v4();
 
 router.post(
   '/signup',
-  [userExist],
   async (req: Request, res: ResponseWithUserType, next: NextFunction) => {
+    const { email, password, phoneNumber, name } = req.body;
+    const user = await userService.findOne(email);
+
     try {
-      await authService.signUp(res.user, req.body);
+      await authService.signUp(user, {
+        email,
+        password,
+        phoneNumber,
+        name,
+      });
       res.send({ message: 'User was registered successfully!' });
     } catch (e: any) {
       next(e);
@@ -53,10 +60,10 @@ router.post(
 
 router.post(
   '/login',
-  [userExist, createToken],
+  [loginValidation, createToken],
   (req: Request, res: ResponseWithUserType, next: NextFunction) => {
     try {
-      authService.errorUserNotFound(res.user);
+      console.log(res.user, 'res.user');
       res.status(200).send({ user: res.user, token: res.locals.jwt_secret });
     } catch (e) {
       next(e);
@@ -98,36 +105,40 @@ router.post(
   [authenticateToken, bookExist],
   async (req: Request, res: ResponseWithUserType, next: NextFunction) => {
     try {
-      console.log('start fn');
       const { start, end } = req.body;
-      const userEmail = res.user?.email || '';
+      if (!res.user) {
+        ErrorService.badRequest(
+          'Use is missing, you are not loggein in probably'
+        );
+      } else {
+        const userEmail = res.user.email;
+        // create booking
+        const booking = await bookingService.create(req);
 
-      // create booking
-      const booking = await bookingService.create(req);
+        console.log(booking);
+        console.log(userEmail, 'userEmail');
 
-      console.log(booking);
-      console.log(userEmail, 'userEmail');
+        // associate the booking with the user
+        const usr = await userService.findOne(userEmail);
+        await booking.setUser(usr);
 
-      // associate the booking with the user
-      const usr = await userService.findOne(userEmail);
-      await booking.setUser(usr);
+        // insert the booking to admin google calendar
+        const googleCalendarService = new GoogleCalendarService(
+          userEmail as string,
+          start,
+          end
+        );
+        await googleCalendarService.insertEvent();
 
-      // insert the booking to admin google calendar
-      const googleCalendarService = new GoogleCalendarService(
-        userEmail as string,
-        start,
-        end
-      );
-      await googleCalendarService.insertEvent();
+        // send email to client and admin
+        //await EmailService.sendEmail(
+        //  userEmail,
+        //  DateTime.fromISO(booking.start).toFormat('yyyy LLL dd t')
+        //);
 
-      // send email to client and admin
-      //await EmailService.sendEmail(
-      //  userEmail,
-      //  DateTime.fromISO(booking.start).toFormat('yyyy LLL dd t')
-      //);
-
-      // send booking to client
-      res.status(200).send(booking);
+        // send booking to client
+        res.status(200).send(booking);
+      }
     } catch (e: any) {
       next(e);
     }
@@ -405,7 +416,6 @@ router.post(
 
       const asyncFn = async () => {
         for (const fixedBook of fixedBks) {
-          console.log(fixedBook, 'fixedBook');
           for (const book of fixedBook.bookings) {
             await FixedBookings.create({
               day: fixedBook.day,
@@ -431,60 +441,58 @@ router.post(
   }
 );
 
-router.put('/fixedBookings', async (req: Request, res: Response) => {
-  const { fixedBks } = req.body;
-  try {
-    const errors: any = [];
-    const mainAsyncFn = () => {
-      console.log(FixedBookings, 'FIXED BOOKING MODEL');
-      for (const fixedBook of fixedBks) {
-        fixedBook.bookings.forEach((book: any) => {
-          FixedBookings.findOne({
-            where: { localId: book.id },
-          })
-            .then((bk: any) => {
-              if (bk) {
-                const asyncFn = async () => {
-                  try {
-                    bk.set({
-                      ...book,
-                      day: fixedBook.day,
-                      start: book.start,
-                      end: book.end,
-                      email: book.email,
-                    });
-                    await bk.save().catch((e: any) => {
-                      errors.push(e);
-                    });
-                  } catch (e) {
-                    errors.push(e);
-                  }
-                };
-                asyncFn();
-              } else {
-                errors.push('book not found');
-              }
+router.put(
+  '/fixedBookings',
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { fixedBks } = req.body;
+    try {
+      const errors: any = [];
+      const mainAsyncFn = () => {
+        console.log(FixedBookings, 'FIXED BOOKING MODEL');
+        for (const fixedBook of fixedBks) {
+          fixedBook.bookings.forEach((book: any) => {
+            FixedBookings.findOne({
+              where: { localId: book.id },
             })
-            .catch((e: any) => {
-              errors.push(e);
-            });
-        });
+              .then((bk: any) => {
+                if (bk) {
+                  const asyncFn = async () => {
+                    try {
+                      bk.set({
+                        ...book,
+                        day: fixedBook.day,
+                        start: book.start,
+                        end: book.end,
+                        email: book.email,
+                      });
+                      await bk.save().catch((e: any) => {
+                        errors.push(e);
+                      });
+                    } catch (e) {
+                      errors.push(e);
+                    }
+                  };
+                  asyncFn();
+                } else {
+                  errors.push('book not found');
+                }
+              })
+              .catch((e: any) => {
+                errors.push(e);
+              });
+          });
+        }
+      };
+      mainAsyncFn();
+      if (errors.length > 0) {
+        res.status(500).send(errors[0]);
       }
-    };
-    mainAsyncFn();
-    if (errors.length > 0) {
-      res.status(500).send(errors[0]);
+      res.send('book updated');
+    } catch (e: any) {
+      next(e);
     }
-    res.send('book updated');
-  } catch (e: any) {
-    res.status(500).send({
-      success: false,
-      error: {
-        message: e,
-      },
-    });
   }
-});
+);
 
 const calculateOrderAmount = (ammount: any) => {
   // Replace this constant with a calculation of the order's amount

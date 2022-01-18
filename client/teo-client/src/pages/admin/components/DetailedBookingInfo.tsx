@@ -62,8 +62,6 @@ const DetailedInfoBooking = ({
 }) => {
   const [allBookingInfo, setAllBookingInfo] = useState<AllBookingInfo>();
 
-  console.log(booking, 'bookingFilo');
-
   useEffect(() => {
     if (booking) {
       const addOpenProp = {

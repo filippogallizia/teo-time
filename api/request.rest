@@ -6,10 +6,10 @@ POST http://0.0.0.0:5000/signup
 Content-Type: application/json
 
 {
-    "email": "galliziafilippo@gmail.com",
+    "email": "galliziaflippo@gmail.com",
     "name": "carlo",
     "phoneNumber": "020202002",
-    "password": "carlo"
+    "password": "filo"
 }
 
 ###

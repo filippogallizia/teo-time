@@ -1,15 +1,48 @@
 import jwt from 'jsonwebtoken';
 
-import { UserDTO, UserInputDTO } from '../interfaces/UserDTO';
+import { LoginInputDTO, UserDTO, UserInputDTO } from '../interfaces/UserDTO';
 import { ErrorService } from './ErrorService';
-import UserService from './UserService';
+import userService from './UserService';
 
 class AuthService {
   public userExist(user: UserDTO | undefined) {
     if (user) {
-      console.log(user);
       throw ErrorService.badRequest('User already Exist');
     }
+  }
+
+  public passwordExist(password: string) {
+    if (!password) {
+      throw ErrorService.badRequest('Password is missing');
+    }
+  }
+  public passwordValidation(passwordDatabase: string, passwordInput: string) {
+    if (passwordDatabase !== passwordInput) {
+      throw ErrorService.badRequest('Password is wrong');
+    }
+  }
+  public emailValidation(email: string) {
+    if (!email) {
+      throw ErrorService.badRequest('Name is missing');
+    }
+  }
+  public nameValidation(name: string) {
+    if (!name) {
+      throw ErrorService.badRequest('UserName is missing');
+    }
+  }
+  public phoneNumberValidation(phoneNumber: string) {
+    if (!phoneNumber) {
+      throw ErrorService.badRequest('PhoneNumber is missing');
+    }
+  }
+
+  public userInputValidation(userInput: UserInputDTO) {
+    const { password, email, name, phoneNumber } = userInput;
+    this.passwordExist(password);
+    this.nameValidation(name);
+    this.phoneNumberValidation(phoneNumber);
+    this.emailValidation(email);
   }
 
   public errorUserNotFound(user: UserDTO | undefined) {
@@ -18,9 +51,23 @@ class AuthService {
     }
   }
 
-  public async signUp(user: UserDTO | undefined, userInput: UserInputDTO) {
+  public async signUp(
+    user: UserDTO | undefined,
+    userInput: UserInputDTO
+  ): Promise<void> {
     this.userExist(user);
-    await UserService.create(userInput);
+    this.userInputValidation(userInput);
+    await userService.create(userInput);
+  }
+
+  public async login(loginInput: LoginInputDTO): Promise<UserDTO> {
+    const { email, password } = loginInput;
+    this.emailValidation(email);
+    this.passwordExist(password);
+    const usr = await userService.findOne(email);
+    this.passwordValidation(usr.password, password);
+    this.errorUserNotFound(usr);
+    return usr;
   }
 
   public generateAccessToken(value: any) {

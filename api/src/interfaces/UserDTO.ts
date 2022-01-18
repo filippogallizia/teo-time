@@ -14,3 +14,8 @@ export type UserInputDTO = {
   phoneNumber: string;
   name: string;
 };
+
+export type LoginInputDTO = {
+  email: string;
+  password: string;
+};

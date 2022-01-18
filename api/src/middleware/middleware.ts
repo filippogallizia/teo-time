@@ -1,3 +1,5 @@
+import { Console } from 'console';
+
 import express, { NextFunction, Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
@@ -10,7 +12,7 @@ import {
   ResponseWithAvalType,
   ResponseWithUserType,
 } from '../routes/interfaces/interfaces';
-import AuthService from '../services/AuthService';
+import authService from '../services/AuthService';
 import parseDatabaseAvailability from '../services/AvailabilitiesService';
 import bookingService from '../services/BookingService';
 import { ErrorService } from '../services/ErrorService';
@@ -174,16 +176,40 @@ const getAvailability = async (
   }
 };
 
-const userExist = async (req: Request, res: Response, next: NextFunction) => {
-  const { email, password } = req.body;
+const requestHasPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { password } = req.body;
   if (!password) {
     next(ErrorService.badRequest('password is missing'));
-  }
+  } else next();
+};
+
+const userExist = async (req: Request, res: Response, next: NextFunction) => {
+  const { email } = req.body;
   try {
-    const user = await userService.findOne(email).catch((e: any) => {
-      next(e);
-    });
+    const user = await userService.findOne(email);
+    if (!user) {
+      next(ErrorService.badRequest('user not found'));
+    }
     //@ts-expect-error
+    res.user = user;
+    next();
+  } catch (e) {
+    next(e);
+  }
+};
+
+const loginValidation = async (
+  req: Request,
+  res: ResponseWithUserType,
+  next: NextFunction
+) => {
+  const { email, password } = req.body;
+  try {
+    const user = await authService.login({ email, password });
     res.user = user;
     next();
   } catch (e) {
@@ -197,12 +223,11 @@ const createToken = async (
   next: NextFunction
 ) => {
   const { email } = req.body;
-
-  const usr = await userService.findOne(email);
+  const usr = res.user;
   try {
     if (usr) {
       const userToSign = { email };
-      const token = AuthService.generateAccessToken(userToSign);
+      const token = authService.generateAccessToken(userToSign);
       res.locals.jwt_secret = token;
       res.locals.jwt_type = 'Bearer';
       next();
@@ -252,6 +277,8 @@ module.exports = {
   userExist,
   getAvailability,
   bookExist,
+  requestHasPassword,
+  loginValidation,
   authenticateToken,
   googleAuth,
 };
