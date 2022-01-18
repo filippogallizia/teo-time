@@ -4,19 +4,19 @@ import { DayAvalSettingsType } from '../../../../booking/stateReducer';
 
 import { ENDPOINT } from '../../../../../api';
 
-export const createDefaultAvail = async (
+export const createFixedBookings = async (
   fn: any,
   body: DayAvalSettingsType[]
 ) => {
   try {
     const response = await axios({
-      method: 'put',
-      url: `${ENDPOINT}/defaultAvailabilities`,
+      method: 'post',
+      url: `${ENDPOINT}/fixedBookings`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
       },
       data: {
-        workSettings: body,
+        fixedBks: body,
       },
     });
     fn(response.data);
@@ -25,11 +25,11 @@ export const createDefaultAvail = async (
   }
 };
 
-export const getDefaultAvail = async (fn: any) => {
+export const getFixedBookings = async (fn: any) => {
   try {
     const response = await axios({
       method: 'get',
-      url: `${ENDPOINT}/defaultAvailabilities`,
+      url: `${ENDPOINT}/fixedBookings`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
       },

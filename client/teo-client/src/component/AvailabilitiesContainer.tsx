@@ -54,6 +54,7 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
             .toISO(),
         });
       } catch (e: any) {
+        console.log(e, 'e');
         EventListener.emit('errorHandling', e.response);
       }
     };

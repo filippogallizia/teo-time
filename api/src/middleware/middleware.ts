@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { DateTime } from 'luxon';
 
 import { filterDays_updateDate, retrieveAvailability } from '../../utils';
+import { FixedBookingModelType } from '../database/models/fixedBooking.model';
 import {
   ResponseWithAvalType,
   ResponseWithUserType,
@@ -15,10 +16,7 @@ import bookingService from '../services/BookingService';
 import { ErrorService } from '../services/ErrorService';
 import fixedBookingService from '../services/FixedBookingService';
 import userService from '../services/UserService';
-import { DatabaseAvailabilityType, DayAvailabilityType } from '../types/types';
-
-//const db = require('../database/models/db');
-const db = require('../database/models/db');
+import { DayAvailabilityType } from '../types/types';
 
 const avalDefault = require('../config/availabilitiesDefault.config.json');
 
@@ -69,7 +67,7 @@ export const bookExist = async (
     ]);
 
     if (bookings.flat().length > 0) {
-      ErrorService.badRequest('this hour is already booked');
+      next(ErrorService.badRequest('this hour is already booked'));
     } else next();
   } catch (e: any) {
     next(e);
@@ -81,10 +79,10 @@ const getAvailability = async (
   res: ResponseWithAvalType,
   next: NextFunction
 ) => {
-  const avalRange = [...req.body.TimeRangeType];
+  const avalRange: { start: string; end: string }[] = [
+    ...req.body.TimeRangeType,
+  ];
   try {
-    // check conditions inside bookings
-
     const start = avalRange[0].start;
     const end = avalRange[0].end;
 
@@ -103,7 +101,11 @@ const getAvailability = async (
       ),
     ]);
 
-    // parse bookings from JS object date to string
+    /**
+     *
+     * parse bookings from JS object date to string
+     *
+     */
 
     const parsedBookings = _.map(bookings.flat(), (e: any) => {
       return {
@@ -113,24 +115,50 @@ const getAvailability = async (
       };
     });
 
-    // get fixedBooking from database and change their date using avalRange date
+    /**
+     *
+     * get all fixed booking and update their date considering the date coming from client.
+     * fixedBooking dont have date but just hours!
+     *
+     */
 
     const fixedBks = await fixedBookingService.findAll();
 
-    const parsedFixedBookings = filterDays_updateDate(fixedBks, avalRange).map(
-      (day) => day.availability
-    );
+    const mapFixedBks = fixedBks.map((book: FixedBookingModelType) => {
+      return {
+        day: book.day,
+        availability: [{ start: book.start, end: book.end }],
+      };
+    });
 
-    // join all bookings in a single array
+    const parsedFixedBookings = filterDays_updateDate(
+      mapFixedBks,
+      avalRange
+    ).map((day) => day.availability);
+
+    /**
+     *
+     * join all bookings in a single array
+     *
+     */
 
     const joinedBookings = [...parsedBookings, ...parsedFixedBookings.flat()];
 
-    // get weekAvalSetting and create dynamicAval. If there are not weekAvalSetting create them.
+    /**
+     *
+     * get weekAvalSetting and create dynamicAval. If there are not weekAvalSetting create them.
+     *
+     */
 
     const daysAvailabilities: DayAvailabilityType[] =
       await parseDatabaseAvailability(avalDefault);
 
-    // join all the datas togheter and get availabilities, hopefully all works
+    /**
+     *
+     * join all the datas togheter and get availabilities, hopefully all works
+     *
+     */
+
     const availabilities = retrieveAvailability(
       {
         bookings: joinedBookings,

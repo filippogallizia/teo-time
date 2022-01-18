@@ -118,7 +118,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpe
 }
 
 ###
-POST http://0.0.0.0:5000/manageAvailabilities
+POST http://0.0.0.0:5000/defaultAvailabilities
 Content-Type: application/json
 
 {
@@ -172,7 +172,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://0.0.0.0:5000/workingHours
+GET http://0.0.0.0:5000/defaultAvailabilities
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNvZmlAZ21haWwuY29tIiwicGFzc3dvcmQiOiJzb2ZpIiwicm9sZSI6InVzZXIiLCJpYXQiOjE2MzU5NjA0MTZ9.hu97TwyaEvjvsarlbBPymyZa8IwDCMJSfvE2aTdQ3Xo
 

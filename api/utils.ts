@@ -52,19 +52,20 @@ export const joinDayAndTime = (date_day: string, date_time: string) => {
 // loop throug general Aval, filter for day with timerange, return availabilities with uploaded date
 
 export const filterDays_updateDate = (
-  genAv: DayAvailabilityType[],
+  inputToBeUpdated: DayAvailabilityType[],
   timerange: TimeRangeType[]
 ): {
   day: string;
   availability: TimeRangeType[];
 }[] => {
-  return _.intersectionWith(
-    genAv,
+  const intersection = _.intersectionWith(
+    inputToBeUpdated,
     timerange,
     (a: DayAvailabilityType, b: TimeRangeType) => {
       return a.day == FROM_DATE_TO_DAY(b.start);
     }
-  ).map((day: DayAvailabilityType) => {
+  );
+  return intersection.map((day: DayAvailabilityType) => {
     // update the date
     const parseAvailabilities = day.availability.map(
       (a: { start: string; end: string }) => {
@@ -112,6 +113,7 @@ export const retrieveAvailability = (
   avalTimeRange: { start: string; end: string }[]
 ) => {
   const final = filterDays_updateDate(genAval, avalTimeRange);
+  console.log(bookedHours, 'bookedHours');
   if (final.length === 0) return [];
   try {
     return removeBksFromAval(final[0].availability, bookedHours.bookings);

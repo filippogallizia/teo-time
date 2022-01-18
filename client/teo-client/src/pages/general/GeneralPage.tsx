@@ -40,11 +40,14 @@ export const ProtectedRoute = ({
 
 const GeneralPage = () => {
   const { user, token } = useContext(UserContext);
-  const [state, dispatch] = useReducer(stateReducer, initialState);
-  let location = useLocation();
-  useEffect(() => {
-    dispatch({ type: SET_LOCATION, payload: { location: location.pathname } });
-  }, [dispatch, location.pathname]);
+
+  /**
+   * WHY DO i NEED THE LOCATION?
+   */
+  //let location = useLocation();
+  //useEffect(() => {
+  //  dispatch({ type: SET_LOCATION, payload: { location: location.pathname } });
+  //}, [dispatch, location.pathname]);
 
   return (
     <>
@@ -55,7 +58,7 @@ const GeneralPage = () => {
           altRoute={Routes.LOGIN}
         >
           <SelfTopLayout>
-            <BookingRouter dispatch={dispatch} state={state} />
+            <BookingRouter />
           </SelfTopLayout>
         </ProtectedRoute>
 
@@ -74,7 +77,7 @@ const GeneralPage = () => {
           condition={token && user && user.role === 'admin' ? true : false}
           altRoute={Routes.LOGIN}
         >
-          <AdminPage dispatch={dispatch} state={state} />
+          <AdminPage />
         </ProtectedRoute>
 
         <ProtectedRoute

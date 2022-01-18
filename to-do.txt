@@ -9,6 +9,7 @@ BookingManager refactor handleSuccess function
 
 CLIENT
 - holidayManager , see how to handle local state and deleting booking inside bookingManager.
+- why do I need the setLocation????
 
 for Admin
 

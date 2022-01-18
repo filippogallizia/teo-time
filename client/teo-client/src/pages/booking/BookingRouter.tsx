@@ -1,21 +1,19 @@
-import React, { useContext } from 'react';
+import React, { useContext, useReducer } from 'react';
 import { Switch } from 'react-router-dom';
 import { ProtectedRoute } from '../general/GeneralPage';
 import Routes from '../../routes';
 import BookingPage from './BookingPage';
-import { BookingComponentType } from './BookingPageTypes';
 import SuccessfulPage from '../successfulBooking/SuccesfulPage';
 import PaymentPage from '../payment/PaymentPage';
 import ConfirmPage from '../confirm/ConfirmPage';
 import { UserContext } from '../../component/UserContext';
 import { ACCESS_TOKEN } from '../../shared/locales/constant';
+import stateReducer from './stateReducer';
+import { initialState } from './initialState';
 
-const Prova = () => {
-  return <div>prova</div>;
-};
-
-const BookingRouter = ({ dispatch, state }: BookingComponentType) => {
-  const { user, token } = useContext(UserContext);
+const BookingRouter = () => {
+  const [state, dispatch] = useReducer(stateReducer, initialState);
+  const { token } = useContext(UserContext);
   const tokenParam = new URLSearchParams(window.location.search).get('token');
 
   return (

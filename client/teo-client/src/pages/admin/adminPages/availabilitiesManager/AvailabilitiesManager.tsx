@@ -2,8 +2,8 @@ import { DayAvalSettingsType } from '../../../booking/stateReducer';
 import { BOLD, ITALIC } from '../../../../shared/locales/constant';
 import GeneralButton from '../../../../component/GeneralButton';
 import {
-  getGeneralWorkingHrs,
-  manageAvailabilities,
+  getDefaultAvail,
+  createDefaultAvail,
 } from './service/availabilitiesManagerService';
 import CardComponent from '../../components/Card';
 import i18n from '../../../../i18n';
@@ -170,7 +170,7 @@ const AvalManager = () => {
       );
       dispatch({ type: SET_ALL_WEEK_AVAL_SETTINGS, payload: mappedResponse });
     };
-    getGeneralWorkingHrs(handleSuccess);
+    getDefaultAvail(handleSuccess);
   }, [dispatch]);
 
   return (
@@ -296,7 +296,8 @@ const AvalManager = () => {
                 disabled
                 id="breakTimeRange.start"
                 value={
-                  state.weekAvalSettings[0].parameters?.breakTimeBtwEvents.hours
+                  state.weekAvalSettings[0]?.parameters?.breakTimeBtwEvents
+                    .hours
                 }
               />
             </div>
@@ -311,7 +312,7 @@ const AvalManager = () => {
                 required
                 disabled
                 value={
-                  state.weekAvalSettings[0].parameters?.breakTimeBtwEvents
+                  state.weekAvalSettings[0]?.parameters?.breakTimeBtwEvents
                     .minutes
                 }
               />
@@ -329,7 +330,7 @@ const AvalManager = () => {
                 id="pausa-ore"
                 disabled
                 value={
-                  state.weekAvalSettings[0].parameters?.eventDuration.hours
+                  state.weekAvalSettings[0]?.parameters?.eventDuration.hours
                 }
                 // value={state.manageAvailabilities}
                 // onChange={(e) => {
@@ -351,7 +352,7 @@ const AvalManager = () => {
                 required
                 disabled
                 value={
-                  state.weekAvalSettings[0].parameters?.eventDuration.minutes
+                  state.weekAvalSettings[0]?.parameters?.eventDuration.minutes
                 }
                 // value={
                 //   dayInfo.length > 0
@@ -376,10 +377,7 @@ const AvalManager = () => {
             const asyncFn = async () => {
               const handleSuccess = (response: any) => {};
               try {
-                await manageAvailabilities(
-                  handleSuccess,
-                  state.weekAvalSettings
-                );
+                await createDefaultAvail(handleSuccess, state.weekAvalSettings);
                 toast.success("Disponibilita' cambiate!", {
                   position: toast.POSITION.TOP_CENTER,
                 });

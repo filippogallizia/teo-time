@@ -7,7 +7,6 @@ import GoogleCalendarService, {
 } from '../googleApi/GoogleCalendarService';
 import authService from '../services/AuthService';
 import bookingService from '../services/BookingService';
-import DatabaseAval from '../services/DatabaseAvalService';
 import { ErrorService } from '../services/ErrorService';
 import userService from '../services/UserService';
 import {
@@ -99,11 +98,15 @@ router.post(
   [authenticateToken, bookExist],
   async (req: Request, res: ResponseWithUserType, next: NextFunction) => {
     try {
+      console.log('start fn');
       const { start, end } = req.body;
       const userEmail = res.user?.email || '';
 
       // create booking
       const booking = await bookingService.create(req);
+
+      console.log(booking);
+      console.log(userEmail, 'userEmail');
 
       // associate the booking with the user
       const usr = await userService.findOne(userEmail);
@@ -160,7 +163,7 @@ router.post(
             console.log(err);
           });
         }
-        res.status(200).send('prenotazione cancellata');
+        res.status(200).send('Booking deleted');
       } else {
         throw ErrorService.badRequest('Booking not found');
       }
@@ -271,82 +274,41 @@ router.post(
   }
 );
 
-router.post('/manageAvailabilities', async (req: Request, res: Response) => {
-  const { workSettings } = req.body;
-  try {
-    workSettings.forEach((daySetting: any) => {
-      DatabaseAvailabilty.findOne({ where: { day: daySetting.day } })
-        .then((d: any) => {
-          if (d) {
-            const asyncFn = async () => {
-              d.set(
-                new DatabaseAval({
-                  day: daySetting.day,
-                  workTimeStart: daySetting.parameters.workTimeRange.start,
-                  workTimeEnd: daySetting.parameters.workTimeRange.end,
-                  breakTimeStart: daySetting.parameters.breakTimeRange.start,
-                  breakTimeEnd: daySetting.parameters.breakTimeRange.end,
-                  eventDurationHours: daySetting.parameters.eventDuration.hours,
-                  eventDurationMinutes:
-                    daySetting.parameters.eventDuration.minutes,
-                  breakTimeBtwEventsHours:
-                    daySetting.parameters.breakTimeBtwEvents.hours,
-                  breakTimeBtwEventsMinutes:
-                    daySetting.parameters.breakTimeBtwEvents.minutes,
-                })
-              );
-              await d.save();
-            };
-            asyncFn();
-          } else {
-            DatabaseAvailabilty.create({
-              day: daySetting.day,
-              workTimeStart: daySetting.parameters.workTimeRange.start,
-              workTimeEnd: daySetting.parameters.workTimeRange.end,
-              breakTimeStart: daySetting.parameters.breakTimeRange.start,
-              breakTimeEnd: daySetting.parameters.breakTimeRange.end,
-              eventDurationHours: daySetting.parameters.eventDuration.hours,
-              eventDurationMinutes: daySetting.parameters.eventDuration.minutes,
-              breakTimeBtwEventsHours:
-                daySetting.parameters.breakTimeBtwEvents.hours,
-              breakTimeBtwEventsMinutes:
-                daySetting.parameters.breakTimeBtwEvents.minutes,
-            })
-              .then((data: any) => {
-                console.log(data);
-              })
-              .catch((e: any) => {
-                return res.status(500).send({
-                  success: false,
-                  error: {
-                    message: e,
-                  },
-                });
-              });
+router.put(
+  '/defaultAvailabilities',
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { workSettings } = req.body;
+    console.log(req.body, 'req.body');
+    try {
+      workSettings.forEach(async (daySetting: any) => {
+        await DatabaseAvailabilty.update(
+          {
+            day: daySetting.day,
+            workTimeStart: daySetting.parameters.workTimeRange.start,
+            workTimeEnd: daySetting.parameters.workTimeRange.end,
+            breakTimeStart: daySetting.parameters.breakTimeRange.start,
+            breakTimeEnd: daySetting.parameters.breakTimeRange.end,
+            eventDurationHours: daySetting.parameters.eventDuration.hours,
+            eventDurationMinutes: daySetting.parameters.eventDuration.minutes,
+            breakTimeBtwEventsHours:
+              daySetting.parameters.breakTimeBtwEvents.hours,
+            breakTimeBtwEventsMinutes:
+              daySetting.parameters.breakTimeBtwEvents.minutes,
+          },
+          {
+            where: { day: daySetting.day },
           }
-        })
-        .catch((e: any) => {
-          return res.status(500).send({
-            success: false,
-            error: {
-              message: e,
-            },
-          });
-        });
-    });
-    res.send({ message: 'availabilities created!' });
-  } catch (e: any) {
-    res.status(500).send({
-      success: false,
-      error: {
-        message: e,
-      },
-    });
+        );
+      });
+      res.send({ message: 'availabilities created!' });
+    } catch (e: any) {
+      next(e);
+    }
   }
-});
+);
 
 router.get(
-  '/workingHours',
+  '/defaultAvailabilities',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const worksHours = await DatabaseAvailabilty.findAll();
@@ -439,32 +401,28 @@ router.post(
     const { fixedBks } = req.body;
     const errors: any = [];
     try {
+      console.log(FixedBookings, 'FIXED BOOKING MODEL');
+
       const asyncFn = async () => {
         for (const fixedBook of fixedBks) {
+          console.log(fixedBook, 'fixedBook');
           for (const book of fixedBook.bookings) {
-            return FixedBookings.create({
+            await FixedBookings.create({
               day: fixedBook.day,
               start: book.start,
               end: book.end,
               localId: book.id,
               email: book.email,
-            })
-              .then((data: any) => {
-                console.log(data);
-              })
-              .catch((e: any) => {
-                console.log('aliiii');
-                errors.push(e);
-                return;
-              });
+            }).catch((e: any) => {
+              errors.push(e);
+              return;
+            });
           }
         }
       };
-
-      await asyncFn();
+      asyncFn();
       if (errors.length > 0) {
-        res.status(500).send(errors[0]);
-        return;
+        next(errors[0]);
       }
       res.send({ message: 'fixedBookings created!' });
     } catch (e: any) {
@@ -478,6 +436,7 @@ router.put('/fixedBookings', async (req: Request, res: Response) => {
   try {
     const errors: any = [];
     const mainAsyncFn = () => {
+      console.log(FixedBookings, 'FIXED BOOKING MODEL');
       for (const fixedBook of fixedBks) {
         fixedBook.bookings.forEach((book: any) => {
           FixedBookings.findOne({

@@ -76,6 +76,7 @@ const DetailedInfoBooking = ({
 
   if (allBookingInfo) {
     const { user, start } = allBookingInfo;
+    console.log(user, 'user');
     return (
       <div>
         {!user ? (

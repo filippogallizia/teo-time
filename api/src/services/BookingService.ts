@@ -10,7 +10,7 @@ const db = require('../database/models/db');
 
 export type RecordType = UserDTO | BookingDTO;
 
-class QueryDates {
+export class QueryDates {
   public inBtwStartAndEnd(start: string, end: string) {
     return {
       start: {
@@ -34,7 +34,7 @@ class QueryDates {
   public smallerStartAndBiggerEnd(start: string, end: string) {
     return {
       start: {
-        ['Op.lte']: start,
+        [Op.lte]: start,
       },
       end: {
         [Op.gte]: end,

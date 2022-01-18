@@ -1,6 +1,6 @@
-const DatabaseAvailabilty = (sequelize: any, Sequelize: any) => {
-  const databaseAvailabilty = sequelize.define(
-    'databaseAvailabilty',
+const Availability = (sequelize: any, Sequelize: any) => {
+  const availabilities = sequelize.define(
+    'availabilities',
     {
       day: {
         type: Sequelize.STRING,
@@ -36,7 +36,7 @@ const DatabaseAvailabilty = (sequelize: any, Sequelize: any) => {
     }
   );
 
-  return databaseAvailabilty;
+  return availabilities;
 };
 
-export default DatabaseAvailabilty;
+export default Availability;

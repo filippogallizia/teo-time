@@ -1,12 +1,21 @@
+export type FixedBookingModelType = {
+  day: string;
+  email: string;
+  end: string;
+  id: number;
+  localId: number;
+  start: string;
+};
+
 const FixedBooking = (sequelize: any, Sequelize: any) => {
   const fixedBooking = sequelize.define(
-    'fixedBook',
+    'fixedBooking',
     {
       start: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
       },
       end: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
       },
       email: {
         type: Sequelize.STRING,

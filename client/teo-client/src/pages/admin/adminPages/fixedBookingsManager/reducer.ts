@@ -81,6 +81,7 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
         const index = draft.fixedBks.findIndex(
           (x) => x.day === action.payload.day
         );
+        console.log(index, 'index');
         if (index > -1) {
           if (action.payload.type === ADD) {
             draft.fixedBks[index].bookings.push(action.payload.booking);
@@ -95,6 +96,10 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
             const i = draft.fixedBks[index].bookings.findIndex((book) => {
               return book.id === action.payload.booking.id;
             });
+            console.log(
+              action.payload.booking.start,
+              '    action.payload.booking.start'
+            );
             draft.fixedBks[index].bookings[i].start =
               action.payload.booking.start;
           }

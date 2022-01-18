@@ -65,12 +65,12 @@ export const AdminNav = () => {
   );
 };
 
-const AdminPage = ({ dispatch, state }: BookingComponentType) => {
-  let location = useLocation();
+const AdminPage = () => {
+  //let location = useLocation();
 
-  useEffect(() => {
-    dispatch({ type: SET_LOCATION, payload: { location: location.pathname } });
-  }, [dispatch, location.pathname]);
+  //useEffect(() => {
+  //  dispatch({ type: SET_LOCATION, payload: { location: location.pathname } });
+  //}, [dispatch, location.pathname]);
   return (
     <div className="flex-1">
       <AdminNav />
