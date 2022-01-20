@@ -1,12 +1,12 @@
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { FLEX_DIR_ROW } from '../shared/locales/constant';
+import { FLEX_DIR_ROW } from '../../../shared/locales/constant';
 import {
   Actions,
   InitialState,
   SET_SELECTION_HOUR,
-} from '../pages/booking/stateReducer';
-import routes from '../routes';
+} from '../stateReducer';
+import routes from '../../../routes';
 
 type AvalChildType = {
   hour: { start: string; end: string };

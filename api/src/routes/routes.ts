@@ -5,8 +5,8 @@ import GoogleCalendarService, {
   deleteEvent,
   getEvents,
 } from '../googleApi/GoogleCalendarService';
-import authService from '../services/AuthService';
-import bookingService from '../services/BookingService';
+import authService from '../services/authService/AuthService';
+import bookingService from '../services/BookingService/BookingService';
 import { ErrorService } from '../services/ErrorService';
 import userService from '../services/UserService';
 import {
@@ -114,9 +114,6 @@ router.post(
         const userEmail = res.user.email;
         // create booking
         const booking = await bookingService.create(req);
-
-        console.log(booking);
-        console.log(userEmail, 'userEmail');
 
         // associate the booking with the user
         const usr = await userService.findOne(userEmail);

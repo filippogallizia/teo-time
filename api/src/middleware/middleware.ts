@@ -12,9 +12,9 @@ import {
   ResponseWithAvalType,
   ResponseWithUserType,
 } from '../routes/interfaces/interfaces';
-import authService from '../services/AuthService';
+import authService from '../services/authService/AuthService';
 import parseDatabaseAvailability from '../services/AvailabilitiesService';
-import bookingService from '../services/BookingService';
+import bookingService from '../services/BookingService/BookingService';
 import { ErrorService } from '../services/ErrorService';
 import fixedBookingService from '../services/FixedBookingService';
 import userService from '../services/UserService';

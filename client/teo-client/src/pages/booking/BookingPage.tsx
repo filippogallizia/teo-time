@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import AvalContainer from '../../component/AvailabilitiesContainer';
-import CalendarComponent from '../../component/Caledar';
-import EventInformations from '../../component/EventInformations';
+import AvalContainer from './components/AvailabilitiesContainer';
+import CalendarComponent from './components/Caledar';
+import EventInformations from './components/EventInformations';
 import { TAILWIND_MOBILE_BREAKPOINT } from '../../shared/locales/constant';
 import { BookingComponentType } from './BookingPageTypes';
 import { SET_CONFIRM_PHASE, SET_RENDER_AVAL } from './stateReducer';

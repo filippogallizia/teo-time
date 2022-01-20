@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 
-import Auth from '../services/AuthService';
+import Auth from '../services/authService/AuthService';
 import { ResponseWithUserType } from './interfaces/interfaces';
 
 const { userExist, createToken } = require('../middleware/middleware');

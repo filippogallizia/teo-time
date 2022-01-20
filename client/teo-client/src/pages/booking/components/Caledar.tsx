@@ -1,10 +1,7 @@
 import React from 'react';
 import Calendar from 'react-calendar';
-import { BookingComponentType } from '../pages/booking/BookingPageTypes';
-import {
-  SET_RENDER_AVAL,
-  SET_SELECTION_DATE,
-} from '../pages/booking/stateReducer';
+import { BookingComponentType } from '../BookingPageTypes';
+import { SET_RENDER_AVAL, SET_SELECTION_DATE } from '../stateReducer';
 
 function CalendarComponent({ dispatch, state }: BookingComponentType) {
   const myDispatch = (date: Date) => {

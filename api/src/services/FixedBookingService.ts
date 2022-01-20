@@ -1,6 +1,6 @@
 import { BookingModel } from '../database/models/booking.model';
 import { FixedBookingModelType } from '../database/models/fixedBooking.model';
-import { QueryDates } from './BookingService';
+import { QueryDates } from './BookingService/BookingService';
 
 const db = require('../database/models/db');
 

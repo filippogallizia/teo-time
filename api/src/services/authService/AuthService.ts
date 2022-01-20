@@ -1,14 +1,15 @@
 import jwt from 'jsonwebtoken';
 
-import { LoginInputDTO, UserDTO, UserInputDTO } from '../interfaces/UserDTO';
-import { ErrorService } from './ErrorService';
-import userService from './UserService';
+import { LoginInputDTO, UserDTO, UserInputDTO } from '../../interfaces/UserDTO';
+import { ErrorService } from '../ErrorService';
+import userService from '../UserService';
 
 class AuthService {
   public userExist(user: UserDTO | undefined) {
     if (user) {
       throw ErrorService.badRequest('User already Exist');
     }
+    return;
   }
 
   public passwordExist(password: string) {
@@ -23,7 +24,7 @@ class AuthService {
   }
   public emailValidation(email: string) {
     if (!email) {
-      throw ErrorService.badRequest('Name is missing');
+      throw ErrorService.badRequest('Email is missing');
     }
   }
   public nameValidation(name: string) {
@@ -71,7 +72,11 @@ class AuthService {
   }
 
   public generateAccessToken(value: any) {
-    return jwt.sign(value, process.env.ACCESS_TOKEN_SECRET as string);
+    return jwt.sign(
+      //expiration one hour
+      { exp: Math.floor(Date.now() / 1000) + 60, data: value },
+      process.env.ACCESS_TOKEN_SECRET as string
+    );
   }
 }
 

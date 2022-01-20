@@ -6,18 +6,18 @@ import {
   EVENT_INFO_TEXT,
   GRID_ONE_COL,
   SUB_TITLE,
-} from '../shared/locales/constant';
+} from '../../../shared/locales/constant';
 import { DateTime } from 'luxon';
-import { getAvailabilities } from '../services/calendar.service';
-import { Actions, InitialState, SET_AVAL } from '../pages/booking/stateReducer';
+import { getAvailabilities } from '../../../services/calendar.service';
+import { Actions, InitialState, SET_AVAL } from '../stateReducer';
 import {
   FROM_DATE_TO_DAY,
   FROM_DATE_TO_HOUR,
   HOUR_MINUTE_FORMAT,
-} from '../shared/locales/utils';
-import EventListener from '../helpers/EventListener';
-import { TimeRangeType } from '../../types/Types';
-import i18n from '../i18n';
+} from '../../../shared/locales/utils';
+import EventListener from '../../../helpers/EventListener';
+import { TimeRangeType } from '../../../../types/Types';
+import i18n from '../../../i18n';
 
 type BookSlotContainerType = {
   state: InitialState;

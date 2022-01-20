@@ -2,14 +2,11 @@ import React from 'react';
 import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { BiTime } from 'react-icons/bi';
 import { GrLocationPin } from 'react-icons/gr';
-import { EVENT_INFO_TEXT, TITLE } from '../shared/locales/constant';
-import { BookingComponentType } from '../pages/booking/BookingPageTypes';
 import { BiEuro } from 'react-icons/bi';
-import {
-  SET_CONFIRM_PHASE,
-  SET_RENDER_AVAL,
-} from '../pages/booking/stateReducer';
-import i18n from '../i18n';
+import { BookingComponentType } from '../BookingPageTypes';
+import { SET_CONFIRM_PHASE, SET_RENDER_AVAL } from '../stateReducer';
+import { EVENT_INFO_TEXT, TITLE } from '../../../shared/locales/constant';
+import i18n from '../../../i18n';
 
 const EventInformations = ({ state, dispatch }: BookingComponentType) => {
   return (
