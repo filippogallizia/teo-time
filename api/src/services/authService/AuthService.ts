@@ -74,7 +74,7 @@ class AuthService {
   public generateAccessToken(value: any) {
     return jwt.sign(
       //expiration one hour
-      { exp: Math.floor(Date.now() / 1000) + 60, data: value },
+      { exp: Math.floor(Date.now() / 1000) + 60 * 60, data: value },
       process.env.ACCESS_TOKEN_SECRET as string
     );
   }

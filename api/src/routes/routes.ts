@@ -112,11 +112,12 @@ router.post(
         );
       } else {
         const userEmail = res.user.email;
+        const usr = await userService.findOne(userEmail);
+
         // create booking
         const booking = await bookingService.create(req);
 
         // associate the booking with the user
-        const usr = await userService.findOne(userEmail);
         await booking.setUser(usr);
 
         // insert the booking to admin google calendar

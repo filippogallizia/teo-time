@@ -192,6 +192,7 @@ const userExist = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await userService.findOne(email);
     if (!user) {
+      console.log('hereUseStrange');
       next(ErrorService.badRequest('user not found'));
     }
     //@ts-expect-error
@@ -249,6 +250,7 @@ const authenticateToken = async (
   if (!token) next(ErrorService.badRequest('User not logged in'));
   else {
     const payload = token && (await googleAuth(token));
+
     try {
       if (payload) {
         res.user = { email: payload.email };
@@ -261,7 +263,7 @@ const authenticateToken = async (
             if (err) {
               next(ErrorService.badRequest('Access not authorized'));
             }
-            res.user = decoded;
+            res.user = decoded.data;
             next();
           }
         );
