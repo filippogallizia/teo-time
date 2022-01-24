@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import routes from '../routes';
 import { toast } from 'react-toastify';
 import i18n from '../i18n';
 import 'react-toastify/dist/ReactToastify.css';
-import { UserContext } from './UserContext';
 import hamburgerIcon from '../shared/icons/hamburgerIcon.svg';
 import { AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
 import { GrUserAdmin } from 'react-icons/gr';
 import { BiLogIn, BiLogOut } from 'react-icons/bi';
+import SessionService from '../services/SessionService';
 
 function useOutsideAlerter(ref: any, fn: any) {
   useEffect(() => {
@@ -40,7 +40,9 @@ function OutsideAlerter(props: any) {
 export default function Navbar({ fixed }: { fixed?: any }) {
   const history = useHistory();
   const [navbarOpen, setNavbarOpen] = React.useState(false);
-  const { user, setUser, token, setToken } = useContext(UserContext);
+
+  const user = SessionService.getUser();
+  const token = SessionService.getToken();
 
   return (
     <OutsideAlerter setNavbarOpen={setNavbarOpen}>
@@ -125,10 +127,9 @@ export default function Navbar({ fixed }: { fixed?: any }) {
                     <div
                       onClick={() => {
                         localStorage.clear();
-                        setUser(null);
-                        setToken(null);
+                        SessionService.logOut();
                         history.push(routes.LOGIN);
-                        toast(i18n.t('toastMessages.other.logOut'));
+                        toast.success(i18n.t('toastMessages.other.logOut'));
                       }}
                       className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug hover:opacity-75"
                     >

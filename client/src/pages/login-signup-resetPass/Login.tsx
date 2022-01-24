@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import GeneralButton, { buttonStyle } from '../../component/GeneralButton';
 import {
+  LoginResponseType,
   loginService,
   postEmailForResetPassword,
 } from './service/LoginService';
@@ -10,21 +11,17 @@ import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import Routes from '../../routes';
 import {
-  ACCESS_TOKEN,
   GRID_ONE_COL,
   SECONDARY_LINK,
   TITLE,
-  USER_INFO,
 } from '../../shared/locales/constant';
 import { handleToastInFailRequest } from '../../shared/locales/utils';
 import { toast } from 'react-toastify';
 import i18n from '../../i18n';
-import { BookingComponentType } from '../booking/BookingPageTypes';
-import { UserType } from '../../../types/Types';
-import { UserContext } from '../../component/UserContext';
 import GoogleLoginComponent from './GoogleLogin';
 import { SelfCenterLayout } from '../../component/GeneralLayouts';
 import LoadingService from '../../component/loading/LoadingService';
+import SessionService from '../../services/SessionService';
 
 export const ForgotPassword = () => {
   const [emailValue, setEmail] = useState('');
@@ -101,17 +98,12 @@ const Login = () => {
     resolver: yupResolver(schema),
   });
   const history = useHistory();
-  const { setUser, setToken } = useContext(UserContext);
   const { isValid, errors } = formState;
 
   const myFunc = async (value: InitialFormType) => {
-    const handleSuccess = (response: { token: string; user: UserType }) => {
-      localStorage.setItem(ACCESS_TOKEN, response.token);
-      setToken(response.token);
-      if (response.user) {
-        localStorage.setItem(USER_INFO, JSON.stringify(response.user));
-        setUser(response.user);
-      }
+    const handleSuccess = (response: LoginResponseType) => {
+      const { token, user } = response;
+      SessionService.login({ token, user });
     };
     try {
       LoadingService.show();

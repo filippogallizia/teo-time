@@ -59,20 +59,14 @@ export const parseHoursToObject = (selectedHour: string): HrsAndMinsType => {
 };
 
 export const handleToastInFailRequest = (error: any, toast: any) => {
-  if (
-    error &&
-    error.response &&
-    error.response.data &&
-    error.response.data.error &&
-    error.response.data.error.message
-  ) {
-    if (typeof error.response.data.error.message === 'string') {
-      toast.error(error.response.data.error.message, {
+  if (error && error.response) {
+    if (typeof error.response.data === 'string') {
+      toast.error(error.response.data, {
         position: toast.POSITION.TOP_CENTER,
       });
     }
   } else {
-    toast.error("qualcosa e' andato storto", {
+    toast.error("Qualcosa e' andato storto", {
       position: toast.POSITION.TOP_CENTER,
     });
   }

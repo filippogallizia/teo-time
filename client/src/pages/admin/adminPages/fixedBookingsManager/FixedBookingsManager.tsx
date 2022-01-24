@@ -49,7 +49,6 @@ const FixedBksManager = () => {
     const asyncFn = async () => {
       const handleSuccess = (res: any) => {
         dispatch({ type: SET_FIXED_BKS, payload: res });
-        console.log(res);
       };
       await getFixedBookings(handleSuccess);
     };

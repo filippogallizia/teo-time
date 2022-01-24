@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { BookingAndUser, UserType } from '../../../../types/Types';
+import { BookingAndUser } from '../../../../types/Types';
 import i18n from '../../../i18n';
 import {
   BOLD,
@@ -74,7 +74,6 @@ const DetailedInfoBooking = ({
 
   if (allBookingInfo) {
     const { user, start } = allBookingInfo;
-    console.log(user, 'user');
     return (
       <div>
         {!user ? (

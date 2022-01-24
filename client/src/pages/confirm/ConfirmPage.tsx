@@ -3,9 +3,8 @@ import React from 'react';
 import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { useHistory } from 'react-router-dom';
 import GeneralButton from '../../component/GeneralButton';
-import { TITLE, USER_INFO } from '../../shared/locales/constant';
+import { TITLE } from '../../shared/locales/constant';
 import routes from '../../routes';
-import { createBooking } from '../../services/calendar.service';
 import {
   handleToastInFailRequest,
   parseHoursToObject,
@@ -17,6 +16,7 @@ import { toast } from 'react-toastify';
 import InfoBooking from '../admin/components/InfoBooking';
 import { HrsAndMinsType } from '../../../types/Types';
 import { googleCalendarInsertEvent } from '../login-signup-resetPass/service/LoginService';
+import BookingPageApi from '../booking/BookingPageApi';
 
 type InitialFormType = {
   name: string;
@@ -25,8 +25,6 @@ type InitialFormType = {
 };
 
 const EVENT_DURATION = { hours: 1, minutes: 0 };
-
-const currentUser = localStorage.getItem(USER_INFO);
 
 const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
   const history = useHistory();
@@ -55,8 +53,11 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
   const myFunc = async (value: InitialFormType) => {
     const google_token = localStorage.getItem('google_token');
     try {
-      const handleSuccess = (response: any) => {};
-      await createBooking(handleSuccess, {
+      //await createBooking(handleSuccess, {
+      //  start: parsedDate.plus(mapped).toISO(),
+      //  end: parsedDate.plus(mapped).plus(EVENT_DURATION).toISO(),
+      //});
+      await BookingPageApi.createBooking({
         start: parsedDate.plus(mapped).toISO(),
         end: parsedDate.plus(mapped).plus(EVENT_DURATION).toISO(),
       });

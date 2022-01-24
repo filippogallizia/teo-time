@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { GoogleLogin } from 'react-google-login';
-import { ACCESS_TOKEN, USER_INFO } from '../../shared/locales/constant';
 import { useHistory } from 'react-router-dom';
 import { googleLoginService } from './service/LoginService';
 import routes from '../../routes';
-import { UserContext } from '../../component/UserContext';
+import SessionService from '../../services/SessionService';
 
 export const refreshTokenSetup = (res: any) => {
   // Timing to renew access token
@@ -17,7 +16,7 @@ export const refreshTokenSetup = (res: any) => {
     // manage own token
     localStorage.removeItem('google_token');
     localStorage.setItem('google_token', newAuthRes.id_token);
-    localStorage.setItem(ACCESS_TOKEN, newAuthRes.access_token);
+    SessionService.refreshToken(newAuthRes.access_token);
 
     // Setup the other timer after the first one
     setTimeout(refreshToken, refreshTiming);
@@ -30,16 +29,14 @@ const clientId =
 
 function GoogleLoginComponent() {
   const history = useHistory();
-  const { setUser, setToken } = useContext(UserContext);
   const responseGoogle = (response: any) => {
     googleLoginService(
       (res: any) => {
-        localStorage.setItem(ACCESS_TOKEN, response.tokenId);
+        const { tokenId } = response;
+        const { user } = res;
         localStorage.setItem('google_token', response.accessToken);
-        setToken(response.tokenId);
         if (res.user) {
-          localStorage.setItem(USER_INFO, JSON.stringify(res.user));
-          setUser(res.user);
+          SessionService.login({ token: tokenId, user });
         }
         history.push(routes.HOMEPAGE_BOOKING);
       },

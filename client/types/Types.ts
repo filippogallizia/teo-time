@@ -42,4 +42,7 @@ export type UserType = {
   name?: string;
   phoneNumber?: number;
   role?: string;
+  resetPasswordToken?: string;
 };
+
+export type TokenType = string;

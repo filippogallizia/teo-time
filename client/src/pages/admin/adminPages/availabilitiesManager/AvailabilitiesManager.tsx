@@ -394,6 +394,3 @@ const AvalManager = () => {
 };
 
 export default AvalManager;
-function useDispatch(arg0: () => any) {
-  throw new Error('Function not implemented.');
-}

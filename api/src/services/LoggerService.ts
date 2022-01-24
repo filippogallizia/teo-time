@@ -70,7 +70,6 @@ class Logger {
   }
 
   error(msg: any, meta?: any) {
-    console.log(msg, 'CARALHO', meta, 'meta');
     this.logger.error(msg, meta);
   }
 

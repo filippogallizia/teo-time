@@ -1,5 +1,3 @@
-import { Console } from 'console';
-
 import express, { NextFunction, Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
@@ -247,10 +245,9 @@ const authenticateToken = async (
 ) => {
   const authHeader = req.header('Authorization');
   const token = authHeader && authHeader.split(' ')[1];
-  if (!token) next(ErrorService.badRequest('User not logged in'));
+  if (!token) next(ErrorService.unauthorized('Unauthorized'));
   else {
     const payload = token && (await googleAuth(token));
-
     try {
       if (payload) {
         res.user = { email: payload.email };
@@ -261,7 +258,7 @@ const authenticateToken = async (
           process.env.ACCESS_TOKEN_SECRET as string,
           (err: any, decoded: any) => {
             if (err) {
-              next(ErrorService.badRequest('Access not authorized'));
+              next(ErrorService.unauthorized('Unauthorized'));
             }
             res.user = decoded.data;
             next();

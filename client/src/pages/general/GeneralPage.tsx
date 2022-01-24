@@ -1,18 +1,16 @@
-import React, { useContext, useEffect, useReducer } from 'react';
+import React from 'react';
 import { Switch } from 'react-router';
 import Routes from '../../routes';
 import HomePage from '../home/HomePage';
 import UserPage from '../user/UserPage';
-import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
+import { Redirect, Route, RouteProps } from 'react-router-dom';
 import AdminPage from '../admin/AdminPage';
-import { UserContext } from '../../component/UserContext';
-import stateReducer, { SET_LOCATION } from '../booking/stateReducer';
 import {
   SelfCenterLayout,
   SelfTopLayout,
 } from '../../component/GeneralLayouts';
 import BookingRouter from '../booking/BookingRouter';
-import { initialState } from '../booking/initialState';
+import SessionService from '../../services/SessionService';
 
 type ProtectedRouteType = {
   children: any;
@@ -39,7 +37,8 @@ export const ProtectedRoute = ({
 };
 
 const GeneralPage = () => {
-  const { user, token } = useContext(UserContext);
+  const user = SessionService.getUser();
+  const token = SessionService.getToken();
 
   /**
    * WHY DO i NEED THE LOCATION?

@@ -4,11 +4,19 @@ import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 
 type Option = { name: string | number };
 
+const arr = [1];
+
 type SelectType = {
   options: Option[];
   selected: Option;
   setSelected: Dispatch<SetStateAction<{ name: string }>>;
 };
+
+function cioa() {
+  arr.forEach((element) => {
+    console.log(element);
+  });
+}
 
 export default function Select({ options, selected, setSelected }: SelectType) {
   return (

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { TokenType, UserType } from '../../../../types/Types';
 import { ENDPOINT } from '../../../api';
 
 export const signupService = async (
@@ -19,10 +20,15 @@ export const signupService = async (
   }
 };
 
+export type LoginResponseType = {
+  token: TokenType;
+  user: UserType;
+};
+
 export const loginService = async (
-  fn: any,
+  fn: (response: any) => void,
   body: { email: string; password: any }
-) => {
+): Promise<void> => {
   try {
     const { email, password } = body;
     const response = await axios.post(`${ENDPOINT}/login`, {

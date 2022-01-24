@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { HrsAndMinsType, TimeRangeType } from '../../../../../types/Types';
+import { TimeRangeType } from '../../../../../types/Types';
 import { HOUR_MINUTE_FORMAT } from '../../../../shared/locales/utils';
 import { weekDays } from '../availabilitiesManager/AvailabilitiesManager';
 
@@ -81,7 +81,6 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
         const index = draft.fixedBks.findIndex(
           (x) => x.day === action.payload.day
         );
-        console.log(index, 'index');
         if (index > -1) {
           if (action.payload.type === ADD) {
             draft.fixedBks[index].bookings.push(action.payload.booking);

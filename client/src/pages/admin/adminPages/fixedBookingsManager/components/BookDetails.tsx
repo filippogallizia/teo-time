@@ -1,4 +1,3 @@
-import { useEffect, useReducer } from 'react';
 import i18n from '../../../../../i18n';
 import { ITALIC } from '../../../../../shared/locales/constant';
 import { promptConfirmation } from '../../../../../shared/locales/utils';

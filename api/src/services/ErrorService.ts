@@ -15,6 +15,10 @@ export class ErrorService {
     this.message = message;
   }
 
+  static unauthorized(msg: any) {
+    return new ErrorService(401, msg);
+  }
+
   static badRequest(msg: any) {
     return new ErrorService(400, msg);
   }

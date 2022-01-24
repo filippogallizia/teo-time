@@ -1,13 +1,16 @@
 // external libraries
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import Routes from '../routes';
 import {
-  BrowserRouter as Router,
+  Router as BrowserRouter,
   Switch,
   Route,
   RouteProps,
   Redirect,
+  useHistory,
 } from 'react-router-dom';
+
+import { createBrowserHistory } from 'history';
 
 // local files
 import Navbar from './NavBar';
@@ -15,20 +18,26 @@ import GeneralPage from '../pages/general/GeneralPage';
 import Login, { ForgotPassword } from '../pages/login-signup-resetPass/Login';
 import Signup from '../pages/login-signup-resetPass/Signup';
 import Footer from './Footer';
-import { ACCESS_TOKEN, USER_INFO } from '../shared/locales/constant';
 import ResetPassword from '../pages/login-signup-resetPass/ResetPassword';
-import { UserContext } from './UserContext';
 import ContactPage from '../pages/contact/ContactPage';
 import { ShrinkHeigthLayout } from './GeneralLayouts';
 import PrivacyPolicy from '../pages/privacyPolicy/PrivacyPolicy';
 import ErrorHanlder from './ErrorHandler';
 import ErrorsAndWarningsModal from './ErrorsAndWarningsModal';
+import Authentication from './authentication/Authentication';
 
 type ProtectedRouteType = {
   children: JSX.Element;
   condition: boolean;
   altRoute: string;
 } & RouteProps;
+
+export const history = createBrowserHistory();
+
+export const useHistry = () => {
+  const history = useHistory();
+  return history;
+};
 
 export const ProtectedRoute = ({
   children,
@@ -53,28 +62,9 @@ const MainContentWrapper = (props: any) => {
 };
 
 const RouterComponent = (): JSX.Element => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState<string | null>(null);
-
-  const value = useMemo(
-    () => ({ user, setUser, token, setToken }),
-    [user, setUser, token, setToken]
-  );
-
-  useEffect(() => {
-    const userInfo = localStorage.getItem(USER_INFO);
-    const TOKEN = localStorage.getItem(ACCESS_TOKEN);
-    if (TOKEN) {
-      setToken(TOKEN);
-    }
-    if (userInfo) {
-      setUser(JSON.parse(userInfo));
-    }
-  }, [setUser]);
-
   return (
-    <Router>
-      <UserContext.Provider value={value}>
+    <BrowserRouter history={history}>
+      <Authentication>
         <Navbar />
         <MainContentWrapper>
           <Switch>
@@ -159,8 +149,8 @@ const RouterComponent = (): JSX.Element => {
         </MainContentWrapper>
         <ErrorHanlder />
         <Footer />
-      </UserContext.Provider>
-    </Router>
+      </Authentication>
+    </BrowserRouter>
   );
 };
 

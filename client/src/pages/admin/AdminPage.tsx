@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { BookingComponentType } from '../booking/BookingPageTypes';
-import { SET_LOCATION } from '../booking/stateReducer';
 import { getUsersAndBookings } from './service/AdminPageService';
 import DetailedInfoBooking from './components/DetailedBookingInfo';
 import { MEDIUM_MARGIN_BOTTOM } from '../../shared/locales/constant';
 import UsersTable from './components/UsersTable';
 import { ProtectedRoute } from '../general/GeneralPage';
-import { Redirect, Switch, useLocation } from 'react-router';
+import { Redirect, Switch } from 'react-router';
 import Routes from '../../routes';
 import { Link } from 'react-router-dom';
 import AvalManager from './adminPages/availabilitiesManager/AvailabilitiesManager';

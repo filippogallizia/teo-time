@@ -5,11 +5,7 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import routes from '../../routes';
-import {
-  ACCESS_TOKEN,
-  EVENT_INFO_TEXT,
-  TITLE,
-} from '../../shared/locales/constant';
+import { ACCESS_TOKEN } from '../../shared/locales/constant';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import LoadingService from '../../component/loading/LoadingService';
 

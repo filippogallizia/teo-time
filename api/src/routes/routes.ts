@@ -63,7 +63,6 @@ router.post(
   [loginValidation, createToken],
   (req: Request, res: ResponseWithUserType, next: NextFunction) => {
     try {
-      console.log(res.user, 'res.user');
       res.status(200).send({ user: res.user, token: res.locals.jwt_secret });
     } catch (e) {
       next(e);
@@ -285,9 +284,9 @@ router.post(
 
 router.put(
   '/defaultAvailabilities',
+  [authenticateToken],
   async (req: Request, res: Response, next: NextFunction) => {
     const { workSettings } = req.body;
-    console.log(req.body, 'req.body');
     try {
       workSettings.forEach(async (daySetting: any) => {
         await DatabaseAvailabilty.update(
@@ -318,6 +317,7 @@ router.put(
 
 router.get(
   '/defaultAvailabilities',
+  [authenticateToken],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const worksHours = await DatabaseAvailabilty.findAll();
@@ -394,6 +394,7 @@ router.get(
 
 router.get(
   '/fixedBookings',
+  [authenticateToken],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await FixedBookings.findAll();
@@ -406,12 +407,11 @@ router.get(
 
 router.post(
   '/fixedBookings',
+  [authenticateToken],
   async (req: Request, res: Response, next: NextFunction) => {
     const { fixedBks } = req.body;
     const errors: any = [];
     try {
-      console.log(FixedBookings, 'FIXED BOOKING MODEL');
-
       const asyncFn = async () => {
         for (const fixedBook of fixedBks) {
           for (const book of fixedBook.bookings) {
@@ -441,12 +441,12 @@ router.post(
 
 router.put(
   '/fixedBookings',
+  [authenticateToken],
   async (req: Request, res: Response, next: NextFunction) => {
     const { fixedBks } = req.body;
     try {
       const errors: any = [];
       const mainAsyncFn = () => {
-        console.log(FixedBookings, 'FIXED BOOKING MODEL');
         for (const fixedBook of fixedBks) {
           fixedBook.bookings.forEach((book: any) => {
             FixedBookings.findOne({
@@ -501,6 +501,7 @@ const calculateOrderAmount = (ammount: any) => {
 
 router.post(
   '/create-payment-intent',
+  [authenticateToken],
   async (req: Request, res: Response, next: NextFunction) => {
     const { ammount, email, name } = req.body;
     let id = '';

@@ -1,4 +1,4 @@
-import React, { useContext, useReducer } from 'react';
+import React, { useReducer } from 'react';
 import { Switch } from 'react-router-dom';
 import { ProtectedRoute } from '../general/GeneralPage';
 import Routes from '../../routes';
@@ -6,15 +6,16 @@ import BookingPage from './BookingPage';
 import SuccessfulPage from '../successfulBooking/SuccesfulPage';
 import PaymentPage from '../payment/PaymentPage';
 import ConfirmPage from '../confirm/ConfirmPage';
-import { UserContext } from '../../component/UserContext';
 import { ACCESS_TOKEN } from '../../shared/locales/constant';
 import stateReducer from './stateReducer';
 import { initialState } from './initialState';
+import SessionService from '../../services/SessionService';
 
 const BookingRouter = () => {
   const [state, dispatch] = useReducer(stateReducer, initialState);
-  const { token } = useContext(UserContext);
   const tokenParam = new URLSearchParams(window.location.search).get('token');
+
+  const token = SessionService.getToken();
 
   return (
     <div>

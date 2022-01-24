@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { HrsAndMinsType, TimeRangeType, UserType } from '../../../types/Types';
+import { HrsAndMinsType, TimeRangeType } from '../../../types/Types';
 
 export const SET_AVAL = 'SET_AVAL';
 export const SET_USER_BOOKINGS = 'SET_USER_BOOKINGS';
