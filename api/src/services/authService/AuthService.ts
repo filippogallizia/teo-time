@@ -66,6 +66,9 @@ class AuthService {
     this.emailValidation(email);
     this.passwordExist(password);
     const usr = await userService.findOne(email);
+    if (!usr) {
+      throw ErrorService.badRequest('User not exist');
+    }
     this.passwordValidation(usr.password, password);
     this.errorUserNotFound(usr);
     return usr;

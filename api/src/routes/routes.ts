@@ -43,6 +43,9 @@ router.post(
   async (req: Request, res: ResponseWithUserType, next: NextFunction) => {
     const { email, password, phoneNumber, name } = req.body;
     const user = await userService.findOne(email);
+    if (user) {
+      next(ErrorService.badRequest('User already exist'));
+    }
 
     try {
       await authService.signUp(user, {
@@ -112,6 +115,9 @@ router.post(
       } else {
         const userEmail = res.user.email;
         const usr = await userService.findOne(userEmail);
+        if (!usr) {
+          next(ErrorService.badRequest('User already exist'));
+        }
 
         // create booking
         const booking = await bookingService.create(req);
