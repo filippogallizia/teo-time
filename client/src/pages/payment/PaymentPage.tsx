@@ -7,17 +7,13 @@ import './payment.css';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import LoadingService from '../../component/loading/LoadingService';
 
-import { CreatePaymentIntent } from './PaymentService';
+import PaymentPageApi from './PaymentPageApi';
 import EventListener from '../../helpers/EventListener';
 import SessionService from '../../services/SessionService';
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
 // This is your test publishable API key.
-
-//const stripePromise = loadStripe(
-//  'pk_test_51K5AW1G4kWNoryvx79L6ApGntu5LQdWY8GK3uduUxFCrUhZ1aLsG3pfecMyI1Jz6cHf9beSWzdHYq3TYWpz1zFfD00y9Fhr61x'
-//);
 
 const PUBLISHABLE_KEY =
   'pk_test_51K5AW1G4kWNoryvx79L6ApGntu5LQdWY8GK3uduUxFCrUhZ1aLsG3pfecMyI1Jz6cHf9beSWzdHYq3TYWpz1zFfD00y9Fhr61x';
@@ -35,16 +31,11 @@ export default function App({ dispatch, state }: BookingComponentType) {
         name: user.name,
       };
       LoadingService.show();
-
-      const handleSuccess = (response: any) => {
-        setClientSecret(response.clientSecret);
-        LoadingService.hide();
-      };
       const asyncFn = async () => {
         try {
-          await CreatePaymentIntent(handleSuccess, payload);
+          const response = await PaymentPageApi.createPaymentIntent(payload);
+          setClientSecret(response.clientSecret);
         } catch (e) {
-          LoadingService.hide();
           EventListener.emit('errorHandling', true);
         } finally {
           LoadingService.hide();

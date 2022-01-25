@@ -165,6 +165,8 @@ router.post(
         await bks.destroy();
         // find the corresponding event on google calendar
         const events = await getEvents(start, end);
+
+        console.log(events, 'EVENT-GOOGLE');
         // if the event exists, delete it
         if (events.length > 0) {
           await deleteEvent(events[0].id).catch((err) => {

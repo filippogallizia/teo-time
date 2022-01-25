@@ -20,7 +20,7 @@ class HttpService {
   constructor() {
     this.http = Axios.create(config);
 
-    this.accessToken = SessionService.getToken();
+    this.accessToken = '';
 
     this.http.interceptors.request.use(async (request: AxiosRequestConfig) => {
       if (this.accessToken) {
@@ -47,7 +47,7 @@ class HttpService {
         //  }
         if (httpError?.statusCode === StatusCodes.UNAUTHORIZED) {
           history.push('/login');
-          SessionService.logOut();
+          //SessionService.logOut();
         }
         return await Promise.reject(httpError);
       }

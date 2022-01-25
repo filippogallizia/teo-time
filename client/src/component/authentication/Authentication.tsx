@@ -2,7 +2,11 @@ import produce from 'immer';
 import { useEffect, useMemo, useReducer } from 'react';
 import { TokenType, UserType } from '../../../types/Types';
 import SessionService from '../../services/SessionService';
-import { AuthContext, AuthContextState, initialState } from '../AuthContext';
+import {
+  AuthContext,
+  AuthContextState,
+  initialState,
+} from '../authContext/AuthContext';
 
 export const SET_TOKEN = 'SET_TOKEN';
 export const SET_USER = 'SET_USER';

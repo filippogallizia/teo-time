@@ -1,6 +1,6 @@
 import { createContext } from 'react';
-import { TokenType, UserType } from '../../types/Types';
-import userService from './authentication/user/UserService';
+import { TokenType, UserType } from '../../../types/Types';
+import userService from '../authentication/user/UserService';
 
 export type AuthContextState = {
   token: TokenType;

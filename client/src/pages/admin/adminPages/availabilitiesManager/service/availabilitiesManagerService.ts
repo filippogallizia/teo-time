@@ -4,6 +4,19 @@ import { DayAvalSettingsType } from '../../../../booking/stateReducer';
 
 import { ENDPOINT } from '../../../../../api';
 
+// TO IMPLEMENT THE CLASS
+//class AvailManagerApi {
+//  public createDefaultAvail(body: DayAvalSettingsType[]): Promise<any> {
+//    return HttpService.put(`${ENDPOINT}/defaultAvailabilities`, {
+//      workSettings: body,
+//    });
+//  }
+
+//  public getDefaultAvail(): Promise<any> {
+//    return HttpService.get(`${ENDPOINT}/defaultAvailabilities`);
+//  }
+//}
+
 export const createDefaultAvail = async (
   fn: any,
   body: DayAvalSettingsType[]
@@ -39,3 +52,5 @@ export const getDefaultAvail = async (fn: any) => {
     throw e;
   }
 };
+
+//export default new AvailManagerApi();

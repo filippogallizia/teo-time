@@ -27,16 +27,17 @@ const ErrorHanlder = () => {
           left: 0,
           right: 0,
           bottom: 0,
+          color: 'red',
           width: '100vw',
           height: '100vh',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: 'rgba(0,0,0,0.5)',
+          backgroundColor: 'rgba(0,0,0,0.2)',
           zIndex: 10000,
         }}
       >
-        qualcosa e' andato stortooooo
+        Qualcosa e' andato storto
       </p>
     </div>
   );

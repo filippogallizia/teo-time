@@ -258,6 +258,7 @@ const authenticateToken = async (
           process.env.ACCESS_TOKEN_SECRET as string,
           (err: any, decoded: any) => {
             if (err) {
+              console.log(err, 'ERROR VERIFICATION');
               next(ErrorService.unauthorized('Unauthorized'));
             }
             res.user = decoded.data;

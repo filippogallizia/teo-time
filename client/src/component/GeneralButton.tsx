@@ -7,8 +7,8 @@ type GeneralButtonType = {
 };
 export const buttonStyle = (isEnable: boolean): string => {
   return isEnable
-    ? 'bg-yellow-500 hover:bg-yellow-700  font-bold py-2 px-4 rounded'
-    : 'bg-yellow-500 hover:bg-yellow-700  font-bold py-2 px-4 rounded disabled:bg-yellow-500 opacity-50 cursor-not-allowed';
+    ? 'bg-yellow-500 hover:bg-yellow-700  font-bold py-2 px-4 rounded cursor-pointer'
+    : 'bg-yellow-500 hover:bg-yellow-700  font-bold py-2 px-4 rounded cursor-pointer disabled:bg-yellow-500 opacity-50 cursor-not-allowed';
 };
 
 function GeneralButton({ buttonText, onClick, disabled }: GeneralButtonType) {

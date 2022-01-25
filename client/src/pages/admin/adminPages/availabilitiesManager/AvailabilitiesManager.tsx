@@ -170,6 +170,7 @@ const AvalManager = () => {
       );
       dispatch({ type: SET_ALL_WEEK_AVAL_SETTINGS, payload: mappedResponse });
     };
+
     getDefaultAvail(handleSuccess);
   }, [dispatch]);
 
