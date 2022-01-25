@@ -15,7 +15,7 @@ import i18n from '../../i18n';
 import { toast } from 'react-toastify';
 import InfoBooking from '../admin/components/InfoBooking';
 import { HrsAndMinsType } from '../../../types/Types';
-import { googleCalendarInsertEvent } from '../login-signup-resetPass/service/LoginService';
+import { googleCalendarInsertEvent } from '../auth/AuthApi/LoginService';
 import BookingPageApi from '../booking/BookingPageApi';
 
 type InitialFormType = {

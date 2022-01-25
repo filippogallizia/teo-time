@@ -1,5 +1,5 @@
 import { TokenType, UserType } from '../../types/Types';
-import { LoginResponseType } from '../pages/login-signup-resetPass/service/LoginService';
+import { LoginResponseType } from '../pages/auth/AuthApi/LoginService';
 import { ACCESS_TOKEN, USER_INFO } from '../shared/locales/constant';
 import HttpService from './HttpService';
 

@@ -1,4 +1,3 @@
-import { ENDPOINT } from '../../api';
 import HttpService from '../../services/HttpService';
 
 class BookingPageApi {
@@ -9,7 +8,7 @@ class BookingPageApi {
     localId?: number;
   }): Promise<any> {
     const { start, end, isHoliday, localId } = body;
-    return HttpService.post(`${ENDPOINT}/createBooking`, {
+    return HttpService.post(`/createBooking`, {
       start,
       end,
       isHoliday,

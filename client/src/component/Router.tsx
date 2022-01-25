@@ -15,10 +15,10 @@ import { createBrowserHistory } from 'history';
 // local files
 import Navbar from './NavBar';
 import GeneralPage from '../pages/general/GeneralPage';
-import Login, { ForgotPassword } from '../pages/login-signup-resetPass/Login';
-import Signup from '../pages/login-signup-resetPass/Signup';
+import Login, { ForgotPassword } from '../pages/auth/Login';
+import Signup from '../pages/auth/Signup';
 import Footer from './Footer';
-import ResetPassword from '../pages/login-signup-resetPass/ResetPassword';
+import ResetPassword from '../pages/auth/ResetPassword';
 import ContactPage from '../pages/contact/ContactPage';
 import { ShrinkHeigthLayout } from './GeneralLayouts';
 import PrivacyPolicy from '../pages/privacyPolicy/PrivacyPolicy';

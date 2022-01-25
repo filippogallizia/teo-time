@@ -11,7 +11,7 @@ import {
   SECONDARY_LINK,
 } from '../../../shared/locales/constant';
 import { HOUR_MINUTE_FORMAT } from '../../../shared/locales/utils';
-import { deleteBooking } from '../../user/service/userService';
+import UserPageApi from '../../user/userPageApi/userService';
 
 const EditBooking = ({
   oneBooking,
@@ -22,7 +22,7 @@ const EditBooking = ({
 }) => {
   const handleDelete = async () => {
     try {
-      await deleteBooking((response: any) => {}, {
+      await UserPageApi.deleteBooking({
         start: oneBooking.start,
         end: oneBooking.end,
       });

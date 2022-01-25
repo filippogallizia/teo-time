@@ -43,7 +43,7 @@ services:
     depends_on:
       - api
     build:
-      context: ./client/teo-client
+      context: ./client
     environment:
       - NODE_ENV=test
       # args:`

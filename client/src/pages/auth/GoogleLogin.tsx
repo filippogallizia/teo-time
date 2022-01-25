@@ -1,7 +1,7 @@
 import React from 'react';
 import { GoogleLogin } from 'react-google-login';
 import { useHistory } from 'react-router-dom';
-import { googleLoginService } from './service/LoginService';
+import { googleLoginService } from './AuthApi/LoginService';
 import routes from '../../routes';
 import SessionService from '../../services/SessionService';
 

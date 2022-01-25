@@ -8,7 +8,7 @@ import {
 } from '../../shared/locales/constant';
 import { handleToastInFailRequest } from '../../shared/locales/utils';
 import { DATE_TO_CLIENT_FORMAT } from '../../shared/locales/utils';
-import { deleteBooking, retriveUserBooking } from './service/userService';
+import UserPageApi from './userPageApi/userService';
 import { toast } from 'react-toastify';
 import { BookingAndUser, TimeRangeType } from '../../../types/Types';
 import i18n from '../../i18n';
@@ -22,7 +22,7 @@ const DeleteBooking = ({
 }) => {
   const handleDelete = async () => {
     try {
-      await deleteBooking((response: any) => {}, {
+      await UserPageApi.deleteBooking({
         start: booking.start,
         end: booking.end,
       });
@@ -49,7 +49,8 @@ const UserPage = () => {
 
   const fetchAndSetBookings = async () => {
     try {
-      await retriveUserBooking(setBookings);
+      const response = await UserPageApi.retriveUserBooking();
+      setBookings(response);
     } catch (error) {
       handleToastInFailRequest(error, toast);
     }
