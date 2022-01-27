@@ -1,10 +1,7 @@
 import { DayAvalSettingsType } from '../../../booking/stateReducer';
 import { BOLD, ITALIC } from '../../../../shared/locales/constant';
 import GeneralButton from '../../../../component/GeneralButton';
-import {
-  getDefaultAvail,
-  createDefaultAvail,
-} from './service/availabilitiesManagerService';
+import AvailManagerApi from './AvailabilitiesManagerApi';
 import CardComponent from '../../components/Card';
 import i18n from '../../../../i18n';
 import { useEffect, useReducer } from 'react';
@@ -171,7 +168,13 @@ const AvalManager = () => {
       dispatch({ type: SET_ALL_WEEK_AVAL_SETTINGS, payload: mappedResponse });
     };
 
-    getDefaultAvail(handleSuccess);
+    const asyncFn = async () => {
+      const response = await AvailManagerApi.getDefaultAvail();
+      handleSuccess(response);
+    };
+    asyncFn();
+
+    //getDefaultAvail(handleSuccess);
   }, [dispatch]);
 
   return (
@@ -376,9 +379,10 @@ const AvalManager = () => {
           buttonText="Modifica disponibilita"
           onClick={() => {
             const asyncFn = async () => {
-              const handleSuccess = (response: any) => {};
               try {
-                await createDefaultAvail(handleSuccess, state.weekAvalSettings);
+                await AvailManagerApi.createDefaultAvail(
+                  state.weekAvalSettings
+                );
                 toast.success("Disponibilita' cambiate!", {
                   position: toast.POSITION.TOP_CENTER,
                 });

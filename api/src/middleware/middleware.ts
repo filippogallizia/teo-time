@@ -245,6 +245,7 @@ const authenticateToken = async (
 ) => {
   const authHeader = req.header('Authorization');
   const token = authHeader && authHeader.split(' ')[1];
+  console.log(token, 'token');
   if (!token) next(ErrorService.unauthorized('Unauthorized'));
   else {
     const payload = token && (await googleAuth(token));

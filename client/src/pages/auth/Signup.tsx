@@ -1,6 +1,6 @@
 import React from 'react';
 import GeneralButton, { buttonStyle } from '../../component/GeneralButton';
-import { signupService } from './service/LoginService';
+import AuthApi from './AuthApi/LoginService';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
@@ -36,7 +36,7 @@ const Signup = () => {
 
   const myFunc = async (value: InitialFormType) => {
     try {
-      await signupService(() => {}, {
+      await AuthApi.signup({
         email: value.email,
         name: value.name,
         password: value.password,

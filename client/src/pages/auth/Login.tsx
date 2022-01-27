@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import GeneralButton, { buttonStyle } from '../../component/GeneralButton';
-import {
-  LoginResponseType,
-  loginService,
-  postEmailForResetPassword,
-} from './service/LoginService';
+import AuthApi from './AuthApi/LoginService';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
@@ -24,7 +20,7 @@ import LoadingService from '../../component/loading/LoadingService';
 import SessionService from '../../services/SessionService';
 
 export const ForgotPassword = () => {
-  const [emailValue, setEmail] = useState('');
+  const [email, setEmail] = useState('');
   const [requestSuccess, setSuccess] = useState(false);
 
   return (
@@ -51,12 +47,10 @@ export const ForgotPassword = () => {
               onClick={() => {
                 const asyncFn = async () => {
                   try {
-                    await postEmailForResetPassword(
-                      (response: any) => {
-                        toast.success(response);
-                      },
-                      { email: emailValue }
-                    );
+                    const response = await AuthApi.postEmailForResetPassword({
+                      email,
+                    });
+                    toast.success(response);
                     setSuccess(true);
                   } catch (e) {
                     handleToastInFailRequest(e, toast);
@@ -101,16 +95,14 @@ const Login = () => {
   const { isValid, errors } = formState;
 
   const myFunc = async (value: InitialFormType) => {
-    const handleSuccess = (response: LoginResponseType) => {
-      const { token, user } = response;
-      SessionService.login({ token, user });
-    };
     try {
       LoadingService.show();
-      await loginService(handleSuccess, {
+      const response = await AuthApi.login({
         email: value.email,
         password: value.password,
       });
+      const { token, user } = response;
+      SessionService.login({ token, user });
       history.push(Routes.HOMEPAGE_BOOKING);
     } catch (e: any) {
       handleToastInFailRequest(e, toast);

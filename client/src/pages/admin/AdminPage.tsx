@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getUsersAndBookings } from './service/AdminPageService';
+import AdminPageApi from './AdminPageApi';
 import DetailedInfoBooking from './components/DetailedBookingInfo';
 import { MEDIUM_MARGIN_BOTTOM } from '../../shared/locales/constant';
 import UsersTable from './components/UsersTable';
@@ -148,7 +148,8 @@ const BookingManager = () => {
           setBookings([]);
         }
       };
-      await getUsersAndBookings(handleSuccess);
+      const response = await AdminPageApi.getUsersAndBookings();
+      handleSuccess(response);
     } catch (e) {
       console.log(e);
     }

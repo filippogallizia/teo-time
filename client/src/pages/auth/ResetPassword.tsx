@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import {
-  postOtpForVerification,
-  postNewPassword,
-} from './service/LoginService';
+import AuthApi from './AuthApi/LoginService';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
@@ -43,10 +40,10 @@ const ResetPassword = () => {
     if (resetPasswordToken && resetPasswordToken?.length > 0) {
       try {
         const asyncFn = async () => {
-          const handleSuccess = (response: any) => {
-            setAllowReset(true);
-          };
-          await postOtpForVerification(handleSuccess, { resetPasswordToken });
+          await AuthApi.postOtpForVerification({
+            resetPasswordToken,
+          });
+          setAllowReset(true);
         };
         asyncFn();
       } catch (e) {
@@ -56,14 +53,12 @@ const ResetPassword = () => {
   }, [resetPasswordToken]);
 
   const myFunc = async (value: InitialFormType) => {
-    const handleSuccess = (response: any) => {
-      toast(i18n.t(response));
-    };
     try {
-      await postNewPassword(handleSuccess, {
+      const response = await AuthApi.postNewPassword({
         resetPasswordToken,
         newPassword: value.newPassword,
       });
+      toast(i18n.t(response));
       history.push(Routes.LOGIN);
     } catch (e: any) {
       handleToastInFailRequest(e, toast);

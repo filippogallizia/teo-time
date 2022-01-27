@@ -44,6 +44,8 @@ export default function Navbar({ fixed }: { fixed?: any }) {
   const user = SessionService.getUser();
   const token = SessionService.getToken();
 
+  console.log(user, 'user');
+
   return (
     <OutsideAlerter setNavbarOpen={setNavbarOpen}>
       <nav className="relative flex flex-wrap items-center justify-between px-2 py-3 md:shadow-md">

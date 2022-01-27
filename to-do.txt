@@ -11,6 +11,9 @@ CLIENT
 - why do I need the setLocation????
 - refactor client folder architecture expecially apifunctions
 
+TO RUN ON REMOTE
+- check node env variable!
+
 for Admin
 
 email profile https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/calendar.readonly

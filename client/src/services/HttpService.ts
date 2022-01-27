@@ -1,6 +1,6 @@
 import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ENDPOINT } from '../api';
-import { HttpError } from './HttpError';
+import { HttpError } from './HttpErrorService';
 import { StatusCodes } from 'http-status-codes';
 import { history } from '../component/Router';
 import SessionService from './SessionService';
@@ -46,8 +46,8 @@ class HttpService {
         //    return await this.http.request(error.config);
         //  }
         if (httpError?.statusCode === StatusCodes.UNAUTHORIZED) {
+          SessionService.logOut();
           history.push('/login');
-          //SessionService.logOut();
         }
         return await Promise.reject(httpError);
       }

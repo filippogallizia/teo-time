@@ -8,7 +8,7 @@ import {
   SUB_TITLE,
 } from '../../../shared/locales/constant';
 import { DateTime } from 'luxon';
-import { getAvailabilities } from '../../../services/calendar.service';
+
 import { Actions, InitialState, SET_AVAL } from '../stateReducer';
 import {
   FROM_DATE_TO_DAY,
@@ -18,6 +18,7 @@ import {
 import EventListener from '../../../helpers/EventListener';
 import { TimeRangeType } from '../../../../types/Types';
 import i18n from '../../../i18n';
+import BookingPageApi from '../BookingPageApi';
 
 type BookSlotContainerType = {
   state: InitialState;
@@ -30,7 +31,7 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
   const [hours, setHours] = useState<{ start: string; end: string }[]>([]);
 
   useEffect(() => {
-    const setaval = (response: any) => {
+    const handleSuccess = (response: any) => {
       dispatch({ type: SET_AVAL, payload: response });
     };
     const parsedDate = DateTime.fromISO(state.schedules.selectedDate);
@@ -42,7 +43,7 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
     });
     const funcAsync = async () => {
       try {
-        await getAvailabilities(setaval, {
+        const response = await BookingPageApi.getAvailabilities({
           start: startOfDay.toISO(),
           end: parsedDate
             .set({
@@ -53,6 +54,7 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
             })
             .toISO(),
         });
+        handleSuccess(response);
       } catch (e: any) {
         console.log(e, 'e');
         EventListener.emit('errorHandling', e.response);

@@ -1,7 +1,8 @@
 import { TokenType, UserType } from '../../types/Types';
-import { LoginResponseType } from '../pages/login-signup-resetPass/service/LoginService';
+import { LoginResponseType } from '../pages/auth/AuthApi/LoginService';
 import { ACCESS_TOKEN, USER_INFO } from '../shared/locales/constant';
 import HttpService from './HttpService';
+import LocalStorageManager from '../services/StorageService';
 
 export type SetTokenType = (token: TokenType) => void;
 export type SetUserType = (user: UserType) => void;
@@ -23,13 +24,13 @@ class SessionService {
 
   public login({ token, user }: LoginResponseType) {
     HttpService.accessToken = token ?? '';
-    localStorage.setItem(ACCESS_TOKEN, token);
-    localStorage.setItem(USER_INFO, JSON.stringify(user));
+    LocalStorageManager.setItem(ACCESS_TOKEN, token);
+    LocalStorageManager.setItem(USER_INFO, user);
   }
 
   public refreshToken(token: string) {
-    localStorage.removeItem(ACCESS_TOKEN);
-    localStorage.setItem(ACCESS_TOKEN, token);
+    LocalStorageManager.removeItem(ACCESS_TOKEN);
+    LocalStorageManager.setItem(ACCESS_TOKEN, token);
   }
 
   public getToken() {
@@ -52,8 +53,8 @@ class SessionService {
   }
 
   public logOut() {
-    localStorage.removeItem(ACCESS_TOKEN);
-    localStorage.removeItem(USER_INFO);
+    LocalStorageManager.removeItem(ACCESS_TOKEN);
+    LocalStorageManager.removeItem(USER_INFO);
   }
 }
 

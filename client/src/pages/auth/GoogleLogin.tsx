@@ -1,9 +1,10 @@
 import React from 'react';
 import { GoogleLogin } from 'react-google-login';
 import { useHistory } from 'react-router-dom';
-import { googleLoginService } from './service/LoginService';
+import { googleLoginService } from './AuthApi/LoginService';
 import routes from '../../routes';
 import SessionService from '../../services/SessionService';
+import LocalStorageManager from '../../services/StorageService';
 
 export const refreshTokenSetup = (res: any) => {
   // Timing to renew access token
@@ -14,8 +15,8 @@ export const refreshTokenSetup = (res: any) => {
     refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
 
     // manage own token
-    localStorage.removeItem('google_token');
-    localStorage.setItem('google_token', newAuthRes.id_token);
+    LocalStorageManager.removeItem('google_token');
+    LocalStorageManager.setItem('google_token', newAuthRes.id_token);
     SessionService.refreshToken(newAuthRes.access_token);
 
     // Setup the other timer after the first one
@@ -34,7 +35,7 @@ function GoogleLoginComponent() {
       (res: any) => {
         const { tokenId } = response;
         const { user } = res;
-        localStorage.setItem('google_token', response.accessToken);
+        LocalStorageManager.setItem('google_token', response.accessToken);
         if (res.user) {
           SessionService.login({ token: tokenId, user });
         }

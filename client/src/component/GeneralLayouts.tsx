@@ -7,10 +7,7 @@ export const ShrinkHeigthLayout = ({ children }: { children: JSX.Element }) => {
 };
 
 export const SelfCenterLayout = (props: any) => {
-  return (
-    // <div className="self-center flex flex-col items-center justify-center">
-    <div className="self-center">{props.children}</div>
-  );
+  return <div className="self-center m-4">{props.children}</div>;
 };
 
 export const SelfTopLayout = (props: any) => {
