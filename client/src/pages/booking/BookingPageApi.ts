@@ -15,6 +15,15 @@ class BookingPageApi {
       localId,
     });
   }
+
+  public getAvailabilities(body: { start: string; end: string }): Promise<any> {
+    const { start, end } = body;
+    const bodyToSend = { TimeRangeType: [{ start, end }] };
+
+    return HttpService.post(`/retrieveAvailability`, {
+      ...bodyToSend,
+    });
+  }
 }
 
 export default new BookingPageApi();

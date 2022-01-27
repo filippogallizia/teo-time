@@ -11,10 +11,7 @@ import reducer, {
 } from './reducer';
 import { toast } from 'react-toastify';
 import BookDetails from './components/BookDetails';
-import {
-  createFixedBookings,
-  getFixedBookings,
-} from './service/fixedBookingsManagerService';
+import FixedBookingsManagerApi from './FixedBookingsManagerApi';
 const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 const initialState = {
@@ -50,7 +47,8 @@ const FixedBksManager = () => {
       const handleSuccess = (res: any) => {
         dispatch({ type: SET_FIXED_BKS, payload: res });
       };
-      await getFixedBookings(handleSuccess);
+      const response = await FixedBookingsManagerApi.getFixedBookings();
+      handleSuccess(response);
     };
     asyncFn();
   }, [dispatch]);
@@ -111,9 +109,10 @@ const FixedBksManager = () => {
           buttonText="Modifica disponibilita"
           onClick={() => {
             const asyncFn = async () => {
-              const handleSuccess = (response: any) => {};
               try {
-                await createFixedBookings(handleSuccess, state.fixedBks);
+                await FixedBookingsManagerApi.createFixedBookings(
+                  state.fixedBks
+                );
                 toast.success("Disponibilita' cambiate!", {
                   position: toast.POSITION.TOP_CENTER,
                 });

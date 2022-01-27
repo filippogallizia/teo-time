@@ -5,13 +5,10 @@ import { handleToastInFailRequest } from '../../../../shared/locales/utils';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ADD, DELETE } from '../../../booking/stateReducer';
 import { DateTime } from 'luxon';
-import { createBooking } from '../../../../services/calendar.service';
+//import BookingPageApi from
 import { toast } from 'react-toastify';
 import { useEffect, useReducer } from 'react';
-import {
-  GetHolidayResponseType,
-  getHolidays,
-} from '../../service/AdminPageService';
+import AdminPageApi, { GetHolidayResponseType } from '../../AdminPageApi';
 import _ from 'lodash';
 import i18n from '../../../../i18n';
 import reducer, {
@@ -22,6 +19,7 @@ import reducer, {
   UPLOAD_HOLIDAY,
   UPLOAD_START_DATE,
 } from './reducer';
+import BookingPageApi from '../../../booking/BookingPageApi';
 
 const initialState = {
   holidays: [],
@@ -83,7 +81,8 @@ const HolidaysManager = () => {
           }
         });
       };
-      await getHolidays(handleSuccess);
+      const response = await AdminPageApi.getHolidays();
+      handleSuccess(response);
     };
     asyncFn();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -206,14 +205,11 @@ const HolidaysManager = () => {
           <GeneralButton
             buttonText="Prenota vacanze"
             onClick={() => {
-              const handleSuccess = (response: any) => {
-                return response;
-              };
               const promises: Promise<any>[] = [];
               state.holidays.forEach((holiday) => {
                 if (!holiday.isFromServer) {
                   promises.push(
-                    createBooking(handleSuccess, {
+                    BookingPageApi.createBooking({
                       start: holiday.start,
                       end: holiday.end,
                       isHoliday: true,

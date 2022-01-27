@@ -1,6 +1,3 @@
-import axios from 'axios';
-import { ACCESS_TOKEN } from '../../../shared/locales/constant';
-import { ENDPOINT } from '../../../api';
 import HttpService from '../../../services/HttpService';
 
 class UserPageApi {

@@ -9,16 +9,19 @@ import {
 } from 'react-table';
 import { UserType } from '../../../../types/Types';
 import i18n from '../../../i18n';
-import { getAllUsers } from '../service/AdminPageService';
+import AdminPageApi from '../AdminPageApi';
 
 const UsersTable = () => {
   const [users, setUsers] = useState<UserType[]>([]);
+
   useEffect(() => {
-    const handleSuccess = (res: any) => {
-      setUsers(res);
+    const asyncFn = async () => {
+      const response = await AdminPageApi.getAllUsers();
+      setUsers(response);
     };
-    getAllUsers(handleSuccess);
+    asyncFn();
   }, []);
+
   const columns: readonly Column<{
     col1: string | undefined;
     col2: string | undefined;
