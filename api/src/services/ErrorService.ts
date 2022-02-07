@@ -32,6 +32,7 @@ export function apiErrorHandler(err: any, req: any, res: any, next: any) {
   // in prod, don't use console.log or console.err because
   // it is not async
   if (err instanceof ErrorService) {
+    console.log(err, 'err inside handle error');
     res.status(err.code).json(err.message);
     return;
   }

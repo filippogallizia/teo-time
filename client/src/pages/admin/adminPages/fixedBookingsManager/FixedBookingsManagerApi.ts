@@ -1,6 +1,5 @@
-import { DayAvalSettingsType } from '../../../booking/stateReducer';
-
 import HttpService from '../../../../services/HttpService';
+import { DayAvalSettingsType } from '../availabilitiesManager/reducer';
 
 class FixedBookingsManagerApi {
   public createFixedBookings(body: DayAvalSettingsType[]): Promise<any> {

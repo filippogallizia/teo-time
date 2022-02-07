@@ -1,5 +1,5 @@
 import GeneralButton from '../../../../component/GeneralButton';
-import { handleToastInFailRequest } from '../../../../shared/locales/utils';
+import { handleToastInFailRequest } from '../../../../helpers/utils';
 
 import CardComponent from '../../components/Card';
 import { useEffect, useReducer } from 'react';

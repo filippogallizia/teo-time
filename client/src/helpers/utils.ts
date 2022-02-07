@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { HrsAndMinsType } from '../../../types/Types';
+import { HrsAndMinsType } from '../../types/Types';
 
 export const FROM_DATE_TO_HOUR = (date: string) => {
   return DateTime.fromISO(date).hour;
@@ -66,7 +66,8 @@ export const handleToastInFailRequest = (error: any, toast: any) => {
       });
     }
   } else {
-    toast.error("Qualcosa e' andato storto", {
+    console.log(error, 'errorr');
+    toast.error(error.message, {
       position: toast.POSITION.TOP_CENTER,
     });
   }

@@ -1,12 +1,11 @@
 import React, { Dispatch, useEffect, useState } from 'react';
-// import 'react-calendar/dist/Calendar.css';
 import AvailabilityHourContainer from './AvailabilityHourContainer';
 import {
   BIG_MARGIN_TOP,
   EVENT_INFO_TEXT,
   GRID_ONE_COL,
   SUB_TITLE,
-} from '../../../shared/locales/constant';
+} from '../../../constants/constant';
 import { DateTime } from 'luxon';
 
 import { Actions, InitialState, SET_AVAL } from '../stateReducer';
@@ -14,7 +13,7 @@ import {
   FROM_DATE_TO_DAY,
   FROM_DATE_TO_HOUR,
   HOUR_MINUTE_FORMAT,
-} from '../../../shared/locales/utils';
+} from '../../../helpers/utils';
 import EventListener from '../../../helpers/EventListener';
 import { TimeRangeType } from '../../../../types/Types';
 import i18n from '../../../i18n';

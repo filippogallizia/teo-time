@@ -10,6 +10,7 @@ import LoadingService from '../../component/loading/LoadingService';
 import PaymentPageApi from './PaymentPageApi';
 import EventListener from '../../helpers/EventListener';
 import SessionService from '../../services/SessionService';
+import { v4 } from 'uuid';
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
@@ -17,6 +18,8 @@ import SessionService from '../../services/SessionService';
 
 const PUBLISHABLE_KEY =
   'pk_test_51K5AW1G4kWNoryvx79L6ApGntu5LQdWY8GK3uduUxFCrUhZ1aLsG3pfecMyI1Jz6cHf9beSWzdHYq3TYWpz1zFfD00y9Fhr61x';
+
+const idempotencyKey = v4();
 
 export default function App({ dispatch, state }: BookingComponentType) {
   const [clientSecret, setClientSecret] = useState('');
@@ -29,6 +32,7 @@ export default function App({ dispatch, state }: BookingComponentType) {
         ammount: 50,
         email: user.email,
         name: user.name,
+        idempotencyKey: idempotencyKey,
       };
       LoadingService.show();
       const asyncFn = async () => {
@@ -58,7 +62,7 @@ export default function App({ dispatch, state }: BookingComponentType) {
       {clientSecret && (
         //@ts-expect-error
         <Elements options={options} stripe={stripePromise}>
-          <CheckoutForm dispatch={dispatch} state={state} />
+          <CheckoutForm />
         </Elements>
       )}
     </div>

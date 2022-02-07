@@ -40,14 +40,6 @@ const GeneralPage = () => {
   const user = SessionService.getUser();
   const token = SessionService.getToken();
 
-  /**
-   * WHY DO i NEED THE LOCATION?
-   */
-  //let location = useLocation();
-  //useEffect(() => {
-  //  dispatch({ type: SET_LOCATION, payload: { location: location.pathname } });
-  //}, [dispatch, location.pathname]);
-
   return (
     <>
       <Switch>

@@ -6,7 +6,7 @@ import BookingPage from './BookingPage';
 import SuccessfulPage from '../successfulBooking/SuccesfulPage';
 import PaymentPage from '../payment/PaymentPage';
 import ConfirmPage from '../confirm/ConfirmPage';
-import { ACCESS_TOKEN } from '../../shared/locales/constant';
+import { ACCESS_TOKEN } from '../../constants/constant';
 import stateReducer from './stateReducer';
 import { initialState } from './initialState';
 import SessionService from '../../services/SessionService';
@@ -40,7 +40,7 @@ const BookingRouter = () => {
           condition={token || tokenParam ? true : false}
           altRoute={Routes.HOMEPAGE_BOOKING}
         >
-          <SuccessfulPage dispatch={dispatch} state={state} />
+          <SuccessfulPage />
         </ProtectedRoute>
         <ProtectedRoute
           path={Routes.HOMEPAGE_BOOKING_PAYMENT}

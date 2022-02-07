@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { TimeRangeType } from '../../../../../types/Types';
-import { HOUR_MINUTE_FORMAT } from '../../../../shared/locales/utils';
+import { HOUR_MINUTE_FORMAT } from '../../../../helpers/utils';
 import { weekDays } from '../availabilitiesManager/AvailabilitiesManager';
 
 export const SET_FIXED_BKS = 'SET_FIXED_BKS';

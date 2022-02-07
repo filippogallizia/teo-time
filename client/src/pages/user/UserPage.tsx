@@ -5,9 +5,9 @@ import {
   SUB_TITLE,
   TITLE,
   USER_INFO,
-} from '../../shared/locales/constant';
-import { handleToastInFailRequest } from '../../shared/locales/utils';
-import { DATE_TO_CLIENT_FORMAT } from '../../shared/locales/utils';
+} from '../../constants/constant';
+import { handleToastInFailRequest } from '../../helpers/utils';
+import { DATE_TO_CLIENT_FORMAT } from '../../helpers/utils';
 import UserPageApi from './userPageApi/userService';
 import { toast } from 'react-toastify';
 import { BookingAndUser, TimeRangeType } from '../../../types/Types';

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AdminPageApi from './AdminPageApi';
 import DetailedInfoBooking from './components/DetailedBookingInfo';
-import { MEDIUM_MARGIN_BOTTOM } from '../../shared/locales/constant';
+import { MEDIUM_MARGIN_BOTTOM } from '../../constants/constant';
 import UsersTable from './components/UsersTable';
 import { ProtectedRoute } from '../general/GeneralPage';
 import { Redirect, Switch } from 'react-router';
@@ -64,11 +64,6 @@ export const AdminNav = () => {
 };
 
 const AdminPage = () => {
-  //let location = useLocation();
-
-  //useEffect(() => {
-  //  dispatch({ type: SET_LOCATION, payload: { location: location.pathname } });
-  //}, [dispatch, location.pathname]);
   return (
     <div className="flex-1">
       <AdminNav />

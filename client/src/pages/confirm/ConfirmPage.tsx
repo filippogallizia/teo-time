@@ -3,20 +3,21 @@ import React from 'react';
 import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { useHistory } from 'react-router-dom';
 import GeneralButton from '../../component/GeneralButton';
-import { TITLE } from '../../shared/locales/constant';
+import { BOOKING_INFO, TITLE } from '../../constants/constant';
 import routes from '../../routes';
 import {
   handleToastInFailRequest,
   parseHoursToObject,
-} from '../../shared/locales/utils';
+} from '../../helpers/utils';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import { SET_CONFIRM_PHASE, SET_RENDER_AVAL } from '../booking/stateReducer';
 import i18n from '../../i18n';
 import { toast } from 'react-toastify';
 import InfoBooking from '../admin/components/InfoBooking';
 import { HrsAndMinsType } from '../../../types/Types';
-import { googleCalendarInsertEvent } from '../auth/AuthApi/LoginService';
+//import { googleCalendarInsertEvent } from '../auth/AuthApi/LoginService';
 import BookingPageApi from '../booking/BookingPageApi';
+import LocalStorageManager from '../../services/StorageService';
 
 type InitialFormType = {
   name: string;
@@ -37,30 +38,15 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
     millisecond: 0,
   });
 
-  const event = {
-    summary: 'OSTEOPATIA CON TEO',
-    location: 'via Osti',
-    description: 'trattamento osteopatico',
-    start: {
-      dateTime: parsedDate.plus(mapped).toISO(),
-    },
-    end: {
-      dateTime: parsedDate.plus(mapped).plus(EVENT_DURATION).toISO(),
-    },
-    colorId: 1,
+  const booking = {
+    start: parsedDate.plus(mapped).toISO(),
+    end: parsedDate.plus(mapped).plus(EVENT_DURATION).toISO(),
   };
 
   const myFunc = async (value: InitialFormType) => {
-    const google_token = localStorage.getItem('google_token');
     try {
-      //await createBooking(handleSuccess, {
-      //  start: parsedDate.plus(mapped).toISO(),
-      //  end: parsedDate.plus(mapped).plus(EVENT_DURATION).toISO(),
-      //});
-      await BookingPageApi.createBooking({
-        start: parsedDate.plus(mapped).toISO(),
-        end: parsedDate.plus(mapped).plus(EVENT_DURATION).toISO(),
-      });
+      await BookingPageApi.createBooking(booking);
+      LocalStorageManager.setItem(BOOKING_INFO, booking);
       dispatch({
         type: SET_CONFIRM_PHASE,
         payload: false,
@@ -69,12 +55,31 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
         type: SET_RENDER_AVAL,
         payload: false,
       });
-      if (google_token && google_token !== undefined) {
-        await googleCalendarInsertEvent((r: any) => console.log(r), {
-          token: localStorage.getItem('google_token'),
-          event: event,
-        });
-      }
+
+      /**
+       * TODO -> google calendar for client
+       */
+
+      //const google_token = localStorage.getItem('google_token');
+      //if (google_token && google_token !== undefined) {
+      //await googleCalendarInsertEvent((r: any) => console.log(r), {
+      //  token: localStorage.getItem('google_token'),
+      //  event: event,
+      //});
+      //const event = {
+      //  summary: 'OSTEOPATIA CON TEO',
+      //  location: 'via Osti',
+      //  description: 'trattamento osteopatico',
+      //  start: {
+      //    dateTime: parsedDate.plus(mapped).toISO(),
+      //  },
+      //  end: {
+      //    dateTime: parsedDate.plus(mapped).plus(EVENT_DURATION).toISO(),
+      //  },
+      //  colorId: 1,
+      //};
+      //}
+
       history.push(routes.HOMEPAGE_BOOKING_PAYMENT);
     } catch (e: any) {
       handleToastInFailRequest(e, toast);

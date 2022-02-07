@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import i18n from '../../i18n';
-import { ITALIC, SECONDARY_LINK, TITLE } from '../../shared/locales/constant';
+import { ITALIC, SECONDARY_LINK, TITLE } from '../../constants/constant';
 
 const ContactPage = () => {
   return (

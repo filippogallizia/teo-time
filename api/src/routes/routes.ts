@@ -32,9 +32,7 @@ const User = db.user;
 const Bookings = db.Bookings;
 const DatabaseAvailabilty = db.DatabaseAvailabilty;
 const FixedBookings = db.FixedBookings;
-const stripe = require('stripe')(
-  'sk_test_51K5AW1G4kWNoryvxAZVOFwVPZ6qyVKUqZJslh0UYiNlU0aDb3hd0ksS0zCBWbyXUvDKB6f9CA9RvU3Gwc2rfBtsw00lC98E85E'
-);
+
 const router = express.Router();
 const OTP = v4();
 
@@ -131,7 +129,8 @@ router.post(
           start,
           end
         );
-        await googleCalendarService.insertEvent();
+        // INSERT  CALENDAR EVENTS
+        //await googleCalendarService.insertEvent();
 
         // send email to client and admin
         //await EmailService.sendEmail(
@@ -171,8 +170,6 @@ router.post(
         await bks.destroy();
         // find the corresponding event on google calendar
         const events = await getEvents(start, end);
-
-        console.log(events, 'EVENT-GOOGLE');
         // if the event exists, delete it
         if (events.length > 0) {
           await deleteEvent(events[0].id).catch((err) => {
@@ -507,11 +504,24 @@ const calculateOrderAmount = (ammount: any) => {
   return ammount * 10;
 };
 
+/**
+ * stripe secret key -> Must be secret and stored securely in your web or mobile app’s server-side code
+ * (such as in an environment variable or credential management system) to call Stripe APIs.
+ * https://stripe.com/docs/development/quickstart
+ */
+
+const STRIPE_SECRET_TEST =
+  'sk_test_51K5AW1G4kWNoryvxAZVOFwVPZ6qyVKUqZJslh0UYiNlU0aDb3hd0ksS0zCBWbyXUvDKB6f9CA9RvU3Gwc2rfBtsw00lC98E85E';
+
+const stripe = require('stripe')(
+  process.env.STRIPE_SECRET ?? STRIPE_SECRET_TEST
+);
+
 router.post(
   '/create-payment-intent',
   [authenticateToken],
   async (req: Request, res: Response, next: NextFunction) => {
-    const { ammount, email, name } = req.body;
+    const { ammount, email, name, idempotencyKey } = req.body;
     let id = '';
 
     try {
@@ -524,12 +534,17 @@ router.post(
       }
 
       if (!customerExist || customerExist.data.length === 0) {
-        const customer = await stripe.customers.create({
-          description: 'My First Test Customer (created for API docs)',
-          email: email,
-          //source: 'jfdsafjds',
-          name: name,
-        });
+        const customer = await stripe.customers.create(
+          {
+            description: 'My First Test Customer (created for API docs)',
+            email: email,
+            //source: 'jfdsafjds',
+            name: name,
+          },
+          {
+            idempotencyKey: idempotencyKey,
+          }
+        );
         id = customer.id;
       }
       const paymentIntent = await stripe.paymentIntents.create({

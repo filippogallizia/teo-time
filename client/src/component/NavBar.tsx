@@ -9,6 +9,10 @@ import { AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
 import { GrUserAdmin } from 'react-icons/gr';
 import { BiLogIn, BiLogOut } from 'react-icons/bi';
 import SessionService from '../services/SessionService';
+import { AuthContext } from './authContext/AuthContext';
+import { useContext } from 'react';
+import LocalStorageManager from '../services/StorageService';
+import { ACCESS_TOKEN, USER_INFO } from '../constants/constant';
 
 function useOutsideAlerter(ref: any, fn: any) {
   useEffect(() => {
@@ -40,11 +44,13 @@ function OutsideAlerter(props: any) {
 export default function Navbar({ fixed }: { fixed?: any }) {
   const history = useHistory();
   const [navbarOpen, setNavbarOpen] = React.useState(false);
+  const { token, user } = useContext(AuthContext);
 
-  const user = SessionService.getUser();
-  const token = SessionService.getToken();
+  const tokenInStorage = SessionService.getToken();
+  const userInStorage = SessionService.getUser();
 
-  console.log(user, 'user');
+  const isToken = token || tokenInStorage;
+  const isUser = user || userInStorage;
 
   return (
     <OutsideAlerter setNavbarOpen={setNavbarOpen}>
@@ -86,18 +92,20 @@ export default function Navbar({ fixed }: { fixed?: any }) {
                   </div>
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link
-                  to={routes.LOGIN}
-                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug  "
-                >
-                  <div className="flex border-b-4 border-transparent hover:border-yellow-500">
-                    <BiLogIn className="md:hidden mr-2" />
-                    <div>{i18n.t('nav.logIn')}</div>
-                  </div>
-                </Link>
-              </li>
-              {token && (
+              {!isToken && (
+                <li className="nav-item">
+                  <Link
+                    to={routes.LOGIN}
+                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug  "
+                  >
+                    <div className="flex border-b-4 border-transparent hover:border-yellow-500">
+                      <BiLogIn className="md:hidden mr-2" />
+                      <div>{i18n.t('nav.logIn')}</div>
+                    </div>
+                  </Link>
+                </li>
+              )}
+              {isToken && (
                 <li className="nav-item">
                   <Link
                     to={routes.USER}
@@ -110,7 +118,7 @@ export default function Navbar({ fixed }: { fixed?: any }) {
                   </Link>
                 </li>
               )}
-              {user && user.role === 'admin' && (
+              {isUser && isUser.role === 'admin' && (
                 <li className="nav-item">
                   <Link
                     to={routes.ADMIN}
@@ -123,12 +131,11 @@ export default function Navbar({ fixed }: { fixed?: any }) {
                   </Link>
                 </li>
               )}
-              {token && (
+              {isToken && (
                 <li className="nav-item">
                   <div className=" cursor-pointer">
                     <div
                       onClick={() => {
-                        localStorage.clear();
                         SessionService.logOut();
                         history.push(routes.LOGIN);
                         toast.success(i18n.t('toastMessages.other.logOut'));

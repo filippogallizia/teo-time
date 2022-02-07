@@ -6,9 +6,9 @@ import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import Routes from '../../routes';
-import { TITLE } from '../../shared/locales/constant';
+import { TITLE } from '../../constants/constant';
 import { toast } from 'react-toastify';
-import { handleToastInFailRequest } from '../../shared/locales/utils';
+import { handleToastInFailRequest } from '../../helpers/utils';
 import routes from '../../routes';
 import { SelfCenterLayout } from '../../component/GeneralLayouts';
 

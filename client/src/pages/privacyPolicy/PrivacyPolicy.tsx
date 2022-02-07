@@ -1,10 +1,10 @@
 import React from 'react';
-import { SUB_TITLE, TITLE } from '../../shared/locales/constant';
+import { SUB_TITLE, TITLE } from '../../constants/constant';
 
 export default function PrivacyPolicy() {
   return (
     <div className="flex flex-col gap-8 line leading-loose">
-      <h1 className={`${TITLE} my-4`}>Google OAuth2 Homepage</h1>
+      <h1 className={`${TITLE} my-4`}>POLICY</h1>
       <p>
         Osteotherapy.it e' un sito web che permette ai clienti di Matteo
         Bulgheroni di avere informazioni riguardo i suoi servizi e di

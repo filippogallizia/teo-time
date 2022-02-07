@@ -1,6 +1,5 @@
-import { DayAvalSettingsType } from '../../../booking/stateReducer';
-
 import HttpService from '../../../../services/HttpService';
+import { DayAvalSettingsType } from './reducer';
 
 // TO IMPLEMENT THE CLASS
 class AvailManagerApi {

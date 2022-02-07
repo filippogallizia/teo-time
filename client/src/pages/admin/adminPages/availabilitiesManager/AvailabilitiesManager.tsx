@@ -1,13 +1,13 @@
-import { DayAvalSettingsType } from '../../../booking/stateReducer';
-import { BOLD, ITALIC } from '../../../../shared/locales/constant';
+import { BOLD, ITALIC } from '../../../../constants/constant';
 import GeneralButton from '../../../../component/GeneralButton';
 import AvailManagerApi from './AvailabilitiesManagerApi';
 import CardComponent from '../../components/Card';
 import i18n from '../../../../i18n';
 import { useEffect, useReducer } from 'react';
-import { handleToastInFailRequest } from '../../../../shared/locales/utils';
+import { handleToastInFailRequest } from '../../../../helpers/utils';
 import { toast } from 'react-toastify';
 import reducer, {
+  DayAvalSettingsType,
   SET_ALL_WEEK_AVAL_SETTINGS,
   SET_WEEK_AVAL_SETTINGS,
 } from './reducer';

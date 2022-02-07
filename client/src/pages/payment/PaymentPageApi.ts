@@ -5,12 +5,14 @@ class PaymentPageApi {
     ammount: number;
     email: string;
     name: string;
+    idempotencyKey: string;
   }): Promise<any> {
-    const { email, name, ammount } = body;
+    const { email, name, ammount, idempotencyKey } = body;
     return HttpService.post(`/create-payment-intent`, {
       email,
       name,
       ammount,
+      idempotencyKey,
     });
   }
 }

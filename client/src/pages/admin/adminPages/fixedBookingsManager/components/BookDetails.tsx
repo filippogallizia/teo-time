@@ -1,6 +1,6 @@
 import i18n from '../../../../../i18n';
-import { ITALIC } from '../../../../../shared/locales/constant';
-import { promptConfirmation } from '../../../../../shared/locales/utils';
+import { ITALIC } from '../../../../../constants/constant';
+import { promptConfirmation } from '../../../../../helpers/utils';
 import {
   Actions,
   ADD_OR_REMOVE_FIXED_BKS,

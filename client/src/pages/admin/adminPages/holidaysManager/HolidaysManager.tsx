@@ -1,9 +1,9 @@
-import { BOLD, ITALIC } from '../../../../shared/locales/constant';
+import { BOLD, ITALIC } from '../../../../constants/constant';
 import GeneralButton from '../../../../component/GeneralButton';
 import DatePicker from 'react-datepicker';
-import { handleToastInFailRequest } from '../../../../shared/locales/utils';
+import { handleToastInFailRequest } from '../../../../helpers/utils';
 import 'react-datepicker/dist/react-datepicker.css';
-import { ADD, DELETE } from '../../../booking/stateReducer';
+
 import { DateTime } from 'luxon';
 //import BookingPageApi from
 import { toast } from 'react-toastify';
@@ -20,6 +20,9 @@ import reducer, {
   UPLOAD_START_DATE,
 } from './reducer';
 import BookingPageApi from '../../../booking/BookingPageApi';
+
+const ADD = 'ADD';
+const DELETE = 'DELETE';
 
 const initialState = {
   holidays: [],

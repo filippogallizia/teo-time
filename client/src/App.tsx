@@ -1,7 +1,7 @@
 import React from 'react';
 import RouterComponent from './component/Router';
 import ErrorBoundary from './component/ErrorBoundary';
-import { GENERAL_FONT } from './shared/locales/constant';
+import { GENERAL_FONT } from './constants/constant';
 import Loading from './component/loading/Loading';
 
 const AppWrapper = (props: any) => {

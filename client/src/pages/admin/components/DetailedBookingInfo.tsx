@@ -9,8 +9,8 @@ import {
   MEDIUM_MARGIN_BOTTOM,
   SECONDARY_BUTTON,
   SECONDARY_LINK,
-} from '../../../shared/locales/constant';
-import { HOUR_MINUTE_FORMAT } from '../../../shared/locales/utils';
+} from '../../../constants/constant';
+import { HOUR_MINUTE_FORMAT } from '../../../helpers/utils';
 import UserPageApi from '../../user/userPageApi/userService';
 
 const EditBooking = ({

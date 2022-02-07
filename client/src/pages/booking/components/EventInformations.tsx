@@ -5,7 +5,7 @@ import { GrLocationPin } from 'react-icons/gr';
 import { BiEuro } from 'react-icons/bi';
 import { BookingComponentType } from '../BookingPageTypes';
 import { SET_CONFIRM_PHASE, SET_RENDER_AVAL } from '../stateReducer';
-import { EVENT_INFO_TEXT, TITLE } from '../../../shared/locales/constant';
+import { EVENT_INFO_TEXT, TITLE } from '../../../constants/constant';
 import i18n from '../../../i18n';
 
 const EventInformations = ({ state, dispatch }: BookingComponentType) => {

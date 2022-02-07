@@ -1,6 +1,16 @@
 import produce from 'immer';
 import { ChangeEvent } from 'react';
-import { DayAvalSettingsType } from '../../../booking/stateReducer';
+import { HrsAndMinsType, TimeRangeType } from '../../../../../types/Types';
+
+export type DayAvalSettingsType = {
+  day: string;
+  parameters?: {
+    workTimeRange: TimeRangeType;
+    breakTimeRange: TimeRangeType;
+    eventDuration: HrsAndMinsType;
+    breakTimeBtwEvents: HrsAndMinsType;
+  };
+};
 
 export const SET_WEEK_AVAL_SETTINGS = 'SET_WEEK_AVAL_SETTINGS';
 export const SET_ALL_WEEK_AVAL_SETTINGS = 'SET_ALL_WEEK_AVAL_SETTINGS';
