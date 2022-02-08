@@ -62,7 +62,6 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
       });
     case SET_SELECTION_HOUR:
       return produce(initialState, (draft) => {
-        console.log(action.payload, 'action.payload');
         draft.schedules.selectedHour = action.payload;
       });
     case SET_CONFIRM_PHASE:

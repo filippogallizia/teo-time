@@ -2,7 +2,7 @@ import React from 'react';
 import GeneralButton from '../../component/GeneralButton';
 import i18n from '../../i18n';
 import { useHistory } from 'react-router-dom';
-import { BOOKING_INFO, TITLE } from '../../constants/constant';
+import { TITLE } from '../../constants/constant';
 import routes from '../../routes';
 import InfoBooking from '../admin/components/InfoBooking';
 

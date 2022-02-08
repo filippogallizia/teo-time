@@ -9,7 +9,7 @@ import PasswordRoutes from './password/passwordRoutes';
 import PaymentRoutes from './payment/paymentRoutes';
 import UserRoutes from './user/userRoutes';
 
-const testRoutes = () => {
+const RootRoutes = () => {
   const RootRouter = Router();
 
   AuthRoutes(RootRouter);
@@ -24,4 +24,4 @@ const testRoutes = () => {
   return RootRouter;
 };
 
-module.exports = testRoutes;
+module.exports = RootRoutes;

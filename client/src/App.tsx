@@ -8,8 +8,8 @@ const AppWrapper = (props: any) => {
   return (
     <div>
       <div className={`relative min-h-screen ${GENERAL_FONT} flex flex-col`}>
-        {props.children}
         <Loading />
+        {props.children}
       </div>
     </div>
   );

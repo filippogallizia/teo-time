@@ -113,7 +113,6 @@ export const retrieveAvailability = (
   avalTimeRange: { start: string; end: string }[]
 ) => {
   const final = filterDays_updateDate(genAval, avalTimeRange);
-  console.log(bookedHours, 'bookedHours');
   if (final.length === 0) return [];
   try {
     return removeBksFromAval(final[0].availability, bookedHours.bookings);

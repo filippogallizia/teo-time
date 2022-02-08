@@ -50,8 +50,6 @@ export default function Navbar({ fixed }: { fixed?: any }) {
   const isToken = token || tokenInStorage;
   const isUser = user || userInStorage;
 
-  console.log(isUser, isUser.role);
-
   return (
     <OutsideAlerter setNavbarOpen={setNavbarOpen}>
       <nav className="relative flex flex-wrap items-center justify-between px-2 py-3 md:shadow-md">

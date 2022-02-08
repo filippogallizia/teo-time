@@ -18,11 +18,8 @@ class BookingPageApi {
 
   public getAvailabilities(body: { start: string; end: string }): Promise<any> {
     const { start, end } = body;
-    const bodyToSend = { TimeRangeType: [{ start, end }] };
 
-    return HttpService.post(`/availability/retrieveAvailability`, {
-      ...bodyToSend,
-    });
+    return HttpService.get(`/availability?start=${start}&end=${end}`);
   }
 }
 

@@ -16,9 +16,8 @@ const AvailabilityRouter = express.Router();
 export default (app: Router) => {
   app.use('/availability', AvailabilityRouter);
 
-  //TODO -> change it to a get request by passing the body in the query parameter.
-  AvailabilityRouter.post(
-    '/retrieveAvailability',
+  AvailabilityRouter.get(
+    '/',
     [getAvailability],
     (req: Request, res: ResponseWithAvalType, next: NextFunction) => {
       try {

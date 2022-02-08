@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import GeneralButton, { buttonStyle } from '../../component/GeneralButton';
+import GeneralButton, { primaryButton } from '../../component/GeneralButton';
 import AuthApi from './AuthApi/LoginService';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -101,7 +101,6 @@ const Login = () => {
       SessionService.login({ token, user });
       history.push(Routes.HOMEPAGE_BOOKING);
     } catch (e: any) {
-      console.log(e, 'e');
       handleToastInFailRequest(e, toast);
     } finally {
       LoadingService.hide();
@@ -146,7 +145,7 @@ const Login = () => {
 
         <div>
           <input
-            className={buttonStyle(isValid)}
+            className={primaryButton(isValid)}
             type="submit"
             value="Accedi"
           />

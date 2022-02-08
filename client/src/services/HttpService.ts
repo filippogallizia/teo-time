@@ -38,7 +38,6 @@ class HttpService {
         return response.data;
       },
       async (error: any) => {
-        console.log(error, 'error Filo');
         const httpError: HttpError | null = HttpError.error(error);
         // On conflict tries to get a new token and does the request again
         //if (httpError?.statusCode === StatusCodes.CONFLICT) {

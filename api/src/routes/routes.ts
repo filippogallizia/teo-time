@@ -148,7 +148,7 @@ router.post(
 );
 
 router.post(
-  '/retrieveAvailability',
+  '/availability',
   [getAvailability],
   (req: Request, res: ResponseWithAvalType, next: NextFunction) => {
     try {

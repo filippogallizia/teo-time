@@ -10,7 +10,6 @@ export type RequestError = {
 export class HttpError {
   static error(error?: RequestError): HttpError | null {
     if (error) {
-      console.log(error.response, 'errror inside http error');
       return new HttpError(
         error.response?.data,
         error.response?.status,

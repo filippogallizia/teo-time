@@ -61,7 +61,7 @@ export default (app: Router) => {
           res.status(200).send(booking);
         }
       } catch (e: any) {
-        console.log(e, 'FILO IO');
+        console.log(e);
         next(e);
       }
     }

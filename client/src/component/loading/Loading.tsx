@@ -16,8 +16,6 @@ import LoadingService from './LoadingService';
 
 let nFetchs = 0;
 
-console.log(nFetchs, 'nFetches');
-
 const Loading: React.FC = () => {
   //const classes = useStyles();
 

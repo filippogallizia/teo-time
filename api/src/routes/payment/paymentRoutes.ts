@@ -90,7 +90,7 @@ export default (app: Router) => {
         );
       } catch (err: any) {
         response.status(400).send(`Webhook Error: ${err.message}`);
-        console.log(err, 'errrrorrrr');
+        console.log(err);
         return;
       }
 

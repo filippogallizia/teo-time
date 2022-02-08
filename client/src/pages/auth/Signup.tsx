@@ -1,5 +1,5 @@
 import React from 'react';
-import GeneralButton, { buttonStyle } from '../../component/GeneralButton';
+import GeneralButton, { primaryButton } from '../../component/GeneralButton';
 import AuthApi from './AuthApi/LoginService';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -125,7 +125,7 @@ const Signup = () => {
 
         <div>
           <input
-            className={buttonStyle(isValid)}
+            className={primaryButton(isValid)}
             type="submit"
             value="Sign up"
           />

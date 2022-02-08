@@ -68,7 +68,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpe
 
 
 ###
-POST http://0.0.0.0:5000/availability/retrieveAvailability
+POST http://0.0.0.0:5000/availability/availability
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpemlhZmlsaXBwb0BnbWFpbC5jb20iLCJwYXNzd29yZCI6ImZpbG8iLCJpYXQiOjE2MzUzNTQ1NjZ9.-jiJHSVIvaDpyP5I4wLfNHXvxyhqG4fBZSelMOk0KHY
 

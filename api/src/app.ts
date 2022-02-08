@@ -2,9 +2,6 @@ import cors from 'cors';
 import express from 'express';
 
 import { runEveryDay } from './helpers/cronJobs';
-//import routes from './routes/index';
-//import testRoutes from './routes/index';
-import mainRoutes from './routes/routes';
 import { apiErrorHandler } from './services/ErrorService';
 
 require('dotenv').config();
@@ -19,7 +16,6 @@ app.use(cors());
 // custom body parser to handle specific requirements from the stripe webook endpoints
 
 app.use((req, res, next) => {
-  console.log(req.originalUrl, 'originalUrl');
   // TODO -> change endpoint url to the one used in production
   if (req.originalUrl === '/payments/webhook') {
     next();
@@ -33,10 +29,8 @@ db.sequelize
   .then(() => {
     // chronJob to delete past bookings
     runEveryDay(db);
-    console.log('here');
-    const testRoutes = require('./routes/index');
-    console.log(testRoutes, 'test');
-    app.use(ENDPOINT, testRoutes());
+    const RootRoutes = require('./routes/index');
+    app.use(ENDPOINT, RootRoutes());
 
     console.log('Drop and Resync Dbasssssxs');
   })

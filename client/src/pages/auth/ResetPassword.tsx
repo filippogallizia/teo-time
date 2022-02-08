@@ -11,7 +11,7 @@ import { handleToastInFailRequest } from '../../helpers/utils';
 import { toast } from 'react-toastify';
 import i18n from '../../i18n';
 import { useLocation } from 'react-router-dom';
-import { buttonStyle } from '../../component/GeneralButton';
+import { primaryButton } from '../../component/GeneralButton';
 
 type InitialFormType = {
   newPassword: string;
@@ -104,7 +104,7 @@ const ResetPassword = () => {
           </div>
           <div>
             <input
-              className={buttonStyle(isValid)}
+              className={primaryButton(isValid)}
               type="submit"
               value="ResetPassword"
             />

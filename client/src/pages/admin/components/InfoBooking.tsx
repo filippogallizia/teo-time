@@ -11,8 +11,6 @@ type InfoBookingType = {
 const InfoBooking = ({ date, hours }: InfoBookingType) => {
   const booking = LocalStorageManager.getItem(BOOKING_INFO) ?? '';
 
-  console.log(booking, 'booking');
-
   return (
     <div className={`grid grid-cols-1 gap-4`}>
       <div className={`${EVENT_INFO_TEXT}`}>

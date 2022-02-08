@@ -79,8 +79,16 @@ const getAvailability = async (
   res: ResponseWithAvalType,
   next: NextFunction
 ) => {
+  //@ts-expect-error
+  const start = req.query.start && req.query.start.split(' ').join('+');
+  //@ts-expect-error
+  const end = req.query.end && req.query.end.split(' ').join('+');
+
   const avalRange: { start: string; end: string }[] = [
-    ...req.body.TimeRangeType,
+    {
+      start: (start as string) ?? '',
+      end: (end as string) ?? '',
+    },
   ];
   try {
     const start = avalRange[0].start;
@@ -190,7 +198,6 @@ const userExist = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await userService.findOne(email);
     if (!user) {
-      console.log('hereUseStrange');
       next(ErrorService.badRequest('user not found'));
     }
     //@ts-expect-error
@@ -259,7 +266,6 @@ const authenticateToken = async (
           process.env.ACCESS_TOKEN_SECRET as string,
           (err: any, decoded: any) => {
             if (err) {
-              console.log(err, 'ERROR VERIFICATION');
               next(ErrorService.unauthorized('Unauthorized'));
             }
             res.user = decoded.data;

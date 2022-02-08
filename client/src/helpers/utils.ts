@@ -66,7 +66,6 @@ export const handleToastInFailRequest = (error: any, toast: any) => {
       });
     }
   } else {
-    console.log(error, 'errorr');
     toast.error(error.message, {
       position: toast.POSITION.TOP_CENTER,
     });

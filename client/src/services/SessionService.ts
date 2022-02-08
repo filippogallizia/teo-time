@@ -77,8 +77,6 @@ class SessionService {
   public authentication() {
     const token: string | null = LocalStorageManager.getItem(ACCESS_TOKEN);
     const user: UserType | null = LocalStorageManager.getItem(USER_INFO);
-
-    console.log(token, 'token inside authentication');
     this.setToken(token ?? '');
     user && this.setUser(user);
   }

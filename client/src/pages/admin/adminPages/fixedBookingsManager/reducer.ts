@@ -95,10 +95,6 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
             const i = draft.fixedBks[index].bookings.findIndex((book) => {
               return book.id === action.payload.booking.id;
             });
-            console.log(
-              action.payload.booking.start,
-              '    action.payload.booking.start'
-            );
             draft.fixedBks[index].bookings[i].start =
               action.payload.booking.start;
           }
