@@ -15,15 +15,15 @@ export type GetHolidayResponseType = BookingType[];
 
 class AdminPageApi {
   public getUsersAndBookings(): Promise<any> {
-    return HttpService.get(`/usersAndBookings`);
+    return HttpService.get(`/bookings/users`);
   }
 
   public getAllUsers(): Promise<any> {
-    return HttpService.get(`/allUsers`);
+    return HttpService.get(`/users`);
   }
 
   public getHolidays(): Promise<any> {
-    return HttpService.get(`/getHolidays`);
+    return HttpService.get(`/holidays`);
   }
 }
 

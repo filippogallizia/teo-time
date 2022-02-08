@@ -29,7 +29,7 @@ class AuthApi {
 
   public resetPassword(body: { email: string }): Promise<any> {
     const { email } = body;
-    return HttpService.post(`/resetPassword`, {
+    return HttpService.post(`/password/reset`, {
       email,
     });
   }
@@ -48,7 +48,7 @@ class AuthApi {
     newPassword: string;
   }): Promise<any> {
     const { resetPasswordToken, newPassword } = body;
-    return HttpService.post(`/password/newPassword`, {
+    return HttpService.post(`/password/new`, {
       resetPasswordToken,
       newPassword,
     });
@@ -56,7 +56,7 @@ class AuthApi {
 
   public postEmailForResetPassword(body: { email: string }): Promise<any> {
     const { email } = body;
-    return HttpService.post(`/resetPassword`, {
+    return HttpService.post(`/password/reset`, {
       email,
     });
   }

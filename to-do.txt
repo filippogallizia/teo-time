@@ -7,9 +7,7 @@ BookingManager refactor handleSuccess function
 
 
 CLIENT
-- holidayManager , see how to handle local state and deleting booking inside bookingManager.
-- why do I need the setLocation????
-- refactor client folder architecture expecially apifunctions
+- check delete endpoints after changing the method from post to delete
 
 TO RUN ON REMOTE
 - check node env variable!

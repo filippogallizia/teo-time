@@ -9,7 +9,7 @@ type InfoBookingType = {
 };
 
 const InfoBooking = ({ date, hours }: InfoBookingType) => {
-  const booking = LocalStorageManager.getItem(BOOKING_INFO);
+  const booking = LocalStorageManager.getItem(BOOKING_INFO) ?? '';
 
   console.log(booking, 'booking');
 

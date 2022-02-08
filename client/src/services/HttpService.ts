@@ -23,7 +23,6 @@ class HttpService {
     this.accessToken = '';
 
     this.http.interceptors.request.use(async (request: AxiosRequestConfig) => {
-      console.log(this.accessToken, 'inside httpService');
       if (this.accessToken) {
         request.headers = {
           ...request.headers,
@@ -100,7 +99,7 @@ class HttpService {
     return await this.http.put(url, data, config);
   }
 
-  public async delete<T>(
+  public async delete<T = any>(
     url: string,
     config?: AxiosRequestConfig | undefined
   ): Promise<T> {

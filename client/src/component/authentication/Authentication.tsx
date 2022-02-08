@@ -90,7 +90,7 @@ const Authentication = ({ children }: Props) => {
     [token, user]
   );
 
-  console.log(token, 'token here22');
+  console.log(token, 'FILO TOOKEN here22');
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

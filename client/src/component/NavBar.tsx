@@ -11,8 +11,6 @@ import { BiLogIn, BiLogOut } from 'react-icons/bi';
 import SessionService from '../services/SessionService';
 import { AuthContext } from './authContext/AuthContext';
 import { useContext } from 'react';
-import LocalStorageManager from '../services/StorageService';
-import { ACCESS_TOKEN, USER_INFO } from '../constants/constant';
 
 function useOutsideAlerter(ref: any, fn: any) {
   useEffect(() => {
@@ -51,6 +49,8 @@ export default function Navbar({ fixed }: { fixed?: any }) {
 
   const isToken = token || tokenInStorage;
   const isUser = user || userInStorage;
+
+  console.log(isUser, isUser.role);
 
   return (
     <OutsideAlerter setNavbarOpen={setNavbarOpen}>

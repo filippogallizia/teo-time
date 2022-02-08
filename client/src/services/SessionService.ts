@@ -50,10 +50,12 @@ class SessionService {
   }
 
   private setToken(token: string) {
-    console.log(typeof token, 'here');
     HttpService.accessToken = token.toString() ?? '';
-    //this._setToken(token);
-    console.log(HttpService.accessToken, 'accessToken httpservice');
+    this._setToken(token);
+  }
+
+  private setUser(user: UserType) {
+    this._setUser(user);
   }
 
   public getUser() {
@@ -71,9 +73,14 @@ class SessionService {
     LocalStorageManager.removeItem(USER_INFO);
     this._onLogout();
   }
+
   public authentication() {
     const token: string | null = LocalStorageManager.getItem(ACCESS_TOKEN);
+    const user: UserType | null = LocalStorageManager.getItem(USER_INFO);
+
+    console.log(token, 'token inside authentication');
     this.setToken(token ?? '');
+    user && this.setUser(user);
   }
 }
 

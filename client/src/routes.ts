@@ -9,7 +9,7 @@ class Routes {
   public SIGNUP = '/signup';
   public CONTACT = '/contact';
   public PRIVACY_POLICY = '/privacyPolicy';
-  public RESET_PASSWORD = '/resetPassword';
+  public RESET_PASSWORD = '/password/reset';
   public USER = '/homepage/user';
   public HOMEPAGE = '/homepage';
   public CONFIRM_PAGE = '/homepage/confirm';

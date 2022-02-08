@@ -8,7 +8,7 @@ class PaymentPageApi {
     idempotencyKey: string;
   }): Promise<any> {
     const { email, name, ammount, idempotencyKey } = body;
-    return HttpService.post(`/create-payment-intent`, {
+    return HttpService.post(`/payments/create-payment-intent`, {
       email,
       name,
       ammount,
