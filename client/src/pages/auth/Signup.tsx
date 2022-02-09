@@ -42,9 +42,7 @@ const Signup = () => {
         password: value.password,
         phoneNumber: value.phoneNumber,
       });
-      toast.success('sign up effettuato con successo', {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      toast.success('sign up effettuato con successo');
       history.push(routes.LOGIN);
     } catch (error: any) {
       handleToastInFailRequest(error, toast);

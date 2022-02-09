@@ -24,24 +24,24 @@ const avalDefault = require('../config/availabilitiesDefault.config.json');
 
 // google verify token
 
-const client = new OAuth2Client(process.env.GOOGLE_CALENDAR_CLIENT_ID);
-
-export const googleAuth = async (token: string) => {
-  try {
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      //@ts-expect-error
-      audience: process.env.GOOGLE_CALENDAR_CLIENT_ID,
-    });
-    const payload: any = ticket.getPayload();
-    if (payload) {
-      const { email, name } = payload;
-      return { email, name };
-    } else return undefined;
-  } catch (e) {
-    console.log(e);
-  }
-};
+// TODO -> enable this comment to use client google login
+//const client = new OAuth2Client(process.env.GOOGLE_CALENDAR_CLIENT_ID);
+//export const googleAuth = async (token: string) => {
+//  try {
+//    const ticket = await client.verifyIdToken({
+//      idToken: token,
+//      //@ts-expect-error
+//      audience: process.env.GOOGLE_CALENDAR_CLIENT_ID,
+//    });
+//    const payload: any = ticket.getPayload();
+//    if (payload) {
+//      const { email, name } = payload;
+//      return { email, name };
+//    } else return undefined;
+//  } catch (e) {
+//    console.log(e);
+//  }
+//};
 
 export const bookExist = async (
   req: Request,
@@ -255,24 +255,25 @@ const authenticateToken = async (
   console.log(token, 'token');
   if (!token) next(ErrorService.unauthorized('Unauthorized'));
   else {
-    const payload = token && (await googleAuth(token));
+    // TODO -> enable this comment to use client google login
+    //const payload = token && (await googleAuth(token));
     try {
-      if (payload) {
-        res.user = { email: payload.email };
-        next();
-      } else {
-        jwt.verify(
-          token,
-          process.env.ACCESS_TOKEN_SECRET as string,
-          (err: any, decoded: any) => {
-            if (err) {
-              next(ErrorService.unauthorized('Unauthorized'));
-            }
-            res.user = decoded.data;
-            next();
+      // TODO -> enable this comment to use client google login
+      //if (payload) {
+      //    res.user = { email: payload.email };
+      //    next();
+      //  } else {
+      jwt.verify(
+        token,
+        process.env.ACCESS_TOKEN_SECRET as string,
+        (err: any, decoded: any) => {
+          if (err || !decoded) {
+            next(ErrorService.unauthorized('Unauthorized'));
           }
-        );
-      }
+          res.user = decoded.data;
+          next();
+        }
+      );
     } catch (error) {
       next(error);
     }
@@ -287,5 +288,5 @@ module.exports = {
   requestHasPassword,
   loginValidation,
   authenticateToken,
-  googleAuth,
+  //googleAuth,
 };

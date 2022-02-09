@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response, Router } from 'express';
 
 import { changePwdEmail, sendEmail } from '../../config/sendGrid/config';
 import { ErrorService } from '../../services/ErrorService';
+import UserService from '../../services/UserService';
 
 const db = require('../../database/models/db');
 
@@ -19,24 +20,19 @@ export default (app: Router) => {
     async (req: Request, res: Response, next: NextFunction) => {
       const userEmail = req.body.email;
       try {
-        const usr = User.findOne({ where: { email: userEmail } });
-        if (usr) {
-          const updateUser = async () => {
-            usr.set({ resetPasswordToken: OTP });
-            await usr.save();
-          };
-          updateUser();
-          const EMAIL = changePwdEmail(userEmail, OTP);
-          try {
-            await sendEmail(EMAIL);
-            res.send('Check your email!');
-          } catch (error) {
-            throw ErrorService.badRequest('Email not found');
-          }
-        } else {
-          throw ErrorService.badRequest('User not found');
+        const EMAIL = changePwdEmail(userEmail, OTP);
+        const response = await UserService.update(
+          { email: userEmail },
+          { resetPasswordToken: OTP }
+        );
+        if ((response[0] as unknown as number) === 0) {
+          next(ErrorService.badRequest('User not found'));
+          return;
         }
+        await sendEmail(EMAIL);
+        res.send('Check your email!');
       } catch (e: any) {
+        console.log(e, 'superError');
         next(e);
       }
     }

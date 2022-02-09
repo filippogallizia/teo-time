@@ -22,16 +22,18 @@ const DeleteBooking = ({
 }) => {
   const handleDelete = async () => {
     try {
-      await UserPageApi.deleteBooking({
-        start: booking.start,
-        end: booking.end,
-      });
-      fetchAndSetBookings();
-      toast.success('prenotazione cancellata', {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      // eslint-disable-next-line no-restricted-globals
+      let isConfirmed = confirm('Sicuro di volere cancellare?');
+      if (isConfirmed) {
+        await UserPageApi.deleteBooking({
+          start: booking.start,
+          end: booking.end,
+        });
+        fetchAndSetBookings();
+        toast.success('prenotazione cancellata');
+      }
     } catch (e) {
-      alert(e);
+      handleToastInFailRequest(e, toast);
     }
   };
   return (

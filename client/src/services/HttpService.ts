@@ -1,12 +1,12 @@
 import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { ENDPOINT } from '../api';
 import { HttpError } from './HttpErrorService';
 import { StatusCodes } from 'http-status-codes';
 import { history } from '../component/Router';
 import SessionService from './SessionService';
+import { URL_SERVER } from '../constants/constant';
 
 const config: AxiosRequestConfig = {
-  baseURL: ENDPOINT,
+  baseURL: URL_SERVER,
   headers: {
     'Content-Type': 'application/json',
   },

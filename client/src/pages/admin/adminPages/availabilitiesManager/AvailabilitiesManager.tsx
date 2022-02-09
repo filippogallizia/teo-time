@@ -383,9 +383,7 @@ const AvalManager = () => {
                 await AvailManagerApi.createDefaultAvail(
                   state.weekAvalSettings
                 );
-                toast.success("Disponibilita' cambiate!", {
-                  position: toast.POSITION.TOP_CENTER,
-                });
+                toast.success("Disponibilita' cambiate!");
               } catch (e: any) {
                 handleToastInFailRequest(e, toast);
               }

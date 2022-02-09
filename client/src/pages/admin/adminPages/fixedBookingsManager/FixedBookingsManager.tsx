@@ -113,9 +113,7 @@ const FixedBksManager = () => {
                 await FixedBookingsManagerApi.createFixedBookings(
                   state.fixedBks
                 );
-                toast.success("Disponibilita' cambiate!", {
-                  position: toast.POSITION.TOP_CENTER,
-                });
+                toast.success("Disponibilita' cambiate!");
               } catch (e: any) {
                 handleToastInFailRequest(e, toast);
               }

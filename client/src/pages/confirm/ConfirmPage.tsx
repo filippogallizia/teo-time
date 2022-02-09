@@ -89,7 +89,7 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
   return (
     <div className="flex flex-col gap-8">
       <div
-        className={`justify-self-start`}
+        className={`justify-self-start cursor-pointer`}
         onClick={() => history.push(routes.HOMEPAGE_BOOKING)}
       >
         <BsFillArrowLeftSquareFill

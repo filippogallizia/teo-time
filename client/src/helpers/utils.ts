@@ -17,6 +17,10 @@ export const DATE_TO_CLIENT_FORMAT = (date: string) => {
   return DateTime.fromISO(date).toFormat('yyyy LLL dd t');
 };
 
+export const DATE_TO_DAY_FORMAT = (date: string) => {
+  return DateTime.fromISO(date).toFormat('yyyy LLL dd');
+};
+
 export const TODAY_AT_MIDNIGHT = () => {
   return DateTime.fromJSDate(new Date()).set({
     hour: 0,
@@ -61,14 +65,10 @@ export const parseHoursToObject = (selectedHour: string): HrsAndMinsType => {
 export const handleToastInFailRequest = (error: any, toast: any) => {
   if (error && error.response) {
     if (typeof error.response.data === 'string') {
-      toast.error(error.response.data, {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      toast.error(error.response.data);
     }
   } else {
-    toast.error(error.message, {
-      position: toast.POSITION.TOP_CENTER,
-    });
+    toast.error(error.message);
   }
 };
 

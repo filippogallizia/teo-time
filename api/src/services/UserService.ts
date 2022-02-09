@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
 
 import { BookingDTO } from '../interfaces/BookingDTO';
-import { UserDTO, UserInputDTO } from '../interfaces/UserDTO';
+import { UserDTO } from '../interfaces/UserDTO';
 import { ErrorService } from './ErrorService';
 const db = require('../database/models/db');
 
@@ -33,6 +33,24 @@ class UserService {
       });
     } else {
       return await this.userModel.findAll();
+    }
+  }
+  /**
+   * update returns [1] if ok, and [0] if it dont found an instance in the database.
+   * @param searchParam
+   * @param updateObject
+   * @returns
+   */
+  public async update(
+    searchParam?: Record<string, unknown>,
+    updateObject?: Record<string, unknown>
+  ): Promise<RecordType[]> {
+    try {
+      return await this.userModel.update(updateObject, {
+        where: searchParam,
+      });
+    } catch {
+      throw ErrorService.badRequest('User not found');
     }
   }
 

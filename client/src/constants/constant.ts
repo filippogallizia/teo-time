@@ -1,4 +1,10 @@
-export const URL_CLIENT = 'http://localhost:3000';
+import { isProduction, isTest } from './environment';
+
+export const URL_CLIENT =
+  isTest || isProduction ? 'https://osteotherapy.it' : 'http://localhost:3000';
+export const URL_SERVER =
+  isTest || isProduction ? '/api' : 'http://0.0.0.0:5000';
+
 export const ACCESS_TOKEN = 'access_token';
 export const CURRENT_USER_ROLE = 'CURRENT_USER_ROLE';
 export const BOOKING_INFO = 'BOOKING_INFO';
@@ -21,6 +27,7 @@ export const SMALLPADDING = 'p-2';
 export const BIGPADDING = 'p-8';
 export const MARGIN_BOTTOM = 'mb-2';
 export const MEDIUM_MARGIN_BOTTOM = 'mb-5';
+export const MEDIUM_MARGIN_TOP = 'mt-5';
 export const BIG_MARGIN_BOTTOM = 'mb-10';
 export const BIG_MARGIN_TOP = 'mt-10';
 export const MARGIN_RIGHT = 'mr-2';

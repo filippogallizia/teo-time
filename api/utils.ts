@@ -3,7 +3,6 @@ import { DateTime } from 'luxon';
 import {
   BookingType,
   DayAvailabilityType,
-  GeneralAvaliabilityRulesType,
   HrsAndMinsType,
   TimeRangeType,
 } from './src/types/types';

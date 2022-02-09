@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { TokenType, UserType } from '../../../../types/Types';
-import { ENDPOINT } from '../../../api';
+import { URL_SERVER } from '../../../constants/constant';
+
 import HttpService from '../../../services/HttpService';
 
 class AuthApi {
@@ -72,7 +73,7 @@ export const googleLoginService = async (fn: any, body: { token: string }) => {
     const { token } = body;
     const response = await axios({
       method: 'get',
-      url: `${ENDPOINT}/google-login`,
+      url: `${URL_SERVER}/google-login`,
       headers: {
         Authorization: `Bearer ${token})}`,
       },

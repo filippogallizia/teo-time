@@ -58,7 +58,7 @@ const ResetPassword = () => {
         resetPasswordToken,
         newPassword: value.newPassword,
       });
-      toast(i18n.t(response));
+      toast.success(i18n.t(response));
       history.push(Routes.LOGIN);
     } catch (e: any) {
       handleToastInFailRequest(e, toast);

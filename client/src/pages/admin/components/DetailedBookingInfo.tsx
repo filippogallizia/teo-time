@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { BookingAndUser } from '../../../../types/Types';
 import i18n from '../../../i18n';
+import { handleToastInFailRequest } from '../../../helpers/utils';
 import {
   BOLD,
   EVENT_INFO_TEXT,
@@ -27,11 +28,9 @@ const EditBooking = ({
         end: oneBooking.end,
       });
       fetchAndSetBookings();
-      toast.success('prenotazione cancellata', {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      toast.success('prenotazione cancellata');
     } catch (e) {
-      alert(e);
+      handleToastInFailRequest(e, toast);
     }
   };
   return (

@@ -10,9 +10,11 @@ import i18n from '../../../i18n';
 
 const EventInformations = ({ state, dispatch }: BookingComponentType) => {
   return (
-    <div className={`grid col-1 gap-4  justify-items-center  md:static `}>
+    <div className={`grid col-1 gap-4 justify-items-center md:static`}>
       {(state.schedules.isConfirmPhase || state.schedules.isRenderAval) && (
-        <div className={`justify-self-start md:static md:hidden`}>
+        <div
+          className={`justify-self-start cursor-pointer md:static md:hidden`}
+        >
           <BsFillArrowLeftSquareFill
             onClick={() => {
               dispatch({ type: SET_CONFIRM_PHASE, payload: false });

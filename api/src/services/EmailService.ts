@@ -1,6 +1,7 @@
 import { EmailData } from '@sendgrid/helpers/classes/email-address';
 import sgMail from '@sendgrid/mail';
 
+console.log(process.env.ADMIN_EMAIL, 'process.env.ADMIN_EMAIL');
 class EmailService {
   async sendEmail(emailAddress: string, bookDate?: string): Promise<any> {
     // eslint-disable-next-line no-useless-catch
