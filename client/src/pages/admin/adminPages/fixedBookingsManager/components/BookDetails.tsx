@@ -10,6 +10,8 @@ import {
   UPLOAD_END_DATE,
   UPLOAD_START_DATE,
 } from '../reducer';
+import HourPicker from './HourPicker';
+import { useState } from 'react';
 
 type BookDetailsType = {
   bks: FixedBookType;
@@ -18,8 +20,13 @@ type BookDetailsType = {
 };
 
 const BookDetails = ({ bks, day, dispatch }: BookDetailsType) => {
+  const [prova, setProva] = useState('');
   return (
     <div className={`grid grid-cols-3 gap-4 border-b-4 pb-2`}>
+      <div className="col-span-3 grid grid-cols-2 items-center">
+        <HourPicker value={prova} onChange={setProva} />
+        <HourPicker value={prova} onChange={setProva} />
+      </div>
       <p className={`col-span-3 ${ITALIC}`}>
         {/*{i18n.t('adminPage.avalManagerPage.workingTime')}
          */}

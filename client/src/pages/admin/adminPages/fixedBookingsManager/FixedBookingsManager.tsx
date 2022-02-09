@@ -53,6 +53,10 @@ const FixedBksManager = () => {
     asyncFn();
   }, [dispatch]);
 
+  useEffect(() => {
+    console.log('fetched');
+  }, []);
+
   return (
     <div className=" grid grid-cols-1 gap-8 overflow-auto px-4">
       <div className="grid grid-cols-1 gap-4">

@@ -17,7 +17,7 @@ export const GENERAL_FONT = 'font-sans';
 export const TITLE = 'text-2xl font-bold tracking-wide';
 export const SUB_TITLE = 'text-xl';
 export const EVENT_INFO_TEXT = 'italic';
-export const SECONDARY_LINK = 'cursor-pointer hover:underline';
+export const SECONDARY_LINK = 'cursor-pointer underline';
 export const SECONDARY_BUTTON =
   'bg-transparent hover:bg-yellow-500 font-semibold py-2 px-4 border border-yellow-500 hover:border-transparent rounded';
 
