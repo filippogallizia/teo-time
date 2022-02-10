@@ -26,8 +26,10 @@ export default (app: Router) => {
       try {
         const { start, end } = req.body;
         if (!res.user) {
-          ErrorService.badRequest(
-            'Use is missing, you are not loggein in probably'
+          next(
+            ErrorService.badRequest(
+              'Use is missing, you are not loggein in probably'
+            )
           );
         } else {
           const userEmail = res.user.email;

@@ -1,5 +1,7 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 
+import { ErrorService } from '../../services/ErrorService';
+
 const db = require('../../database/models/db');
 
 const { authenticateToken } = require('../../middleware/middleware');
@@ -39,7 +41,6 @@ export default (app: Router) => {
                 day: fixedBook.day,
                 start: book.start,
                 end: book.end,
-                localId: book.id,
                 email: book.email,
               }).catch((e: any) => {
                 errors.push(e);
@@ -53,6 +54,29 @@ export default (app: Router) => {
           next(errors[0]);
         }
         res.send({ message: 'fixedBookings created!' });
+      } catch (e: any) {
+        next(e);
+      }
+    }
+  );
+
+  FixedBookingRouter.delete(
+    '/',
+    [authenticateToken],
+    async (req: Request, res: Response, next: NextFunction) => {
+      const id = req.query.id;
+      console.log(id, 'id');
+      try {
+        /**
+         * destroy method returns 0 if it doesnt find the item, otherwise it returns 1
+         */
+        const booking = await FixedBookings.destroy({ where: { id } });
+        // if there is no booking return error
+        if (!booking) {
+          next(ErrorService.badRequest('Booking not found'));
+          return;
+        }
+        res.send({ message: 'fixedBooking deleted!' });
       } catch (e: any) {
         next(e);
       }

@@ -11,6 +11,10 @@ class FixedBookingsManagerApi {
   public getFixedBookings(): Promise<any> {
     return HttpService.get(`/fixedBookings`);
   }
+
+  public deleteFixedBooking(id: number): Promise<any> {
+    return HttpService.delete(`/fixedBookings?id=${id}`);
+  }
 }
 
 export default new FixedBookingsManagerApi();

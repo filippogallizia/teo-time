@@ -23,10 +23,6 @@ const FixedBooking = (sequelize: any, Sequelize: any) => {
       day: {
         type: Sequelize.STRING,
       },
-      localId: {
-        type: Sequelize.INTEGER,
-        unique: true,
-      },
     },
     {
       timestamps: false,

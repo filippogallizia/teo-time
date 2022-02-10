@@ -8,13 +8,14 @@ export const ADD_OR_REMOVE_FIXED_BKS = 'ADD_OR_REMOVE_FIXED_BKS';
 
 export const ADD = 'ADD';
 export const DELETE = 'DELETE';
-export const UPLOAD_START_DATE = 'UPLOAD_START_DATE';
-export const UPLOAD_END_DATE = 'UPLOAD_END_DATE';
-export const UPLOAD_EMAIL_CLIENT = 'UPLOAD_EMAIL_CLIENT';
 export const UPLOAD_ALL = 'UPLOAD_ALL';
 export const NO_VALUES = 'NO_VALUES';
+export const EDIT_START_HOUR = 'EDIT_START_HOUR';
+export const EDIT_END_HOUR = 'EDIT_END_HOUR';
+export const EDIT_EMAIL = 'EDIT_EMAIL';
+export const USER_IS_EDITING = 'USER_IS_EDITING';
 
-export type FixedBookType = TimeRangeType & { id: number; email: string };
+export type FixedBookType = TimeRangeType & { key: number; email: string };
 
 export type FixedBksType = {
   day: string;
@@ -32,6 +33,12 @@ export type FixedBksFromApi = {
 
 export type InitialState = {
   fixedBks: FixedBksType[];
+  userIsEditing: boolean;
+};
+
+type ActionSetEditing = {
+  type: typeof USER_IS_EDITING;
+  payload: boolean;
 };
 
 type ActionSetFixedBks = {
@@ -39,21 +46,43 @@ type ActionSetFixedBks = {
   payload: FixedBksFromApi[];
 };
 
+type ActionEditStartHour = {
+  type: typeof EDIT_START_HOUR;
+  payload: {
+    booking: { day: string; key: number; start: string };
+  };
+};
+
+type ActionEditEndHour = {
+  type: typeof EDIT_END_HOUR;
+  payload: {
+    booking: { day: string; key: number; end: string };
+  };
+};
+
+type ActionEditEmail = {
+  type: typeof EDIT_EMAIL;
+  payload: {
+    booking: { day: string; key: number; email: string };
+  };
+};
+
 type ActionAddFixedBks = {
   type: typeof ADD_OR_REMOVE_FIXED_BKS;
   payload: {
     day: string;
-    booking: TimeRangeType & { id: number; email: string };
-    type:
-      | typeof ADD
-      | typeof DELETE
-      | typeof UPLOAD_START_DATE
-      | typeof UPLOAD_END_DATE
-      | typeof UPLOAD_EMAIL_CLIENT;
+    booking: TimeRangeType & { key: number; email: string };
+    type: typeof ADD | typeof DELETE;
   };
 };
 
-export type Actions = ActionSetFixedBks | ActionAddFixedBks;
+export type Actions =
+  | ActionSetFixedBks
+  | ActionAddFixedBks
+  | ActionEditStartHour
+  | ActionEditEndHour
+  | ActionEditEmail
+  | ActionSetEditing;
 
 const stateReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
@@ -68,7 +97,7 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
                 return {
                   start: HOUR_MINUTE_FORMAT(d.start),
                   end: HOUR_MINUTE_FORMAT(d.end),
-                  id: d.localId,
+                  key: d.id,
                   email: d.email,
                 };
               }),
@@ -76,6 +105,49 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
         });
         draft.fixedBks = result;
       });
+
+    case EDIT_START_HOUR:
+      return produce(initialState, (draft) => {
+        const { day, key, start } = action.payload.booking;
+
+        const singleDayInfo = draft.fixedBks.find((daySettings) => {
+          return daySettings.day === day;
+        });
+
+        const match = singleDayInfo?.bookings.find((book) => {
+          return book.key === key;
+        });
+        if (match) match.start = start;
+      });
+
+    case EDIT_END_HOUR:
+      return produce(initialState, (draft) => {
+        const { day, key, end } = action.payload.booking;
+
+        const singleDayInfo = draft.fixedBks.find((daySettings) => {
+          return daySettings.day === day;
+        });
+
+        const match = singleDayInfo?.bookings.find((book) => {
+          return book.key === key;
+        });
+        if (match) match.end = end;
+      });
+
+    case EDIT_EMAIL:
+      return produce(initialState, (draft) => {
+        const { day, key, email } = action.payload.booking;
+
+        const singleDayInfo = draft.fixedBks.find((daySettings) => {
+          return daySettings.day === day;
+        });
+
+        const match = singleDayInfo?.bookings.find((book) => {
+          return book.key === key;
+        });
+        if (match) match.email = email;
+      });
+
     case ADD_OR_REMOVE_FIXED_BKS:
       return produce(initialState, (draft) => {
         const index = draft.fixedBks.findIndex(
@@ -87,32 +159,18 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
           }
           if (action.payload.type === DELETE) {
             const i = draft.fixedBks[index].bookings.findIndex((book) => {
-              return book.id === action.payload.booking.id;
+              return book.key === action.payload.booking.key;
             });
             draft.fixedBks[index].bookings.splice(i, 1);
           }
-          if (action.payload.type === UPLOAD_START_DATE) {
-            const i = draft.fixedBks[index].bookings.findIndex((book) => {
-              return book.id === action.payload.booking.id;
-            });
-            draft.fixedBks[index].bookings[i].start =
-              action.payload.booking.start;
-          }
-          if (action.payload.type === UPLOAD_END_DATE) {
-            const i = draft.fixedBks[index].bookings.findIndex((book) => {
-              return book.id === action.payload.booking.id;
-            });
-            draft.fixedBks[index].bookings[i].end = action.payload.booking.end;
-          }
-          if (action.payload.type === UPLOAD_EMAIL_CLIENT) {
-            const i = draft.fixedBks[index].bookings.findIndex((book) => {
-              return book.id === action.payload.booking.id;
-            });
-            draft.fixedBks[index].bookings[i].email =
-              action.payload.booking.email;
-          }
         }
       });
+
+    case USER_IS_EDITING:
+      return produce(initialState, (draft) => {
+        draft.userIsEditing = action.payload;
+      });
+
     default:
       return initialState;
   }

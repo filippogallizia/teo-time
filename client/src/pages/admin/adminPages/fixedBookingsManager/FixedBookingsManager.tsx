@@ -3,11 +3,13 @@ import { handleToastInFailRequest } from '../../../../helpers/utils';
 
 import CardComponent from '../../components/Card';
 import { useEffect, useReducer } from 'react';
+import { Prompt } from 'react-router';
 
 import reducer, {
   ADD,
   ADD_OR_REMOVE_FIXED_BKS,
   SET_FIXED_BKS,
+  USER_IS_EDITING,
 } from './reducer';
 import { toast } from 'react-toastify';
 import BookDetails from './components/BookDetails';
@@ -37,6 +39,7 @@ const initialState = {
       bookings: [],
     },
   ],
+  userIsEditing: false,
 };
 
 const FixedBksManager = () => {
@@ -51,17 +54,16 @@ const FixedBksManager = () => {
       handleSuccess(response);
     };
     asyncFn();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
-  useEffect(() => {
-    console.log('fetched');
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <div className=" grid grid-cols-1 gap-8 overflow-auto px-4">
       <div className="grid grid-cols-1 gap-4">
         {weekDays.map((day: string) => {
-          const matchedDay = state.fixedBks.filter((d) => d.day === day);
+          const matchedDay = state.fixedBks.find((d) => d.day === day);
           return (
             <div key={day} className="p-4">
               <CardComponent key={day}>
@@ -77,7 +79,9 @@ const FixedBksManager = () => {
                             payload: {
                               day,
                               booking: {
-                                id: Math.floor(100000 + Math.random() * 900000),
+                                key: Math.floor(
+                                  100000 + Math.random() * 900000
+                                ),
                                 start: '',
                                 end: '',
                                 email: '',
@@ -89,14 +93,14 @@ const FixedBksManager = () => {
                       />
                     </div>
                   </div>
-                  {matchedDay.length > 0 &&
-                    matchedDay[0].bookings.map((bks) => {
+                  {matchedDay &&
+                    matchedDay.bookings.map((bks) => {
                       return (
-                        <div key={bks.id}>
+                        <div key={bks.key}>
                           <BookDetails
                             dispatch={dispatch}
                             bks={bks}
-                            day={matchedDay[0].day}
+                            day={matchedDay.day}
                           />
                         </div>
                       );
@@ -117,6 +121,10 @@ const FixedBksManager = () => {
                 await FixedBookingsManagerApi.createFixedBookings(
                   state.fixedBks
                 );
+                dispatch({
+                  type: USER_IS_EDITING,
+                  payload: false,
+                });
                 toast.success("Disponibilita' cambiate!");
               } catch (e: any) {
                 handleToastInFailRequest(e, toast);
@@ -126,6 +134,10 @@ const FixedBksManager = () => {
           }}
         />
       </div>
+      <Prompt
+        when={state.userIsEditing}
+        message="You have unsaved changes, are you sure you want to leave?"
+      />
     </div>
   );
 };
