@@ -6,138 +6,136 @@ import { useEffect, useReducer } from 'react';
 import { Prompt } from 'react-router';
 
 import reducer, {
-  ADD,
-  ADD_OR_REMOVE_FIXED_BKS,
+  Actions,
+  CREATE,
+  EDIT_BOOKING_DETAILS,
+  FixedBksType,
+  InitialState,
+  MODAL,
   SET_FIXED_BKS,
-  USER_IS_EDITING,
 } from './reducer';
 import { toast } from 'react-toastify';
 import BookDetails from './components/BookDetails';
 import FixedBookingsManagerApi from './FixedBookingsManagerApi';
-const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+import CreateOrEditModal from './components/CreateOrEditModal';
 
-const initialState = {
-  fixedBks: [
-    {
-      day: 'Monday',
-      bookings: [],
-    },
-    {
-      day: 'Tuesday',
-      bookings: [],
-    },
-    {
-      day: 'Wednesday',
-      bookings: [],
-    },
-    {
-      day: 'Thursday',
-      bookings: [],
-    },
-    {
-      day: 'Friday',
-      bookings: [],
-    },
-  ],
-  userIsEditing: false,
+const initialState: InitialState = {
+  fixedBks: [],
+  modal: {
+    isOpen: false,
+    mode: CREATE,
+  },
+  bookingDetails: { start: '', end: '', day: '', email: '' },
+};
+
+export const fetchAndSetBks = async (dispatch: React.Dispatch<Actions>) => {
+  const handleSuccess = (res: any) => {
+    res.length > 0 && dispatch({ type: SET_FIXED_BKS, payload: res });
+  };
+  const response = await FixedBookingsManagerApi.getFixedBookings();
+  handleSuccess(response);
 };
 
 const FixedBksManager = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    const asyncFn = async () => {
-      const handleSuccess = (res: any) => {
-        dispatch({ type: SET_FIXED_BKS, payload: res });
-      };
-      const response = await FixedBookingsManagerApi.getFixedBookings();
-      handleSuccess(response);
-    };
-    asyncFn();
+    fetchAndSetBks(dispatch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
-
-  useEffect(() => {}, []);
 
   return (
     <div className=" grid grid-cols-1 gap-8 overflow-auto px-4">
       <div className="grid grid-cols-1 gap-4">
-        {weekDays.map((day: string) => {
-          const matchedDay = state.fixedBks.find((d) => d.day === day);
-          return (
-            <div key={day} className="p-4">
-              <CardComponent key={day}>
-                <div className={`grid grid-cols-1 gap-4`}>
-                  <div className="grid grid-cols-2 items-center">
-                    <p>{day}</p>
-                    <div className="justify-self-end">
-                      <GeneralButton
-                        buttonText="+"
-                        onClick={() => {
-                          dispatch({
-                            type: ADD_OR_REMOVE_FIXED_BKS,
-                            payload: {
-                              day,
-                              booking: {
-                                key: Math.floor(
-                                  100000 + Math.random() * 900000
-                                ),
-                                start: '',
-                                end: '',
-                                email: '',
-                              },
-                              type: ADD,
-                            },
-                          });
-                        }}
-                      />
+        <div className="justify-self-end">
+          <GeneralButton
+            buttonText="+"
+            onClick={() => {
+              dispatch({
+                type: EDIT_BOOKING_DETAILS,
+                payload: {
+                  bookingDetails: { start: '', end: '', day: '', email: '' },
+                },
+              });
+              dispatch({
+                type: MODAL,
+                payload: {
+                  modal: {
+                    isOpen: true,
+                    mode: 'CREATE',
+                  },
+                },
+              });
+            }}
+          />
+        </div>
+        {state.fixedBks.length > 0 &&
+          state.fixedBks.map((daySettings: FixedBksType) => {
+            //TODO -> check this key if is unique
+            return (
+              <div key={daySettings.day} className="bg-gray-100">
+                <CardComponent key={daySettings.day}>
+                  <div className={`grid grid-cols-1 gap-4`}>
+                    <div className="grid grid-cols-2 items-center">
+                      <p>{daySettings.day}</p>
                     </div>
-                  </div>
-                  {matchedDay &&
-                    matchedDay.bookings.map((bks) => {
+                    {daySettings.bookings.map((bks, i) => {
+                      console.log(bks, 'bks');
                       return (
-                        <div key={bks.key}>
-                          <BookDetails
+                        <div
+                          key={bks.id}
+                          className=" py-2 flex flex-col gap-4 b"
+                        >
+                          <p>Appuntamento: {i + 1}</p>
+                          {/*<BookContainer
+                            state={state}
                             dispatch={dispatch}
                             bks={bks}
-                            day={matchedDay.day}
+                          />*/}
+                          <BookDetails
+                            state={state}
+                            disabled={true}
+                            dispatch={dispatch}
+                            bks={bks}
+                          />
+                          <GeneralButton
+                            buttonText="edit"
+                            onClick={() => {
+                              dispatch({
+                                type: EDIT_BOOKING_DETAILS,
+                                payload: {
+                                  bookingDetails: bks,
+                                },
+                              });
+                              dispatch({
+                                type: MODAL,
+                                payload: {
+                                  modal: {
+                                    isOpen: true,
+                                    mode: 'EDIT',
+                                  },
+                                },
+                              });
+                            }}
                           />
                         </div>
                       );
                     })}
-                </div>
-              </CardComponent>
-            </div>
-          );
-        })}
+                  </div>
+                </CardComponent>
+              </div>
+            );
+          })}
       </div>
-
-      <div className="flex w-full justify-center">
-        <GeneralButton
-          buttonText="Modifica disponibilita"
-          onClick={() => {
-            const asyncFn = async () => {
-              try {
-                await FixedBookingsManagerApi.createFixedBookings(
-                  state.fixedBks
-                );
-                dispatch({
-                  type: USER_IS_EDITING,
-                  payload: false,
-                });
-                toast.success("Disponibilita' cambiate!");
-              } catch (e: any) {
-                handleToastInFailRequest(e, toast);
-              }
-            };
-            asyncFn();
-          }}
-        />
+      <div>
+        {state.modal.isOpen && (
+          <CreateOrEditModal dispatch={dispatch} state={state} />
+        )}
       </div>
-      <Prompt
+      {/*<Prompt
         when={state.userIsEditing}
         message="You have unsaved changes, are you sure you want to leave?"
-      />
+      />*/}
     </div>
   );
 };

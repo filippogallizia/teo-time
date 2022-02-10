@@ -1,8 +1,8 @@
 import HttpService from '../../../../services/HttpService';
-import { DayAvalSettingsType } from '../availabilitiesManager/reducer';
+import { BookingDetailsType } from './reducer';
 
 class FixedBookingsManagerApi {
-  public createFixedBookings(body: DayAvalSettingsType[]): Promise<any> {
+  public createFixedBookings(body: BookingDetailsType): Promise<any> {
     return HttpService.post(`/fixedBookings`, {
       fixedBks: body,
     });
@@ -10,6 +10,12 @@ class FixedBookingsManagerApi {
 
   public getFixedBookings(): Promise<any> {
     return HttpService.get(`/fixedBookings`);
+  }
+
+  public updateFixedBookings(body: BookingDetailsType): Promise<any> {
+    return HttpService.put(`/fixedBookings`, {
+      fixedBks: body,
+    });
   }
 
   public deleteFixedBooking(id: number): Promise<any> {

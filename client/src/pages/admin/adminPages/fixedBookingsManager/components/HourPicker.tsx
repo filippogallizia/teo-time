@@ -1,5 +1,3 @@
-import { EDIT_EMAIL, EDIT_END_HOUR, EDIT_START_HOUR } from '../reducer';
-
 const options = [
   '06:30',
   '07:00',
@@ -37,27 +35,28 @@ const options = [
 type Props = {
   value: string;
   onChange: (p: any) => void;
+  type: any;
+  disabled?: boolean;
 };
 
-const HourPicker = ({ value, onChange }: Props) => {
-  console.log(value, 'inputvalue');
-
+const HourPicker = ({ value, onChange, type, disabled }: Props) => {
   return (
     <div>
       {/*<label htmlFor="ice-cream-choice">Inizio</label>*/}
       <input
-        list="ice-cream-flavors"
-        id="ice-cream-choice"
+        disabled={disabled}
+        list={type}
         name="ice-cream-choice"
         aria-invalid={false}
         autoComplete="off"
         type="text"
         //className="border-2 border-indigo-600"
+        placeholder={type}
         className="w-32 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         value={value}
         onChange={onChange}
       />
-      <datalist id="ice-cream-flavors">
+      <datalist id={type}>
         {options.map((hour: string) => {
           return <option value={hour} />;
         })}

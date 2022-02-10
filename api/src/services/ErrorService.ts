@@ -35,5 +35,6 @@ export function apiErrorHandler(err: any, req: any, res: any, next: any) {
     res.status(err.code).json(err.message);
     return;
   }
+  console.log(err, 'ERROR FROM GENERAL HANDLER');
   res.status(500).json('something went wrong');
 }

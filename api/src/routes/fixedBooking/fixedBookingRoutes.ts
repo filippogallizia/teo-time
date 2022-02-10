@@ -32,27 +32,13 @@ export default (app: Router) => {
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
       const { fixedBks } = req.body;
-      const errors: any = [];
       try {
-        const asyncFn = async () => {
-          for (const fixedBook of fixedBks) {
-            for (const book of fixedBook.bookings) {
-              await FixedBookings.create({
-                day: fixedBook.day,
-                start: book.start,
-                end: book.end,
-                email: book.email,
-              }).catch((e: any) => {
-                errors.push(e);
-                return;
-              });
-            }
-          }
-        };
-        asyncFn();
-        if (errors.length > 0) {
-          next(errors[0]);
-        }
+        await FixedBookings.create({
+          day: fixedBks.day,
+          start: fixedBks.start,
+          end: fixedBks.end,
+          email: fixedBks.email,
+        });
         res.send({ message: 'fixedBookings created!' });
       } catch (e: any) {
         next(e);
@@ -65,7 +51,6 @@ export default (app: Router) => {
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
       const id = req.query.id;
-      console.log(id, 'id');
       try {
         /**
          * destroy method returns 0 if it doesnt find the item, otherwise it returns 1
@@ -88,47 +73,24 @@ export default (app: Router) => {
     '/',
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
-      const { fixedBks } = req.body;
+      const { start, end, day, email, id } = req.body.fixedBks;
       try {
-        const errors: any = [];
-        const mainAsyncFn = () => {
-          for (const fixedBook of fixedBks) {
-            fixedBook.bookings.forEach((book: any) => {
-              FixedBookings.findOne({
-                where: { localId: book.id },
-              })
-                .then((bk: any) => {
-                  if (bk) {
-                    const asyncFn = async () => {
-                      try {
-                        bk.set({
-                          ...book,
-                          day: fixedBook.day,
-                          start: book.start,
-                          end: book.end,
-                          email: book.email,
-                        });
-                        await bk.save().catch((e: any) => {
-                          errors.push(e);
-                        });
-                      } catch (e) {
-                        errors.push(e);
-                      }
-                    };
-                    asyncFn();
-                  } else {
-                    errors.push('book not found');
-                  }
-                })
-                .catch((e: any) => {
-                  errors.push(e);
-                });
-            });
+        const isUpdated = await FixedBookings.update(
+          {
+            start,
+            end,
+            day,
+            email,
+          },
+          {
+            where: {
+              id,
+            },
           }
-        };
-        mainAsyncFn();
-        if (errors.length > 0) {
-          res.status(500).send(errors[0]);
+        );
+        if (!isUpdated) {
+          next(ErrorService.badRequest('Booking not found'));
+          return;
         }
         res.send('book updated');
       } catch (e: any) {

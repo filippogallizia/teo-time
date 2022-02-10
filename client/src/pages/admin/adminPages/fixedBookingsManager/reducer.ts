@@ -5,84 +5,65 @@ import { weekDays } from '../availabilitiesManager/AvailabilitiesManager';
 
 export const SET_FIXED_BKS = 'SET_FIXED_BKS';
 export const ADD_OR_REMOVE_FIXED_BKS = 'ADD_OR_REMOVE_FIXED_BKS';
+export const EDIT_BOOKING_DETAILS = 'EDIT_BOOKING_DETAILS';
 
-export const ADD = 'ADD';
-export const DELETE = 'DELETE';
-export const UPLOAD_ALL = 'UPLOAD_ALL';
-export const NO_VALUES = 'NO_VALUES';
-export const EDIT_START_HOUR = 'EDIT_START_HOUR';
-export const EDIT_END_HOUR = 'EDIT_END_HOUR';
-export const EDIT_EMAIL = 'EDIT_EMAIL';
-export const USER_IS_EDITING = 'USER_IS_EDITING';
+export const MODAL = 'MODAL';
+export const CREATE = 'CREATE';
+export const EDIT = 'EDIT';
 
-export type FixedBookType = TimeRangeType & { key: number; email: string };
+export type BookingDetailsType = {
+  start: string;
+  end: string;
+  day: string;
+  email: string;
+  id?: number;
+};
+
+export type FixedBookType = TimeRangeType & {
+  id: number;
+  email: string;
+  day: string;
+};
 
 export type FixedBksType = {
   day: string;
-  bookings: Array<FixedBookType>;
+  bookings: Array<BookingDetailsType>;
 };
 
-export type FixedBksFromApi = {
-  id: number;
-  start: string;
-  end: string;
-  email: string;
-  day: string;
-  localId: number;
-};
-
-export type InitialState = {
-  fixedBks: FixedBksType[];
-  userIsEditing: boolean;
-};
-
-type ActionSetEditing = {
-  type: typeof USER_IS_EDITING;
-  payload: boolean;
+export type ModalType = {
+  isOpen: boolean;
+  mode: typeof CREATE | typeof EDIT;
 };
 
 type ActionSetFixedBks = {
   type: typeof SET_FIXED_BKS;
-  payload: FixedBksFromApi[];
+  payload: BookingDetailsType[];
 };
 
-type ActionEditStartHour = {
-  type: typeof EDIT_START_HOUR;
+type ActionEditModal = {
+  type: typeof MODAL;
   payload: {
-    booking: { day: string; key: number; start: string };
+    modal: ModalType;
   };
 };
 
-type ActionEditEndHour = {
-  type: typeof EDIT_END_HOUR;
+type ActionEditBookingDetail = {
+  type: typeof EDIT_BOOKING_DETAILS;
   payload: {
-    booking: { day: string; key: number; end: string };
-  };
-};
-
-type ActionEditEmail = {
-  type: typeof EDIT_EMAIL;
-  payload: {
-    booking: { day: string; key: number; email: string };
-  };
-};
-
-type ActionAddFixedBks = {
-  type: typeof ADD_OR_REMOVE_FIXED_BKS;
-  payload: {
-    day: string;
-    booking: TimeRangeType & { key: number; email: string };
-    type: typeof ADD | typeof DELETE;
+    bookingDetails: BookingDetailsType;
   };
 };
 
 export type Actions =
   | ActionSetFixedBks
-  | ActionAddFixedBks
-  | ActionEditStartHour
-  | ActionEditEndHour
-  | ActionEditEmail
-  | ActionSetEditing;
+  | ActionEditModal
+  | ActionEditBookingDetail;
+
+export type InitialState = {
+  fixedBks: FixedBksType[];
+  modal: ModalType;
+  bookingDetails: BookingDetailsType;
+};
 
 const stateReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
@@ -97,7 +78,8 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
                 return {
                   start: HOUR_MINUTE_FORMAT(d.start),
                   end: HOUR_MINUTE_FORMAT(d.end),
-                  key: d.id,
+                  day: d.day,
+                  id: d.id,
                   email: d.email,
                 };
               }),
@@ -106,69 +88,14 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
         draft.fixedBks = result;
       });
 
-    case EDIT_START_HOUR:
+    case MODAL:
       return produce(initialState, (draft) => {
-        const { day, key, start } = action.payload.booking;
-
-        const singleDayInfo = draft.fixedBks.find((daySettings) => {
-          return daySettings.day === day;
-        });
-
-        const match = singleDayInfo?.bookings.find((book) => {
-          return book.key === key;
-        });
-        if (match) match.start = start;
+        draft.modal = action.payload.modal;
       });
 
-    case EDIT_END_HOUR:
+    case EDIT_BOOKING_DETAILS:
       return produce(initialState, (draft) => {
-        const { day, key, end } = action.payload.booking;
-
-        const singleDayInfo = draft.fixedBks.find((daySettings) => {
-          return daySettings.day === day;
-        });
-
-        const match = singleDayInfo?.bookings.find((book) => {
-          return book.key === key;
-        });
-        if (match) match.end = end;
-      });
-
-    case EDIT_EMAIL:
-      return produce(initialState, (draft) => {
-        const { day, key, email } = action.payload.booking;
-
-        const singleDayInfo = draft.fixedBks.find((daySettings) => {
-          return daySettings.day === day;
-        });
-
-        const match = singleDayInfo?.bookings.find((book) => {
-          return book.key === key;
-        });
-        if (match) match.email = email;
-      });
-
-    case ADD_OR_REMOVE_FIXED_BKS:
-      return produce(initialState, (draft) => {
-        const index = draft.fixedBks.findIndex(
-          (x) => x.day === action.payload.day
-        );
-        if (index > -1) {
-          if (action.payload.type === ADD) {
-            draft.fixedBks[index].bookings.push(action.payload.booking);
-          }
-          if (action.payload.type === DELETE) {
-            const i = draft.fixedBks[index].bookings.findIndex((book) => {
-              return book.key === action.payload.booking.key;
-            });
-            draft.fixedBks[index].bookings.splice(i, 1);
-          }
-        }
-      });
-
-    case USER_IS_EDITING:
-      return produce(initialState, (draft) => {
-        draft.userIsEditing = action.payload;
+        draft.bookingDetails = action.payload.bookingDetails;
       });
 
     default:

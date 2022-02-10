@@ -1,123 +1,99 @@
-import FixedBookingsManagerApi from '../FixedBookingsManagerApi';
 import {
   Actions,
-  ADD_OR_REMOVE_FIXED_BKS,
-  DELETE,
-  EDIT_EMAIL,
-  EDIT_END_HOUR,
-  EDIT_START_HOUR,
-  FixedBookType,
-  USER_IS_EDITING,
+  BookingDetailsType,
+  EDIT_BOOKING_DETAILS,
+  InitialState,
 } from '../reducer';
+import DayPicker from './DayPicker';
 import HourPicker from './HourPicker';
 
 type BookDetailsType = {
-  bks: FixedBookType;
-  day: string;
+  bks: BookingDetailsType;
   dispatch: React.Dispatch<Actions>;
+  state: InitialState;
+  disabled?: boolean;
+  setBookingDetails?: React.Dispatch<React.SetStateAction<BookingDetailsType>>;
 };
 
-const BookDetails = ({ bks, day, dispatch }: BookDetailsType) => {
-  const handleIsUserEditing = (p: boolean) => {
-    dispatch({
-      type: USER_IS_EDITING,
-      payload: true,
-    });
-  };
-
-  //TODO style
+const BookDetails = ({
+  bks,
+  setBookingDetails,
+  disabled,
+  state,
+  dispatch,
+}: BookDetailsType) => {
   return (
-    <div className={`grid grid-cols-3 gap-4 border-b-8pb-2`}>
-      <div className="col-span-3 grid grid-cols-2 items-center">
+    <div className={`flex flex-col gap-4`}>
+      <DayPicker
+        disabled={disabled}
+        value={bks.day}
+        onChange={(e) => {
+          dispatch({
+            type: EDIT_BOOKING_DETAILS,
+            payload: {
+              bookingDetails: {
+                ...state.bookingDetails,
+                day: e.target.value,
+              },
+            },
+          });
+        }}
+      />
+      <div className="flex gap-4">
         <HourPicker
+          disabled={disabled}
+          type="start"
           value={bks.start}
           onChange={(e) => {
             dispatch({
-              type: EDIT_START_HOUR,
+              type: EDIT_BOOKING_DETAILS,
               payload: {
-                booking: {
-                  day: day,
+                bookingDetails: {
+                  ...state.bookingDetails,
                   start: e.target.value,
-                  key: bks.key,
                 },
               },
             });
-            handleIsUserEditing(true);
           }}
         />
         <HourPicker
+          disabled={disabled}
+          type="end"
           value={bks.end}
           onChange={(e) => {
             dispatch({
-              type: EDIT_END_HOUR,
+              type: EDIT_BOOKING_DETAILS,
               payload: {
-                booking: {
-                  day: day,
+                bookingDetails: {
+                  ...state.bookingDetails,
                   end: e.target.value,
-                  key: bks.key,
                 },
               },
             });
-            handleIsUserEditing(true);
           }}
         />
       </div>
-      {/*<p className={`col-span-3 ${ITALIC}`}>
-        {i18n.t('adminPage.avalManagerPage.workingTime')}
-        cliente
-      </p>*/}
-      <div className="col-span-3 grid grid-cols-1 items-center">
-        <p>Email</p>
+      <div>
         <input
+          disabled={disabled}
+          placeholder="email client"
           type="text"
           id="clientName"
-          className="w-50 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
           value={bks.email}
           onChange={(e) => {
             dispatch({
-              type: EDIT_EMAIL,
+              type: EDIT_BOOKING_DETAILS,
               payload: {
-                booking: {
-                  day: day,
-                  key: bks.key,
+                bookingDetails: {
+                  ...state.bookingDetails,
                   email: e.target.value,
                 },
               },
             });
-            handleIsUserEditing(true);
           }}
         />
-      </div>
-      <div className="col-span-3 red-200">
-        <button
-          className="text-red-600"
-          onClick={() => {
-            //const isConfirmed = promptConfirmation();
-            //if (!isConfirmed) return;
-            //else {
-            const deleteBooking = async () => {
-              await FixedBookingsManagerApi.deleteFixedBooking(bks.key);
-            };
-            deleteBooking();
-            dispatch({
-              type: ADD_OR_REMOVE_FIXED_BKS,
-              payload: {
-                day: day,
-                booking: {
-                  key: bks.key,
-                  start: '',
-                  end: '',
-                  email: '',
-                },
-                type: DELETE,
-              },
-            });
-            handleIsUserEditing(true);
-          }}
-        >
-          Remove
-        </button>
       </div>
     </div>
   );
