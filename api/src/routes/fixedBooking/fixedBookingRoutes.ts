@@ -1,14 +1,16 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 
 import { ErrorService } from '../../services/ErrorService';
+import FixedBookingService from '../../services/fixedBookingService/FixedBookingService';
+import { RequestWithFixedBkg } from '../../services/fixedBookingService/interfaces';
 
-const db = require('../../database/models/db');
+//const db = require('../../database/models/db');
 
 const { authenticateToken } = require('../../middleware/middleware');
 
 const FixedBookingRouter = express.Router();
 
-const FixedBookings = db.FixedBookings;
+//const FixedBookings = db.FixedBookings;
 
 export default (app: Router) => {
   app.use('/fixedBookings', FixedBookingRouter);
@@ -18,7 +20,7 @@ export default (app: Router) => {
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const data = await FixedBookings.findAll();
+        const data = await FixedBookingService.findAll();
         res.send(data);
       } catch (e: any) {
         next(e);
@@ -26,19 +28,12 @@ export default (app: Router) => {
     }
   );
 
-  //TODO -> move away business logic from here
   FixedBookingRouter.post(
     '/',
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
-      const { fixedBks } = req.body;
       try {
-        await FixedBookings.create({
-          day: fixedBks.day,
-          start: fixedBks.start,
-          end: fixedBks.end,
-          email: fixedBks.email,
-        });
+        await FixedBookingService.create(req);
         res.send({ message: 'fixedBookings created!' });
       } catch (e: any) {
         next(e);
@@ -50,12 +45,11 @@ export default (app: Router) => {
     '/',
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
-      const id = req.query.id;
       try {
         /**
          * destroy method returns 0 if it doesnt find the item, otherwise it returns 1
          */
-        const booking = await FixedBookings.destroy({ where: { id } });
+        const booking = await FixedBookingService.destroy(req);
         // if there is no booking return error
         if (!booking) {
           next(ErrorService.badRequest('Booking not found'));
@@ -73,21 +67,11 @@ export default (app: Router) => {
     '/',
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
-      const { start, end, day, email, id } = req.body.fixedBks;
       try {
-        const isUpdated = await FixedBookings.update(
-          {
-            start,
-            end,
-            day,
-            email,
-          },
-          {
-            where: {
-              id,
-            },
-          }
-        );
+        /**
+         * update method returns 0 if it doesnt find the item, otherwise it returns 1
+         */
+        const isUpdated = await FixedBookingService.update(req);
         if (!isUpdated) {
           next(ErrorService.badRequest('Booking not found'));
           return;

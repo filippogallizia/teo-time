@@ -6,22 +6,16 @@ import {
 } from '../reducer';
 import DayPicker from './DayPicker';
 import HourPicker from './HourPicker';
+import DatePicker from 'react-date-picker';
 
 type BookDetailsType = {
   bks: BookingDetailsType;
   dispatch: React.Dispatch<Actions>;
   state: InitialState;
   disabled?: boolean;
-  setBookingDetails?: React.Dispatch<React.SetStateAction<BookingDetailsType>>;
 };
 
-const BookDetails = ({
-  bks,
-  setBookingDetails,
-  disabled,
-  state,
-  dispatch,
-}: BookDetailsType) => {
+const BookDetails = ({ bks, disabled, state, dispatch }: BookDetailsType) => {
   return (
     <div className={`flex flex-col gap-4`}>
       <DayPicker
@@ -89,6 +83,23 @@ const BookDetails = ({
                 bookingDetails: {
                   ...state.bookingDetails,
                   email: e.target.value,
+                },
+              },
+            });
+          }}
+        />
+      </div>
+      <div>
+        <DatePicker
+          disabled={disabled}
+          value={bks.exceptionDate}
+          onChange={(e: Date) => {
+            dispatch({
+              type: EDIT_BOOKING_DETAILS,
+              payload: {
+                bookingDetails: {
+                  ...state.bookingDetails,
+                  exceptionDate: e,
                 },
               },
             });

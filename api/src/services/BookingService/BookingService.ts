@@ -68,7 +68,6 @@ class BookingService {
 
   public async create(req: Request): Promise<any> {
     const { start, end, isHoliday, localId } = req.body;
-    // eslint-disable-next-line no-useless-catch
     try {
       return await this.bookingModel.create({
         start,
@@ -77,7 +76,7 @@ class BookingService {
         localId,
       });
     } catch (e) {
-      throw e;
+      throw ErrorService.internal(e);
     }
   }
 
@@ -85,7 +84,6 @@ class BookingService {
     searchParam?: Record<string, unknown>,
     isInclude?: boolean
   ): Promise<BookingModel & { user?: any; userId: number }[]> {
-    // eslint-disable-next-line no-useless-catch
     try {
       if (searchParam && !isInclude) {
         return await this.bookingModel.findAll({
@@ -101,7 +99,7 @@ class BookingService {
         });
       } else return await this.bookingModel.findAll();
     } catch (e) {
-      throw e;
+      throw ErrorService.internal(e);
     }
   }
 }

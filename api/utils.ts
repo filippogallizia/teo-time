@@ -37,6 +37,10 @@ export const DATE_TO_CLIENT_FORMAT = (date: string) => {
   return DateTime.fromISO(date).toFormat('yyyy LLL dd t');
 };
 
+export const DATE_TO_FULL_DAY = (date: string) => {
+  return DateTime.fromISO(date).toFormat('yyyy LLL dd');
+};
+
 export const joinDayAndTime = (date_day: string, date_time: string) => {
   return DateTime.fromISO(date_day)
     .set({

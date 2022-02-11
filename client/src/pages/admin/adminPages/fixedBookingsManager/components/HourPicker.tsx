@@ -1,4 +1,4 @@
-const options = [
+const defaultOptions = [
   '06:30',
   '07:00',
   '07:30',
@@ -37,27 +37,37 @@ type Props = {
   onChange: (p: any) => void;
   type: any;
   disabled?: boolean;
+  id?: any;
+  options?: string[];
 };
 
-const HourPicker = ({ value, onChange, type, disabled }: Props) => {
+const HourPicker = ({
+  value,
+  onChange,
+  type,
+  id,
+  disabled,
+  options,
+}: Props) => {
+  const OPTIONS = options ?? defaultOptions;
+
   return (
     <div>
-      {/*<label htmlFor="ice-cream-choice">Inizio</label>*/}
       <input
         disabled={disabled}
+        id={id ?? `${type}type`}
         list={type}
         name="ice-cream-choice"
         aria-invalid={false}
         autoComplete="off"
         type="text"
-        //className="border-2 border-indigo-600"
         placeholder={type}
         className="w-32 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         value={value}
         onChange={onChange}
       />
       <datalist id={type}>
-        {options.map((hour: string) => {
+        {OPTIONS.map((hour: string) => {
           return <option value={hour} />;
         })}
       </datalist>

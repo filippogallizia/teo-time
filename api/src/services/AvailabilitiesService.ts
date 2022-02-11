@@ -1,5 +1,6 @@
 import { avalSlotsFromTimeRange, retrieveAvailability } from '../../utils';
 import { DatabaseAvailabilityType } from '../types/types';
+import { ErrorService } from './ErrorService';
 const db = require('../database/models/db');
 const DatabaseAvailabilty = db.DatabaseAvailabilty;
 
@@ -57,13 +58,13 @@ const parseDatabaseAvailability = async (
             breakTimeBtwEventsHours,
             breakTimeBtwEventsMinutes,
           }).catch((e: any) => {
-            throw e;
+            throw ErrorService.internal(e);
           });
         });
       }
     })
     .catch((e: any) => {
-      console.log(e);
+      throw ErrorService.internal(e);
     });
 };
 

@@ -4,9 +4,9 @@ import BookDetails from './BookDetails';
 import { InitialState } from '../reducer';
 import FixedBookingsManagerApi from '../FixedBookingsManagerApi';
 import GeneralButton from '../../../../../component/GeneralButton';
-import { SUB_TITLE, TITLE } from '../../../../../constants/constant';
-import { useState } from 'react';
+import { SUB_TITLE } from '../../../../../constants/constant';
 import { toast } from 'react-toastify';
+
 import {
   handleToastInFailRequest,
   promptConfirmation,

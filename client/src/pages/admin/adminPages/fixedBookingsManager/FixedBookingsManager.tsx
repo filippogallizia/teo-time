@@ -3,7 +3,6 @@ import { handleToastInFailRequest } from '../../../../helpers/utils';
 
 import CardComponent from '../../components/Card';
 import { useEffect, useReducer } from 'react';
-import { Prompt } from 'react-router';
 
 import reducer, {
   Actions,
@@ -14,10 +13,10 @@ import reducer, {
   MODAL,
   SET_FIXED_BKS,
 } from './reducer';
-import { toast } from 'react-toastify';
 import BookDetails from './components/BookDetails';
 import FixedBookingsManagerApi from './FixedBookingsManagerApi';
 import CreateOrEditModal from './components/CreateOrEditModal';
+import { toast } from 'react-toastify';
 
 const initialState: InitialState = {
   fixedBks: [],
@@ -25,15 +24,27 @@ const initialState: InitialState = {
     isOpen: false,
     mode: CREATE,
   },
-  bookingDetails: { start: '', end: '', day: '', email: '' },
+  bookingDetails: {
+    start: '',
+    end: '',
+    day: '',
+    email: '',
+    exceptionDate: undefined,
+  },
 };
+
+// TODO -> add validation to avoid having booking with same hours.
 
 export const fetchAndSetBks = async (dispatch: React.Dispatch<Actions>) => {
   const handleSuccess = (res: any) => {
     res.length > 0 && dispatch({ type: SET_FIXED_BKS, payload: res });
   };
-  const response = await FixedBookingsManagerApi.getFixedBookings();
-  handleSuccess(response);
+  try {
+    const response = await FixedBookingsManagerApi.getFixedBookings();
+    handleSuccess(response);
+  } catch (error) {
+    handleToastInFailRequest(toast, error);
+  }
 };
 
 const FixedBksManager = () => {
@@ -54,7 +65,13 @@ const FixedBksManager = () => {
               dispatch({
                 type: EDIT_BOOKING_DETAILS,
                 payload: {
-                  bookingDetails: { start: '', end: '', day: '', email: '' },
+                  bookingDetails: {
+                    start: '',
+                    end: '',
+                    day: '',
+                    email: '',
+                    exceptionDate: undefined,
+                  },
                 },
               });
               dispatch({
@@ -70,28 +87,21 @@ const FixedBksManager = () => {
           />
         </div>
         {state.fixedBks.length > 0 &&
-          state.fixedBks.map((daySettings: FixedBksType) => {
-            //TODO -> check this key if is unique
+          state.fixedBks.map((daySettings: FixedBksType, i) => {
             return (
-              <div key={daySettings.day} className="bg-gray-100">
+              <div key={`${daySettings.day}`} className="bg-gray-100">
                 <CardComponent key={daySettings.day}>
                   <div className={`grid grid-cols-1 gap-4`}>
                     <div className="grid grid-cols-2 items-center">
                       <p>{daySettings.day}</p>
                     </div>
                     {daySettings.bookings.map((bks, i) => {
-                      console.log(bks, 'bks');
                       return (
                         <div
-                          key={bks.id}
+                          key={`${bks.id}${bks.email}${bks.start}${bks.end}`}
                           className=" py-2 flex flex-col gap-4 b"
                         >
                           <p>Appuntamento: {i + 1}</p>
-                          {/*<BookContainer
-                            state={state}
-                            dispatch={dispatch}
-                            bks={bks}
-                          />*/}
                           <BookDetails
                             state={state}
                             disabled={true}
@@ -132,10 +142,6 @@ const FixedBksManager = () => {
           <CreateOrEditModal dispatch={dispatch} state={state} />
         )}
       </div>
-      {/*<Prompt
-        when={state.userIsEditing}
-        message="You have unsaved changes, are you sure you want to leave?"
-      />*/}
     </div>
   );
 };

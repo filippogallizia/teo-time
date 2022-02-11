@@ -4,8 +4,12 @@ import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 
-import { filterDays_updateDate, retrieveAvailability } from '../../utils';
-import { FixedBookingModelType } from '../database/models/fixedBooking.model';
+import {
+  DATE_TO_FULL_DAY,
+  TODAY_AT_MIDNIGHT,
+  filterDays_updateDate,
+  retrieveAvailability,
+} from '../../utils';
 import {
   ResponseWithAvalType,
   ResponseWithUserType,
@@ -14,7 +18,8 @@ import authService from '../services/authService/AuthService';
 import parseDatabaseAvailability from '../services/AvailabilitiesService';
 import bookingService from '../services/BookingService/BookingService';
 import { ErrorService } from '../services/ErrorService';
-import fixedBookingService from '../services/FixedBookingService';
+import FixedBookingService from '../services/fixedBookingService/FixedBookingService';
+import { FixedBookingDTO } from '../services/fixedBookingService/interfaces';
 import userService from '../services/UserService';
 import { DayAvailabilityType } from '../types/types';
 
@@ -130,14 +135,25 @@ const getAvailability = async (
      *
      */
 
-    const fixedBks = await fixedBookingService.findAll();
+    const fixedBks = await FixedBookingService.findAll();
 
-    const mapFixedBks = fixedBks.map((book: FixedBookingModelType) => {
-      return {
-        day: book.day,
-        availability: [{ start: book.start, end: book.end }],
-      };
-    });
+    const mapFixedBks = fixedBks
+
+      /**
+       * first we filter for exceptionDate
+       */
+
+      .filter((book: FixedBookingDTO) => {
+        const requestedAvail = DATE_TO_FULL_DAY(start);
+        const fixedBookException = DATE_TO_FULL_DAY(book.exceptionDate);
+        return requestedAvail !== fixedBookException;
+      })
+      .map((book: FixedBookingDTO) => {
+        return {
+          day: book.day,
+          availability: [{ start: book.start, end: book.end }],
+        };
+      });
 
     const parsedFixedBookings = filterDays_updateDate(
       mapFixedBks,
@@ -269,6 +285,7 @@ const authenticateToken = async (
         (err: any, decoded: any) => {
           if (err || !decoded) {
             next(ErrorService.unauthorized('Unauthorized'));
+            return;
           }
           res.user = decoded.data;
           next();

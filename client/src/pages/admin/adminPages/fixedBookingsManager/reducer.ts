@@ -1,7 +1,6 @@
 import produce from 'immer';
 import { TimeRangeType } from '../../../../../types/Types';
 import { HOUR_MINUTE_FORMAT } from '../../../../helpers/utils';
-import { weekDays } from '../availabilitiesManager/AvailabilitiesManager';
 
 export const SET_FIXED_BKS = 'SET_FIXED_BKS';
 export const ADD_OR_REMOVE_FIXED_BKS = 'ADD_OR_REMOVE_FIXED_BKS';
@@ -11,12 +10,21 @@ export const MODAL = 'MODAL';
 export const CREATE = 'CREATE';
 export const EDIT = 'EDIT';
 
+export const weekDays = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+];
+
 export type BookingDetailsType = {
   start: string;
   end: string;
   day: string;
   email: string;
   id?: number;
+  exceptionDate: Date | undefined;
 };
 
 export type FixedBookType = TimeRangeType & {
@@ -81,6 +89,9 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
                   day: d.day,
                   id: d.id,
                   email: d.email,
+                  exceptionDate: d.exceptionDate
+                    ? new Date(d.exceptionDate)
+                    : undefined,
                 };
               }),
           };

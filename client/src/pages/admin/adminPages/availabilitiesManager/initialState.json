@@ -1,0 +1,73 @@
+{
+  "weekAvalSettings": [
+    {
+      "breakTimeBtwEventsHours": "1",
+      "breakTimeBtwEventsMinutes": "30",
+      "breakTimeEnd": "13:30",
+      "breakTimeStart": "12:00",
+      "day": "Monday",
+      "eventDurationHours": "1",
+      "eventDurationMinutes": "0",
+      "workTimeEnd": "21:00",
+      "workTimeStart": "07:30"
+    },
+    {
+      "breakTimeBtwEventsHours": "1",
+      "breakTimeBtwEventsMinutes": "30",
+      "breakTimeEnd": "13:30",
+      "breakTimeStart": "12:00",
+      "day": "Tuesday",
+      "eventDurationHours": "1",
+      "eventDurationMinutes": "0",
+      "workTimeEnd": "21:00",
+      "workTimeStart": "07:30"
+    },
+    {
+      "breakTimeBtwEventsHours": "1",
+      "breakTimeBtwEventsMinutes": "30",
+      "breakTimeEnd": "13:30",
+      "breakTimeStart": "12:00",
+      "day": "Wednesday",
+      "eventDurationHours": "1",
+      "eventDurationMinutes": "0",
+      "workTimeEnd": "21:00",
+      "workTimeStart": "07:30"
+    },
+    {
+      "breakTimeBtwEventsHours": "1",
+      "breakTimeBtwEventsMinutes": "30",
+      "breakTimeEnd": "13:30",
+      "breakTimeStart": "12:00",
+      "day": "Thursday",
+      "eventDurationHours": "1",
+      "eventDurationMinutes": "0",
+      "workTimeEnd": "21:00",
+      "workTimeStart": "07:30"
+    },
+    {
+      "breakTimeBtwEventsHours": "1",
+      "breakTimeBtwEventsMinutes": "30",
+      "breakTimeEnd": "13:30",
+      "breakTimeStart": "12:00",
+      "day": "Friday",
+      "eventDurationHours": "1",
+      "eventDurationMinutes": "0",
+      "workTimeEnd": "21:00",
+      "workTimeStart": "07:30"
+    }
+  ],
+  "modal": {
+    "isOpen": false
+  },
+  "selectedDay": {
+    "breakTimeBtwEventsHours": "1",
+    "breakTimeBtwEventsMinutes": "30",
+    "breakTimeEnd": "13:30",
+    "breakTimeStart": "12:00",
+    "day": "Friday",
+    "eventDurationHours": "1",
+    "eventDurationMinutes": "0",
+    "workTimeEnd": "21:00",
+    "workTimeStart": "07:30"
+  }
+}
