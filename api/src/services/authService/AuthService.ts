@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 
 import { LoginInputDTO, UserDTO, UserInputDTO } from '../../interfaces/UserDTO';
-import { ErrorService } from '../ErrorService';
-import userService from '../UserService';
+import { ErrorService } from '../errorService/ErrorService';
+import userService from '../userService/UserService';
 
 class AuthService {
   public userExist(user: UserDTO | undefined) {

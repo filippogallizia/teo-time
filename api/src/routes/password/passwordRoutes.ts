@@ -1,8 +1,8 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 
 import { changePwdEmail, sendEmail } from '../../config/sendGrid/config';
-import { ErrorService } from '../../services/ErrorService';
-import UserService from '../../services/UserService';
+import { ErrorService } from '../../services/errorService/ErrorService';
+import UserService from '../../services/userService/UserService';
 
 const db = require('../../database/models/db');
 

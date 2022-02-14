@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 
-import { ErrorService } from '../../services/ErrorService';
+import { ErrorService } from '../../services/errorService/ErrorService';
 import FixedBookingService from '../../services/fixedBookingService/FixedBookingService';
 import { RequestWithFixedBkg } from '../../services/fixedBookingService/interfaces';
 

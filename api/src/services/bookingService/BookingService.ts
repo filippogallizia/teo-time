@@ -4,7 +4,7 @@ import { Op } from 'sequelize';
 import { BookingModel } from '../../database/models/booking.model';
 import { BookingDTO } from '../../interfaces/BookingDTO';
 import { UserDTO } from '../../interfaces/UserDTO';
-import { ErrorService } from '../ErrorService';
+import { ErrorService } from '../errorService/ErrorService';
 
 const db = require('../../database/models/db');
 

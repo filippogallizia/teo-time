@@ -1,13 +1,8 @@
-import { avalSlotsFromTimeRange, retrieveAvailability } from '../../utils';
-import { DatabaseAvailabilityType } from '../types/types';
-import { ErrorService } from './ErrorService';
-const db = require('../database/models/db');
+import { DatabaseAvailabilityType } from '../../types/types';
+import { ErrorService } from '../errorService/ErrorService';
+import { createAvalAlgoritm } from './createAvalAlgoritm/createAvalAlgoritm';
+const db = require('../../database/models/db');
 const DatabaseAvailabilty = db.DatabaseAvailabilty;
-
-class AvailabilitiesService {
-  avalSlotsFromTimeRange = avalSlotsFromTimeRange;
-  retrieveAvailability = retrieveAvailability;
-}
 
 //export default AvailabilitiesService;
 
@@ -20,7 +15,14 @@ const parseDatabaseAvailability = async (
         const result = daySetting.map((day: DatabaseAvailabilityType) => {
           return {
             day: day.day,
-            availability: avalSlotsFromTimeRange(
+            /**
+             * this function create aval slots given the following inputs
+             * @param workTimeRange
+             * @param breakTimeRange
+             * @param eventDuration
+             * @param breakTimeBtwEvents
+             */
+            availability: createAvalAlgoritm(
               { start: day.workTimeStart, end: day.workTimeEnd },
               { start: day.breakTimeStart, end: day.breakTimeEnd },
               {

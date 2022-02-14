@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 
-import userService from '../../services/UserService';
+import userService from '../../services/userService/UserService';
 
 const db = require('../../database/models/db');
 

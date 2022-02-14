@@ -2,8 +2,8 @@ import express, { NextFunction, Request, Response, Router } from 'express';
 
 import { googleAuth } from '../../middleware/middleware';
 import authService from '../../services/authService/AuthService';
-import { ErrorService } from '../../services/ErrorService';
-import userService from '../../services/UserService';
+import { ErrorService } from '../../services/errorService/ErrorService';
+import userService from '../../services/userService/UserService';
 import { ResponseWithUserType } from '../interfaces/interfaces';
 
 const { loginValidation, createToken } = require('../../middleware/middleware');

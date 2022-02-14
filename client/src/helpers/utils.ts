@@ -63,14 +63,9 @@ export const parseHoursToObject = (selectedHour: string): HrsAndMinsType => {
 };
 
 export const handleToastInFailRequest = (error: any, toast: any) => {
-  if (error && error.response) {
-    if (typeof error.response.data === 'string') {
-      toast.error(error.response.data);
-    }
-  } else {
-    toast.error(error.message);
-  }
+  toast.error(error.message ?? error.message.message);
 };
+//};
 
 export const promptConfirmation = (): boolean => {
   // eslint-disable-next-line no-restricted-globals

@@ -14,6 +14,8 @@ import EventListener from '../../../helpers/EventListener';
 import i18n from '../../../i18n';
 import BookingPageApi from '../BookingPageApi';
 import { compareAvailWithCurrentHour } from '../helpers/helpers';
+import { handleToastInFailRequest } from '../../../helpers/utils';
+import { toast } from 'react-toastify';
 
 type BookSlotContainerType = {
   state: InitialState;
@@ -59,7 +61,9 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
         });
         handleSuccess(response);
       } catch (e: any) {
-        EventListener.emit('errorHandling', e.response);
+        //EventListener.emit('errorHandling', e.response);
+        console.log(e, 'ciaoooooo');
+        handleToastInFailRequest(e, toast);
       }
     };
     funcAsync();

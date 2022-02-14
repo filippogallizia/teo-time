@@ -3,7 +3,6 @@ import { DateTime } from 'luxon';
 import {
   BookingType,
   DayAvailabilityType,
-  HrsAndMinsType,
   TimeRangeType,
 } from './src/types/types';
 
@@ -122,99 +121,4 @@ export const retrieveAvailability = (
   } catch (e) {
     console.log(e);
   }
-};
-
-/**
- * this function create aval slots given the following inputs
- * @param workTimeRange
- * @param breakTimeRange
- * @param eventDuration
- * @param breakTimeBtwEvents
- */
-
-export const avalSlotsFromTimeRange = (
-  workTimeRange: TimeRangeType,
-  breakTimeRange: TimeRangeType,
-  eventDuration: HrsAndMinsType,
-  breakTimeBtwEvents: HrsAndMinsType
-): TimeRangeType[] => {
-  const dayStart = DateTime.fromISO(workTimeRange.start);
-  const dayEnd = DateTime.fromISO(workTimeRange.end);
-
-  const breakStart = DateTime.fromISO(breakTimeRange.start);
-  const breakEnd = DateTime.fromISO(breakTimeRange.end);
-
-  const avalBucket: { start: DateTime; end: DateTime }[] = [];
-
-  const tmpBucket: { start: DateTime; end: DateTime }[] = [];
-
-  // if thera are not slot in bucket && dayStart plus eventDuration are smaller then breakStart, then push in the bucket
-  while (
-    dayStart.plus(eventDuration) <= breakStart &&
-    avalBucket.length === 0
-  ) {
-    avalBucket.push({
-      start: dayStart.toUTC(),
-      end: dayStart.plus(eventDuration),
-    });
-  }
-
-  // if thera are not slot in bucket && dayStart piu' eventDuration is bigger then breakStart but breakEnd plus eventDuration is smaller the dayEnd, then push in the bucket
-  while (
-    dayStart.plus(eventDuration) > breakStart &&
-    avalBucket.length === 0 &&
-    breakEnd.plus(eventDuration) <= dayEnd
-  ) {
-    avalBucket.push({
-      start: breakStart.toUTC(),
-      end: breakStart.plus(eventDuration),
-    });
-  }
-
-  // if fineUltimoTurno plus eventDuration is smaller then breakStart, then push in bucket
-  while (
-    avalBucket[avalBucket.length - 1].end
-      .plus(eventDuration)
-      .plus(breakTimeBtwEvents) <= breakStart
-  ) {
-    avalBucket.push({
-      start: avalBucket[avalBucket.length - 1].end.plus(breakTimeBtwEvents),
-      end: avalBucket[avalBucket.length - 1].end
-        .plus(eventDuration)
-        .plus(breakTimeBtwEvents),
-    });
-  }
-
-  // if breakEnd plus eventDuration is smaller then dayEnd, then push in bucket
-  while (
-    breakEnd.plus(eventDuration) <= dayEnd &&
-    avalBucket[avalBucket.length - 1].end <= dayEnd &&
-    avalBucket[avalBucket.length - 1].end
-      .plus(eventDuration)
-      .plus(breakTimeBtwEvents) <= dayEnd
-  ) {
-    if (tmpBucket.length === 0) {
-      tmpBucket.push({
-        start: breakEnd,
-        end: breakEnd.plus(eventDuration),
-      });
-    } else {
-      tmpBucket.push({
-        start: tmpBucket[tmpBucket.length - 1].end.plus(breakTimeBtwEvents),
-        end: tmpBucket[tmpBucket.length - 1].end
-          .plus(eventDuration)
-          .plus(breakTimeBtwEvents),
-      });
-    }
-    avalBucket.push({
-      start: tmpBucket[tmpBucket.length - 1].start,
-      end: tmpBucket[tmpBucket.length - 1].end,
-    });
-  }
-  return avalBucket.map((obj: { start: DateTime; end: DateTime }) => {
-    return {
-      start: obj.start.toUTC().toISO(),
-      end: obj.end.toUTC().toISO(),
-    };
-  });
 };

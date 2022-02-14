@@ -1,10 +1,19 @@
+import GeneralButton from '../../../../../component/GeneralButton';
 import Modal from '../../../../../component/Modal';
-import { Actions, InitialState, MODAL } from '../reducer';
+import { Actions, DayAvalSettingsType, InitialState, MODAL } from '../reducer';
 import AvailabilityDetails from './AvailabilityContainer';
+import AvailManagerApi from '../AvailabilitiesManagerApi';
+import { toast } from 'react-toastify';
+import { handleToastInFailRequest } from '../../../../../helpers/utils';
+import { fetchAndSetSetState } from '../AvailabilitiesManager';
 
 type Props = {
   state: InitialState;
   dispatch: React.Dispatch<Actions>;
+};
+
+const editAvail = async (day: DayAvalSettingsType) => {
+  return await AvailManagerApi.createDefaultAvail(day);
 };
 
 const CreateOrEditModal = ({ state, dispatch }: Props) => {
@@ -35,6 +44,28 @@ const CreateOrEditModal = ({ state, dispatch }: Props) => {
             dispatch={dispatch}
             day={state.selectedDay}
           />
+          <div className="flex gap-4">
+            <GeneralButton
+              buttonText="Cancel"
+              secondary={true}
+              onClick={() => {
+                closeModal();
+              }}
+            />
+            <GeneralButton
+              buttonText={'Save'}
+              onClick={async () => {
+                try {
+                  await editAvail(state.selectedDay);
+                  fetchAndSetSetState(dispatch);
+                  toast.success(`edited successfully`);
+                  closeModal();
+                } catch (e) {
+                  handleToastInFailRequest(e, toast);
+                }
+              }}
+            />
+          </div>
         </div>
       </Modal>
     </div>

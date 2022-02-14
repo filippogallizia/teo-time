@@ -4,9 +4,9 @@ import GoogleCalendarService, {
   deleteEvent,
   getEvents,
 } from '../../googleApi/GoogleCalendarService';
-import bookingService from '../../services/BookingService/BookingService';
-import { ErrorService } from '../../services/ErrorService';
-import userService from '../../services/UserService';
+import bookingService from '../../services/bookingService/BookingService';
+import { ErrorService } from '../../services/errorService/ErrorService';
+import userService from '../../services/userService/UserService';
 import { ResponseWithUserType } from '../interfaces/interfaces';
 
 const { authenticateToken, bookExist } = require('../../middleware/middleware');

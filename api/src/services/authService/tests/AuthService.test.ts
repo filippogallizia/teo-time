@@ -5,8 +5,7 @@ import {
   UserDTO,
   UserInputDTO,
 } from '../../../interfaces/UserDTO';
-import { ErrorService } from '../../ErrorService';
-import userService from '../../UserService';
+import userService from '../../userService/UserService';
 import authService from '../AuthService';
 
 const userInput: UserInputDTO = {

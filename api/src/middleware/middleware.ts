@@ -15,12 +15,12 @@ import {
   ResponseWithUserType,
 } from '../routes/interfaces/interfaces';
 import authService from '../services/authService/AuthService';
-import parseDatabaseAvailability from '../services/AvailabilitiesService';
-import bookingService from '../services/BookingService/BookingService';
-import { ErrorService } from '../services/ErrorService';
+import parseDatabaseAvailability from '../services/availabilityService/AvailabilitiesService';
+import bookingService from '../services/bookingService/BookingService';
+import { ErrorService } from '../services/errorService/ErrorService';
 import FixedBookingService from '../services/fixedBookingService/FixedBookingService';
 import { FixedBookingDTO } from '../services/fixedBookingService/interfaces';
-import userService from '../services/UserService';
+import userService from '../services/userService/UserService';
 import { DayAvailabilityType } from '../types/types';
 
 const avalDefault = require('../config/availabilitiesDefault.config.json');
@@ -119,7 +119,6 @@ const getAvailability = async (
      * parse bookings from JS object date to string
      *
      */
-
     const parsedBookings = _.map(bookings.flat(), (e: any) => {
       return {
         ...e,
@@ -134,15 +133,12 @@ const getAvailability = async (
      * fixedBooking dont have date but just hours!
      *
      */
-
     const fixedBks = await FixedBookingService.findAll();
 
     const mapFixedBks = fixedBks
-
       /**
        * first we filter for exceptionDate
        */
-
       .filter((book: FixedBookingDTO) => {
         const requestedAvail = DATE_TO_FULL_DAY(start);
         const fixedBookException = DATE_TO_FULL_DAY(book.exceptionDate);
@@ -165,7 +161,6 @@ const getAvailability = async (
      * join all bookings in a single array
      *
      */
-
     const joinedBookings = [...parsedBookings, ...parsedFixedBookings.flat()];
 
     /**
@@ -173,7 +168,6 @@ const getAvailability = async (
      * get weekAvalSetting and create dynamicAval. If there are not weekAvalSetting create them.
      *
      */
-
     const daysAvailabilities: DayAvailabilityType[] =
       await parseDatabaseAvailability(avalDefault);
 
@@ -182,7 +176,6 @@ const getAvailability = async (
      * join all the datas togheter and get availabilities, hopefully all works
      *
      */
-
     const availabilities = retrieveAvailability(
       {
         bookings: joinedBookings,
@@ -268,7 +261,6 @@ const authenticateToken = async (
 ) => {
   const authHeader = req.header('Authorization');
   const token = authHeader && authHeader.split(' ')[1];
-  console.log(token, 'token');
   if (!token) next(ErrorService.unauthorized('Unauthorized'));
   else {
     // TODO -> enable this comment to use client google login

@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-import { ErrorService } from '../ErrorService';
+import { ErrorService } from '../errorService/ErrorService';
 import { FixedBookingDTO } from './interfaces';
 
 const db = require('../../database/models/db');

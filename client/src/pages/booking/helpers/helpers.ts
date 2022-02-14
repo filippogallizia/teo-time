@@ -25,15 +25,13 @@ export const compareAvailWithCurrentHour = (
         if (avalHours > currentHour) {
           acc.push({
             start: HOUR_MINUTE_FORMAT(cv.start),
-            end: DateTime.fromISO(cv.start)
-              .plus({ hours: 1 })
-              .toFormat('HH:mm'),
+            end: HOUR_MINUTE_FORMAT(cv.end),
           });
         }
       } else {
         acc.push({
           start: HOUR_MINUTE_FORMAT(cv.start),
-          end: DateTime.fromISO(cv.start).plus({ hours: 1 }).toFormat('HH:mm'),
+          end: HOUR_MINUTE_FORMAT(cv.end),
         });
       }
       return acc;

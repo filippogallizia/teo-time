@@ -16,6 +16,8 @@ const AvailabilityRouter = express.Router();
 export default (app: Router) => {
   app.use('/availability', AvailabilityRouter);
 
+  //TODO -> create the service
+
   AvailabilityRouter.get(
     '/',
     [getAvailability],
@@ -32,28 +34,35 @@ export default (app: Router) => {
     '/default',
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
-      const { workSettings } = req.body;
+      const {
+        day,
+        workTimeStart,
+        workTimeEnd,
+        breakTimeStart,
+        breakTimeEnd,
+        eventDurationHours,
+        eventDurationMinutes,
+        breakTimeBtwEventsHours,
+        breakTimeBtwEventsMinutes,
+      } = req.body.workSettings;
       try {
-        workSettings.forEach(async (daySetting: any) => {
-          await DatabaseAvailabilty.update(
-            {
-              day: daySetting.day,
-              workTimeStart: daySetting.parameters.workTimeRange.start,
-              workTimeEnd: daySetting.parameters.workTimeRange.end,
-              breakTimeStart: daySetting.parameters.breakTimeRange.start,
-              breakTimeEnd: daySetting.parameters.breakTimeRange.end,
-              eventDurationHours: daySetting.parameters.eventDuration.hours,
-              eventDurationMinutes: daySetting.parameters.eventDuration.minutes,
-              breakTimeBtwEventsHours:
-                daySetting.parameters.breakTimeBtwEvents.hours,
-              breakTimeBtwEventsMinutes:
-                daySetting.parameters.breakTimeBtwEvents.minutes,
-            },
-            {
-              where: { day: daySetting.day },
-            }
-          );
-        });
+        await DatabaseAvailabilty.update(
+          {
+            day,
+            workTimeStart,
+            workTimeEnd,
+            breakTimeStart,
+            breakTimeEnd,
+            eventDurationHours,
+            eventDurationMinutes,
+            breakTimeBtwEventsHours,
+            breakTimeBtwEventsMinutes,
+          },
+          {
+            where: { day },
+          }
+        );
+
         res.send({ message: 'availabilities created!' });
       } catch (e: any) {
         next(e);

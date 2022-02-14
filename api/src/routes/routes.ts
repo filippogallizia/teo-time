@@ -6,9 +6,9 @@ import GoogleCalendarService, {
   getEvents,
 } from '../googleApi/GoogleCalendarService';
 import authService from '../services/authService/AuthService';
-import bookingService from '../services/BookingService/BookingService';
-import { ErrorService } from '../services/ErrorService';
-import userService from '../services/UserService';
+import bookingService from '../services/bookingService/BookingService';
+import { ErrorService } from '../services/errorService/ErrorService';
+import userService from '../services/userService/UserService';
 import {
   ResponseWithAvalType,
   ResponseWithUserType,
