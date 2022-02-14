@@ -7,13 +7,13 @@ import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import Routes from '../../routes';
 import { GRID_ONE_COL, SECONDARY_LINK, TITLE } from '../../constants/constant';
-import { handleToastInFailRequest } from '../../helpers/utils';
 import { toast } from 'react-toastify';
 import i18n from '../../i18n';
 //import GoogleLoginComponent from './GoogleLogin';
 import { SelfCenterLayout } from '../../component/GeneralLayouts';
 import LoadingService from '../../component/loading/LoadingService';
 import SessionService from '../../services/SessionService';
+import ToastService from '../../services/ToastService';
 
 export const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -49,7 +49,7 @@ export const ForgotPassword = () => {
                     toast.success(response);
                     setSuccess(true);
                   } catch (e) {
-                    handleToastInFailRequest(e, toast);
+                    ToastService.error(e);
                   }
                 };
                 asyncFn();
@@ -101,7 +101,7 @@ const Login = () => {
       SessionService.login({ token, user });
       history.push(Routes.HOMEPAGE_BOOKING);
     } catch (e: any) {
-      handleToastInFailRequest(e, toast);
+      ToastService.error(e);
     } finally {
       LoadingService.hide();
     }

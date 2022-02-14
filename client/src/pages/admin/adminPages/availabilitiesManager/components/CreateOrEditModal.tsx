@@ -4,8 +4,8 @@ import { Actions, DayAvalSettingsType, InitialState, MODAL } from '../reducer';
 import AvailabilityDetails from './AvailabilityContainer';
 import AvailManagerApi from '../AvailabilitiesManagerApi';
 import { toast } from 'react-toastify';
-import { handleToastInFailRequest } from '../../../../../helpers/utils';
 import { fetchAndSetSetState } from '../AvailabilitiesManager';
+import ToastService from '../../../../../services/ToastService';
 
 type Props = {
   state: InitialState;
@@ -61,7 +61,7 @@ const CreateOrEditModal = ({ state, dispatch }: Props) => {
                   toast.success(`edited successfully`);
                   closeModal();
                 } catch (e) {
-                  handleToastInFailRequest(e, toast);
+                  ToastService.error(e);
                 }
               }}
             />

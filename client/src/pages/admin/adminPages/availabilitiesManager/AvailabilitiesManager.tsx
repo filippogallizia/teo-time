@@ -1,13 +1,12 @@
 import AvailManagerApi from './AvailabilitiesManagerApi';
 import CardComponent from '../../components/Card';
 import { useEffect, useReducer } from 'react';
-import { handleToastInFailRequest } from '../../../../helpers/utils';
-import { toast } from 'react-toastify';
 import reducer, { Actions, DayAvalSettingsType, SET_STATE } from './reducer';
 import CreateOrEditModal from './components/CreateOrEditModal';
 import AvailabilityDetails from './components/AvailabilityContainer';
 import initialState from './initialState.json';
 import React from 'react';
+import ToastService from '../../../../services/ToastService';
 
 export const fetchAndSetSetState = async (
   dispatch: React.Dispatch<Actions>
@@ -19,7 +18,7 @@ export const fetchAndSetSetState = async (
     const response = await AvailManagerApi.getDefaultAvail();
     handleSuccess(response);
   } catch (e) {
-    handleToastInFailRequest(e, toast);
+    ToastService.error(e);
   }
 };
 
@@ -35,7 +34,9 @@ const AvalManager = () => {
       <div className="grid grid-cols-1 gap-4">
         {state.weekAvalSettings.map((day) => {
           return (
-            <CardComponent key={day}>
+            <CardComponent
+              key={`${day.day}${day.id}${day.eventDurationMinutes}`}
+            >
               <AvailabilityDetails
                 disabled={true}
                 day={day}

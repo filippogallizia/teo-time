@@ -5,10 +5,7 @@ import { useHistory } from 'react-router-dom';
 import GeneralButton from '../../component/GeneralButton';
 import { BOOKING_INFO, TITLE } from '../../constants/constant';
 import routes from '../../routes';
-import {
-  handleToastInFailRequest,
-  parseHoursToObject,
-} from '../../helpers/utils';
+import { parseHoursToObject } from '../../helpers/utils';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import { SET_CONFIRM_PHASE, SET_RENDER_AVAL } from '../booking/stateReducer';
 import i18n from '../../i18n';
@@ -18,6 +15,7 @@ import { HrsAndMinsType } from '../../../types/Types';
 //import { googleCalendarInsertEvent } from '../auth/AuthApi/LoginService';
 import BookingPageApi from '../booking/BookingPageApi';
 import LocalStorageManager from '../../services/StorageService';
+import ToastService from '../../services/ToastService';
 
 type InitialFormType = {
   name: string;
@@ -82,7 +80,7 @@ const ConfirmPage = ({ dispatch, state }: BookingComponentType) => {
 
       history.push(routes.HOMEPAGE_BOOKING_PAYMENT);
     } catch (e: any) {
-      handleToastInFailRequest(e, toast);
+      ToastService.error(e);
     }
   };
 

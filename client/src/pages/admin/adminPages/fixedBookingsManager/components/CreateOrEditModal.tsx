@@ -7,11 +7,9 @@ import GeneralButton from '../../../../../component/GeneralButton';
 import { SUB_TITLE } from '../../../../../constants/constant';
 import { toast } from 'react-toastify';
 
-import {
-  handleToastInFailRequest,
-  promptConfirmation,
-} from '../../../../../helpers/utils';
+import { promptConfirmation } from '../../../../../helpers/utils';
 import { fetchAndSetBks } from '../FixedBookingsManager';
+import ToastService from '../../../../../services/ToastService';
 
 type Props = {
   state: InitialState;
@@ -87,7 +85,7 @@ const CreateOrEditModal = ({ state, dispatch }: Props) => {
                   toast.success(`${isCreateOrEdit} successfully`);
                   closeModal();
                 } catch (e) {
-                  handleToastInFailRequest(e, toast);
+                  ToastService.error(e);
                 }
               }}
             />
@@ -108,7 +106,7 @@ const CreateOrEditModal = ({ state, dispatch }: Props) => {
                       }
                     }
                   } catch (e) {
-                    handleToastInFailRequest(e, toast);
+                    ToastService.error(e);
                   }
                 }}
               />

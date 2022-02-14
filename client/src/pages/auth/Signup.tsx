@@ -8,9 +8,9 @@ import { useHistory } from 'react-router-dom';
 import Routes from '../../routes';
 import { TITLE } from '../../constants/constant';
 import { toast } from 'react-toastify';
-import { handleToastInFailRequest } from '../../helpers/utils';
 import routes from '../../routes';
 import { SelfCenterLayout } from '../../component/GeneralLayouts';
+import ToastService from '../../services/ToastService';
 
 type InitialFormType = {
   name: string;
@@ -45,7 +45,7 @@ const Signup = () => {
       toast.success('sign up effettuato con successo');
       history.push(routes.LOGIN);
     } catch (error: any) {
-      handleToastInFailRequest(error, toast);
+      ToastService.error(error);
     }
   };
 

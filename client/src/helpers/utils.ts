@@ -62,11 +62,6 @@ export const parseHoursToObject = (selectedHour: string): HrsAndMinsType => {
   return result;
 };
 
-export const handleToastInFailRequest = (error: any, toast: any) => {
-  toast.error(error.message ?? error.message.message);
-};
-//};
-
 export const promptConfirmation = (): boolean => {
   // eslint-disable-next-line no-restricted-globals
   const confirmation = confirm('Sei sicuro che voui cancellare?');

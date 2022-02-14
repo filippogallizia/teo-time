@@ -19,7 +19,7 @@ class BookingPageApi {
   public getAvailabilities(body: { start: string; end: string }): Promise<any> {
     const { start, end } = body;
 
-    return HttpService.get(`/availability?start=${start}&end=${end}`);
+    return HttpService.get(`/availability/dynamic?start=${start}&end=${end}`);
   }
 }
 

@@ -9,7 +9,7 @@ import {
 } from 'react-table';
 import { UserType } from '../../../../types/Types';
 import i18n from '../../../i18n';
-import AdminPageApi from '../AdminPageApi';
+import AdminPageApi from '../adminPages/listBookingsManager/ListBookingsManagerApi';
 
 const UsersTable = () => {
   const [users, setUsers] = useState<UserType[]>([]);

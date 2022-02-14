@@ -2,7 +2,6 @@ import express, { NextFunction, Request, Response, Router } from 'express';
 
 import { ErrorService } from '../../services/errorService/ErrorService';
 import FixedBookingService from '../../services/fixedBookingService/FixedBookingService';
-import { RequestWithFixedBkg } from '../../services/fixedBookingService/interfaces';
 
 //const db = require('../../database/models/db');
 
@@ -15,12 +14,23 @@ const FixedBookingRouter = express.Router();
 export default (app: Router) => {
   app.use('/fixedBookings', FixedBookingRouter);
 
+  /**
+   * filters: start
+   */
+
   FixedBookingRouter.get(
     '/',
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
+      const sortBy = req.params.sortBy;
+
+      const sortValue =
+        sortBy !== undefined ? { order: [[sortBy, 'DESC']] } : undefined;
+
       try {
-        const data = await FixedBookingService.findAll();
+        const data = await FixedBookingService.findAll({
+          sortRule: sortValue,
+        });
         res.send(data);
       } catch (e: any) {
         next(e);

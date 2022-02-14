@@ -4,7 +4,7 @@ import Routes from '../../routes';
 import HomePage from '../home/HomePage';
 import UserPage from '../user/UserPage';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
-import AdminPage from '../admin/AdminPage';
+import AdminPage from '../admin/adminPages/listBookingsManager/ListBookingsManager';
 import {
   SelfCenterLayout,
   SelfTopLayout,

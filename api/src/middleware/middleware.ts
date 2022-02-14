@@ -15,7 +15,7 @@ import {
   ResponseWithUserType,
 } from '../routes/interfaces/interfaces';
 import authService from '../services/authService/AuthService';
-import parseDatabaseAvailability from '../services/availabilityService/AvailabilitiesService';
+import { parseDatabaseAvailability } from '../services/availabilityService/AvailabilitiesService';
 import bookingService from '../services/bookingService/BookingService';
 import { ErrorService } from '../services/errorService/ErrorService';
 import FixedBookingService from '../services/fixedBookingService/FixedBookingService';

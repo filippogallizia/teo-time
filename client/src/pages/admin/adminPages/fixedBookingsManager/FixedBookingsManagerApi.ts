@@ -1,6 +1,15 @@
 import HttpService from '../../../../services/HttpService';
 import { BookingDetailsType } from './reducer';
 
+export type FixedBookingDTO = {
+  day: string;
+  email: string;
+  end: string;
+  id: number;
+  start: string;
+  exceptionDate: string;
+};
+
 class FixedBookingsManagerApi {
   public createFixedBookings(body: BookingDetailsType): Promise<any> {
     return HttpService.post(`/fixedBookings`, {
@@ -8,8 +17,8 @@ class FixedBookingsManagerApi {
     });
   }
 
-  public getFixedBookings(): Promise<any> {
-    return HttpService.get(`/fixedBookings`);
+  public getFixedBookings(queryPar?: string): Promise<FixedBookingDTO[]> {
+    return HttpService.get(`/fixedBookings?sortBy=${queryPar}`);
   }
 
   public updateFixedBookings(body: BookingDetailsType): Promise<any> {

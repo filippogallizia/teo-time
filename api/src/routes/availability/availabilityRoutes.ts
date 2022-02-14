@@ -1,5 +1,7 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 
+import AvailabilitiesService from '../../services/availabilityService/AvailabilitiesService';
+import { ErrorService } from '../../services/errorService/ErrorService';
 import { ResponseWithAvalType } from '../interfaces/interfaces';
 
 const db = require('../../database/models/db');
@@ -19,7 +21,7 @@ export default (app: Router) => {
   //TODO -> create the service
 
   AvailabilityRouter.get(
-    '/',
+    '/dynamic',
     [getAvailability],
     (req: Request, res: ResponseWithAvalType, next: NextFunction) => {
       try {
@@ -31,38 +33,11 @@ export default (app: Router) => {
   );
 
   AvailabilityRouter.put(
-    '/default',
+    '/',
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
-      const {
-        day,
-        workTimeStart,
-        workTimeEnd,
-        breakTimeStart,
-        breakTimeEnd,
-        eventDurationHours,
-        eventDurationMinutes,
-        breakTimeBtwEventsHours,
-        breakTimeBtwEventsMinutes,
-      } = req.body.workSettings;
       try {
-        await DatabaseAvailabilty.update(
-          {
-            day,
-            workTimeStart,
-            workTimeEnd,
-            breakTimeStart,
-            breakTimeEnd,
-            eventDurationHours,
-            eventDurationMinutes,
-            breakTimeBtwEventsHours,
-            breakTimeBtwEventsMinutes,
-          },
-          {
-            where: { day },
-          }
-        );
-
+        await AvailabilitiesService.update(req);
         res.send({ message: 'availabilities created!' });
       } catch (e: any) {
         next(e);
@@ -71,7 +46,7 @@ export default (app: Router) => {
   );
 
   AvailabilityRouter.get(
-    '/default',
+    '/',
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
       try {

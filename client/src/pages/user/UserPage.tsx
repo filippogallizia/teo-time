@@ -6,12 +6,12 @@ import {
   TITLE,
   USER_INFO,
 } from '../../constants/constant';
-import { handleToastInFailRequest } from '../../helpers/utils';
 import { DATE_TO_CLIENT_FORMAT } from '../../helpers/utils';
 import UserPageApi from './userPageApi/userService';
 import { toast } from 'react-toastify';
 import { BookingAndUser, TimeRangeType } from '../../../types/Types';
 import i18n from '../../i18n';
+import ToastService from '../../services/ToastService';
 
 const DeleteBooking = ({
   booking,
@@ -33,7 +33,7 @@ const DeleteBooking = ({
         toast.success('prenotazione cancellata');
       }
     } catch (e) {
-      handleToastInFailRequest(e, toast);
+      ToastService.error(e);
     }
   };
   return (
@@ -54,7 +54,7 @@ const UserPage = () => {
       const response = await UserPageApi.retriveUserBooking();
       setBookings(response);
     } catch (error) {
-      handleToastInFailRequest(error, toast);
+      ToastService.error(error);
     }
   };
 

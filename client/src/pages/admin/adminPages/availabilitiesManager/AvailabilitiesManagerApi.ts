@@ -4,13 +4,13 @@ import { DayAvalSettingsType } from './reducer';
 // TO IMPLEMENT THE CLASS
 class AvailManagerApi {
   public createDefaultAvail(body: DayAvalSettingsType): Promise<any> {
-    return HttpService.put(`/availability/default`, {
+    return HttpService.put(`/availability/`, {
       workSettings: body,
     });
   }
 
   public getDefaultAvail(): Promise<any> {
-    return HttpService.get(`/availability/default`);
+    return HttpService.get(`/availability/`);
   }
 }
 

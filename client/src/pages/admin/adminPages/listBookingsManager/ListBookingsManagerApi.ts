@@ -1,5 +1,5 @@
-import { BookingType } from '../../../types/Types';
-import HttpService from '../../services/HttpService';
+import { BookingType } from '../../../../../types/Types';
+import HttpService from '../../../../services/HttpService';
 
 export type BookingAndUsersResponse = {
   id: number;

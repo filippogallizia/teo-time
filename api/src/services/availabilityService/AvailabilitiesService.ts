@@ -1,12 +1,72 @@
+import { Request } from 'express';
+
 import { DatabaseAvailabilityType } from '../../types/types';
 import { ErrorService } from '../errorService/ErrorService';
 import { createAvalAlgoritm } from './createAvalAlgoritm/createAvalAlgoritm';
+
 const db = require('../../database/models/db');
 const DatabaseAvailabilty = db.DatabaseAvailabilty;
 
-//export default AvailabilitiesService;
+class AvailabilitiesService {
+  availabilityModel = DatabaseAvailabilty;
 
-const parseDatabaseAvailability = async (
+  public async update(req: Request): Promise<DatabaseAvailabilityType[]> {
+    try {
+      const {
+        day,
+        workTimeStart,
+        workTimeEnd,
+        breakTimeStart,
+        breakTimeEnd,
+        eventDurationHours,
+        eventDurationMinutes,
+        breakTimeBtwEventsHours,
+        breakTimeBtwEventsMinutes,
+      } = req.body.workSettings;
+
+      if (workTimeStart >= workTimeEnd) {
+        throw ErrorService.badRequest(
+          "Ora di inizio non puo' essere superiore ad ora di fine"
+        );
+      }
+
+      if (breakTimeStart >= breakTimeEnd) {
+        throw ErrorService.badRequest(
+          "Ora di inizio pausa non puo' essere superiore ad ora di fine pausa"
+        );
+      }
+
+      return await DatabaseAvailabilty.update(
+        {
+          day,
+          workTimeStart,
+          workTimeEnd,
+          breakTimeStart,
+          breakTimeEnd,
+          eventDurationHours,
+          eventDurationMinutes,
+          breakTimeBtwEventsHours,
+          breakTimeBtwEventsMinutes,
+        },
+        {
+          where: { day },
+        }
+      );
+    } catch (e) {
+      throw ErrorService.internal(e);
+    }
+  }
+
+  public async findAll(): Promise<DatabaseAvailabilityType[]> {
+    try {
+      return await this.availabilityModel.findAll();
+    } catch (e) {
+      throw ErrorService.internal(e);
+    }
+  }
+}
+
+export const parseDatabaseAvailability = async (
   availDefault: DatabaseAvailabilityType[]
 ) => {
   return await DatabaseAvailabilty.findAll()
@@ -70,4 +130,6 @@ const parseDatabaseAvailability = async (
     });
 };
 
-export default parseDatabaseAvailability;
+//export default parseDatabaseAvailability;
+
+export default new AvailabilitiesService();

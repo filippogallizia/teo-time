@@ -1,5 +1,4 @@
 import GeneralButton from '../../../../component/GeneralButton';
-import { handleToastInFailRequest } from '../../../../helpers/utils';
 
 import CardComponent from '../../components/Card';
 import { useEffect, useReducer } from 'react';
@@ -16,7 +15,7 @@ import reducer, {
 import BookDetails from './components/BookDetails';
 import FixedBookingsManagerApi from './FixedBookingsManagerApi';
 import CreateOrEditModal from './components/CreateOrEditModal';
-import { toast } from 'react-toastify';
+import ToastService from '../../../../services/ToastService';
 
 const initialState: InitialState = {
   fixedBks: [],
@@ -37,13 +36,13 @@ const initialState: InitialState = {
 
 export const fetchAndSetBks = async (dispatch: React.Dispatch<Actions>) => {
   const handleSuccess = (res: any) => {
-    res.length > 0 && dispatch({ type: SET_FIXED_BKS, payload: res });
+    dispatch({ type: SET_FIXED_BKS, payload: res });
   };
   try {
     const response = await FixedBookingsManagerApi.getFixedBookings();
     handleSuccess(response);
   } catch (error) {
-    handleToastInFailRequest(toast, error);
+    ToastService.error(error);
   }
 };
 
@@ -88,9 +87,10 @@ const FixedBksManager = () => {
         </div>
         {state.fixedBks.length > 0 &&
           state.fixedBks.map((daySettings: FixedBksType, i) => {
+            console.log(daySettings.day, 'daySettings.day');
             return (
-              <div key={`${daySettings.day}`} className="bg-gray-100">
-                <CardComponent key={daySettings.day}>
+              <div key={`${daySettings.day}ciao`} className="bg-gray-100">
+                <CardComponent>
                   <div className={`grid grid-cols-1 gap-4`}>
                     <div className="grid grid-cols-2 items-center">
                       <p>{daySettings.day}</p>

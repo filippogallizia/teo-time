@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import AdminPageApi from './AdminPageApi';
-import DetailedInfoBooking from './components/DetailedBookingInfo';
-import { MEDIUM_MARGIN_BOTTOM } from '../../constants/constant';
-import UsersTable from './components/UsersTable';
-import { ProtectedRoute } from '../general/GeneralPage';
+import AdminPageApi from './ListBookingsManagerApi';
+import DetailedInfoBooking from '../../components/DetailedBookingInfo';
+import { MEDIUM_MARGIN_BOTTOM } from '../../../../constants/constant';
+import UsersTable from '../../components/UsersTable';
+import { ProtectedRoute } from '../../../general/GeneralPage';
 import { Redirect, Switch } from 'react-router';
-import Routes from '../../routes';
+import Routes from '../../../../routes';
 import { Link } from 'react-router-dom';
-import AvalManager from './adminPages/availabilitiesManager/AvailabilitiesManager';
-import { UserType } from '../../../types/Types';
-import HolidaysManager from './adminPages/holidaysManager/HolidaysManager';
-import CardComponent from './components/Card';
-import i18n from '../../i18n';
-import FixedBksManager from './adminPages/fixedBookingsManager/FixedBookingsManager';
+import AvalManager from '../availabilitiesManager/AvailabilitiesManager';
+import { UserType } from '../../../../../types/Types';
+import HolidaysManager from '../holidaysManager/HolidaysManager';
+import CardComponent from '../../components/Card';
+import i18n from '../../../../i18n';
+import FixedBksManager from '../fixedBookingsManager/FixedBookingsManager';
+import FixedBookingsManagerApi from '../fixedBookingsManager/FixedBookingsManagerApi';
+import { DateTime } from 'luxon';
+import { mapFixedBookings } from './helpers/helpers';
 
 export const AdminNav = () => {
   return (
@@ -63,7 +66,7 @@ export const AdminNav = () => {
   );
 };
 
-const AdminPage = () => {
+const ListBookingsManager = () => {
   return (
     <div className="flex-1">
       <AdminNav />
@@ -143,8 +146,19 @@ const BookingManager = () => {
           setBookings([]);
         }
       };
-      const response = await AdminPageApi.getUsersAndBookings();
-      handleSuccess(response);
+      const bookingResponse = await AdminPageApi.getUsersAndBookings();
+      const fixedBookingResponse =
+        await FixedBookingsManagerApi.getFixedBookings('start');
+
+      const mappedFixedBooking = mapFixedBookings(fixedBookingResponse);
+
+      const allBookings = [...bookingResponse, ...mappedFixedBooking].sort(
+        //@ts-expect-error
+        (item1, item2) => item1.start > item2.start
+      );
+
+      console.log(allBookings, 'allBookings');
+      handleSuccess(allBookings);
     } catch (e) {
       console.log(e);
     }
@@ -179,4 +193,4 @@ const BookingManager = () => {
   );
 };
 
-export default AdminPage;
+export default ListBookingsManager;

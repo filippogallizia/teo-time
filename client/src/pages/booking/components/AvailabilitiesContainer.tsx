@@ -10,12 +10,10 @@ import { DateTime } from 'luxon';
 
 import { Actions, InitialState, SET_AVAL } from '../stateReducer';
 
-import EventListener from '../../../helpers/EventListener';
 import i18n from '../../../i18n';
 import BookingPageApi from '../BookingPageApi';
 import { compareAvailWithCurrentHour } from '../helpers/helpers';
-import { handleToastInFailRequest } from '../../../helpers/utils';
-import { toast } from 'react-toastify';
+import ToastService from '../../../services/ToastService';
 
 type BookSlotContainerType = {
   state: InitialState;
@@ -62,8 +60,7 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
         handleSuccess(response);
       } catch (e: any) {
         //EventListener.emit('errorHandling', e.response);
-        console.log(e, 'ciaoooooo');
-        handleToastInFailRequest(e, toast);
+        ToastService.error(e);
       }
     };
     funcAsync();

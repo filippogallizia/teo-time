@@ -1,7 +1,6 @@
 import { DateTime } from 'luxon';
 
 import { HrsAndMinsType, TimeRangeType } from '../../../types/types';
-import { ErrorService } from '../../errorService/ErrorService';
 
 /**
  * this function create aval slots given the following inputs
@@ -37,14 +36,6 @@ export const createAvalAlgoritm = (
 
     // general validations on dayStart end dayEnd
 
-    if (dayStart > dayEnd) {
-      console.log('herer');
-      throw ErrorService.badRequest(
-        "Ora di inizio non puo' essere superiore ad ora di fine"
-      );
-      //return [];
-    }
-
     if (dayStart >= breakStart && dayEnd <= breakEnd) {
       return [];
     }
@@ -74,6 +65,7 @@ export const createAvalAlgoritm = (
     return fn();
   };
   fn();
+
   return bucket.map((obj: { start: DateTime; end: DateTime }) => {
     return {
       start: obj.start.toUTC().toISO(),
