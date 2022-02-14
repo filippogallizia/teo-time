@@ -4,13 +4,14 @@ import Routes from '../../routes';
 import HomePage from '../home/HomePage';
 import UserPage from '../user/UserPage';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
-import AdminPage from '../admin/adminPages/listBookingsManager/ListBookingsManager';
+
 import {
   SelfCenterLayout,
   SelfTopLayout,
 } from '../../component/GeneralLayouts';
 import BookingRouter from '../booking/BookingRouter';
 import SessionService from '../../services/SessionService';
+import AdminRouter from '../admin/adminPages/adminRouter/AdminRouter';
 
 type ProtectedRouteType = {
   children: any;
@@ -68,7 +69,7 @@ const GeneralPage = () => {
           condition={token && user && user.role === 'admin' ? true : false}
           altRoute={Routes.LOGIN}
         >
-          <AdminPage />
+          <AdminRouter />
         </ProtectedRoute>
 
         <ProtectedRoute
