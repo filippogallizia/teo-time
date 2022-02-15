@@ -21,6 +21,7 @@
     "i18next": "^21.3.3",
     "immer": "^9.0.6",
     "luxon": "^2.0.2",
+    "npm-force-resolutions": "0.0.10",
     "react": "^17.0.2",
     "react-calendar": "^3.4.0",
     "react-date-picker": "^8.4.0",
@@ -42,11 +43,15 @@
     "web-vitals": "^1.0.1",
     "yup": "^0.32.11"
   },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
+  },
   "scripts": {
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
+    "preinstall": "npx npm-force-resolutions",
     "build-and-run": "npm run build && serve -s ./build -p 3002"
   },
   "eslintConfig": {
@@ -70,6 +75,7 @@
   "devDependencies": {
     "@types/luxon": "^2.0.5",
     "@types/react-calendar": "^3.4.3",
+    "react-error-overlay": "6.0.9",
     "@types/react-datepicker": "^4.1.7",
     "@types/react-router-dom": "^5.3.1",
     "@types/react-table": "^7.7.7",

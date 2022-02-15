@@ -9,7 +9,6 @@ import { parseHoursToObject } from '../../helpers/utils';
 import { BookingComponentType } from '../booking/BookingPageTypes';
 import { SET_CONFIRM_PHASE, SET_RENDER_AVAL } from '../booking/stateReducer';
 import i18n from '../../i18n';
-import { toast } from 'react-toastify';
 import InfoBooking from '../admin/components/InfoBooking';
 import { HrsAndMinsType } from '../../../types/Types';
 //import { googleCalendarInsertEvent } from '../auth/AuthApi/LoginService';

@@ -57,18 +57,27 @@ export const bookExist = async (
   const endRange = req.body.end;
   try {
     const bookings = await Promise.all([
-      bookingService.findAll(
-        bookingService.queryDates.inBtwStartAndEnd(startRange, endRange)
-      ),
-      bookingService.findAll(
-        bookingService.queryDates.inBtwStartAndSmallerEnd(startRange, endRange)
-      ),
-      bookingService.findAll(
-        bookingService.queryDates.smallerStartAndBiggerEnd(startRange, endRange)
-      ),
-      bookingService.findAll(
-        bookingService.queryDates.smallerStartInBtwEnd(startRange, endRange)
-      ),
+      bookingService.findAll({
+        where: bookingService.queryDates.inBtwStartAndEnd(startRange, endRange),
+      }),
+      bookingService.findAll({
+        where: bookingService.queryDates.inBtwStartAndSmallerEnd(
+          startRange,
+          endRange
+        ),
+      }),
+      bookingService.findAll({
+        where: bookingService.queryDates.smallerStartAndBiggerEnd(
+          startRange,
+          endRange
+        ),
+      }),
+      bookingService.findAll({
+        where: bookingService.queryDates.smallerStartInBtwEnd(
+          startRange,
+          endRange
+        ),
+      }),
     ]);
 
     if (bookings.flat().length > 0) {
@@ -100,18 +109,18 @@ const getAvailability = async (
     const end = avalRange[0].end;
 
     const bookings = await Promise.all([
-      bookingService.findAll(
-        bookingService.queryDates.inBtwStartAndEnd(start, end)
-      ),
-      bookingService.findAll(
-        bookingService.queryDates.inBtwStartAndSmallerEnd(start, end)
-      ),
-      bookingService.findAll(
-        bookingService.queryDates.smallerStartAndBiggerEnd(start, end)
-      ),
-      bookingService.findAll(
-        bookingService.queryDates.smallerStartInBtwEnd(start, end)
-      ),
+      bookingService.findAll({
+        where: bookingService.queryDates.inBtwStartAndEnd(start, end),
+      }),
+      bookingService.findAll({
+        where: bookingService.queryDates.inBtwStartAndSmallerEnd(start, end),
+      }),
+      bookingService.findAll({
+        where: bookingService.queryDates.smallerStartAndBiggerEnd(start, end),
+      }),
+      bookingService.findAll({
+        where: bookingService.queryDates.smallerStartInBtwEnd(start, end),
+      }),
     ]);
 
     /**

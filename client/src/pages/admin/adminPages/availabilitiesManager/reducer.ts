@@ -1,6 +1,5 @@
 import produce from 'immer';
 import { ChangeEvent } from 'react';
-import { HrsAndMinsType, TimeRangeType } from '../../../../../types/Types';
 
 export type DayAvalSettingsType = {
   breakTimeBtwEventsHours: string;

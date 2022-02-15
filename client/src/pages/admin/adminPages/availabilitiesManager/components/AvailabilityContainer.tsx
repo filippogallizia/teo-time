@@ -1,11 +1,9 @@
 import GeneralButton from '../../../../../component/GeneralButton';
 import { BOLD, ITALIC } from '../../../../../constants/constant';
 import i18n from '../../../../../i18n';
-import HourPicker from '../../fixedBookingsManager/components/HourPicker';
 import {
   Actions,
   DayAvalSettingsType,
-  EDIT_SELECTED_DAY,
   InitialState,
   MODAL,
   SET_SELECTED_DAY,

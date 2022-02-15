@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { includes } from 'lodash';
 import { Op } from 'sequelize';
 
 import { BookingModel } from '../../database/models/booking.model';
@@ -80,24 +81,20 @@ class BookingService {
     }
   }
 
-  public async findAll(
-    searchParam?: Record<string, unknown>,
-    isInclude?: boolean
-  ): Promise<BookingModel & { user?: any; userId: number }[]> {
+  public async findAll(param?: {
+    include?: Record<string, unknown>;
+    where?: Record<string, unknown>;
+    order?: any[];
+  }): Promise<BookingModel & { user?: any; userId: number }[]> {
     try {
-      if (searchParam && !isInclude) {
-        return await this.bookingModel.findAll({
-          where: { ...searchParam },
-        });
-      }
-      if (searchParam && isInclude) {
-        /**
-          todo: add logic of include here
-         */
-        return await this.bookingModel.findAll({
-          ...searchParam,
-        });
-      } else return await this.bookingModel.findAll();
+      const parameters = {
+        include: param?.include,
+        where: param?.where,
+        order: param?.order,
+      };
+      const optionalParameters =
+        Object.keys(parameters).length > 0 ? parameters : undefined;
+      return await this.bookingModel.findAll(optionalParameters);
     } catch (e) {
       throw ErrorService.internal(e);
     }

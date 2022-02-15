@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
+import { Op } from 'sequelize';
 
 import GoogleCalendarService, {
   deleteEvent,
@@ -8,6 +9,7 @@ import bookingService from '../../services/bookingService/BookingService';
 import { ErrorService } from '../../services/errorService/ErrorService';
 import userService from '../../services/userService/UserService';
 import { ResponseWithUserType } from '../interfaces/interfaces';
+import { requestHasPassword } from './middleware/bookingMiddleware';
 
 const { authenticateToken, bookExist } = require('../../middleware/middleware');
 const db = require('../../database/models/db');
@@ -104,20 +106,11 @@ export default (app: Router) => {
 
   BookingRouter.get(
     '/users',
-    [authenticateToken],
+    [authenticateToken, requestHasPassword],
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const bks = await bookingService.findAll(
-          {
-            include: {
-              model: User,
-              as: 'user',
-            },
-            order: [['start', 'DESC']],
-          },
-          true
-        );
-
+        //@ts-expect-error
+        const bks = res.bks;
         res.send(bks);
       } catch (e: any) {
         next(e);

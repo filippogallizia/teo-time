@@ -1,10 +1,5 @@
 import HourPicker from '../../fixedBookingsManager/components/HourPicker';
-import {
-  Actions,
-  DayAvalSettingsType,
-  EDIT_SELECTED_DAY,
-  InitialState,
-} from '../reducer';
+import { Actions, DayAvalSettingsType, EDIT_SELECTED_DAY } from '../reducer';
 
 type Props = {
   dispatch: React.Dispatch<Actions>;

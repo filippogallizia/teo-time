@@ -87,7 +87,6 @@ const FixedBksManager = () => {
         </div>
         {state.fixedBks.length > 0 &&
           state.fixedBks.map((daySettings: FixedBksType, i) => {
-            console.log(daySettings.day, 'daySettings.day');
             return (
               <div key={`${daySettings.day}ciao`} className="bg-gray-100">
                 <CardComponent>

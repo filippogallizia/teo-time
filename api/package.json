@@ -27,7 +27,6 @@
     "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-import": "^2.25.3",
     "import-sort-style-module": "^6.0.0",
-    "jest": "^27.4.7",
     "mocha": "^9.1.4",
     "prettier": "^2.5.0",
     "prettier-plugin-import-sort": "0.0.7",

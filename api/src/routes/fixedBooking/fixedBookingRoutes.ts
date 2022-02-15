@@ -22,7 +22,9 @@ export default (app: Router) => {
     '/',
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
-      const sortBy = req.params.sortBy;
+      const sortBy = req.query.sortBy;
+
+      console.log(sortBy, 'sortBy');
 
       const sortValue =
         sortBy !== undefined ? { order: [[sortBy, 'DESC']] } : undefined;
