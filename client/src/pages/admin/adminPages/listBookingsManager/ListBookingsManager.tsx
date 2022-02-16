@@ -1,14 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import AdminPageApi from './ListBookingsManagerApi';
 import { UserType } from '../../../../../types/Types';
-import i18n from '../../../../i18n';
-import FixedBookingsManagerApi from '../fixedBookingsManager/FixedBookingsManagerApi';
-import { mapFixedBookings } from './helpers/helpers';
+import FixedBookingsManagerApi, {
+  FixedBookingDTO,
+} from '../fixedBookingsManager/FixedBookingsManagerApi';
+import {
+  createFixedBoookingForAllYear,
+  createStartAndEndDate,
+  filterJustFutureDates,
+  giveDateToFixBooking,
+} from './helpers/helpers';
 import { Column } from 'react-table';
 import Table from '../../components/table/Table';
 import ToastService from '../../../../services/ToastService';
 import { DateTime } from 'luxon';
 import DatePicker from 'react-date-picker';
+import {
+  DATE_TO_DAY_FORMAT,
+  SET_DATE_TO_MIDNIGHT,
+} from '../../../../helpers/utils';
 
 export type BookingsAndUsersType = {
   id: number;
@@ -16,32 +26,14 @@ export type BookingsAndUsersType = {
   end: string;
   userId: number;
   user: UserType;
-}[];
-
-const createStartAndEndDate = (date: Date) => {
-  return {
-    startDate: DateTime.fromJSDate(date)
-      .set({
-        hour: 0,
-        minute: 0,
-        millisecond: 0,
-      })
-      .toJSDate(),
-    endDate: DateTime.fromJSDate(date)
-      .set({
-        hour: 23,
-        minute: 0,
-        millisecond: 0,
-      })
-      .toJSDate(),
-  };
 };
 
 const ListBookingsManager = () => {
-  const [bookings, setBookings] = useState<BookingsAndUsersType>([]);
+  const [bookings, setBookings] = useState<
+    Array<BookingsAndUsersType | FixedBookingDTO>
+  >([]);
+  const [fixedBookings, setFixedBookings] = useState<FixedBookingDTO[]>([]);
   const [filterData, setFilterData] = useState<Date>();
-
-  const startEnd = filterData && createStartAndEndDate(filterData);
 
   const fetchAndSetBookings = async () => {
     try {
@@ -52,20 +44,35 @@ const ListBookingsManager = () => {
           setBookings([]);
         }
       };
+
+      /**
+       * fetch dynamic bookings with filters.
+       */
       const bookingResponse = await AdminPageApi.getUsersAndBookings({
-        startDate: filterData && createStartAndEndDate(filterData).startDate,
-        endDate: filterData && createStartAndEndDate(filterData).endDate,
+        start: filterData && createStartAndEndDate(filterData).start,
+        end: filterData && createStartAndEndDate(filterData).end,
       });
 
-      const fixedBookingResponse =
-        await FixedBookingsManagerApi.getFixedBookings('start');
+      /**
+       * if user filters, then filter fixedBookings
+       */
+      let final = fixedBookings;
 
-      const mappedFixedBooking = mapFixedBookings(fixedBookingResponse);
+      if (filterData) {
+        final = fixedBookings.filter((day) => {
+          const filterDataToString = DateTime.fromJSDate(filterData).toString();
+          return (
+            SET_DATE_TO_MIDNIGHT(day.start) ===
+            SET_DATE_TO_MIDNIGHT(filterDataToString)
+          );
+        });
+      }
 
-      const allBookingsSorted = [...bookingResponse, ...mappedFixedBooking]
-        .filter((item) => {
-          return new Date(item.start) >= new Date();
-        })
+      /**
+       * here we filter for future dates and sort them in crescent order
+       */
+      const allBookingsSorted = [...bookingResponse, ...final]
+        .filter((item) => filterJustFutureDates(item.start))
         .sort((item1, item2) => {
           //@ts-expect-error
           return new Date(item1.start) - new Date(item2.start);
@@ -80,9 +87,42 @@ const ListBookingsManager = () => {
   //TODO -> delete past bookings
 
   useEffect(() => {
+    const asyncFn = async () => {
+      /**
+       * get fixed bookings
+       */
+      const fixedBookingResponse =
+        await FixedBookingsManagerApi.getFixedBookings();
+
+      /**
+       * fixedBooking comes with no date but just dayName => day: Monday
+       * get the next 7 days from now and match them with fixedBooking's day
+       * map fixedBooking with the new date retrived with new time.
+       */
+      const fixedBkgsWithCompleteDate =
+        giveDateToFixBooking(fixedBookingResponse);
+
+      /**
+       * create  fixedBookingYearList and filter for exceptionDate
+       */
+      let fixedBookingYearList = createFixedBoookingForAllYear(
+        fixedBkgsWithCompleteDate
+      ).filter((bkg) => {
+        return (
+          DATE_TO_DAY_FORMAT(bkg.start) !==
+          DATE_TO_DAY_FORMAT(bkg.exceptionDate)
+        );
+      });
+
+      setFixedBookings(fixedBookingYearList);
+    };
+    asyncFn();
+  }, []);
+
+  useEffect(() => {
     fetchAndSetBookings();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterData]);
+  }, [filterData, fixedBookings]);
 
   const columns: readonly Column<{
     col1: string | undefined;
@@ -108,11 +148,10 @@ const ListBookingsManager = () => {
 
   const data = React.useMemo(() => {
     return bookings
-      .map((book) => {
-        console.log(book?.user?.name, 'book?.user?.name');
+      .map((book: any) => {
         return {
-          col1: DateTime.fromISO(book.start).toFormat('LLL dd t'),
-          col2: book?.user?.name ?? 'No name',
+          col1: DateTime.fromISO(book?.start).toFormat('LLL dd t'),
+          col2: book?.user?.name ?? book?.email,
           col3: book?.user?.phoneNumber ?? 'No tel',
         };
       })

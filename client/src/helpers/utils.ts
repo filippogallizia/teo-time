@@ -21,6 +21,18 @@ export const DATE_TO_DAY_FORMAT = (date: string) => {
   return DateTime.fromISO(date).toFormat('yyyy LLL dd');
 };
 
+export const SET_DATE_TO_MIDNIGHT = (date: string) => {
+  return DateTime.fromISO(date)
+    .set({
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+    })
+    .toUTC()
+    .toString();
+};
+
 export const TODAY_AT_MIDNIGHT = () => {
   return DateTime.fromJSDate(new Date()).set({
     hour: 0,

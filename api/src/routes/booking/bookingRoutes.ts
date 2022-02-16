@@ -9,7 +9,7 @@ import bookingService from '../../services/bookingService/BookingService';
 import { ErrorService } from '../../services/errorService/ErrorService';
 import userService from '../../services/userService/UserService';
 import { ResponseWithUserType } from '../interfaces/interfaces';
-import { requestHasPassword } from './middleware/bookingMiddleware';
+import { filterBookings } from './middleware/bookingMiddleware';
 
 const { authenticateToken, bookExist } = require('../../middleware/middleware');
 const db = require('../../database/models/db');
@@ -106,7 +106,7 @@ export default (app: Router) => {
 
   BookingRouter.get(
     '/users',
-    [authenticateToken, requestHasPassword],
+    [authenticateToken, filterBookings],
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         //@ts-expect-error

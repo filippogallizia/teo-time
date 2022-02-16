@@ -5,8 +5,7 @@ import {
   useGlobalFilter,
   usePagination,
 } from 'react-table';
-import GeneralButton from '../../../../component/GeneralButton';
-import Select from '../../../../component/Select';
+
 import PaginationButton from './components/PaginationButton';
 
 const Table = ({ columns, data }: any) => {

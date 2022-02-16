@@ -17,8 +17,10 @@ class FixedBookingsManagerApi {
     });
   }
 
-  public getFixedBookings(queryPar?: string): Promise<FixedBookingDTO[]> {
-    return HttpService.get(`/fixedBookings?sortBy=${queryPar}`);
+  public getFixedBookings(
+    criteria?: Partial<FixedBookingDTO>
+  ): Promise<FixedBookingDTO[]> {
+    return HttpService.get(`/fixedBookings`);
   }
 
   public updateFixedBookings(body: BookingDetailsType): Promise<any> {

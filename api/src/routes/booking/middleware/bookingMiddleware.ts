@@ -7,17 +7,17 @@ const db = require('../../../database/models/db');
 
 const User = db.user;
 
-export const requestHasPassword = async (
+export const filterBookings = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { start, end } = req.query;
 
     let bks;
 
-    if (startDate && endDate) {
+    if (start && end) {
       bks = await bookingService.findAll({
         include: {
           model: User,
@@ -25,10 +25,10 @@ export const requestHasPassword = async (
         },
         where: {
           end: {
-            [Op.lte]: endDate,
+            [Op.lte]: end,
           },
           start: {
-            [Op.gte]: startDate,
+            [Op.gte]: start,
           },
         },
       });

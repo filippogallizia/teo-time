@@ -6,9 +6,6 @@ import { FixedBookingDTO } from './interfaces';
 const db = require('../../database/models/db');
 
 export type RecordType = FixedBookingDTO;
-type Props = {
-  searchParam: any;
-};
 
 //TODO -> IMPLEMENT VALIDATION FOR NOT HAVING DOUBLE BOOKING SAME HOUR
 
@@ -41,18 +38,21 @@ class FixedBookingService {
   }
 
   public async findAll(param?: {
-    searchParam?: any;
-    sortRule?: any;
+    include?: Record<string, unknown>;
+    where?: Record<string, unknown>;
+    order?: any[];
   }): Promise<FixedBookingDTO[]> {
     try {
-      if (param && param.searchParam) {
-        return await this.fixedBookingsModel.findAll({
-          where: { ...param.searchParam },
-        });
-      }
-      if (param && param.sortRule) {
-        return await this.fixedBookingsModel.findAll(param.sortRule);
-      } else return await this.fixedBookingsModel.findAll();
+      const parameters = {
+        include: param?.include,
+        where: param?.where,
+        order: param?.order,
+      };
+
+      const optionalParameters =
+        Object.keys(parameters).length > 0 ? parameters : undefined;
+
+      return await this.fixedBookingsModel.findAll(optionalParameters);
     } catch (e) {
       throw ErrorService.internal(e);
     }

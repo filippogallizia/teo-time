@@ -16,13 +16,11 @@ export type GetHolidayResponseType = BookingType[];
 
 type Criteria = {
   id?: number;
-  start?: string;
-  end?: string;
   isHoliday?: boolean;
   localId?: number;
   userId?: number;
-  startDate?: Date;
-  endDate?: Date;
+  start?: string;
+  end?: string;
 };
 
 class AdminPageApi {
@@ -30,7 +28,7 @@ class AdminPageApi {
     criteria?: Criteria,
     page?: number,
     size?: number
-  ): Promise<any> {
+  ): Promise<BookingAndUsersResponse[]> {
     return HttpService.get(`/bookings/users`, {
       page,
       size,

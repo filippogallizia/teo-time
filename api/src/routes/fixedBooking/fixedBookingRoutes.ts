@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 
 import { ErrorService } from '../../services/errorService/ErrorService';
-import FixedBookingService from '../../services/fixedBookingService/FixedBookingService';
+import fixedBookingService from '../../services/fixedBookingService/FixedBookingService';
 
 //const db = require('../../database/models/db');
 
@@ -22,18 +22,9 @@ export default (app: Router) => {
     '/',
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
-      const sortBy = req.query.sortBy;
-
-      console.log(sortBy, 'sortBy');
-
-      const sortValue =
-        sortBy !== undefined ? { order: [[sortBy, 'DESC']] } : undefined;
-
       try {
-        const data = await FixedBookingService.findAll({
-          sortRule: sortValue,
-        });
-        res.send(data);
+        const bks = await fixedBookingService.findAll();
+        res.send(bks);
       } catch (e: any) {
         next(e);
       }
@@ -45,7 +36,7 @@ export default (app: Router) => {
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        await FixedBookingService.create(req);
+        await fixedBookingService.create(req);
         res.send({ message: 'fixedBookings created!' });
       } catch (e: any) {
         next(e);
@@ -61,7 +52,7 @@ export default (app: Router) => {
         /**
          * destroy method returns 0 if it doesnt find the item, otherwise it returns 1
          */
-        const booking = await FixedBookingService.destroy(req);
+        const booking = await fixedBookingService.destroy(req);
         // if there is no booking return error
         if (!booking) {
           next(ErrorService.badRequest('Booking not found'));
@@ -83,7 +74,7 @@ export default (app: Router) => {
         /**
          * update method returns 0 if it doesnt find the item, otherwise it returns 1
          */
-        const isUpdated = await FixedBookingService.update(req);
+        const isUpdated = await fixedBookingService.update(req);
         if (!isUpdated) {
           next(ErrorService.badRequest('Booking not found'));
           return;

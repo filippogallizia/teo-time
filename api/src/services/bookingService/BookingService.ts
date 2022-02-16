@@ -92,8 +92,10 @@ class BookingService {
         where: param?.where,
         order: param?.order,
       };
+
       const optionalParameters =
         Object.keys(parameters).length > 0 ? parameters : undefined;
+
       return await this.bookingModel.findAll(optionalParameters);
     } catch (e) {
       throw ErrorService.internal(e);
