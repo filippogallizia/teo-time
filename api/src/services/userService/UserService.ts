@@ -55,7 +55,10 @@ class UserService {
   }
 
   public getRole(email: string) {
-    return email === 'galliziafilippo@gmail.com' ? 'admin' : 'user';
+    return email === process.env.SECOND_ADMIN_EMAIL ||
+      email === process.env.ADMIN_EMAIL
+      ? 'admin'
+      : 'user';
   }
 
   public async create(userInput: {

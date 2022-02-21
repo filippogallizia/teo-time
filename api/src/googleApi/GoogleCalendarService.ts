@@ -1,5 +1,4 @@
 const { google } = require('googleapis');
-require('dotenv').config();
 
 // insert calendar events using a service account authentication
 
@@ -15,16 +14,16 @@ const calendar = google.calendar({ version: 'v3' });
 
 const auth = new google.auth.JWT(client_email, null, private_key, SCOPES);
 
-const calendarId =
-  process.env.GOOGLE_CALENDAR_ID || 'galliziafilippo@gmail.com';
+//TODO => put the below id in .env file
+
+const calendarId = process.env.GOOGLE_CALENDAR_ID || undefined;
 
 class GoogleCalendarService {
   event: any;
 
   constructor(userEmail: string, start: string, end: string) {
     this.event = {
-      summary: process.env.EVENT_TYPE,
-      location: process.env.EVENT_LOCATION,
+      summary: userEmail,
       description: `${process.env.EVENT_DESCRIPTION} con ${userEmail}`,
       organizer: {
         email: process.env.ADMIN_EMAIL,

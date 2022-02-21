@@ -11,7 +11,6 @@ type SelectType = {
 };
 
 export default function Select({ options, value, onChange }: SelectType) {
-  console.log(value, 'value');
   return (
     <div className="w-72 top-16 z-20">
       <Listbox value={value} onChange={onChange}>

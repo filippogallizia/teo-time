@@ -2,6 +2,7 @@ import GeneralButton from '../../../../component/GeneralButton';
 
 import CardComponent from '../../components/Card';
 import { useEffect, useReducer } from 'react';
+import { AiFillEdit } from 'react-icons/ai';
 
 import reducer, {
   Actions,
@@ -88,45 +89,56 @@ const FixedBksManager = () => {
         {state.fixedBks.length > 0 &&
           state.fixedBks.map((daySettings: FixedBksType, i) => {
             return (
-              <div key={`${daySettings.day}ciao`} className="bg-gray-100">
+              <div key={`${daySettings.day}ciao`}>
                 <CardComponent>
                   <div className={`grid grid-cols-1 gap-4`}>
                     <div className="grid grid-cols-2 items-center">
                       <p>{daySettings.day}</p>
                     </div>
                     {daySettings.bookings.map((bks, i) => {
+                      const isLastItem = i === daySettings.bookings.length - 1;
+
                       return (
-                        <div
-                          key={`${bks.id}${bks.email}${bks.start}${bks.end}`}
-                          className=" py-2 flex flex-col gap-4 b"
-                        >
-                          <p>Appuntamento: {i + 1}</p>
-                          <BookDetails
-                            state={state}
-                            disabled={true}
-                            dispatch={dispatch}
-                            bks={bks}
-                          />
-                          <GeneralButton
-                            buttonText="edit"
-                            onClick={() => {
-                              dispatch({
-                                type: EDIT_BOOKING_DETAILS,
-                                payload: {
-                                  bookingDetails: bks,
-                                },
-                              });
-                              dispatch({
-                                type: MODAL,
-                                payload: {
-                                  modal: {
-                                    isOpen: true,
-                                    mode: 'EDIT',
-                                  },
-                                },
-                              });
-                            }}
-                          />
+                        <div>
+                          <div
+                            key={`${bks.id}${bks.email}${bks.start}${bks.end}`}
+                            className=" py-2 flex justify-between"
+                          >
+                            <div className="flex flex-col gap-4">
+                              <p>Appuntamento: {i + 1}</p>
+                              <BookDetails
+                                state={state}
+                                disabled={true}
+                                dispatch={dispatch}
+                                bks={bks}
+                              />
+                            </div>
+                            <div className="cursor-pointer">
+                              <AiFillEdit
+                                //buttonText="edit"
+                                onClick={() => {
+                                  dispatch({
+                                    type: EDIT_BOOKING_DETAILS,
+                                    payload: {
+                                      bookingDetails: bks,
+                                    },
+                                  });
+                                  dispatch({
+                                    type: MODAL,
+                                    payload: {
+                                      modal: {
+                                        isOpen: true,
+                                        mode: 'EDIT',
+                                      },
+                                    },
+                                  });
+                                }}
+                              />
+                            </div>
+                          </div>
+                          {!isLastItem && (
+                            <hr className="border-2 border-yellow-500 mt-4" />
+                          )}
                         </div>
                       );
                     })}

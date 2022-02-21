@@ -81,7 +81,6 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
     case EDIT_SELECTED_DAY:
       return produce(initialState, (draft) => {
         const inputName = action.payload.target.id.split('.')[0];
-        console.log(inputName, 'inputid');
         //@ts-expect-error
         draft.selectedDay[inputName] = action.payload.target.value;
       });
@@ -97,5 +96,3 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
 };
 
 export default stateReducer;
-
-//export const EDIT_SELECTED_AVAL_SETTINGS = 'EDIT_SELECTED_AVAL_SETTINGS';

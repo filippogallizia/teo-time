@@ -1,21 +1,18 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
-import { Op } from 'sequelize';
+import { DateTime } from 'luxon';
 
 import GoogleCalendarService, {
   deleteEvent,
   getEvents,
 } from '../../googleApi/GoogleCalendarService';
 import bookingService from '../../services/bookingService/BookingService';
+import EmailService from '../../services/emailService/EmailService';
 import { ErrorService } from '../../services/errorService/ErrorService';
 import userService from '../../services/userService/UserService';
 import { ResponseWithUserType } from '../interfaces/interfaces';
 import { filterBookings } from './middleware/bookingMiddleware';
 
 const { authenticateToken, bookExist } = require('../../middleware/middleware');
-const db = require('../../database/models/db');
-
-const User = db.user;
-
 const BookingRouter = express.Router();
 
 export default (app: Router) => {
@@ -53,13 +50,14 @@ export default (app: Router) => {
             end
           );
           // INSERT  CALENDAR EVENTS
-          //await googleCalendarService.insertEvent();
+          await googleCalendarService.insertEvent();
 
           // send email to client and admin
-          //await EmailService.sendEmail(
-          //  userEmail,
-          //  DateTime.fromISO(booking.start).toFormat('yyyy LLL dd t')
-          //);
+          const emailBody = EmailService.getConfirmationEmailBody(
+            userEmail,
+            DateTime.utc(booking.start).toFormat('yyyy LLL dd t').toString()
+          );
+          await EmailService.sendEmail(emailBody);
 
           // send booking to client
           res.status(200).send(booking);
@@ -70,12 +68,6 @@ export default (app: Router) => {
       }
     }
   );
-  BookingRouter.get(
-    '/',
-    async (req: Request, res: ResponseWithUserType, next: NextFunction) => {
-      res.send('ciao');
-    }
-  );
 
   BookingRouter.delete(
     '/',
@@ -83,20 +75,34 @@ export default (app: Router) => {
     async (req: Request, res: ResponseWithUserType, next: NextFunction) => {
       const { start, end } = req.body;
       try {
-        const bks = await bookingService.findOne(req);
-        if (bks) {
-          await bks.destroy();
-          // find the corresponding event on google calendar
-          const events = await getEvents(start, end);
-          // if the event exists, delete it
-          if (events.length > 0) {
-            await deleteEvent(events[0].id).catch((err) => {
-              console.log(err);
-            });
-          }
-          res.status(200).send('Booking deleted');
+        if (!res.user) {
+          next(
+            ErrorService.badRequest(
+              'Use is missing, you are not loggein in probably'
+            )
+          );
         } else {
-          throw ErrorService.badRequest('Booking not found');
+          const userEmail = res.user.email;
+          const bks = await bookingService.findOne(req);
+          if (bks) {
+            await bks.destroy();
+            // find the corresponding event on google calendar
+            const events = await getEvents(start, end);
+            // if the event exists, delete it
+            if (events.length > 0) {
+              await deleteEvent(events[0].id).catch((err) => {
+                console.log(err);
+              });
+            }
+            const emailBody = EmailService.getDeleteEmailBody(
+              userEmail,
+              DateTime.fromISO(start).toFormat('yyyy LLL dd t').toString()
+            );
+            await EmailService.sendEmail(emailBody);
+            res.status(200).send('Booking deleted');
+          } else {
+            throw ErrorService.badRequest('Booking not found');
+          }
         }
       } catch (e: any) {
         next(e);

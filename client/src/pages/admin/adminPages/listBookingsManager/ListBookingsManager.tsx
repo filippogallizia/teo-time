@@ -19,6 +19,8 @@ import {
   DATE_TO_DAY_FORMAT,
   SET_DATE_TO_MIDNIGHT,
 } from '../../../../helpers/utils';
+import { toast } from 'react-toastify';
+import { AiFillDelete } from 'react-icons/ai';
 
 export type BookingsAndUsersType = {
   id: number;
@@ -34,6 +36,25 @@ const ListBookingsManager = () => {
   >([]);
   const [fixedBookings, setFixedBookings] = useState<FixedBookingDTO[]>([]);
   const [filterData, setFilterData] = useState<Date>();
+
+  const handleDelete = async (
+    selectedBook: BookingsAndUsersType | FixedBookingDTO
+  ) => {
+    try {
+      // eslint-disable-next-line no-restricted-globals
+      let isConfirmed = confirm('Sicuro di volere cancellare?');
+      if (isConfirmed) {
+        await AdminPageApi.deleteBooking({
+          start: selectedBook.start,
+          end: selectedBook.end,
+        });
+        fetchAndSetBookings();
+        toast.success('prenotazione cancellata');
+      }
+    } catch (e) {
+      ToastService.error(e);
+    }
+  };
 
   const fetchAndSetBookings = async () => {
     try {
@@ -128,6 +149,7 @@ const ListBookingsManager = () => {
     col1: string | undefined;
     col2: string | undefined;
     col3: string | undefined;
+    col4: string | undefined;
   }>[] = React.useMemo(
     () => [
       {
@@ -135,12 +157,16 @@ const ListBookingsManager = () => {
         accessor: 'col1', // accessor is the "key" in the data
       },
       {
-        Header: 'Cliente',
+        Header: 'Email',
         accessor: 'col2',
       },
       {
         Header: 'Tel',
         accessor: 'col3',
+      },
+      {
+        Header: 'Delete',
+        accessor: 'col4',
       },
     ],
     []
@@ -151,11 +177,23 @@ const ListBookingsManager = () => {
       .map((book: any) => {
         return {
           col1: DateTime.fromISO(book?.start).toFormat('LLL dd t'),
-          col2: book?.user?.name ?? book?.email,
+          col2: book?.user?.email ?? book?.email,
           col3: book?.user?.phoneNumber ?? 'No tel',
+          col4: (
+            <div className="cursor-pointer">
+              {!Object.keys(book).includes('exceptionDate') && (
+                <AiFillDelete
+                  onClick={() => {
+                    handleDelete(book);
+                  }}
+                />
+              )}
+            </div>
+          ),
         };
       })
       .flat(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookings]);
 
   return (

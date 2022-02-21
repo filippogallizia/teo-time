@@ -35,7 +35,6 @@ const Table = ({ columns, data }: any) => {
     pageSize,
     state,
   } = objectTable as any;
-  console.log(pageSize, 'pagesize');
 
   return (
     <div className="max-w-sm md:max-w-none">

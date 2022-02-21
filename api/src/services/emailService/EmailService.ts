@@ -1,14 +1,11 @@
 import { EmailData } from '@sendgrid/helpers/classes/email-address';
 import sgMail from '@sendgrid/mail';
 
-console.log(process.env.ADMIN_EMAIL, 'process.env.ADMIN_EMAIL');
 class EmailService {
-  async sendEmail(emailAddress: string, bookDate?: string): Promise<any> {
+  async sendEmail(emailBody?: any): Promise<any> {
     // eslint-disable-next-line no-useless-catch
     try {
-      return await sgMail.send(
-        this.createBodyConfirmBkg(emailAddress, bookDate)
-      );
+      return await sgMail.send(emailBody);
     } catch (e) {
       throw e;
     }
@@ -25,29 +22,57 @@ class EmailService {
     return emailBody;
   }
 
-  createBodyConfirmBkg(emailAddress: string, bookDate?: string) {
+  getConfirmationEmailBody(emailAddress: string, bookDate?: string) {
     const email = {
       to: [emailAddress],
-      //cc: process.env.ADMIN_EMAIL,
+      cc: process.env.ADMIN_EMAIL,
       from: process.env.ADMIN_EMAIL as EmailData, // Use the email address or domain you verified above
       subject: 'teo-time',
       text: 'and easy to do anywhere, even with Node.js',
       html: `
       <div style="padding: 10px; font-size: 1.1rem;">
-      <h3>
-          Il tuo appuntamento e' stato registrato con successo.
-      </h3>
-      <p style="margin-bottom: 10px;">
+      <p>
+          Il tuo appuntamento e' stato registrato con successo!
+      </p>
+      <p>
         Questi sono i dettagli:
       </p>
       <p>
-        Evento: <span style="font-weight: bold;">Trattamento osteopatico</span>
+        Evento: <span>Trattamento osteopatico</span>
       </p>
       <p>
-        Data:
-        <span style="font-weight: bold;">
-          ${bookDate}</span
+        Data: <span>${bookDate}</span
         >
+      </p>
+      <p>
+        Cordiali Saluti,
+      </p>
+      <p>
+        Osteotherapy
+      </p>
+    </div>
+    `,
+    };
+    return email;
+  }
+
+  getDeleteEmailBody(emailAddress: string, bookDate?: string) {
+    const email = {
+      to: [emailAddress],
+      cc: process.env.ADMIN_EMAIL,
+      from: process.env.ADMIN_EMAIL as EmailData, // Use the email address or domain you verified above
+      subject: 'teo-time',
+      text: 'and easy to do anywhere, even with Node.js',
+      html: `
+      <div style="padding: 10px; font-size: 1.1rem;">
+      <p>
+          Il tuo appuntamento del giorno ${bookDate} e' stato cancellato con successo, per qualsiasi chiarimento risponda a questa email.
+      </p>
+      <p>
+        Cordiali Saluti,
+      </p>
+      <p>
+        Osteotherapy
       </p>
     </div>
     `,

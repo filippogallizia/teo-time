@@ -72,7 +72,7 @@ const BookDetails = ({ bks, disabled, state, dispatch }: BookDetailsType) => {
           disabled={disabled}
           placeholder="email client"
           type="text"
-          id="clientName"
+          id="email"
           className="shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
           value={bks.email}
@@ -90,6 +90,7 @@ const BookDetails = ({ bks, disabled, state, dispatch }: BookDetailsType) => {
         />
       </div>
       <div>
+        <p className="mb-2">Eccetto</p>
         <DatePicker
           disabled={disabled}
           value={bks.exceptionDate}
