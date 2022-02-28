@@ -4,6 +4,7 @@ import cors from 'cors';
 import express from 'express';
 
 import { URL_SERVER } from './config/constants/constants';
+import { isProduction } from './config/environment/environment';
 import { runEveryDay } from './helpers/cronJobs';
 import { apiErrorHandler } from './services/errorService/ErrorService';
 
@@ -25,7 +26,7 @@ app.use((req, res, next) => {
 });
 
 db.sequelize
-  .sync({ force: false })
+  .sync({ force: isProduction ? true : false })
   .then(() => {
     // chronJob to delete past bookings
     runEveryDay(db);

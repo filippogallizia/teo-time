@@ -1,9 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useTable } from 'src/shared/hooks/useTable/useTable';
 import foto_profilo from '../../shared/images/foto_profilo.jpeg';
+
+const TableTril = () => {
+  const [state, dispatch] = useState({ perPage: 1 });
+  const table = useTable({ dispatch: dispatch, initialState: state });
+  return (
+    <div>
+      <div>{JSON.stringify(table)}</div>
+      <button
+        onClick={() => dispatch((prev) => ({ perPage: prev.perPage + 1 }))}
+        className="mr-2 border-2"
+        type="button"
+      >
+        previous
+      </button>
+      <button
+        //onClick={() => dispatch((prev) => ({ perPage: prev.perPage - 1 }))}
+        onClick={() => table(100)}
+        className="mr-2 border-2"
+        type="button"
+      >
+        next
+      </button>
+    </div>
+  );
+};
 
 const HomePage = () => {
   return (
     <div className="flex flex-col gap-8 items-center justify-center text-center">
+      <TableTril />
       <div
         style={{
           fontFamily: 'Delius Swash Caps, cursive',

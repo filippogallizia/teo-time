@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 
 import produce, { nothing, Draft } from 'immer';
 import { useHistory, useLocation } from 'react-router';
-import { parseSearch } from '../../../../utils/UrlUtils';
-import { HttpUtils } from '../../../../utils/httpUtils';
+import { parseSearch } from 'src/utils/UrlUtils';
+import { HttpUtils } from 'src/utils/httpUtils';
 
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 export type ValidRecipeReturnType<State> =

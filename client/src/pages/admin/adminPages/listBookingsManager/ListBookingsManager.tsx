@@ -115,27 +115,29 @@ const ListBookingsManager = () => {
       const fixedBookingResponse =
         await FixedBookingsManagerApi.getFixedBookings();
 
-      /**
-       * fixedBooking comes with no date but just dayName => day: Monday
-       * get the next 7 days from now and match them with fixedBooking's day
-       * map fixedBooking with the new date retrived with new time.
-       */
-      const fixedBkgsWithCompleteDate =
-        giveDateToFixBooking(fixedBookingResponse);
+      if (fixedBookingResponse.length > 0) {
+        /**
+         * fixedBooking comes with no date but just dayName => day: Monday
+         * get the next 7 days from now and match them with fixedBooking's day
+         * map fixedBooking with the new date retrived with new time.
+         */
+        const fixedBkgsWithCompleteDate =
+          giveDateToFixBooking(fixedBookingResponse);
 
-      /**
-       * create  fixedBookingYearList and filter for exceptionDate
-       */
-      let fixedBookingYearList = createFixedBoookingForAllYear(
-        fixedBkgsWithCompleteDate
-      ).filter((bkg) => {
-        return (
-          DATE_TO_DAY_FORMAT(bkg.start) !==
-          DATE_TO_DAY_FORMAT(bkg.exceptionDate)
-        );
-      });
+        /**
+         * create  fixedBookingYearList and filter for exceptionDate
+         */
+        let fixedBookingYearList = createFixedBoookingForAllYear(
+          fixedBkgsWithCompleteDate
+        ).filter((bkg) => {
+          return (
+            DATE_TO_DAY_FORMAT(bkg.start) !==
+            DATE_TO_DAY_FORMAT(bkg.exceptionDate)
+          );
+        });
 
-      setFixedBookings(fixedBookingYearList);
+        setFixedBookings(fixedBookingYearList);
+      } else setFixedBookings([]);
     };
     asyncFn();
   }, []);

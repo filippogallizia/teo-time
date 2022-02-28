@@ -1,6 +1,7 @@
-import { isProduction, isTest } from '../environment/environment';
+import { isProduction } from '../environment/environment';
 
-export const URL_SERVER = isTest || isProduction ? '/api' : '/';
+export const URL_SERVER = isProduction ? '/api' : '/';
 
-export const URL_CLIENT =
-  isTest || isProduction ? 'https://osteotherapy.it' : 'http://localhost:3000';
+export const URL_CLIENT = isProduction
+  ? 'https://osteotherapy.it'
+  : 'http://localhost:3000';

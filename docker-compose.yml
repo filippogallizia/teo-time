@@ -28,8 +28,8 @@ services:
     ports:
       - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
     environment:
-      - NODE_ENV=test
-      - DB_HOST=mysqldb
+      - NODE_ENV=$NODE_ENV
+      - DB_HOST=$MYSQLDB_HOST
       - DB_USER=$MYSQLDB_USER
       - DB_PASSWORD=$MYSQLDB_ROOT_PASSWORD
       - DB_NAME=$MYSQLDB_DATABASE
@@ -44,16 +44,17 @@ services:
       - api
     build:
       context: ./client
+      #target: development
     environment:
-      - NODE_ENV=test
+      - NODE_ENV=$NODE_ENV
       # args:`
       #   - REACT_APP_API_BASE_URL=$CLIENT_API_BASE_URL
     # restart: unless-stopped
     ports:
       - $REACT_LOCAL_PORT:$REACT_DOCKER_PORT
-    volumes:
-      # - './client/teo-client:/app'
-      - client:/app/node_modules
+    #volumes:
+    # - './client/teo-client:/app'
+    #- client:/app/node_modules
 
 volumes:
   db:

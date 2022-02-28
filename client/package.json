@@ -22,6 +22,7 @@
     "immer": "^9.0.6",
     "luxon": "^2.0.2",
     "npm-force-resolutions": "0.0.10",
+    "qs": "^6.10.3",
     "react": "^17.0.2",
     "react-calendar": "^3.4.0",
     "react-date-picker": "^8.4.0",
@@ -51,7 +52,7 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "preinstall": "npx npm-force-resolutions",
+    "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions",
     "build-and-run": "npm run build && serve -s ./build -p 3002"
   },
   "eslintConfig": {
@@ -74,8 +75,8 @@
   },
   "devDependencies": {
     "@types/luxon": "^2.0.5",
+    "@types/qs": "^6.9.7",
     "@types/react-calendar": "^3.4.3",
-    "react-error-overlay": "6.0.9",
     "@types/react-datepicker": "^4.1.7",
     "@types/react-router-dom": "^5.3.1",
     "@types/react-table": "^7.7.7",
@@ -83,6 +84,7 @@
     "@types/uuid": "^8.3.4",
     "autoprefixer": "^9.8.8",
     "postcss": "^7.0.39",
+    "react-error-overlay": "6.0.9",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.16"
   }
 }
