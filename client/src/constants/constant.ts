@@ -3,7 +3,10 @@ import { isProduction } from './environment';
 export const URL_CLIENT = isProduction
   ? 'https://osteotherapy.it'
   : 'http://localhost:3000';
-export const URL_SERVER = isProduction ? '/api' : 'http://0.0.0.0:5000';
+
+export const URL_SERVER = isProduction
+  ? 'http://0.0.0.0:5000'
+  : 'http://0.0.0.0:5000';
 
 export const ACCESS_TOKEN = 'access_token';
 export const CURRENT_USER_ROLE = 'CURRENT_USER_ROLE';

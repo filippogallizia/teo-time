@@ -8,4 +8,5 @@ type ProcessEnv = {
 };
 
 export const isProduction: boolean = env.NODE_ENV === 'production';
+console.log(isProduction, env.NODE_ENV);
 export const isDevelopment: boolean = env.NODE_ENV === 'development';

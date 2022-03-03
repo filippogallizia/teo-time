@@ -44,7 +44,6 @@ services:
       - api
     build:
       context: ./client
-      #target: development
     environment:
       - NODE_ENV=$NODE_ENV
       # args:`

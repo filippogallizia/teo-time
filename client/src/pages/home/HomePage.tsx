@@ -1,27 +1,72 @@
-import React, { useState } from 'react';
-import { useTable } from 'src/shared/hooks/useTable/useTable';
+import { Draft } from 'immer';
+import React, { useEffect, useState } from 'react';
+import { initialState } from 'src/component/authContext/AuthContext';
+import { PayloadAction, useTable } from 'src/shared/hooks/useTable/useTable';
 import foto_profilo from '../../shared/images/foto_profilo.jpeg';
 
+const reducer = (draft: Draft<{ list: Array<any> }>, action: any) => {
+  switch (action.type) {
+    case 'SET_LIST':
+      draft.list = action.payload.list;
+      break;
+  }
+};
+
+export type OutputPagination = {
+  pageSize: number;
+  pageNumber: number;
+  hasNextPage: boolean;
+  totalItems?: number;
+};
+
+type Action = PayloadAction<
+  'SET_LIST',
+  {
+    list: Array<any>;
+    pagination: OutputPagination;
+  }
+>;
+
 const TableTril = () => {
-  const [state, dispatch] = useState({ perPage: 1 });
-  const table = useTable({ dispatch: dispatch, initialState: state });
+  const [trigger, setTrigger] = useState(false);
+  const { list, changePage, dispatch } = useTable<{ list: Array<any> }, Action>(
+    reducer,
+    { list: [] }
+  );
+
+  let result = trigger.toString();
+
+  useEffect(() => {
+    const fn = () => {
+      if (!trigger) return 'ciao';
+      else return 'hello';
+    };
+    fn();
+  }, [trigger]);
+
   return (
     <div>
-      <div>{JSON.stringify(table)}</div>
-      <button
-        onClick={() => dispatch((prev) => ({ perPage: prev.perPage + 1 }))}
-        className="mr-2 border-2"
-        type="button"
-      >
-        previous
-      </button>
+      <div>{list}</div>
       <button
         //onClick={() => dispatch((prev) => ({ perPage: prev.perPage - 1 }))}
-        onClick={() => table(100)}
+        onClick={() => changePage(100)}
         className="mr-2 border-2"
         type="button"
       >
         next
+      </button>
+
+      <button
+        //onClick={() => dispatch((prev) => ({ perPage: prev.perPage - 1 }))}
+        //onClick={() => setTrigger((prev) => !prev)}
+        onClick={() =>
+          //@ts-expect-error
+          dispatch({ type: 'SET_LIST', payload: { list: ['filo'] } })
+        }
+        className="mr-2 border-2"
+        type="button"
+      >
+        trigger
       </button>
     </div>
   );
