@@ -5,7 +5,7 @@ export const URL_CLIENT = isProduction
   : 'http://localhost:3000';
 
 export const URL_SERVER = isProduction
-  ? 'http://0.0.0.0:5000'
+  ? 'https://osteotherapy.it/api'
   : 'http://0.0.0.0:5000';
 
 export const ACCESS_TOKEN = 'access_token';
