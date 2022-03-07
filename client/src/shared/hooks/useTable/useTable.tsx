@@ -1,14 +1,26 @@
 import produce from 'immer';
 import { Draft } from 'immer/dist/internal';
-import { useReducer } from 'react';
+import { useReducer, useRef } from 'react';
 import { PaginationCriteria } from 'src/utils/RequestPagination';
 import { useTableQueryParams } from './useTableQueryParams/useTableQueryParams';
 
+export type OutputPagination = {
+  pageSize: number;
+  pageNumber: number;
+  hasNextPage: boolean;
+  totalItems?: number;
+};
 export class RequestPagination {
+  public totalItems: number = 0;
+
   public pagination: PaginationCriteria = {
     page: 0,
     perPage: 20,
   };
+
+  public setPaginationByOutputPagination(outputPagination: OutputPagination) {
+    this.totalItems = outputPagination.totalItems ?? 0;
+  }
 }
 
 export type Reducer<S = any, A extends Action = PayloadAction> = (
@@ -44,7 +56,7 @@ export const useTable = <
   reducer: Reducer<State, Action>,
   initialState: State
 ) => {
-  const pagination = new RequestPagination();
+  const paginationRef = useRef(new RequestPagination());
 
   const [
     params,
@@ -63,19 +75,26 @@ export const useTable = <
       setFilter,
       resetPagination,
     },
-  ] = useTableQueryParams(pagination.pagination);
+  ] = useTableQueryParams(paginationRef.current.pagination);
 
   const { page } = params;
 
+  paginationRef.current.pagination.page = page;
+
   const reducerInside = () => {
     return produce((draft: Draft<State>, action: Action) => {
+      //@ts-expect-error
+      if (action.payload && action.payload.pagination) {
+        paginationRef.current.setPaginationByOutputPagination(
+          //@ts-expect-error
+          action.payload.pagination
+        );
+      }
       // @ts-expect-error
       reducer(draft, action);
     }, initialState);
   };
   const [state, dispatch] = useReducer(reducerInside(), initialState);
 
-  pagination.pagination.page = page;
-
-  return { ...state, changePage, dispatch };
+  return { ...state, pagination: paginationRef.current, changePage, dispatch };
 };

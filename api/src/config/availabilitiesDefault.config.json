@@ -53,16 +53,5 @@
     "eventDurationMinutes": 0,
     "breakTimeBtwEventsHours": 0,
     "breakTimeBtwEventsMinutes": 30
-  },
-  {
-    "day": "Monday",
-    "workTimeStart": "07:30",
-    "workTimeEnd": "21:00",
-    "breakTimeStart": "12:00",
-    "breakTimeEnd": "13:30",
-    "eventDurationHours": 1,
-    "eventDurationMinutes": 0,
-    "breakTimeBtwEventsHours": 0,
-    "breakTimeBtwEventsMinutes": 30
   }
 ]

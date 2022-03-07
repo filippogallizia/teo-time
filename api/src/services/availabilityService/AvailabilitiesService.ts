@@ -98,7 +98,7 @@ export const parseDatabaseAvailability = async (
         });
         return result;
       } else {
-        availDefault.map((day: DatabaseAvailabilityType) => {
+        availDefault.map(async (day: DatabaseAvailabilityType) => {
           const {
             workTimeStart,
             workTimeEnd,
@@ -109,7 +109,7 @@ export const parseDatabaseAvailability = async (
             breakTimeBtwEventsHours,
             breakTimeBtwEventsMinutes,
           } = day;
-          DatabaseAvailabilty.create({
+          await DatabaseAvailabilty.create({
             day: day.day,
             workTimeStart,
             workTimeEnd,
@@ -120,6 +120,7 @@ export const parseDatabaseAvailability = async (
             breakTimeBtwEventsHours,
             breakTimeBtwEventsMinutes,
           }).catch((e: any) => {
+            console.log(e, 'e');
             throw ErrorService.internal(e);
           });
         });

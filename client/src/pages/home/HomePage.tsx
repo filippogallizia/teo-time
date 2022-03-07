@@ -29,10 +29,10 @@ type Action = PayloadAction<
 
 const TableTril = () => {
   const [trigger, setTrigger] = useState(false);
-  const { list, changePage, dispatch } = useTable<{ list: Array<any> }, Action>(
-    reducer,
-    { list: [] }
-  );
+  const { list, changePage, dispatch, pagination } = useTable<
+    { list: Array<any> },
+    Action
+  >(reducer, { list: [] });
 
   let result = trigger.toString();
 
@@ -47,6 +47,7 @@ const TableTril = () => {
   return (
     <div>
       <div>{list}</div>
+      <div>{pagination.totalItems}</div>
       <button
         //onClick={() => dispatch((prev) => ({ perPage: prev.perPage - 1 }))}
         onClick={() => changePage(100)}
