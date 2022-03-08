@@ -37,21 +37,31 @@ const HomePage = () => {
           cura del proprio corpo con trattamenti osteopatici, lezioni di
           ginnastica posturale personalizzate e trattamenti massoterapici, sotto
           la guida esperta di Matteo Bulgheroni Dottore in osteopatia, scienze
-          motorie e massoterapia. Matteo Bulgheroni nasce a Milano nel 1988. Nel
-          2012 si laurea in scienze motorie e dello sport Dal 2013 al 2019, per
-          sei anni, segue un corso di Osteopatia di cui consegue nel 2019 il
-          titolo di Osteopata, finalmente risconosciuto dal ministero della
-          salute, presso AIMO (Accademia italiana medicina osteopatica) In
-          contemporanea segue la “Scuola della Schiena” fondata dal professor
-          Benedetto Toso, diventando socio della Black Neck School. Nel 2020
-          completa il percorso di studi presso la Kern School , conseguendo il
-          titolo di Massoterapista ( con attestato di abilitazione all’esercizio
-          dell’arte ausiliaria delle professioni sanitarie da parte della
-          Regione Lombardia ) Fino al 2022 presta la sua esperienza
-          professionale presso Virgin Corso Como per 2 anni, presso il 360Studio
-          per 8 anni ed infine per 1 anno presso Reverbia. Nel 2022 finalmente
-          apre questo suo studio dove vi aspetta con grande professionalità e
-          cortesia, per un benessere pieno di luce.
+          motorie e massoterapia.
+          <br />
+          <br />
+          Matteo Bulgheroni nasce a Milano nel 1988. Nel 2012 si laurea in
+          scienze motorie e dello sport Dal 2013 al 2019, per sei anni, segue un
+          corso di Osteopatia di cui consegue nel 2019 il titolo di Osteopata,
+          finalmente risconosciuto dal ministero della salute, presso AIMO
+          (Accademia italiana medicina osteopatica) In contemporanea segue la
+          “Scuola della Schiena” fondata dal professor Benedetto Toso,
+          diventando socio della Black Neck School.
+          <br />
+          <br />
+          Nel 2020 completa il percorso di studi presso la Kern School ,
+          conseguendo il titolo di Massoterapista ( con attestato di
+          abilitazione all’esercizio dell’arte ausiliaria delle professioni
+          sanitarie da parte della Regione Lombardia ).
+          <br />
+          <br />
+          Fino al 2022 presta la sua esperienza professionale presso Virgin
+          Corso Como per 2 anni, presso il 360Studio per 8 anni ed infine per 1
+          anno presso Reverbia.
+          <br />
+          <br />
+          Nel 2022 finalmente apre questo suo studio dove vi aspetta con grande
+          professionalità e cortesia, per un benessere pieno di luce.
         </p>
       </div>
     </div>

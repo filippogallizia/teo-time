@@ -33,8 +33,6 @@ export const useTableQueryParams = <OrderBy>(
     { getUrlWithQueryParams, setQueryParams, resetQueryParams, refreshParams },
   ] = useQueryParams(defaultParams);
 
-  console.log(defaultParams, 'defaultParams');
-
   const sortTable = (orderBy: OrderByEnum, orderColumn: OrderBy) => {
     setQueryParams((state: Draft<TableQueryParams<OrderBy>>) => {
       //@ts-expect-error

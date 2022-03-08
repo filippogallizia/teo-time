@@ -18,10 +18,7 @@ const ModalContainer = forwardRef(({ Modal }: any, ref: ForwardedRef<any>) => {
 
   const [isHidden, setHidden] = useState<boolean>(false);
 
-  console.log(props, 'pros');
-
   const openModal = (props: BaseModalProps) => {
-    console.log(props, 'opneModlafilooo');
     setHidden(false);
     dispatch({
       isOpen: true,

@@ -14,7 +14,6 @@ function isIsoDate(str: string) {
 }
 
 export const parseSearch = <T extends object>(search: string): T => {
-  console.log(search.replace('?', ''), 'search');
   return parse(search.replace('?', ''), {
     allowDots: true,
     decoder: (

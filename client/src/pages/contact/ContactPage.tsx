@@ -7,6 +7,7 @@ import {
   TITLE,
 } from '../../constants/constant';
 import { AiFillCopy } from 'react-icons/ai';
+import ToastService from 'src/services/ToastService';
 
 const ContactPage = () => {
   return (
@@ -21,10 +22,12 @@ const ContactPage = () => {
             {i18n.t('contactPage.body.email')}
           </p>
           <div
+            className="cursor-pointer"
             onClick={async () => {
               await navigator.clipboard.writeText(
                 i18n.t('contactPage.body.email')
               );
+              ToastService.success('email copiata');
             }}
           >
             <AiFillCopy />
@@ -39,7 +42,7 @@ const ContactPage = () => {
             }}
             target="_blank"
           >
-            <p className={SECONDARY_LINK}>via osti</p>
+            <p className={SECONDARY_LINK}>via osti - Milano</p>
           </Link>
         </div>
       </div>

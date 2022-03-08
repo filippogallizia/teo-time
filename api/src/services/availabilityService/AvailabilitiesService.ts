@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { Request } from 'express';
 
 import { DatabaseAvailabilityType } from '../../types/types';
@@ -12,7 +13,7 @@ class AvailabilitiesService {
 
   public async update(req: Request): Promise<DatabaseAvailabilityType[]> {
     try {
-      const {
+      let {
         day,
         workTimeStart,
         workTimeEnd,
