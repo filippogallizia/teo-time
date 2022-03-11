@@ -17,6 +17,10 @@ const FixedBooking = (sequelize: any, Sequelize: any) => {
       exceptionDate: {
         type: Sequelize.STRING,
       },
+      calendarEventId: {
+        type: Sequelize.STRING,
+        defaultValue: undefined,
+      },
     },
     {
       timestamps: false,

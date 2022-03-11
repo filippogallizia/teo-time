@@ -20,7 +20,6 @@ export const createAvalAlgoritm = (
   const fn = (): { start: DateTime; end: DateTime }[] => {
     const dayStart = DateTime.fromISO(workTimeRange.start);
     const dayEnd = DateTime.fromISO(workTimeRange.end);
-
     const breakStart = DateTime.fromISO(breakTimeRange.start);
     const breakEnd = DateTime.fromISO(breakTimeRange.end);
 
@@ -32,13 +31,11 @@ export const createAvalAlgoritm = (
     let lastSlotEnd = lastSlot.end;
 
     // general validations on dayStart end dayEnd
-
     if (dayStart >= breakStart && dayEnd <= breakEnd) {
       return [];
     }
 
     // validations on dynamic bucket
-
     if (
       lastSlotEnd.plus(eventDuration).plus(breakTimeBtwEvents) > breakStart &&
       lastSlotEnd.plus(eventDuration).plus(breakTimeBtwEvents) <= breakEnd
@@ -64,6 +61,7 @@ export const createAvalAlgoritm = (
 
     return fn();
   };
+
   fn();
 
   return bucket.map((obj: { start: DateTime; end: DateTime }) => {

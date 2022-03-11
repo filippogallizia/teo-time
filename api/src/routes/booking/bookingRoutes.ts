@@ -22,12 +22,13 @@ export default (app: Router) => {
     '/',
     [authenticateToken, bookExist],
     async (req: Request, res: ResponseWithUserType, next: NextFunction) => {
+      const { start, end, isHoliday } = req.body;
+
       try {
-        const { start, end } = req.body;
         if (!res.user) {
           next(
             ErrorService.badRequest(
-              'Use is missing, you are not loggein in probably'
+              'User is missing, you are not loggein in probably'
             )
           );
         } else {
@@ -37,20 +38,31 @@ export default (app: Router) => {
             next(ErrorService.badRequest('User already exist'));
           }
 
+          // insert the booking to admin google calendar
+          const googleCalendarService = new GoogleCalendarService({
+            userEmail: userEmail as string,
+            start,
+            end,
+          });
+
+          // INSERT  CALENDAR EVENTS
+          const calendarEventId = await googleCalendarService.insertEvent();
+
           // create booking
-          const booking = await bookingService.create(req);
+          const booking = await bookingService
+            .create({
+              start,
+              end,
+              isHoliday,
+              calendarEventId,
+            })
+            .catch(async (e) => {
+              calendarEventId && (await deleteEvent(calendarEventId));
+              next(e);
+            });
 
           // associate the booking with the user
           await booking.setUser(usr);
-
-          // insert the booking to admin google calendar
-          const googleCalendarService = new GoogleCalendarService(
-            userEmail as string,
-            start,
-            end
-          );
-          // INSERT  CALENDAR EVENTS
-          await googleCalendarService.insertEvent();
 
           // send email to client and admin
           const emailBody = EmailService.getConfirmationEmailBody(
@@ -63,6 +75,7 @@ export default (app: Router) => {
           res.status(200).send(booking);
         }
       } catch (e: any) {
+        //TODO => probably if there is an error in creation I need to delete event from google calendar
         console.log(e);
         next(e);
       }
@@ -73,7 +86,7 @@ export default (app: Router) => {
     '/',
     [authenticateToken],
     async (req: Request, res: ResponseWithUserType, next: NextFunction) => {
-      const { start, end } = req.body;
+      const { start } = req.body;
       try {
         if (!res.user) {
           next(
@@ -86,18 +99,15 @@ export default (app: Router) => {
           const bks = await bookingService.findOne(req);
           if (bks) {
             await bks.destroy();
-            // find the corresponding event on google calendar
-            const events = await getEvents(start, end);
-            // if the event exists, delete it
-            if (events.length > 0) {
-              await deleteEvent(events[0].id).catch((err) => {
-                console.log(err);
-              });
-            }
+
+            // delete corresponding event on google calendar
+            bks.calendarEventId && (await deleteEvent(bks.calendarEventId));
+
             const emailBody = EmailService.getDeleteEmailBody(
               userEmail,
               DateTime.fromISO(start).toFormat('yyyy LLL dd t').toString()
             );
+
             await EmailService.sendEmail(emailBody);
             res.status(200).send('Booking deleted');
           } else {

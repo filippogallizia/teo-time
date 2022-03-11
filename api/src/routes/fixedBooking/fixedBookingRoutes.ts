@@ -1,9 +1,13 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 
+import { setTimeToDate } from '../../../utils';
+import GoogleCalendarService, {
+  deleteEvent,
+} from '../../googleApi/GoogleCalendarService';
 import { ErrorService } from '../../services/errorService/ErrorService';
 import fixedBookingService from '../../services/fixedBookingService/FixedBookingService';
-
-//const db = require('../../database/models/db');
+import { FixedBookingDTO } from '../../services/fixedBookingService/interfaces';
+import { giveDateToFixBooking } from './helpers/fixedBookingRoutesHelpers';
 
 const { authenticateToken } = require('../../middleware/middleware');
 
@@ -35,10 +39,64 @@ export default (app: Router) => {
     '/',
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
+      const { start, end, day, email, exceptionDate }: FixedBookingDTO =
+        req.body.fixedBks;
+      const dateFromClient = req.body.dateFromClient;
+
       try {
-        await fixedBookingService.create(req);
+        /**
+         get the date of the next day with the given Day and assign it given time ( start, end )
+
+         example: given = Monday, get the fullDate of closest Monday from today and assign him given hours
+         *  */
+        const nextDatewihtGivenDay = giveDateToFixBooking(
+          [
+            {
+              day,
+              email,
+              end,
+              start,
+              id: 0,
+              exceptionDate,
+            },
+          ],
+          dateFromClient
+        );
+
+        const parsedException = setTimeToDate(exceptionDate, start);
+
+        const googleCalendarService = new GoogleCalendarService({
+          userEmail: email as string,
+          start: nextDatewihtGivenDay[0].start,
+          end: nextDatewihtGivenDay[0].end,
+          recurrentDay: nextDatewihtGivenDay[0].day,
+          exceptionDate: parsedException,
+        });
+
+        // insert the booking in admin google calendar
+        const calendarEventId = await googleCalendarService
+          .insertEvent()
+          .catch((e) => {
+            console.log(e, 'e');
+          });
+
+        await fixedBookingService
+          .create({
+            start,
+            end,
+            day,
+            email,
+            exceptionDate,
+            calendarEventId,
+          })
+          .catch(async (e) => {
+            calendarEventId && (await deleteEvent(calendarEventId));
+            next(e);
+          });
+
         res.send({ message: 'fixedBookings created!' });
       } catch (e: any) {
+        console.log(e, 'e');
         next(e);
       }
     }
@@ -65,7 +123,6 @@ export default (app: Router) => {
     }
   );
 
-  //TODO -> move away business logic from here
   FixedBookingRouter.put(
     '/',
     [authenticateToken],

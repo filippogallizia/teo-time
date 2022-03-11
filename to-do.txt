@@ -7,10 +7,9 @@ BookingManager refactor handleSuccess function
 
 
 CLIENT
-- check delete endpoints after changing the method from post to delete
 
-TO RUN ON REMOTE
-- check node env variable!
+- filter in admin/prenotazioni not working in Italy
+- put validation on createion of fixedBookings
 
 for Admin
 

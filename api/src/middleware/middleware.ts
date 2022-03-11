@@ -160,6 +160,8 @@ const getAvailability = async (
         };
       });
 
+    console.log(mapFixedBks[0], 'map');
+
     const parsedFixedBookings = filterDays_updateDate(
       mapFixedBks,
       avalRange

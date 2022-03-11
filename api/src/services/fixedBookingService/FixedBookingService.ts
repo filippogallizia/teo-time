@@ -1,5 +1,13 @@
 import { Request } from 'express';
+import { DateTime } from 'luxon';
+import { RRule, RRuleSet, rrulestr } from 'rrule';
 
+import { setTimeToDate } from '../../../utils';
+import {
+  deleteEvent,
+  getEvents,
+  updateEvent,
+} from '../../googleApi/GoogleCalendarService';
 import { ErrorService } from '../errorService/ErrorService';
 import { FixedBookingDTO } from './interfaces';
 
@@ -12,25 +20,33 @@ export type RecordType = FixedBookingDTO;
 class FixedBookingService {
   fixedBookingsModel = db.FixedBookings;
 
-  public async findOne(req: Request): Promise<any> {
-    const { start, end } = req.body;
+  public async findOne(req: Request | string | number): Promise<any> {
+    const id =
+      typeof req == 'string' || typeof req === 'number' ? req : req.body.id;
     try {
-      return await this.fixedBookingsModel.findOne({ where: { start, end } });
+      return await this.fixedBookingsModel.findOne({ where: { id } });
     } catch (error) {
       throw ErrorService.badRequest('Booking not found');
     }
   }
 
-  public async create(req: Request): Promise<any> {
-    const { start, end, day, email, exceptionDate }: FixedBookingDTO =
-      req.body.fixedBks;
+  public async create(req: FixedBookingDTO): Promise<any> {
+    const {
+      start,
+      end,
+      day,
+      email,
+      exceptionDate,
+      calendarEventId,
+    }: FixedBookingDTO = req;
     try {
-      await this.fixedBookingsModel.create({
+      return await this.fixedBookingsModel.create({
         day,
         email,
         end,
         start,
         exceptionDate,
+        calendarEventId,
       });
     } catch (e) {
       throw ErrorService.internal(e);
@@ -72,19 +88,38 @@ class FixedBookingService {
     const id = req.query.id;
 
     try {
-      return await this.fixedBookingsModel.destroy({ where: { id } });
+      // before to delete the booking we need to get the calendarEventId
+      const fixedBks = await this.findOne(id as string);
+
+      // delete the booking
+      const response = await this.fixedBookingsModel.destroy({ where: { id } });
+
+      // after deleteting the booking, we can delete the google event.
+      fixedBks.calendarEventId && (await deleteEvent(fixedBks.calendarEventId));
+
+      // return the booking deleted
+      return response;
     } catch (error) {
       throw ErrorService.badRequest('Booking not found');
     }
   }
 
-  public async update(req: Request): Promise<0 | 1> {
-    const { start, end, day, email, id, exceptionDate }: FixedBookingDTO =
-      //@ts-expect-error
-      req.fixedBks;
+  public async update(req: Request | Partial<FixedBookingDTO>): Promise<0 | 1> {
+    const {
+      start,
+      end,
+      day,
+      email,
+      id,
+      exceptionDate,
+    }: Partial<FixedBookingDTO> = (req as Request).body
+      ? (req as Request).body.fixedBks
+      : (req as Partial<FixedBookingDTO>);
 
     try {
-      return await this.fixedBookingsModel.update(
+      const fixedBkg = id && (await this.findOne(id));
+
+      const response = await this.fixedBookingsModel.update(
         {
           start,
           end,
@@ -98,6 +133,52 @@ class FixedBookingService {
           },
         }
       );
+
+      // update calendar event
+
+      const event = await getEvents(fixedBkg.calendarEventId);
+
+      const eventStart = event[0].start.dateTime;
+      const eventEnd = event[0].end.dateTime;
+
+      const r = exceptionDate && start && setTimeToDate(exceptionDate, start);
+
+      const prova = r && DateTime.fromISO(r).toUTC().toJSDate();
+
+      const rruleSet = new RRuleSet();
+
+      // Add a rrule to rruleSet
+      prova &&
+        rruleSet.rrule(
+          new RRule({
+            freq: RRule.MONTHLY,
+            count: 5,
+            dtstart: prova,
+          })
+        );
+
+      const updatedStart = start && setTimeToDate(eventStart, start);
+      const updatedEnd = end && setTimeToDate(eventEnd, end);
+
+      prova && rruleSet.exdate(prova);
+
+      const finale = rruleSet.valueOf();
+
+      const updatedEvent = {
+        summary: email,
+        description: `${process.env.EVENT_DESCRIPTION} con ${email}`,
+        start: {
+          dateTime: updatedStart,
+        },
+        end: {
+          dateTime: updatedEnd,
+        },
+        recurrence: ['RRULE:FREQ=WEEKLY;COUNT=5;BYDAY=FR', `${finale[2]}`],
+      };
+
+      await updateEvent(fixedBkg.calendarEventId, updatedEvent);
+
+      return response;
     } catch (error) {
       throw ErrorService.badRequest('Booking not found');
     }

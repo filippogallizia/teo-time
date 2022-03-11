@@ -4,6 +4,9 @@ import { BookingType, DayAvailabilityType, TimeRangeType } from './types/types';
 
 const _ = require('lodash');
 
+const currentYear = DateTime.now().year;
+export const lastDayOfyear = DateTime.utc(currentYear, 12, 31);
+
 export const HOUR_MINUTE_FORMAT = (value: string): string => {
   return DateTime.fromISO(value).toFormat('HH:mm');
 };
@@ -37,7 +40,11 @@ export const DATE_TO_FULL_DAY = (date: string) => {
 };
 
 export const joinDayAndTime = (date_day: string, date_time: string) => {
-  return DateTime.fromISO(date_day)
+  const zone = DateTime.fromISO(date_day, {
+    setZone: true,
+  }).zoneName;
+
+  return DateTime.fromISO(date_day, { zone })
     .set({
       hour: FROM_DATE_TO_HOUR(date_time),
       minute: FROM_DATE_TO_MINUTES(date_time),
@@ -45,6 +52,21 @@ export const joinDayAndTime = (date_day: string, date_time: string) => {
       millisecond: 0,
     })
     .toISO();
+};
+
+export const setTimeToDate = (date: string, time: string): string => {
+  const [hoursStart, minutesStart] = time.split(':');
+  //TODO verify all works with this setZone
+  const newDateTime = DateTime.fromISO(date)
+    .set({
+      hour: Number(hoursStart),
+      minute: Number(minutesStart),
+      second: 0,
+      millisecond: 0,
+    })
+    .toISO();
+
+  return newDateTime;
 };
 
 // loop throug general Aval, filter for day with timerange, return availabilities with uploaded date
@@ -60,9 +82,12 @@ export const filterDays_updateDate = (
     inputToBeUpdated,
     timerange,
     (a: DayAvailabilityType, b: TimeRangeType) => {
+      console.log(inputToBeUpdated[0], 'a start');
+      console.log(timerange);
       return a.day == FROM_DATE_TO_DAY(b.start);
     }
   );
+
   return intersection.map((day: DayAvailabilityType) => {
     // update the date
     const parseAvailabilities = day.availability.map(
@@ -73,6 +98,7 @@ export const filterDays_updateDate = (
         };
       }
     );
+    console.log(parseAvailabilities, 'parseAvailabilities');
     return {
       ...day,
       date: timerange[0],
@@ -98,6 +124,8 @@ export const removeBksFromAval = (
     availabilities,
     bookings,
     (aval: any, bks: any) => {
+      console.log(bks.end, 'bks.end');
+      console.log(aval.start, '-', aval.end, 'aval.start');
       return (
         (bks.start <= aval.start && bks.end >= aval.end) ||
         (bks.start >= aval.start && bks.start < aval.end) ||

@@ -106,4 +106,44 @@ describe('AvalAlgoritm', () => {
       )
     ).to.length(0);
   });
+
+  it('first slot after break === breakEnd', function () {
+    const workTimeRange = { start: '09:00', end: '21:00' };
+    const breakTimeRange = { start: '09:30', end: '14:30' };
+    const eventDuration = { hours: 1, minutes: 0 };
+    const breakTimeBtwEvents = { hours: 0, minutes: 30 };
+
+    const breakTimeEnd = DateTime.fromISO(breakTimeRange.end).toString();
+
+    const result = createAvalAlgoritm(
+      workTimeRange,
+      breakTimeRange,
+      eventDuration,
+      breakTimeBtwEvents
+    );
+
+    expect(DateTime.fromISO(result[0].start).toString()).to.be.equal(
+      breakTimeEnd
+    );
+  });
+
+  it('first slot after break === breakEnd', function () {
+    const workTimeRange = { start: '09:00', end: '21:00' };
+    const breakTimeRange = { start: '10:30', end: '14:30' };
+    const eventDuration = { hours: 1, minutes: 0 };
+    const breakTimeBtwEvents = { hours: 0, minutes: 30 };
+
+    const workTimeRangeStart = DateTime.fromISO(workTimeRange.start).toString();
+
+    const result = createAvalAlgoritm(
+      workTimeRange,
+      breakTimeRange,
+      eventDuration,
+      breakTimeBtwEvents
+    );
+
+    expect(DateTime.fromISO(result[0].start).toString()).to.be.equal(
+      workTimeRangeStart
+    );
+  });
 });

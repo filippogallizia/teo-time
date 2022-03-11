@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import HttpService from '../../../../services/HttpService';
 import { BookingDetailsType } from './reducer';
 
@@ -14,6 +15,7 @@ class FixedBookingsManagerApi {
   public createFixedBookings(body: BookingDetailsType): Promise<any> {
     return HttpService.post(`/fixedBookings`, {
       fixedBks: body,
+      dateFromClient: DateTime.local().toISO(),
     });
   }
 

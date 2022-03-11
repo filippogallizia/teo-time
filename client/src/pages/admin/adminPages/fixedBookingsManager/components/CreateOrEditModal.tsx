@@ -47,6 +47,12 @@ const CreateOrEditModal = ({ state, dispatch }: Props) => {
     }
   };
 
+  const disabled =
+    !state.bookingDetails.day ||
+    !state.bookingDetails.start ||
+    !state.bookingDetails.end ||
+    !state.bookingDetails.email;
+
   return (
     <div>
       <Modal
@@ -78,6 +84,7 @@ const CreateOrEditModal = ({ state, dispatch }: Props) => {
             />
             <GeneralButton
               buttonText={is_create ? 'Create' : 'Save'}
+              disabled={disabled}
               onClick={async () => {
                 try {
                   await createOrEditBooking(is_create, state.bookingDetails);

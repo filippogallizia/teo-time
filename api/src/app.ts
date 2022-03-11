@@ -13,10 +13,8 @@ const port = process.env.PORT || 5000;
 const db = require('./database/models/db');
 
 app.use(cors());
-
 console.log(isProduction, 'isProduction');
 console.log(URL_SERVER, 'URL_SERVER');
-
 // custom body parser to handle specific requirements from the stripe webook endpoints
 
 app.use((req, res, next) => {

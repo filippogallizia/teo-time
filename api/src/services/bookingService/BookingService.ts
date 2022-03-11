@@ -67,14 +67,14 @@ class BookingService {
     }
   }
 
-  public async create(req: Request): Promise<any> {
-    const { start, end, isHoliday, localId } = req.body;
+  public async create(req: BookingDTO): Promise<any> {
+    const { start, end, isHoliday, calendarEventId } = req;
     try {
       return await this.bookingModel.create({
         start,
         end,
         isHoliday,
-        localId,
+        calendarEventId,
       });
     } catch (e) {
       throw ErrorService.internal(e);
