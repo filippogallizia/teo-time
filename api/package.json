@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'src/**/*.test.ts'",
-    "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "dev": "ts-node-dev --respawn  --transpile-only src/app.ts",
     "lint": "eslint . --ext .ts",
+    "pre-push": "npm run test",
     "lint-and-fix": "eslint . --ext .ts --fix"
   },
   "author": "",

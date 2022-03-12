@@ -1,10 +1,6 @@
 import { DateTime } from 'luxon';
 
-import {
-  BookingType,
-  DayAvailabilityType,
-  TimeRangeType,
-} from './src/types/types';
+import { BookingType, DayAvailabilityType, TimeRangeType } from './types/types';
 
 const _ = require('lodash');
 
@@ -87,11 +83,15 @@ export const filterDays_updateDate = (
 
 // use this function to create availabilities after comparing them with existing bookings
 
-/** */
+/**
+ * differenceWith creates an array of array values not included in the other given arrays
+ */
+
+//TODO -> TEST THIS ONE
 
 export const removeBksFromAval = (
   availabilities: TimeRangeType[],
-  bookings: BookingType[]
+  bookings: TimeRangeType[]
 ) => {
   return _.differenceWith(
     // scenario one day
@@ -101,7 +101,7 @@ export const removeBksFromAval = (
       return (
         (bks.start <= aval.start && bks.end >= aval.end) ||
         (bks.start >= aval.start && bks.start < aval.end) ||
-        (bks.end >= aval.start && bks.end < aval.end)
+        (bks.end > aval.start && bks.end < aval.end)
       );
     }
   );
@@ -114,9 +114,11 @@ export const retrieveAvailability = (
   genAval: DayAvailabilityType[],
   avalTimeRange: { start: string; end: string }[]
 ) => {
+  //console.log(genAval, 'genAval');
   const final = filterDays_updateDate(genAval, avalTimeRange);
   if (final.length === 0) return [];
   try {
+    //console.log(final[0], 'final');
     return removeBksFromAval(final[0].availability, bookedHours.bookings);
   } catch (e) {
     console.log(e);

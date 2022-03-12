@@ -31,9 +31,6 @@ export const createAvalAlgoritm = (
 
     let lastSlotEnd = lastSlot.end;
 
-    const isFirstSlotOfDayOrAfterBreak =
-      lastSlotEnd === dayStart || lastSlotEnd === breakEnd;
-
     // general validations on dayStart end dayEnd
 
     if (dayStart >= breakStart && dayEnd <= breakEnd) {
@@ -52,6 +49,9 @@ export const createAvalAlgoritm = (
     if (lastSlotEnd.plus(eventDuration).plus(breakTimeBtwEvents) > dayEnd) {
       return bucket;
     }
+
+    const isFirstSlotOfDayOrAfterBreak =
+      lastSlotEnd === dayStart || lastSlotEnd === breakEnd;
 
     bucket.push({
       start: isFirstSlotOfDayOrAfterBreak

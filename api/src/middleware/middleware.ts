@@ -5,12 +5,6 @@ import _ from 'lodash';
 import { DateTime } from 'luxon';
 
 import {
-  DATE_TO_FULL_DAY,
-  TODAY_AT_MIDNIGHT,
-  filterDays_updateDate,
-  retrieveAvailability,
-} from '../../utils';
-import {
   ResponseWithAvalType,
   ResponseWithUserType,
 } from '../routes/interfaces/interfaces';
@@ -22,6 +16,12 @@ import FixedBookingService from '../services/fixedBookingService/FixedBookingSer
 import { FixedBookingDTO } from '../services/fixedBookingService/interfaces';
 import userService from '../services/userService/UserService';
 import { DayAvailabilityType } from '../types/types';
+import {
+  DATE_TO_FULL_DAY,
+  TODAY_AT_MIDNIGHT,
+  filterDays_updateDate,
+  retrieveAvailability,
+} from '../utils';
 
 const avalDefault = require('../config/availabilitiesDefault.config.json');
 
