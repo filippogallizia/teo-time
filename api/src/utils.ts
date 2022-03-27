@@ -82,8 +82,6 @@ export const filterDays_updateDate = (
     inputToBeUpdated,
     timerange,
     (a: DayAvailabilityType, b: TimeRangeType) => {
-      console.log(inputToBeUpdated[0], 'a start');
-      console.log(timerange);
       return a.day == FROM_DATE_TO_DAY(b.start);
     }
   );
@@ -98,7 +96,6 @@ export const filterDays_updateDate = (
         };
       }
     );
-    console.log(parseAvailabilities, 'parseAvailabilities');
     return {
       ...day,
       date: timerange[0],
@@ -124,8 +121,6 @@ export const removeBksFromAval = (
     availabilities,
     bookings,
     (aval: any, bks: any) => {
-      console.log(bks.end, 'bks.end');
-      console.log(aval.start, '-', aval.end, 'aval.start');
       return (
         (bks.start <= aval.start && bks.end >= aval.end) ||
         (bks.start >= aval.start && bks.start < aval.end) ||
@@ -142,11 +137,9 @@ export const retrieveAvailability = (
   genAval: DayAvailabilityType[],
   avalTimeRange: { start: string; end: string }[]
 ) => {
-  //console.log(genAval, 'genAval');
   const final = filterDays_updateDate(genAval, avalTimeRange);
   if (final.length === 0) return [];
   try {
-    //console.log(final[0], 'final');
     return removeBksFromAval(final[0].availability, bookedHours.bookings);
   } catch (e) {
     console.log(e);

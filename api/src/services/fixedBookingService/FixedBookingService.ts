@@ -2,12 +2,12 @@ import { Request } from 'express';
 import { DateTime } from 'luxon';
 import { RRule, RRuleSet, rrulestr } from 'rrule';
 
-import { setTimeToDate } from '../../../utils';
 import {
   deleteEvent,
   getEvents,
   updateEvent,
 } from '../../googleApi/GoogleCalendarService';
+import { setTimeToDate } from '../../utils';
 import { ErrorService } from '../errorService/ErrorService';
 import { FixedBookingDTO } from './interfaces';
 

@@ -1,12 +1,12 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 
-import { setTimeToDate } from '../../../utils';
 import GoogleCalendarService, {
   deleteEvent,
 } from '../../googleApi/GoogleCalendarService';
 import { ErrorService } from '../../services/errorService/ErrorService';
 import fixedBookingService from '../../services/fixedBookingService/FixedBookingService';
 import { FixedBookingDTO } from '../../services/fixedBookingService/interfaces';
+import { setTimeToDate } from '../../utils';
 import { giveDateToFixBooking } from './helpers/fixedBookingRoutesHelpers';
 
 const { authenticateToken } = require('../../middleware/middleware');

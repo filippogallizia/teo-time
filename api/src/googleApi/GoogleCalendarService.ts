@@ -3,7 +3,7 @@ const { google } = require('googleapis');
 import { DateTime } from 'luxon';
 import { RRule, RRuleSet } from 'rrule';
 
-import { HOUR_MINUTE_FORMAT, lastDayOfyear, setTimeToDate } from '../../utils';
+import { HOUR_MINUTE_FORMAT, lastDayOfyear, setTimeToDate } from '../utils';
 
 const rruleSet = new RRuleSet();
 

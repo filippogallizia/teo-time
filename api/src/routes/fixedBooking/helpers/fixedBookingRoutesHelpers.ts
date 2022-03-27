@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 
-import { FROM_DATE_TO_DAY } from '../../../../utils';
 import { FixedBookingDTO } from '../../../services/fixedBookingService/interfaces';
+import { FROM_DATE_TO_DAY } from '../../../utils';
 
 export const createWeekFromDate = (date: string): string[] => {
   const week = [];

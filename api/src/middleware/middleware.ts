@@ -18,7 +18,6 @@ import userService from '../services/userService/UserService';
 import { DayAvailabilityType } from '../types/types';
 import {
   DATE_TO_FULL_DAY,
-  TODAY_AT_MIDNIGHT,
   filterDays_updateDate,
   retrieveAvailability,
 } from '../utils';
@@ -160,10 +159,24 @@ const getAvailability = async (
         };
       });
 
-    console.log(mapFixedBks[0], 'map');
+    /**
+     * group the fixedBkgs.
+     * example: [{day: monday, aval: [..]}, {day: monday, aval: [..]}, {day: tuesday, aval: [..]}] => [{day: monday, aval: [.. ..]}, {day: tuesday, aval: [..]}]
+     */
+    const fixedBksGrouped = mapFixedBks.reduce((acc: any, cv) => {
+      if (acc.length > 0 && _.find(acc, (el) => el.day === cv.day)) {
+        acc[acc.length - 1].availability = [
+          ...acc[acc.length - 1].availability,
+          ...cv.availability,
+        ];
+      } else {
+        acc.push(cv);
+      }
+      return acc;
+    }, []);
 
     const parsedFixedBookings = filterDays_updateDate(
-      mapFixedBks,
+      fixedBksGrouped,
       avalRange
     ).map((day) => day.availability);
 

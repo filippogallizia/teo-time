@@ -6,7 +6,6 @@ import { SET_RENDER_AVAL, SET_SELECTION_DATE } from '../stateReducer';
 
 function CalendarComponent({ dispatch, state }: BookingComponentType) {
   const myDispatch = (date: Date) => {
-    //Mon Mar 21 2022
     const myPromise = new Promise((resolve, reject) => {
       //@ts-expect-error
       resolve();

@@ -3,7 +3,6 @@ import { DateTime } from 'luxon';
 
 import GoogleCalendarService, {
   deleteEvent,
-  getEvents,
 } from '../../googleApi/GoogleCalendarService';
 import bookingService from '../../services/bookingService/BookingService';
 import EmailService from '../../services/emailService/EmailService';

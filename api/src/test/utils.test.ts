@@ -95,7 +95,6 @@ describe('removeBksFromAval', () => {
         },
       ]
     );
-    console.log(aval, 'aval');
 
     expect(aval).length(0);
   });
@@ -116,7 +115,6 @@ describe('removeBksFromAval', () => {
         },
       ]
     );
-    console.log(aval, 'aval');
 
     expect(aval).length(1);
   });
@@ -136,7 +134,6 @@ describe('removeBksFromAval', () => {
         },
       ]
     );
-    console.log(aval, 'aval');
 
     expect(aval).length(1);
   });
@@ -156,7 +153,6 @@ describe('removeBksFromAval', () => {
         },
       ]
     );
-    console.log(aval, 'aval');
 
     expect(aval).length(0);
   });
@@ -176,8 +172,53 @@ describe('removeBksFromAval', () => {
         },
       ]
     );
-    console.log(aval, 'aval');
 
     expect(aval).length(1);
+  });
+
+  it('aval in between bookings', function () {
+    const aval = removeBksFromAval(
+      [
+        {
+          start: '2022-03-21T08:30:00.000+00:00',
+          end: '2022-03-21T10:30:00.000+00:00',
+        },
+      ],
+      [
+        {
+          start: '2022-03-21T07:30:00.000+00:00',
+          end: '2022-03-21T08:30:00.000+00:00',
+        },
+        {
+          start: '2022-03-21T10:30:00.000+00:00',
+          end: '2022-03-21T11:30:00.000+00:00',
+        },
+      ]
+    );
+
+    expect(aval).length(1);
+  });
+
+  it('aval in btw bookings but overlapping', function () {
+    const aval = removeBksFromAval(
+      [
+        {
+          start: '2022-03-21T08:30:00.000+00:00',
+          end: '2022-03-21T10:31:00.000+00:00',
+        },
+      ],
+      [
+        {
+          start: '2022-03-21T07:30:00.000+00:00',
+          end: '2022-03-21T08:30:00.000+00:00',
+        },
+        {
+          start: '2022-03-21T10:30:00.000+00:00',
+          end: '2022-03-21T11:30:00.000+00:00',
+        },
+      ]
+    );
+
+    expect(aval).length(0);
   });
 });
