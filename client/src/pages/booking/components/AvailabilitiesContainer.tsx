@@ -29,18 +29,20 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
 
   useEffect(() => {
     const selectedDate = DateTime.fromISO(state.schedules.selectedDate);
+
     const handleSuccess = (response: any) => {
       dispatch({ type: SET_AVAL, payload: response });
     };
 
     //create the start and end filter to get availabilities from api.
-    const parsedDate = selectedDate
+    const endOfDay = selectedDate
       .set({
         hour: 23,
         minute: 59,
         second: 0,
         millisecond: 0,
       })
+      .setZone('UTC+0')
       .toISO();
     const startOfDay = selectedDate
       .set({
@@ -49,13 +51,14 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
         second: 1,
         millisecond: 0,
       })
+      .setZone('UTC+0')
       .toISO();
 
     const funcAsync = async () => {
       try {
         const response = await BookingPageApi.getAvailabilities({
           start: startOfDay,
-          end: parsedDate,
+          end: endOfDay,
         });
         handleSuccess(response);
       } catch (e: any) {
