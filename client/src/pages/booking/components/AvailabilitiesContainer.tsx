@@ -6,7 +6,7 @@ import {
   MEDIUM_MARGIN_TOP,
   SUB_TITLE,
 } from '../../../constants/constant';
-import { DateTime } from 'luxon';
+import { DateTime, SystemZone } from 'luxon';
 
 import { Actions, InitialState, SET_AVAL } from '../stateReducer';
 
@@ -25,11 +25,13 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
 
   const [hours, setHours] = useState<{ start: string; end: string }[]>([]);
 
-  const selectedDate = DateTime.fromISO(state.schedules.selectedDate);
+  // get the zoneTime from client and send it to server
+  const localSystemZoneName = new SystemZone().name;
+  const selectedDate = DateTime.fromISO(state.schedules.selectedDate).setZone(
+    localSystemZoneName
+  );
 
   useEffect(() => {
-    const selectedDate = DateTime.fromISO(state.schedules.selectedDate);
-
     const handleSuccess = (response: any) => {
       dispatch({ type: SET_AVAL, payload: response });
     };
@@ -42,7 +44,6 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
         second: 0,
         millisecond: 0,
       })
-      .setZone('UTC+0')
       .toISO();
     const startOfDay = selectedDate
       .set({
@@ -51,7 +52,6 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
         second: 1,
         millisecond: 0,
       })
-      .setZone('UTC+0')
       .toISO();
 
     const funcAsync = async () => {
@@ -67,6 +67,7 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
       }
     };
     funcAsync();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, state.schedules.selectedDate, state.schedules.selectedHour]);
 
   useEffect(() => {

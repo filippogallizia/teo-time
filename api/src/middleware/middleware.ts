@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
@@ -127,6 +127,7 @@ const getAvailability = async (
      * parse bookings from JS object date to string
      *
      */
+
     const parsedBookings = _.map(bookings.flat(), (e: any) => {
       return {
         ...e,
