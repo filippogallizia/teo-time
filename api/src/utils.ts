@@ -28,6 +28,7 @@ export const TODAY_AT_MIDNIGHT = () => {
 };
 
 export const FROM_DATE_TO_DAY = (date: string) => {
+  console.log(DateTime.fromISO(date).weekdayLong, 'FILODATA');
   return DateTime.fromISO(date).weekdayLong;
 };
 

@@ -31,6 +31,8 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
     localSystemZoneName
   );
 
+  console.log(selectedDate.toISO(), 'selectedDate');
+
   useEffect(() => {
     const handleSuccess = (response: any) => {
       dispatch({ type: SET_AVAL, payload: response });
@@ -53,6 +55,10 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
         millisecond: 0,
       })
       .toISO();
+
+    console.log(endOfDay, 'endOfDay');
+
+    console.log(startOfDay, 'startOfDay');
 
     const funcAsync = async () => {
       try {
