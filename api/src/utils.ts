@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import { DateTime, Settings } from 'luxon';
 
 import { BookingType, DayAvailabilityType, TimeRangeType } from './types/types';
 
@@ -27,8 +27,14 @@ export const TODAY_AT_MIDNIGHT = () => {
   });
 };
 
+// this fn is foundamental to set the DateTime system time zone to the same one of the client
+export const getAndSetTimeZone = (date: string) => {
+  const zoneName = DateTime.fromISO(date).zoneName;
+  Settings.defaultZone = zoneName;
+};
+
 export const FROM_DATE_TO_DAY = (date: string) => {
-  console.log(DateTime.fromISO(date).weekdayLong, 'FILODATA');
+  getAndSetTimeZone(date);
   return DateTime.fromISO(date).weekdayLong;
 };
 

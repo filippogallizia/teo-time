@@ -6,7 +6,7 @@ import {
   MEDIUM_MARGIN_TOP,
   SUB_TITLE,
 } from '../../../constants/constant';
-import { DateTime, SystemZone } from 'luxon';
+import { DateTime } from 'luxon';
 
 import { Actions, InitialState, SET_AVAL } from '../stateReducer';
 
@@ -25,13 +25,7 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
 
   const [hours, setHours] = useState<{ start: string; end: string }[]>([]);
 
-  // get the zoneTime from client and send it to server
-  const localSystemZoneName = new SystemZone().name;
-  const selectedDate = DateTime.fromISO(state.schedules.selectedDate).setZone(
-    localSystemZoneName
-  );
-
-  console.log(selectedDate.toISO(), 'selectedDate');
+  const selectedDate = DateTime.fromISO(state.schedules.selectedDate);
 
   useEffect(() => {
     const handleSuccess = (response: any) => {
@@ -55,10 +49,6 @@ function AvalContainer({ dispatch, state }: BookSlotContainerType) {
         millisecond: 0,
       })
       .toISO();
-
-    console.log(endOfDay, 'endOfDay');
-
-    console.log(startOfDay, 'startOfDay');
 
     const funcAsync = async () => {
       try {

@@ -1,4 +1,16 @@
-FROM node:lts AS builder
+## this first part is used just in dev
+FROM node:16 AS development
+
+WORKDIR /app
+COPY package.json ./
+COPY package-lock.json ./
+COPY ./ ./
+RUN  npm i
+CMD ["npm", "start"]
+
+
+
+FROM node:16 AS builder
 
 WORKDIR /app
 COPY package.json .
@@ -15,10 +27,4 @@ CMD nginx -g 'daemon off;'
 
 
 
-#FROM node:16
-#WORKDIR /app
-#COPY package.json ./
-#COPY package-lock.json ./
-#COPY ./ ./
-#RUN  npm i
-#CMD ["npm", "start"]
+

@@ -229,6 +229,9 @@ Content-Type: application/json
 }
 
 ###
+GET http://0.0.0.0:5000/availability/dynamic?start=2022-04-20T01:01:01.000+02:00&end=2022-04-20T23:59:00.000+01:00
+
+###
 DELETE http://0.0.0.0:5000/fixedBookings?id=2
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDQ0OTA0OTEsImRhdGEiOnsiZW1haWwiOiJnYWxsaXppYWZpbGlwcG9AZ21haWwuY29tIn0sImlhdCI6MTY0NDQ4Njg5MX0.kZT0ZT82LHeqirfMwgAXq2M0-b5XZYFN4Rgu2OCRMb0
