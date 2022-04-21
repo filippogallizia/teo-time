@@ -23,8 +23,6 @@ services:
     build: ./api
     restart: unless-stopped
     env_file: ./.env
-    # volumes:
-    #   - ./api:/app/src
     ports:
       - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
     environment:
@@ -44,17 +42,11 @@ services:
       - api
     build:
       context: ./client
+      target: production
     environment:
       - NODE_ENV=$NODE_ENV
-      # args:`
-      #   - REACT_APP_API_BASE_URL=$CLIENT_API_BASE_URL
-    # restart: unless-stopped
     ports:
       - $REACT_LOCAL_PORT:$REACT_DOCKER_PORT
-    #volumes:
-    # - './client/teo-client:/app'
-    #- client:/app/node_modules
-
 volumes:
   db:
   client:

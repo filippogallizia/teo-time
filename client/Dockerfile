@@ -18,10 +18,10 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-FROM nginx:1.13-alpine
+FROM nginx:1.13-alpine as production
 
-COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/build /usr/share/nginx/html
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE $REACT_DOCKER_PORT
 CMD nginx -g 'daemon off;'
 
