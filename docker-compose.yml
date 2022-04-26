@@ -20,7 +20,9 @@ services:
   api:
     depends_on:
       - mysqldb
-    build: ./api
+    build:
+      context: ./api
+      target: production
     restart: unless-stopped
     env_file: ./.env
     ports:
@@ -40,9 +42,8 @@ services:
   client:
     depends_on:
       - api
-    build:
-      context: ./client
-      target: production
+    image: registry.digitalocean.com/teo-time-registry/nodetypescript_client
+    restart: unless-stopped
     environment:
       - NODE_ENV=$NODE_ENV
     ports:

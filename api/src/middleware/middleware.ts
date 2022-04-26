@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 
+import avalDefault from '../config/availabilitiesDefault.config.json';
 import {
   ResponseWithAvalType,
   ResponseWithUserType,
@@ -21,8 +22,6 @@ import {
   filterDays_updateDate,
   retrieveAvailability,
 } from '../utils';
-
-const avalDefault = require('../config/availabilitiesDefault.config.json');
 
 // chronJob to delete past bookings
 
@@ -194,6 +193,7 @@ const getAvailability = async (
      *
      */
     const daysAvailabilities: DayAvailabilityType[] =
+      //@ts-expect-error
       await parseDatabaseAvailability(avalDefault);
 
     /**
