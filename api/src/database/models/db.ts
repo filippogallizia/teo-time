@@ -1,8 +1,8 @@
-const dbConfig = require('../../config/db.config.js');
-
+import dbConfig from '../../config/db.config';
 import BookingsModel from './booking.model';
 import DatabaseAvailabiltyModel from './databaseAvailabilty.model';
 import FixedBookingsModel from './fixedBooking.model';
+import UserModel from './user.model';
 
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize(
@@ -29,7 +29,7 @@ db.Sequelize = Sequelize;
 //@ts-expect-error
 db.sequelize = sequelize;
 //@ts-expect-error
-db.user = require('./user.model.ts')(sequelize, DataTypes);
+db.user = UserModel(sequelize, DataTypes);
 //@ts-expect-error
 db.Bookings = BookingsModel(sequelize, Sequelize);
 //@ts-expect-error

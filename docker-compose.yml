@@ -3,7 +3,7 @@ version: '3.8'
 services:
   mysqldb:
     image: mysql
-    restart: unless-stopped
+    restart: always
     env_file: ./.env
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
@@ -20,11 +20,13 @@ services:
   api:
     depends_on:
       - mysqldb
-    build: ./api
-    restart: unless-stopped
+    build:
+      context: ./api
+      target: production
+    restart: always
     env_file: ./.env
     ports:
-      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+      - $NODE_LOCAL_PORT:80
     environment:
       - NODE_ENV=$NODE_ENV
       - DB_HOST=$MYSQLDB_HOST
@@ -40,6 +42,7 @@ services:
   client:
     depends_on:
       - api
+    restart: always
     build:
       context: ./client
       target: production

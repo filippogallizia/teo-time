@@ -52,7 +52,7 @@ const daysShorted = (value: string) => {
 
 export const getRecurrencyRules = (p: {
   startDate: string;
-  day: string = '2';
+  day: string;
   exdate: string;
 }): string[] => {
   const { startDate, day, exdate } = p;

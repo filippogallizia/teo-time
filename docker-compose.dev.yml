@@ -20,7 +20,9 @@ services:
   api:
     depends_on:
       - mysqldb
-    build: ./api
+    build:
+      context: ./api
+      target: development
     restart: unless-stopped
     env_file: ./.env
     volumes:
