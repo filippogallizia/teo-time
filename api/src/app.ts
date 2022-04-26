@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 });
 
 db.sequelize
-  .sync({ force: true })
+  .sync({ force: false })
   .then(() => {
     // chronJob to delete past bookings
     runEveryDay(db);
