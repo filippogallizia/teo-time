@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import i18n from '../../../i18n';
-import { EVENT_INFO_TEXT } from '../../../shared/locales/constant';
+import { EVENT_INFO_TEXT } from '../../../constants/constant';
 
 type InfoBookingType = {
   date: string;

@@ -1,16 +1,38 @@
-import { DayAvalSettingsType } from '../../../booking/stateReducer';
-
+import { DateTime } from 'luxon';
 import HttpService from '../../../../services/HttpService';
+import { BookingDetailsType } from './reducer';
+
+export type FixedBookingDTO = {
+  day: string;
+  email: string;
+  end: string;
+  id: number;
+  start: string;
+  exceptionDate: string;
+};
 
 class FixedBookingsManagerApi {
-  public createFixedBookings(body: DayAvalSettingsType[]): Promise<any> {
+  public createFixedBookings(body: BookingDetailsType): Promise<any> {
     return HttpService.post(`/fixedBookings`, {
+      fixedBks: body,
+      dateFromClient: DateTime.local().toISO(),
+    });
+  }
+
+  public getFixedBookings(
+    criteria?: Partial<FixedBookingDTO>
+  ): Promise<FixedBookingDTO[]> {
+    return HttpService.get(`/fixedBookings`);
+  }
+
+  public updateFixedBookings(body: BookingDetailsType): Promise<any> {
+    return HttpService.put(`/fixedBookings`, {
       fixedBks: body,
     });
   }
 
-  public getFixedBookings(): Promise<any> {
-    return HttpService.get(`/fixedBookings`);
+  public deleteFixedBooking(id: number): Promise<any> {
+    return HttpService.delete(`/fixedBookings?id=${id}`);
   }
 }
 

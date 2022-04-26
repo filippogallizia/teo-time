@@ -1,42 +1,93 @@
 import produce from 'immer';
 import { ChangeEvent } from 'react';
-import { DayAvalSettingsType } from '../../../booking/stateReducer';
 
-export const SET_WEEK_AVAL_SETTINGS = 'SET_WEEK_AVAL_SETTINGS';
-export const SET_ALL_WEEK_AVAL_SETTINGS = 'SET_ALL_WEEK_AVAL_SETTINGS';
+export type DayAvalSettingsType = {
+  breakTimeBtwEventsHours: string;
+  breakTimeBtwEventsMinutes: string;
+  breakTimeEnd: string;
+  breakTimeStart: string;
+  day: string;
+  eventDurationHours: string;
+  eventDurationMinutes: string;
+  id?: number;
+  workTimeEnd: string;
+  workTimeStart: string;
+};
+
+export const SET_STATE = 'SET_STATE';
+export const MODAL = 'MODAL';
+export const SET_SELECTED_DAY = 'SET_SELECTED_DAY';
+export const EDIT_SELECTED_DAY = 'EDIT_SELECTED_DAY';
+//type ActionWeekAvailSettings = {
+//  type: typeof SET_WEEK_AVAL_SETTINGS;
+//  payload: { day: string; e: ChangeEvent<HTMLInputElement> };
+//};
+
+//type ActionCurrentAvailSettings = {
+//  type: typeof EDIT_SELECTED_AVAL_SETTINGS;
+//  payload: DayAvalSettingsType;
+//};
 
 export type InitialState = {
   weekAvalSettings: DayAvalSettingsType[];
+  modal: ModalType;
+  selectedDay: DayAvalSettingsType;
 };
 
-type ActionWeekAvailSettings = {
-  type: typeof SET_WEEK_AVAL_SETTINGS;
-  payload: { day: string; e: ChangeEvent<HTMLInputElement> };
+export type ModalType = {
+  isOpen: boolean;
 };
 
-type ActionAllWeekAvailSettings = {
-  type: typeof SET_ALL_WEEK_AVAL_SETTINGS;
+type ActionEditModal = {
+  type: typeof MODAL;
+  payload: {
+    modal: ModalType;
+  };
+};
+
+type ActionSetState = {
+  type: typeof SET_STATE;
   payload: DayAvalSettingsType[];
 };
 
-export type Actions = ActionWeekAvailSettings | ActionAllWeekAvailSettings;
+type ActionSetSelectedDay = {
+  type: typeof SET_SELECTED_DAY;
+  payload: DayAvalSettingsType;
+};
+
+type ActionEditSelectedDay = {
+  type: typeof EDIT_SELECTED_DAY;
+  payload: ChangeEvent<HTMLInputElement>;
+};
+
+export type Actions =
+  | ActionSetState
+  | ActionEditModal
+  | ActionSetSelectedDay
+  | ActionEditSelectedDay;
 
 const stateReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
-    case SET_ALL_WEEK_AVAL_SETTINGS:
+    case SET_STATE:
       return produce(initialState, (draft) => {
         draft.weekAvalSettings = action.payload;
       });
-    case SET_WEEK_AVAL_SETTINGS:
+
+    case SET_SELECTED_DAY:
       return produce(initialState, (draft) => {
-        const day = action.payload.day;
-        const x = action.payload.e.target.id.split('.');
-        draft.weekAvalSettings.map((d: any) => {
-          if (d.day === day) {
-            return (d.parameters[x[0]][x[1]] = action.payload.e.target.value);
-          }
-          return d;
-        });
+        draft.selectedDay = action.payload;
+      });
+
+    case EDIT_SELECTED_DAY:
+      return produce(initialState, (draft) => {
+        const inputName = action.payload.target.id.split('.')[0];
+        //@ts-expect-error
+        draft.selectedDay[inputName] = action.payload.target.value;
+      });
+
+    case MODAL:
+      return produce(initialState, (draft) => {
+        draft.modal = action.payload.modal;
       });
 
     default:

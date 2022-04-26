@@ -6,12 +6,12 @@ import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import Routes from '../../routes';
-import { GRID_ONE_COL, TITLE } from '../../shared/locales/constant';
-import { handleToastInFailRequest } from '../../shared/locales/utils';
+import { GRID_ONE_COL, TITLE } from '../../constants/constant';
 import { toast } from 'react-toastify';
 import i18n from '../../i18n';
 import { useLocation } from 'react-router-dom';
-import { buttonStyle } from '../../component/GeneralButton';
+import { primaryButton } from '../../component/GeneralButton';
+import ToastService from '../../services/ToastService';
 
 type InitialFormType = {
   newPassword: string;
@@ -58,10 +58,10 @@ const ResetPassword = () => {
         resetPasswordToken,
         newPassword: value.newPassword,
       });
-      toast(i18n.t(response));
+      toast.success(i18n.t(response));
       history.push(Routes.LOGIN);
     } catch (e: any) {
-      handleToastInFailRequest(e, toast);
+      ToastService.error(e);
     }
   };
 
@@ -104,7 +104,7 @@ const ResetPassword = () => {
           </div>
           <div>
             <input
-              className={buttonStyle(isValid)}
+              className={primaryButton(isValid)}
               type="submit"
               value="ResetPassword"
             />

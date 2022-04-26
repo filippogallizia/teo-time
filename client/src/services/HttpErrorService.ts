@@ -11,7 +11,7 @@ export class HttpError {
   static error(error?: RequestError): HttpError | null {
     if (error) {
       return new HttpError(
-        error.message,
+        error.response?.data,
         error.response?.status,
         error.response?.data,
         error.response?.statusText

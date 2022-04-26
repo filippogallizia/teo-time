@@ -1,19 +1,14 @@
 API
 - google calendar remove events
 - middleware authenticateToken in createBooking
-
-EditBooking add a fetchAndSetState function 
-BookingManager refactor handleSuccess function
+- EditBooking add a fetchAndSetState function 
+- BookingManager refactor handleSuccess function
 
 
 CLIENT
-- holidayManager , see how to handle local state and deleting booking inside bookingManager.
-- why do I need the setLocation????
-- refactor client folder architecture expecially apifunctions
 
-TO RUN ON REMOTE
-- check node env variable!
+- filter in admin/prenotazioni not working in Italy ?? weird because on my pc works
+- put validation on createion of fixedBookings
 
 for Admin
-
 email profile https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/calendar.readonly

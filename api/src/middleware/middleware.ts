@@ -1,22 +1,26 @@
-import express, { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 
-import { filterDays_updateDate, retrieveAvailability } from '../../utils';
-import { FixedBookingModelType } from '../database/models/fixedBooking.model';
 import {
   ResponseWithAvalType,
   ResponseWithUserType,
 } from '../routes/interfaces/interfaces';
 import authService from '../services/authService/AuthService';
-import parseDatabaseAvailability from '../services/AvailabilitiesService';
-import bookingService from '../services/BookingService/BookingService';
-import { ErrorService } from '../services/ErrorService';
-import fixedBookingService from '../services/FixedBookingService';
-import userService from '../services/UserService';
+import { parseDatabaseAvailability } from '../services/availabilityService/AvailabilitiesService';
+import bookingService from '../services/bookingService/BookingService';
+import { ErrorService } from '../services/errorService/ErrorService';
+import FixedBookingService from '../services/fixedBookingService/FixedBookingService';
+import { FixedBookingDTO } from '../services/fixedBookingService/interfaces';
+import userService from '../services/userService/UserService';
 import { DayAvailabilityType } from '../types/types';
+import {
+  DATE_TO_FULL_DAY,
+  filterDays_updateDate,
+  retrieveAvailability,
+} from '../utils';
 
 const avalDefault = require('../config/availabilitiesDefault.config.json');
 
@@ -24,24 +28,24 @@ const avalDefault = require('../config/availabilitiesDefault.config.json');
 
 // google verify token
 
-const client = new OAuth2Client(process.env.GOOGLE_CALENDAR_CLIENT_ID);
-
-export const googleAuth = async (token: string) => {
-  try {
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      //@ts-expect-error
-      audience: process.env.GOOGLE_CALENDAR_CLIENT_ID,
-    });
-    const payload: any = ticket.getPayload();
-    if (payload) {
-      const { email, name } = payload;
-      return { email, name };
-    } else return undefined;
-  } catch (e) {
-    console.log(e);
-  }
-};
+// TODO -> enable this comment to use client google login
+//const client = new OAuth2Client(process.env.GOOGLE_CALENDAR_CLIENT_ID);
+//export const googleAuth = async (token: string) => {
+//  try {
+//    const ticket = await client.verifyIdToken({
+//      idToken: token,
+//      //@ts-expect-error
+//      audience: process.env.GOOGLE_CALENDAR_CLIENT_ID,
+//    });
+//    const payload: any = ticket.getPayload();
+//    if (payload) {
+//      const { email, name } = payload;
+//      return { email, name };
+//    } else return undefined;
+//  } catch (e) {
+//    console.log(e);
+//  }
+//};
 
 export const bookExist = async (
   req: Request,
@@ -52,18 +56,27 @@ export const bookExist = async (
   const endRange = req.body.end;
   try {
     const bookings = await Promise.all([
-      bookingService.findAll(
-        bookingService.queryDates.inBtwStartAndEnd(startRange, endRange)
-      ),
-      bookingService.findAll(
-        bookingService.queryDates.inBtwStartAndSmallerEnd(startRange, endRange)
-      ),
-      bookingService.findAll(
-        bookingService.queryDates.smallerStartAndBiggerEnd(startRange, endRange)
-      ),
-      bookingService.findAll(
-        bookingService.queryDates.smallerStartInBtwEnd(startRange, endRange)
-      ),
+      bookingService.findAll({
+        where: bookingService.queryDates.inBtwStartAndEnd(startRange, endRange),
+      }),
+      bookingService.findAll({
+        where: bookingService.queryDates.inBtwStartAndSmallerEnd(
+          startRange,
+          endRange
+        ),
+      }),
+      bookingService.findAll({
+        where: bookingService.queryDates.smallerStartAndBiggerEnd(
+          startRange,
+          endRange
+        ),
+      }),
+      bookingService.findAll({
+        where: bookingService.queryDates.smallerStartInBtwEnd(
+          startRange,
+          endRange
+        ),
+      }),
     ]);
 
     if (bookings.flat().length > 0) {
@@ -79,26 +92,34 @@ const getAvailability = async (
   res: ResponseWithAvalType,
   next: NextFunction
 ) => {
+  //@ts-expect-error
+  const start = req.query.start && req.query.start.split(' ').join('+');
+  //@ts-expect-error
+  const end = req.query.end && req.query.end.split(' ').join('+');
+
   const avalRange: { start: string; end: string }[] = [
-    ...req.body.TimeRangeType,
+    {
+      start: (start as string) ?? '',
+      end: (end as string) ?? '',
+    },
   ];
   try {
     const start = avalRange[0].start;
     const end = avalRange[0].end;
 
     const bookings = await Promise.all([
-      bookingService.findAll(
-        bookingService.queryDates.inBtwStartAndEnd(start, end)
-      ),
-      bookingService.findAll(
-        bookingService.queryDates.inBtwStartAndSmallerEnd(start, end)
-      ),
-      bookingService.findAll(
-        bookingService.queryDates.smallerStartAndBiggerEnd(start, end)
-      ),
-      bookingService.findAll(
-        bookingService.queryDates.smallerStartInBtwEnd(start, end)
-      ),
+      bookingService.findAll({
+        where: bookingService.queryDates.inBtwStartAndEnd(start, end),
+      }),
+      bookingService.findAll({
+        where: bookingService.queryDates.inBtwStartAndSmallerEnd(start, end),
+      }),
+      bookingService.findAll({
+        where: bookingService.queryDates.smallerStartAndBiggerEnd(start, end),
+      }),
+      bookingService.findAll({
+        where: bookingService.queryDates.smallerStartInBtwEnd(start, end),
+      }),
     ]);
 
     /**
@@ -121,18 +142,42 @@ const getAvailability = async (
      * fixedBooking dont have date but just hours!
      *
      */
+    const fixedBks = await FixedBookingService.findAll();
 
-    const fixedBks = await fixedBookingService.findAll();
+    const mapFixedBks = fixedBks
+      /**
+       * first we filter for exceptionDate
+       */
+      .filter((book: FixedBookingDTO) => {
+        const requestedAvail = DATE_TO_FULL_DAY(start);
+        const fixedBookException = DATE_TO_FULL_DAY(book.exceptionDate);
+        return requestedAvail !== fixedBookException;
+      })
+      .map((book: FixedBookingDTO) => {
+        return {
+          day: book.day,
+          availability: [{ start: book.start, end: book.end }],
+        };
+      });
 
-    const mapFixedBks = fixedBks.map((book: FixedBookingModelType) => {
-      return {
-        day: book.day,
-        availability: [{ start: book.start, end: book.end }],
-      };
-    });
+    /**
+     * group the fixedBkgs.
+     * example: [{day: monday, aval: [..]}, {day: monday, aval: [..]}, {day: tuesday, aval: [..]}] => [{day: monday, aval: [.. ..]}, {day: tuesday, aval: [..]}]
+     */
+    const fixedBksGrouped = mapFixedBks.reduce((acc: any, cv) => {
+      if (acc.length > 0 && _.find(acc, (el) => el.day === cv.day)) {
+        acc[acc.length - 1].availability = [
+          ...acc[acc.length - 1].availability,
+          ...cv.availability,
+        ];
+      } else {
+        acc.push(cv);
+      }
+      return acc;
+    }, []);
 
     const parsedFixedBookings = filterDays_updateDate(
-      mapFixedBks,
+      fixedBksGrouped,
       avalRange
     ).map((day) => day.availability);
 
@@ -141,7 +186,6 @@ const getAvailability = async (
      * join all bookings in a single array
      *
      */
-
     const joinedBookings = [...parsedBookings, ...parsedFixedBookings.flat()];
 
     /**
@@ -149,7 +193,6 @@ const getAvailability = async (
      * get weekAvalSetting and create dynamicAval. If there are not weekAvalSetting create them.
      *
      */
-
     const daysAvailabilities: DayAvailabilityType[] =
       await parseDatabaseAvailability(avalDefault);
 
@@ -158,7 +201,6 @@ const getAvailability = async (
      * join all the datas togheter and get availabilities, hopefully all works
      *
      */
-
     const availabilities = retrieveAvailability(
       {
         bookings: joinedBookings,
@@ -190,7 +232,6 @@ const userExist = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await userService.findOne(email);
     if (!user) {
-      console.log('hereUseStrange');
       next(ErrorService.badRequest('user not found'));
     }
     //@ts-expect-error
@@ -245,28 +286,28 @@ const authenticateToken = async (
 ) => {
   const authHeader = req.header('Authorization');
   const token = authHeader && authHeader.split(' ')[1];
-  console.log(token, 'token');
   if (!token) next(ErrorService.unauthorized('Unauthorized'));
   else {
-    const payload = token && (await googleAuth(token));
+    // TODO -> enable this comment to use client google login
+    //const payload = token && (await googleAuth(token));
     try {
-      if (payload) {
-        res.user = { email: payload.email };
-        next();
-      } else {
-        jwt.verify(
-          token,
-          process.env.ACCESS_TOKEN_SECRET as string,
-          (err: any, decoded: any) => {
-            if (err) {
-              console.log(err, 'ERROR VERIFICATION');
-              next(ErrorService.unauthorized('Unauthorized'));
-            }
-            res.user = decoded.data;
-            next();
+      // TODO -> enable this comment to use client google login
+      //if (payload) {
+      //    res.user = { email: payload.email };
+      //    next();
+      //  } else {
+      jwt.verify(
+        token,
+        process.env.ACCESS_TOKEN_SECRET as string,
+        (err: any, decoded: any) => {
+          if (err || !decoded) {
+            next(ErrorService.unauthorized('Unauthorized'));
+            return;
           }
-        );
-      }
+          res.user = decoded.data;
+          next();
+        }
+      );
     } catch (error) {
       next(error);
     }
@@ -281,5 +322,5 @@ module.exports = {
   requestHasPassword,
   loginValidation,
   authenticateToken,
-  googleAuth,
+  //googleAuth,
 };

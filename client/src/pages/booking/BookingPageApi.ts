@@ -8,7 +8,7 @@ class BookingPageApi {
     localId?: number;
   }): Promise<any> {
     const { start, end, isHoliday, localId } = body;
-    return HttpService.post(`/createBooking`, {
+    return HttpService.post(`/bookings`, {
       start,
       end,
       isHoliday,
@@ -18,11 +18,8 @@ class BookingPageApi {
 
   public getAvailabilities(body: { start: string; end: string }): Promise<any> {
     const { start, end } = body;
-    const bodyToSend = { TimeRangeType: [{ start, end }] };
 
-    return HttpService.post(`/retrieveAvailability`, {
-      ...bodyToSend,
-    });
+    return HttpService.get(`/availability/dynamic?start=${start}&end=${end}`);
   }
 }
 

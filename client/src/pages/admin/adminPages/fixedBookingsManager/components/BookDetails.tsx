@@ -1,124 +1,111 @@
-import i18n from '../../../../../i18n';
-import { ITALIC } from '../../../../../shared/locales/constant';
-import { promptConfirmation } from '../../../../../shared/locales/utils';
 import {
   Actions,
-  ADD_OR_REMOVE_FIXED_BKS,
-  DELETE,
-  FixedBookType,
-  UPLOAD_EMAIL_CLIENT,
-  UPLOAD_END_DATE,
-  UPLOAD_START_DATE,
+  BookingDetailsType,
+  EDIT_BOOKING_DETAILS,
+  InitialState,
 } from '../reducer';
+import DayPicker from './DayPicker';
+import HourPicker from './HourPicker';
+import DatePicker from 'react-date-picker';
 
 type BookDetailsType = {
-  bks: FixedBookType;
-  day: string;
+  bks: BookingDetailsType;
   dispatch: React.Dispatch<Actions>;
+  state: InitialState;
+  disabled?: boolean;
 };
 
-const BookDetails = ({ bks, day, dispatch }: BookDetailsType) => {
+const BookDetails = ({ bks, disabled, state, dispatch }: BookDetailsType) => {
   return (
-    <div className={`grid grid-cols-3 gap-4 border-b-4 pb-2`}>
-      <p className={`col-span-3 ${ITALIC}`}>
-        {/*{i18n.t('adminPage.avalManagerPage.workingTime')}
-         */}
-        cliente
-      </p>
-      <div className="col-span-3 grid grid-cols-2 items-center">
-        <p>{i18n.t('adminPage.avalManagerPage.start')}</p>
-        <input
-          type="time"
-          id="workTimeRange.start"
-          className="w-32 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          required
+    <div className={`flex flex-col gap-4`}>
+      <DayPicker
+        disabled={disabled}
+        value={bks.day}
+        onChange={(e) => {
+          dispatch({
+            type: EDIT_BOOKING_DETAILS,
+            payload: {
+              bookingDetails: {
+                ...state.bookingDetails,
+                day: e.target.value,
+              },
+            },
+          });
+        }}
+      />
+      <div className="flex gap-4">
+        <HourPicker
+          disabled={disabled}
+          type="start"
           value={bks.start}
           onChange={(e) => {
             dispatch({
-              type: ADD_OR_REMOVE_FIXED_BKS,
+              type: EDIT_BOOKING_DETAILS,
               payload: {
-                day: day,
-                booking: {
-                  ...bks,
+                bookingDetails: {
+                  ...state.bookingDetails,
                   start: e.target.value,
                 },
-                type: UPLOAD_START_DATE,
               },
             });
           }}
         />
-      </div>
-      <div className="col-span-3 grid grid-cols-2 items-center">
-        <p>{i18n.t('adminPage.avalManagerPage.end')}</p>
-        <input
-          type="time"
-          id="workTimeRange.end"
-          className="w-32 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          required
+        <HourPicker
+          disabled={disabled}
+          type="end"
           value={bks.end}
           onChange={(e) => {
             dispatch({
-              type: ADD_OR_REMOVE_FIXED_BKS,
+              type: EDIT_BOOKING_DETAILS,
               payload: {
-                day: day,
-                booking: {
-                  ...bks,
+                bookingDetails: {
+                  ...state.bookingDetails,
                   end: e.target.value,
                 },
-                type: UPLOAD_END_DATE,
               },
             });
           }}
         />
       </div>
-      <div className="col-span-3 grid grid-cols-2 items-center">
-        <p>Email cliente</p>
+      <div>
         <input
+          disabled={disabled}
+          placeholder="email client"
           type="text"
-          id="clientName"
-          className="w-32 shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="email"
+          className="shadow appearance-none border rounded  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
           value={bks.email}
           onChange={(e) => {
             dispatch({
-              type: ADD_OR_REMOVE_FIXED_BKS,
+              type: EDIT_BOOKING_DETAILS,
               payload: {
-                day: day,
-                booking: {
-                  ...bks,
+                bookingDetails: {
+                  ...state.bookingDetails,
                   email: e.target.value,
                 },
-                type: UPLOAD_EMAIL_CLIENT,
               },
             });
           }}
         />
       </div>
-      <div className="col-span-3 red-200">
-        <button
-          className="text-red-600"
-          onClick={() => {
-            const isConfirmed = promptConfirmation();
-            if (!isConfirmed) return;
-            else {
-              dispatch({
-                type: ADD_OR_REMOVE_FIXED_BKS,
-                payload: {
-                  day: day,
-                  booking: {
-                    id: bks.id,
-                    start: '',
-                    end: '',
-                    email: '',
-                  },
-                  type: DELETE,
+      <div>
+        <p className="mb-2">Eccetto</p>
+        <DatePicker
+          disabled={disabled}
+          value={bks.exceptionDate}
+          onChange={(e: Date) => {
+            dispatch({
+              type: EDIT_BOOKING_DETAILS,
+              payload: {
+                bookingDetails: {
+                  ...state.bookingDetails,
+                  exceptionDate: e,
                 },
-              });
-            }
+              },
+            });
           }}
-        >
-          Remove
-        </button>
+        />
       </div>
     </div>
   );

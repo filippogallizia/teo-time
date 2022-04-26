@@ -1,14 +1,27 @@
 import { Router } from 'express';
 
-import mainRoute from './routes';
+import AuthRoutes from './auth/authRoutes';
+import AvailabilityRoutes from './availability/availabilityRoutes';
+import BookingRoutes from './booking/bookingRoutes';
+import FixedBookingRoutes from './fixedBooking/fixedBookingRoutes';
+import HolidayRoutes from './holiday/holidayRoutes';
+import PasswordRoutes from './password/passwordRoutes';
+import PaymentRoutes from './payment/paymentRoutes';
+import UserRoutes from './user/userRoutes';
 
-//const db = require('../database/models/db');
+const RootRoutes = () => {
+  const RootRouter = Router();
 
-//export default () => {
-//  const app = Router();
-//  app.use(mainRoute);
-//  // why doesn't fodes work ?
-//  return app;
-//};
+  AuthRoutes(RootRouter);
+  BookingRoutes(RootRouter);
+  AvailabilityRoutes(RootRouter);
+  UserRoutes(RootRouter);
+  PasswordRoutes(RootRouter);
+  FixedBookingRoutes(RootRouter);
+  HolidayRoutes(RootRouter);
+  PaymentRoutes(RootRouter);
 
-export default {};
+  return RootRouter;
+};
+
+module.exports = RootRoutes;

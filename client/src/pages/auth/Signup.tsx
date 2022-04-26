@@ -1,16 +1,16 @@
 import React from 'react';
-import GeneralButton, { buttonStyle } from '../../component/GeneralButton';
+import GeneralButton, { primaryButton } from '../../component/GeneralButton';
 import AuthApi from './AuthApi/LoginService';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import Routes from '../../routes';
-import { TITLE } from '../../shared/locales/constant';
+import { TITLE } from '../../constants/constant';
 import { toast } from 'react-toastify';
-import { handleToastInFailRequest } from '../../shared/locales/utils';
 import routes from '../../routes';
 import { SelfCenterLayout } from '../../component/GeneralLayouts';
+import ToastService from '../../services/ToastService';
 
 type InitialFormType = {
   name: string;
@@ -42,12 +42,10 @@ const Signup = () => {
         password: value.password,
         phoneNumber: value.phoneNumber,
       });
-      toast.success('sign up effettuato con successo', {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      toast.success('sign up effettuato con successo');
       history.push(routes.LOGIN);
     } catch (error: any) {
-      handleToastInFailRequest(error, toast);
+      ToastService.error(error);
     }
   };
 
@@ -125,7 +123,7 @@ const Signup = () => {
 
         <div>
           <input
-            className={buttonStyle(isValid)}
+            className={primaryButton(isValid)}
             type="submit"
             value="Sign up"
           />

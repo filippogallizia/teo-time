@@ -5,13 +5,13 @@ import {
   SUB_TITLE,
   TITLE,
   USER_INFO,
-} from '../../shared/locales/constant';
-import { handleToastInFailRequest } from '../../shared/locales/utils';
-import { DATE_TO_CLIENT_FORMAT } from '../../shared/locales/utils';
+} from '../../constants/constant';
+import { DATE_TO_CLIENT_FORMAT } from '../../helpers/utils';
 import UserPageApi from './userPageApi/userService';
 import { toast } from 'react-toastify';
 import { BookingAndUser, TimeRangeType } from '../../../types/Types';
 import i18n from '../../i18n';
+import ToastService from '../../services/ToastService';
 
 const DeleteBooking = ({
   booking,
@@ -22,16 +22,18 @@ const DeleteBooking = ({
 }) => {
   const handleDelete = async () => {
     try {
-      await UserPageApi.deleteBooking({
-        start: booking.start,
-        end: booking.end,
-      });
-      fetchAndSetBookings();
-      toast.success('prenotazione cancellata', {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      // eslint-disable-next-line no-restricted-globals
+      let isConfirmed = confirm('Sicuro di volere cancellare?');
+      if (isConfirmed) {
+        await UserPageApi.deleteBooking({
+          start: booking.start,
+          end: booking.end,
+        });
+        fetchAndSetBookings();
+        toast.success('prenotazione cancellata');
+      }
     } catch (e) {
-      alert(e);
+      ToastService.error(e);
     }
   };
   return (
@@ -52,7 +54,7 @@ const UserPage = () => {
       const response = await UserPageApi.retriveUserBooking();
       setBookings(response);
     } catch (error) {
-      handleToastInFailRequest(error, toast);
+      ToastService.error(error);
     }
   };
 

@@ -1,23 +1,19 @@
 import React, { useState } from 'react';
-import GeneralButton, { buttonStyle } from '../../component/GeneralButton';
+import GeneralButton, { primaryButton } from '../../component/GeneralButton';
 import AuthApi from './AuthApi/LoginService';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import Routes from '../../routes';
-import {
-  GRID_ONE_COL,
-  SECONDARY_LINK,
-  TITLE,
-} from '../../shared/locales/constant';
-import { handleToastInFailRequest } from '../../shared/locales/utils';
+import { GRID_ONE_COL, SECONDARY_LINK, TITLE } from '../../constants/constant';
 import { toast } from 'react-toastify';
 import i18n from '../../i18n';
-import GoogleLoginComponent from './GoogleLogin';
+//import GoogleLoginComponent from './GoogleLogin';
 import { SelfCenterLayout } from '../../component/GeneralLayouts';
 import LoadingService from '../../component/loading/LoadingService';
 import SessionService from '../../services/SessionService';
+import ToastService from '../../services/ToastService';
 
 export const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -53,7 +49,7 @@ export const ForgotPassword = () => {
                     toast.success(response);
                     setSuccess(true);
                   } catch (e) {
-                    handleToastInFailRequest(e, toast);
+                    ToastService.error(e);
                   }
                 };
                 asyncFn();
@@ -105,7 +101,7 @@ const Login = () => {
       SessionService.login({ token, user });
       history.push(Routes.HOMEPAGE_BOOKING);
     } catch (e: any) {
-      handleToastInFailRequest(e, toast);
+      ToastService.error(e);
     } finally {
       LoadingService.hide();
     }
@@ -149,7 +145,7 @@ const Login = () => {
 
         <div>
           <input
-            className={buttonStyle(isValid)}
+            className={primaryButton(isValid)}
             type="submit"
             value="Accedi"
           />
@@ -168,10 +164,13 @@ const Login = () => {
         >
           {i18n.t('loginPage.passwordLost')}
         </div>
-        <div className="border-b-2 border-black	text-center">Oppure</div>
-        <div>
-          <GoogleLoginComponent />{' '}
-        </div>
+        {/**
+         * TODO -> implement google login for client
+         */}
+        {/*<div className="border-b-2 border-black	text-center">Oppure</div>*/}
+        {/*<div>*/}
+        {/*<GoogleLoginComponent />{' '}*/}
+        {/*</div>*/}
       </form>
     </SelfCenterLayout>
   );

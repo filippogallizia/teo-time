@@ -5,14 +5,11 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import routes from '../../routes';
-import { ACCESS_TOKEN } from '../../shared/locales/constant';
-import { BookingComponentType } from '../booking/BookingPageTypes';
+import { ACCESS_TOKEN } from '../../constants/constant';
 import LoadingService from '../../component/loading/LoadingService';
+import { toast } from 'react-toastify';
 
-export default function CheckoutForm({
-  dispatch,
-  state,
-}: BookingComponentType) {
+export default function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -68,7 +65,6 @@ export default function CheckoutForm({
     }
 
     setIsLoading(true);
-
     LoadingService.show();
 
     const { error } = await stripe.confirmPayment({
@@ -78,9 +74,9 @@ export default function CheckoutForm({
       },
     });
     if (error.type === 'card_error' || error.type === 'validation_error') {
-      error.message && setMessage(error.message);
+      error.message && toast.error(error.message);
     } else {
-      setMessage('An unexpected error occured.');
+      toast.error("Qualcosa e' andato storto");
     }
 
     LoadingService.hide();

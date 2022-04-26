@@ -2,14 +2,16 @@ import HttpService from '../../../services/HttpService';
 
 class UserPageApi {
   public retriveUserBooking(): Promise<any> {
-    return HttpService.get(`/userBookings`);
+    return HttpService.get(`/users/bookings`);
   }
 
   public deleteBooking(body: { start: string; end: string }): Promise<any> {
     const { start, end } = body;
-    return HttpService.post(`/deleteBooking`, {
-      start,
-      end,
+    return HttpService.delete(`/bookings`, {
+      data: {
+        start,
+        end,
+      },
     });
   }
 }

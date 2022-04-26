@@ -5,7 +5,7 @@ export interface BookingModel extends Model {
   start: string;
   end: string;
   isHoliday: boolean;
-  localId: number;
+  calendarEventId?: string;
 }
 
 const Booking = (sequelize: any, Sequelize: any) => {
@@ -22,8 +22,8 @@ const Booking = (sequelize: any, Sequelize: any) => {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
-      localId: {
-        type: Sequelize.INTEGER,
+      calendarEventId: {
+        type: Sequelize.STRING,
         defaultValue: undefined,
       },
     },

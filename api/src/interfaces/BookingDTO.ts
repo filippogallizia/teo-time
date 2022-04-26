@@ -1,8 +1,8 @@
 export type BookingDTO = {
-  id: number;
+  id?: number;
   start: string;
   end: string;
   isHoliday: boolean;
-  localId: number;
-  userId: number;
+  userId?: number;
+  calendarEventId?: string;
 };

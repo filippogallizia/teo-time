@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import i18n from '../i18n';
 import routes from '../routes';
 import InstagramLogo from '../shared/icons/instagram.svg';
-import { SECONDARY_LINK } from '../shared/locales/constant';
+import { SECONDARY_LINK } from '../constants/constant';
 
 const Footer = () => {
   return (

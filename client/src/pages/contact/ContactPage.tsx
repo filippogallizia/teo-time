@@ -1,16 +1,38 @@
 import { Link } from 'react-router-dom';
 import i18n from '../../i18n';
-import { ITALIC, SECONDARY_LINK, TITLE } from '../../shared/locales/constant';
+import {
+  ITALIC,
+  PARAGRAPH_MEDIUM,
+  SECONDARY_LINK,
+  TITLE,
+} from '../../constants/constant';
+import { AiFillCopy } from 'react-icons/ai';
+import ToastService from 'src/services/ToastService';
 
 const ContactPage = () => {
   return (
     <div className="flex flex-col items-center gap-8 justify-center">
       <p className={TITLE}>{i18n.t('contactPage.title')}</p>
-      <div className="grid grid-cols-1 gap-8 justify-items-start">
-        <p>
-          <span className={`mr-2 ${ITALIC}`}>email:</span>{' '}
-          {i18n.t('contactPage.body.email')}
-        </p>
+      <div
+        className={`grid grid-cols-1 gap-8 justify-items-start ${PARAGRAPH_MEDIUM}`}
+      >
+        <div className="flex gap-8 items-center justify-between">
+          <p>
+            <span className={`mr-2 ${ITALIC}`}>Email:</span>{' '}
+            {i18n.t('contactPage.body.email')}
+          </p>
+          <div
+            className="cursor-pointer"
+            onClick={async () => {
+              await navigator.clipboard.writeText(
+                i18n.t('contactPage.body.email')
+              );
+              ToastService.success('email copiata');
+            }}
+          >
+            <AiFillCopy />
+          </div>
+        </div>
         <div className="flex gap-4">
           <p className={`${ITALIC}`}>{i18n.t('contactPage.body.address')}</p>
           <Link
@@ -20,7 +42,7 @@ const ContactPage = () => {
             }}
             target="_blank"
           >
-            <p className={SECONDARY_LINK}>via osti</p>
+            <p className={SECONDARY_LINK}>via osti - Milano</p>
           </Link>
         </div>
       </div>

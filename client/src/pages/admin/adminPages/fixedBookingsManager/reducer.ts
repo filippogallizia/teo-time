@@ -1,59 +1,77 @@
 import produce from 'immer';
 import { TimeRangeType } from '../../../../../types/Types';
-import { HOUR_MINUTE_FORMAT } from '../../../../shared/locales/utils';
-import { weekDays } from '../availabilitiesManager/AvailabilitiesManager';
+import { HOUR_MINUTE_FORMAT } from '../../../../helpers/utils';
 
 export const SET_FIXED_BKS = 'SET_FIXED_BKS';
 export const ADD_OR_REMOVE_FIXED_BKS = 'ADD_OR_REMOVE_FIXED_BKS';
+export const EDIT_BOOKING_DETAILS = 'EDIT_BOOKING_DETAILS';
 
-export const ADD = 'ADD';
-export const DELETE = 'DELETE';
-export const UPLOAD_START_DATE = 'UPLOAD_START_DATE';
-export const UPLOAD_END_DATE = 'UPLOAD_END_DATE';
-export const UPLOAD_EMAIL_CLIENT = 'UPLOAD_EMAIL_CLIENT';
-export const UPLOAD_ALL = 'UPLOAD_ALL';
-export const NO_VALUES = 'NO_VALUES';
+export const MODAL = 'MODAL';
+export const CREATE = 'CREATE';
+export const EDIT = 'EDIT';
 
-export type FixedBookType = TimeRangeType & { id: number; email: string };
+export const weekDays = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+];
+
+export type BookingDetailsType = {
+  start: string;
+  end: string;
+  day: string;
+  email: string;
+  id?: number;
+  exceptionDate: Date | undefined;
+};
+
+export type FixedBookType = TimeRangeType & {
+  id: number;
+  email: string;
+  day: string;
+};
 
 export type FixedBksType = {
   day: string;
-  bookings: Array<FixedBookType>;
+  bookings: Array<BookingDetailsType>;
 };
 
-export type FixedBksFromApi = {
-  id: number;
-  start: string;
-  end: string;
-  email: string;
-  day: string;
-  localId: number;
-};
-
-export type InitialState = {
-  fixedBks: FixedBksType[];
+export type ModalType = {
+  isOpen: boolean;
+  mode: typeof CREATE | typeof EDIT;
 };
 
 type ActionSetFixedBks = {
   type: typeof SET_FIXED_BKS;
-  payload: FixedBksFromApi[];
+  payload: BookingDetailsType[];
 };
 
-type ActionAddFixedBks = {
-  type: typeof ADD_OR_REMOVE_FIXED_BKS;
+type ActionEditModal = {
+  type: typeof MODAL;
   payload: {
-    day: string;
-    booking: TimeRangeType & { id: number; email: string };
-    type:
-      | typeof ADD
-      | typeof DELETE
-      | typeof UPLOAD_START_DATE
-      | typeof UPLOAD_END_DATE
-      | typeof UPLOAD_EMAIL_CLIENT;
+    modal: ModalType;
   };
 };
 
-export type Actions = ActionSetFixedBks | ActionAddFixedBks;
+type ActionEditBookingDetail = {
+  type: typeof EDIT_BOOKING_DETAILS;
+  payload: {
+    bookingDetails: BookingDetailsType;
+  };
+};
+
+export type Actions =
+  | ActionSetFixedBks
+  | ActionEditModal
+  | ActionEditBookingDetail;
+
+export type InitialState = {
+  fixedBks: FixedBksType[];
+  modal: ModalType;
+  bookingDetails: BookingDetailsType;
+};
 
 const stateReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
@@ -68,55 +86,29 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
                 return {
                   start: HOUR_MINUTE_FORMAT(d.start),
                   end: HOUR_MINUTE_FORMAT(d.end),
-                  id: d.localId,
+                  day: d.day,
+                  id: d.id,
                   email: d.email,
+                  exceptionDate: d.exceptionDate
+                    ? new Date(d.exceptionDate)
+                    : undefined,
                 };
               }),
           };
         });
         draft.fixedBks = result;
       });
-    case ADD_OR_REMOVE_FIXED_BKS:
+
+    case MODAL:
       return produce(initialState, (draft) => {
-        const index = draft.fixedBks.findIndex(
-          (x) => x.day === action.payload.day
-        );
-        if (index > -1) {
-          if (action.payload.type === ADD) {
-            draft.fixedBks[index].bookings.push(action.payload.booking);
-          }
-          if (action.payload.type === DELETE) {
-            const i = draft.fixedBks[index].bookings.findIndex((book) => {
-              return book.id === action.payload.booking.id;
-            });
-            draft.fixedBks[index].bookings.splice(i, 1);
-          }
-          if (action.payload.type === UPLOAD_START_DATE) {
-            const i = draft.fixedBks[index].bookings.findIndex((book) => {
-              return book.id === action.payload.booking.id;
-            });
-            console.log(
-              action.payload.booking.start,
-              '    action.payload.booking.start'
-            );
-            draft.fixedBks[index].bookings[i].start =
-              action.payload.booking.start;
-          }
-          if (action.payload.type === UPLOAD_END_DATE) {
-            const i = draft.fixedBks[index].bookings.findIndex((book) => {
-              return book.id === action.payload.booking.id;
-            });
-            draft.fixedBks[index].bookings[i].end = action.payload.booking.end;
-          }
-          if (action.payload.type === UPLOAD_EMAIL_CLIENT) {
-            const i = draft.fixedBks[index].bookings.findIndex((book) => {
-              return book.id === action.payload.booking.id;
-            });
-            draft.fixedBks[index].bookings[i].email =
-              action.payload.booking.email;
-          }
-        }
+        draft.modal = action.payload.modal;
       });
+
+    case EDIT_BOOKING_DETAILS:
+      return produce(initialState, (draft) => {
+        draft.bookingDetails = action.payload.bookingDetails;
+      });
+
     default:
       return initialState;
   }

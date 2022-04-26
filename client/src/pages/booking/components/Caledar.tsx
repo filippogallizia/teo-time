@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import React from 'react';
 import Calendar from 'react-calendar';
 import { BookingComponentType } from '../BookingPageTypes';
@@ -11,7 +12,10 @@ function CalendarComponent({ dispatch, state }: BookingComponentType) {
     });
     myPromise
       .then(() => {
-        dispatch({ type: SET_SELECTION_DATE, payload: date.toISOString() });
+        dispatch({
+          type: SET_SELECTION_DATE,
+          payload: DateTime.fromJSDate(date).toISO(),
+        });
       })
       .then(() => {
         dispatch({ type: SET_RENDER_AVAL, payload: true });
@@ -22,7 +26,7 @@ function CalendarComponent({ dispatch, state }: BookingComponentType) {
     <Calendar
       minDate={new Date()}
       onChange={myDispatch}
-      value={new Date(state.schedules.selectedDate)}
+      value={DateTime.fromISO(state.schedules.selectedDate).toJSDate()}
     />
   );
 }

@@ -1,11 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { FLEX_DIR_ROW } from '../../../shared/locales/constant';
-import {
-  Actions,
-  InitialState,
-  SET_SELECTION_HOUR,
-} from '../stateReducer';
+import { FLEX_DIR_ROW } from '../../../constants/constant';
+import { Actions, InitialState, SET_SELECTION_HOUR } from '../stateReducer';
 import routes from '../../../routes';
 
 type AvalChildType = {

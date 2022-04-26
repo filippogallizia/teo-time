@@ -1,4 +1,5 @@
 export type DatabaseAvailabilityType = {
+  id?: number;
   day: string;
   workTimeStart: string;
   workTimeEnd: string;

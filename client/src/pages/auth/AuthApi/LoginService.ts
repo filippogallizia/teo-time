@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { TokenType, UserType } from '../../../../types/Types';
-import { ENDPOINT } from '../../../api';
+import { URL_SERVER } from '../../../constants/constant';
+
 import HttpService from '../../../services/HttpService';
 
 class AuthApi {
@@ -29,7 +30,7 @@ class AuthApi {
 
   public resetPassword(body: { email: string }): Promise<any> {
     const { email } = body;
-    return HttpService.post(`/resetPassword`, {
+    return HttpService.post(`/password/reset`, {
       email,
     });
   }
@@ -48,7 +49,7 @@ class AuthApi {
     newPassword: string;
   }): Promise<any> {
     const { resetPasswordToken, newPassword } = body;
-    return HttpService.post(`/password/newPassword`, {
+    return HttpService.post(`/password/new`, {
       resetPasswordToken,
       newPassword,
     });
@@ -56,7 +57,7 @@ class AuthApi {
 
   public postEmailForResetPassword(body: { email: string }): Promise<any> {
     const { email } = body;
-    return HttpService.post(`/resetPassword`, {
+    return HttpService.post(`/password/reset`, {
       email,
     });
   }
@@ -72,7 +73,7 @@ export const googleLoginService = async (fn: any, body: { token: string }) => {
     const { token } = body;
     const response = await axios({
       method: 'get',
-      url: `${ENDPOINT}/google-login`,
+      url: `${URL_SERVER}/google-login`,
       headers: {
         Authorization: `Bearer ${token})}`,
       },

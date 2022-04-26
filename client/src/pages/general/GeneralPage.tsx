@@ -4,13 +4,14 @@ import Routes from '../../routes';
 import HomePage from '../home/HomePage';
 import UserPage from '../user/UserPage';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
-import AdminPage from '../admin/AdminPage';
+
 import {
   SelfCenterLayout,
   SelfTopLayout,
 } from '../../component/GeneralLayouts';
 import BookingRouter from '../booking/BookingRouter';
 import SessionService from '../../services/SessionService';
+import AdminRouter from '../admin/adminPages/adminRouter/AdminRouter';
 
 type ProtectedRouteType = {
   children: any;
@@ -40,14 +41,6 @@ const GeneralPage = () => {
   const user = SessionService.getUser();
   const token = SessionService.getToken();
 
-  /**
-   * WHY DO i NEED THE LOCATION?
-   */
-  //let location = useLocation();
-  //useEffect(() => {
-  //  dispatch({ type: SET_LOCATION, payload: { location: location.pathname } });
-  //}, [dispatch, location.pathname]);
-
   return (
     <>
       <Switch>
@@ -76,7 +69,7 @@ const GeneralPage = () => {
           condition={token && user && user.role === 'admin' ? true : false}
           altRoute={Routes.LOGIN}
         >
-          <AdminPage />
+          <AdminRouter />
         </ProtectedRoute>
 
         <ProtectedRoute

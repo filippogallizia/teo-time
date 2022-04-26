@@ -3,15 +3,17 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { BookingAndUser } from '../../../../types/Types';
 import i18n from '../../../i18n';
+
 import {
   BOLD,
   EVENT_INFO_TEXT,
   MEDIUM_MARGIN_BOTTOM,
   SECONDARY_BUTTON,
   SECONDARY_LINK,
-} from '../../../shared/locales/constant';
-import { HOUR_MINUTE_FORMAT } from '../../../shared/locales/utils';
+} from '../../../constants/constant';
+import { HOUR_MINUTE_FORMAT } from '../../../helpers/utils';
 import UserPageApi from '../../user/userPageApi/userService';
+import ToastService from '../../../services/ToastService';
 
 const EditBooking = ({
   oneBooking,
@@ -27,11 +29,9 @@ const EditBooking = ({
         end: oneBooking.end,
       });
       fetchAndSetBookings();
-      toast.success('prenotazione cancellata', {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      toast.success('prenotazione cancellata');
     } catch (e) {
-      alert(e);
+      ToastService.error(e);
     }
   };
   return (
@@ -77,8 +77,9 @@ const DetailedInfoBooking = ({
     return (
       <div>
         {!user ? (
-          <p>{i18n.t('general.somethingWentWrong')}</p>
+          <p>{DateTime.fromISO(booking.start).toFormat('yyyy LLL dd ')}</p>
         ) : (
+          //<p>{i18n.t('general.somethingWentWrong')}</p>
           <div
             key={start}
             className={`grid grid-cols-5 gap-4 ${MEDIUM_MARGIN_BOTTOM}`}

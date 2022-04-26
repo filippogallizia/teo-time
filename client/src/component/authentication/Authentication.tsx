@@ -1,6 +1,7 @@
 import produce from 'immer';
 import { useEffect, useMemo, useReducer } from 'react';
 import { TokenType, UserType } from '../../../types/Types';
+import userService from './user/UserService';
 import SessionService from '../../services/SessionService';
 import {
   AuthContext,
@@ -10,6 +11,7 @@ import {
 
 export const SET_TOKEN = 'SET_TOKEN';
 export const SET_USER = 'SET_USER';
+export const LOG_OUT = 'LOG_OUT';
 
 export type SetTokenAction = {
   type: typeof SET_TOKEN;
@@ -21,9 +23,13 @@ export type SetUserAction = {
   payload: UserType;
 };
 
+export type SetLogOutAction = {
+  type: typeof LOG_OUT;
+};
+
 type State = {} & AuthContextState;
 
-type Action = SetTokenAction | SetUserAction;
+type Action = SetTokenAction | SetUserAction | SetLogOutAction;
 
 const userContextReducer = produce((draft: State, action: Action) => {
   switch (action.type) {
@@ -33,6 +39,11 @@ const userContextReducer = produce((draft: State, action: Action) => {
 
     case SET_USER:
       draft.user = action.payload;
+      break;
+
+    case LOG_OUT:
+      draft.token = '';
+      draft.user = new userService();
   }
 });
 
@@ -60,9 +71,15 @@ const Authentication = ({ children }: Props) => {
     });
   };
 
+  const setLogout = () => {
+    dispatch({ type: LOG_OUT });
+  };
+
   useEffect(() => {
     SessionService.onSetToken(setToken);
     SessionService.onSetUser(setUser);
+    SessionService.onSetLogout(setLogout);
+    SessionService.authentication();
   }, []);
 
   const contextValue: AuthContextState = useMemo(

@@ -14,6 +14,7 @@ class ErrorBoundary extends React.Component {
   render() {
     //@ts-expect-error
     if (this.state.hasError) {
+      sessionStorage.clear();
       // You can render any custom fallback UI
       return (
         <div className="flex items-center justify-center">

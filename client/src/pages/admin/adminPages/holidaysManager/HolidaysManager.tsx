@@ -1,14 +1,12 @@
-import { BOLD, ITALIC } from '../../../../shared/locales/constant';
+import { BOLD, ITALIC } from '../../../../constants/constant';
 import GeneralButton from '../../../../component/GeneralButton';
 import DatePicker from 'react-datepicker';
-import { handleToastInFailRequest } from '../../../../shared/locales/utils';
+
 import 'react-datepicker/dist/react-datepicker.css';
-import { ADD, DELETE } from '../../../booking/stateReducer';
+
 import { DateTime } from 'luxon';
-//import BookingPageApi from
 import { toast } from 'react-toastify';
 import { useEffect, useReducer } from 'react';
-import AdminPageApi, { GetHolidayResponseType } from '../../AdminPageApi';
 import _ from 'lodash';
 import i18n from '../../../../i18n';
 import reducer, {
@@ -20,6 +18,13 @@ import reducer, {
   UPLOAD_START_DATE,
 } from './reducer';
 import BookingPageApi from '../../../booking/BookingPageApi';
+import ToastService from '../../../../services/ToastService';
+import AdminPageApi, {
+  GetHolidayResponseType,
+} from '../listBookingsManager/ListBookingsManagerApi';
+
+const ADD = 'ADD';
+const DELETE = 'DELETE';
 
 const initialState = {
   holidays: [],
@@ -229,7 +234,7 @@ const HolidaysManager = () => {
                     //});
                   })
                   .catch((e) => {
-                    handleToastInFailRequest(e, toast);
+                    ToastService.error(e);
                   });
               }
             }}

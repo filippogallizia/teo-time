@@ -5,14 +5,16 @@ import { GrLocationPin } from 'react-icons/gr';
 import { BiEuro } from 'react-icons/bi';
 import { BookingComponentType } from '../BookingPageTypes';
 import { SET_CONFIRM_PHASE, SET_RENDER_AVAL } from '../stateReducer';
-import { EVENT_INFO_TEXT, TITLE } from '../../../shared/locales/constant';
+import { EVENT_INFO_TEXT, TITLE } from '../../../constants/constant';
 import i18n from '../../../i18n';
 
 const EventInformations = ({ state, dispatch }: BookingComponentType) => {
   return (
-    <div className={`grid col-1 gap-4  justify-items-center  md:static `}>
+    <div className={`grid col-1 gap-4 justify-items-center md:static`}>
       {(state.schedules.isConfirmPhase || state.schedules.isRenderAval) && (
-        <div className={`justify-self-start md:static md:hidden`}>
+        <div
+          className={`justify-self-start cursor-pointer md:static md:hidden`}
+        >
           <BsFillArrowLeftSquareFill
             onClick={() => {
               dispatch({ type: SET_CONFIRM_PHASE, payload: false });
