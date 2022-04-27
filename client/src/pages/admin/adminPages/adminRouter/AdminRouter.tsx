@@ -22,6 +22,7 @@ const AdminRouter = () => {
             <ListBookingsManager />
           </ProtectedRoute>
         </Switch>
+
         <Switch>
           <ProtectedRoute
             path={Routes.ADMIN_USERS_TABLE}
@@ -30,6 +31,7 @@ const AdminRouter = () => {
           >
             <UsersTable />
           </ProtectedRoute>
+
           <ProtectedRoute
             path={Routes.ADMIN_AVAL_MANAGER}
             condition={true}
@@ -37,6 +39,7 @@ const AdminRouter = () => {
           >
             <AvalManager />
           </ProtectedRoute>
+
           <ProtectedRoute
             path={Routes.ADMIN_HOLIDAY_MANAGER}
             condition={true}
@@ -44,6 +47,7 @@ const AdminRouter = () => {
           >
             <HolidaysManager />
           </ProtectedRoute>
+
           <ProtectedRoute
             path={Routes.FIXED_BKS_MANAGER}
             condition={true}
@@ -51,6 +55,7 @@ const AdminRouter = () => {
           >
             <FixedBksManager />
           </ProtectedRoute>
+
           <ProtectedRoute
             path={Routes.ADMIN}
             condition={true}

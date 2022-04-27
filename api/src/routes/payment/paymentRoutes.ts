@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
+import Stripe from 'stripe';
 
 const PaymentRouter = express.Router();
 
@@ -18,9 +19,13 @@ const calculateOrderAmount = (ammount: any) => {
   return ammount * 10;
 };
 
-const stripe = require('stripe')(
-  process.env.STRIPE_SECRET ?? STRIPE_SECRET_TEST
-);
+const stripe = new Stripe(process.env.STRIPE_SECRET ?? STRIPE_SECRET_TEST, {
+  apiVersion: '2020-08-27',
+});
+
+//const stripe = require('stripe')(
+//  process.env.STRIPE_SECRET ?? STRIPE_SECRET_TEST
+//);
 
 export default (app: Router) => {
   app.use('/payments', PaymentRouter);
@@ -34,9 +39,10 @@ export default (app: Router) => {
 
       try {
         const customerExist = await stripe.customers.list({
-          //email: email,
-          email: 'filo@filo.com',
+          email: email,
         });
+        console.log(customerExist, 'customeREx');
+
         if (customerExist && customerExist.data.length > 0) {
           id = customerExist.data[0].id;
         }
@@ -44,9 +50,7 @@ export default (app: Router) => {
         if (!customerExist || customerExist.data.length === 0) {
           const customer = await stripe.customers.create(
             {
-              description: 'My First Test Customer (created for API docs)',
               email: email,
-              //source: 'jfdsafjds',
               name: name,
             },
             {
@@ -78,13 +82,13 @@ export default (app: Router) => {
     '/webhook',
     express.raw({ type: 'application/json' }),
     (request, response) => {
+      let event = request.body;
       const sig = request.headers['stripe-signature'];
-
-      let event;
 
       try {
         event = stripe.webhooks.constructEvent(
           request.body,
+          //@ts-expect-error
           sig,
           endpointSecret
         );
@@ -94,26 +98,25 @@ export default (app: Router) => {
         return;
       }
 
-      let paymentIntent: any;
       switch (event.type) {
-        case 'payment_intent.payment_failed':
-          paymentIntent = event.data.object;
-          console.log(paymentIntent, 'paymentINTENT FINALMENTE LOGGED');
-          // Then define and call a function to handle the event payment_intent.payment_failed
+        case 'payment_intent.succeeded': {
+          const paymentIntent = event.data.object;
+          console.log(
+            `PaymentIntent for ${paymentIntent.amount} was successful!`
+          );
+          // Then define and call a method to handle the successful payment intent.
+          // handlePaymentIntentSucceeded(paymentIntent);
           break;
-        case 'payment_intent.processing':
-          paymentIntent = event.data.object;
-          console.log(paymentIntent, 'paymentINTENT FINALMENTE LOGGED');
-          // Then define and call a function to handle the event payment_intent.processing
+        }
+        case 'payment_method.attached': {
+          const paymentMethod = event.data.object;
+          // Then define and call a method to handle the successful attachment of a PaymentMethod.
+          // handlePaymentMethodAttached(paymentMethod);
           break;
-        case 'payment_intent.succeeded':
-          paymentIntent = event.data.object;
-          console.log(paymentIntent, 'paymentINTENT FINALMENTE LOGGED');
-          // Then define and call a function to handle the event payment_intent.succeeded
-          break;
-        // ... handle other event types
+        }
         default:
-          console.log(`Unhandled event type ${event.type}`);
+          // Unexpected event type
+          console.log(`Unhandled event type ${event.type}.`);
       }
 
       // Return a 200 response to acknowledge receipt of the event

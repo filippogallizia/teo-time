@@ -4,17 +4,13 @@ import { TimeRangeType } from '../../../types/Types';
 export const SET_AVAL = 'SET_AVAL';
 export const SET_SELECTION_DATE = 'SET_SELECTION_DATE';
 export const SET_SELECTION_HOUR = 'SET_SELECTION_HOUR';
-export const SET_CONFIRM_PHASE = 'SET_CONFIRM_PHASE';
-export const SET_RENDER_AVAL = 'SET_RENDER_AVAL';
+export const SET_AVAL_AND_SELECTION_DATE = 'SET_AVAL_AND_SELECTION_DATE';
 
 export type InitialState = {
   schedules: {
     selectedDate: string;
     selectedHour: string;
     availabilities: TimeRangeType[];
-    isConfirmPhase: boolean;
-    isRenderAval: boolean;
-    location: string;
   };
 };
 
@@ -33,23 +29,21 @@ type ActionSetSelectionHour = {
   payload: string;
 };
 
-type ActionSetConfirmPhase = {
-  type: typeof SET_CONFIRM_PHASE;
-  payload: boolean;
-};
-type ActionSetRenderAval = {
-  type: typeof SET_RENDER_AVAL;
-  payload: boolean;
+type ActionSetAvalAndSelctedDay = {
+  type: typeof SET_AVAL_AND_SELECTION_DATE;
+  payload: {
+    availabilities: TimeRangeType[];
+    selectedDate: string;
+  };
 };
 
 export type Actions =
   | ActionSetAval
   | ActionSetSelectionDate
   | ActionSetSelectionHour
-  | ActionSetConfirmPhase
-  | ActionSetRenderAval;
+  | ActionSetAvalAndSelctedDay;
 
-const stateReducer = (initialState: InitialState, action: Actions) => {
+const bookingReducer = (initialState: InitialState, action: Actions) => {
   switch (action.type) {
     case SET_AVAL:
       return produce(initialState, (draft) => {
@@ -60,17 +54,16 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
       return produce(initialState, (draft) => {
         draft.schedules.selectedDate = action.payload;
       });
+
     case SET_SELECTION_HOUR:
       return produce(initialState, (draft) => {
         draft.schedules.selectedHour = action.payload;
       });
-    case SET_CONFIRM_PHASE:
+
+    case SET_AVAL_AND_SELECTION_DATE:
       return produce(initialState, (draft) => {
-        draft.schedules.isConfirmPhase = action.payload;
-      });
-    case SET_RENDER_AVAL:
-      return produce(initialState, (draft) => {
-        draft.schedules.isRenderAval = action.payload;
+        draft.schedules.selectedDate = action.payload.selectedDate;
+        draft.schedules.availabilities = action.payload.availabilities;
       });
 
     default:
@@ -78,4 +71,4 @@ const stateReducer = (initialState: InitialState, action: Actions) => {
   }
 };
 
-export default stateReducer;
+export default bookingReducer;

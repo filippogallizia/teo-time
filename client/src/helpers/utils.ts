@@ -21,6 +21,28 @@ export const DATE_TO_DAY_FORMAT = (date: string) => {
   return DateTime.fromISO(date).toFormat('yyyy LLL dd');
 };
 
+export const DATE_TO_DATE_AT_END_OF_DAY = (date: DateTime) => {
+  return date
+    .set({
+      hour: 23,
+      minute: 59,
+      second: 0,
+      millisecond: 0,
+    })
+    .toISO();
+};
+
+export const DATE_TO_DATE_AT_START_OF_DAY = (date: DateTime) => {
+  return date
+    .set({
+      hour: 1,
+      minute: 1,
+      second: 1,
+      millisecond: 0,
+    })
+    .toISO();
+};
+
 export const SET_DATE_TO_MIDNIGHT = (date: string) => {
   return DateTime.fromISO(date)
     .set({

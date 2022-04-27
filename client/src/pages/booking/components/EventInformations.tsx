@@ -1,31 +1,38 @@
 import React from 'react';
-import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
+import { BsFillArrowLeftSquareFill as GoBackArrow } from 'react-icons/bs';
 import { BiTime } from 'react-icons/bi';
 import { GrLocationPin } from 'react-icons/gr';
 import { BiEuro } from 'react-icons/bi';
-import { BookingComponentType } from '../BookingPageTypes';
-import { SET_CONFIRM_PHASE, SET_RENDER_AVAL } from '../stateReducer';
 import { EVENT_INFO_TEXT, TITLE } from '../../../constants/constant';
 import i18n from '../../../i18n';
+import { BookingPhase } from './mobileBkgVersion/MobileBkgVersion';
 
-const EventInformations = ({ state, dispatch }: BookingComponentType) => {
+type Props = {
+  setBookingPhase?: React.Dispatch<React.SetStateAction<BookingPhase>>;
+  bookingPhase?: BookingPhase;
+};
+
+const EventInformations = ({ bookingPhase, setBookingPhase }: Props) => {
+  console.log(bookingPhase, 'bookingPhase');
+
+  const SHOW_GO_BACK_ARROW =
+    bookingPhase !== BookingPhase.VIEW_CALENDAR && bookingPhase;
+
   return (
     <div className={`grid col-1 gap-4 justify-items-center md:static`}>
-      {(state.schedules.isConfirmPhase || state.schedules.isRenderAval) && (
+      {SHOW_GO_BACK_ARROW && (
         <div
           className={`justify-self-start cursor-pointer md:static md:hidden`}
         >
-          <BsFillArrowLeftSquareFill
+          <GoBackArrow
             onClick={() => {
-              dispatch({ type: SET_CONFIRM_PHASE, payload: false });
-              dispatch({ type: SET_RENDER_AVAL, payload: false });
+              setBookingPhase && setBookingPhase(BookingPhase.VIEW_CALENDAR);
             }}
             size="1.5em"
             color="#f59e0b"
           />
         </div>
       )}
-
       <div className="grid col-1 gap-4 justify-items-center">
         <p className={`${TITLE} text-center`}>
           {i18n.t('eventInformationComponent.eventType', {

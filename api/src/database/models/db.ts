@@ -1,18 +1,19 @@
+import { DataTypes, Dialect, OperatorsAliases, Sequelize } from 'sequelize';
+
 import dbConfig from '../../config/db.config';
 import BookingsModel from './booking.model';
 import DatabaseAvailabiltyModel from './databaseAvailabilty.model';
 import FixedBookingsModel from './fixedBooking.model';
 import UserModel from './user.model';
 
-const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize(
   dbConfig.DATABASE,
   dbConfig.USER,
   dbConfig.PASSWORD,
   {
     host: dbConfig.HOST,
-    dialect: dbConfig.dialect,
-    operatorsAliases: 0,
+    dialect: dbConfig.dialect as Dialect,
+    operatorsAliases: 0 as unknown as OperatorsAliases,
 
     pool: {
       max: dbConfig.pool.max,
@@ -43,4 +44,4 @@ db.Bookings.belongsTo(db.user, {
   as: 'user',
 });
 
-module.exports = db;
+export default db;

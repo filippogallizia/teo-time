@@ -121,7 +121,6 @@ class GoogleCalendarService {
 
   public async insertEvent() {
     try {
-      console.log(this.event, 'eveeeent');
       const response = await calendar.events.insert({
         auth: auth,
         calendarId,
