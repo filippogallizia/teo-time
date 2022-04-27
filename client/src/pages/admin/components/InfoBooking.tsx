@@ -1,13 +1,14 @@
 import { DateTime } from 'luxon';
 import i18n from '../../../i18n';
 import { EVENT_INFO_TEXT } from '../../../constants/constant';
+import { useBookingContext } from 'src/pages/booking/context/useBookingContext';
 
-type InfoBookingType = {
-  date: string;
-  hours: string;
-};
+const InfoBooking = () => {
+  const { state, dispatch } = useBookingContext();
 
-const InfoBooking = ({ date, hours }: InfoBookingType) => {
+  const date = state.schedules.selectedDate;
+  const hours = state.schedules.selectedHour;
+
   return (
     <div className={`grid grid-cols-1 gap-4`}>
       <div className={`${EVENT_INFO_TEXT}`}>

@@ -1,5 +1,5 @@
 import { Dispatch } from 'react';
-import { Actions, InitialState } from './stateReducer';
+import { Actions, InitialState } from './bookingReducer';
 
 export type BookingComponentType = {
   state: InitialState;

@@ -6,21 +6,19 @@ import { BOOKING_INFO, TITLE } from '../../constants/constant';
 import routes from '../../routes';
 import InfoBooking from '../admin/components/InfoBooking';
 import LocalStorageManager from '../../services/StorageService';
-import { HOUR_MINUTE_FORMAT } from '../../helpers/utils';
 
 const SuccessfulPage = () => {
   const history = useHistory();
-  const booking = LocalStorageManager.getItem(BOOKING_INFO) ?? '';
-  const hours = HOUR_MINUTE_FORMAT(booking.start);
-  const date = booking.start;
 
   return (
     <div className="flex flex-col gap-8 ">
       <p className={TITLE}>{i18n.t('succesfulPage.succesfullMessage')}</p>
+
       <div className="grid grid-cols-1 gap-8 justify-items-start">
         <div>
-          <InfoBooking date={date} hours={hours} />
+          <InfoBooking />
         </div>
+
         <GeneralButton
           buttonText={i18n.t('succesfulPage.backToBookingButton')}
           onClick={() => {

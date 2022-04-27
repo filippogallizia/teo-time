@@ -1,16 +1,15 @@
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { FLEX_DIR_ROW } from '../../../constants/constant';
-import { Actions, InitialState, SET_SELECTION_HOUR } from '../stateReducer';
+import { SET_SELECTION_HOUR } from '../bookingReducer';
 import routes from '../../../routes';
+import { useBookingContext } from '../context/useBookingContext';
 
-type AvalChildType = {
+type Props = {
   hour: { start: string; end: string };
   id: number;
   setIsClicked: Dispatch<SetStateAction<{ id: number; isOpen: boolean }>>;
   isClicked: { id: number; isOpen: boolean };
-  dispatch: Dispatch<Actions>;
-  state: InitialState;
 };
 
 function AvailabilityHourContainer({
@@ -18,10 +17,11 @@ function AvailabilityHourContainer({
   id,
   isClicked,
   setIsClicked,
-  dispatch,
-  state,
-}: AvalChildType) {
+}: Props) {
+  const { state, dispatch } = useBookingContext();
+
   useEffect(() => {}, [state.schedules.selectedHour]);
+
   const history = useHistory();
 
   return (

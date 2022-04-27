@@ -5,7 +5,6 @@ import Routes from '../../routes';
 
 import CheckoutForm from './CheckoutForm';
 import './payment.css';
-import { BookingComponentType } from '../booking/BookingPageTypes';
 import LoadingService from '../../component/loading/LoadingService';
 
 import PaymentPageApi from './PaymentPageApi';
@@ -14,6 +13,9 @@ import SessionService from '../../services/SessionService';
 import { v4 } from 'uuid';
 import GeneralButton from '../../component/GeneralButton';
 import { useHistory } from 'react-router-dom';
+
+//To use Element components, wrap your checkout page component in an Elements provider.
+//Call loadStripe with your publishable key and pass the returned Promise to the Elements provider.
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
@@ -24,8 +26,9 @@ const PUBLISHABLE_KEY =
 
 const idempotencyKey = v4();
 
-export default function App({ dispatch, state }: BookingComponentType) {
+export default function App() {
   const [clientSecret, setClientSecret] = useState('');
+
   const [payInClinic, setPayInClinic] = useState(false);
   const [stripePromise] = useState(() => loadStripe(PUBLISHABLE_KEY));
   const history = useHistory();
