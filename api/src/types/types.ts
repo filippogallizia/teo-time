@@ -5,10 +5,10 @@ export type DatabaseAvailabilityType = {
   workTimeEnd: string;
   breakTimeStart: string;
   breakTimeEnd: string;
-  eventDurationHours: string;
-  eventDurationMinutes: string;
-  breakTimeBtwEventsHours: string;
-  breakTimeBtwEventsMinutes: string;
+  eventDurationHours: number;
+  eventDurationMinutes: number;
+  breakTimeBtwEventsHours: number;
+  breakTimeBtwEventsMinutes: number;
 };
 
 export type TimeRangeType = {

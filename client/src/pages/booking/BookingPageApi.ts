@@ -16,10 +16,16 @@ class BookingPageApi {
     });
   }
 
-  public getAvailabilities(body: { start: string; end: string }): Promise<any> {
-    const { start, end } = body;
+  public getAvailabilities(body: {
+    start: string;
+    end: string;
+    zoneName: string;
+  }): Promise<any> {
+    const { start, end, zoneName } = body;
 
-    return HttpService.get(`/availability/dynamic?start=${start}&end=${end}`);
+    return HttpService.get(
+      `/availability/dynamic?start=${start}&end=${end}&zoneName=${zoneName}`
+    );
   }
 }
 

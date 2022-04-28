@@ -1,9 +1,9 @@
 /* eslint-disable no-useless-catch */
 
+import db from '../../database/models/db';
 import { BookingDTO } from '../../interfaces/BookingDTO';
 import { UserDTO } from '../../interfaces/UserDTO';
 import { ErrorService } from '../errorService/ErrorService';
-const db = require('../../database/models/db');
 
 export type RecordType = UserDTO | BookingDTO;
 

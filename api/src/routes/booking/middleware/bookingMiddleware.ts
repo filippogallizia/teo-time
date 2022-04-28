@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { Op } from 'sequelize';
 
+import db from '../../../database/models/db';
 import bookingService from '../../../services/bookingService/BookingService';
-
-const db = require('../../../database/models/db');
 
 const User = db.user;
 

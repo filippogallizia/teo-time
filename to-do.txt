@@ -1,8 +1,7 @@
 API
-- google calendar remove events
-- middleware authenticateToken in createBooking
-- EditBooking add a fetchAndSetState function 
-- BookingManager refactor handleSuccess function
+- look for sync fn in teh code
+- make tests
+- validation for fixedBookings
 
 
 CLIENT

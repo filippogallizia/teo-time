@@ -1,4 +1,4 @@
-const db = {
+const dbConfig = {
   HOST: process.env.DB_HOST ?? '',
   USER: process.env.DB_USER ?? '',
   PASSWORD: process.env.DB_PASSWORD ?? '',
@@ -13,4 +13,4 @@ const db = {
   },
 };
 
-export default db;
+export default dbConfig;

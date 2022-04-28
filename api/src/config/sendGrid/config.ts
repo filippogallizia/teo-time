@@ -1,7 +1,9 @@
+import sgMail from '@sendgrid/mail';
+
 import { URL_CLIENT } from '../constants/constants';
 
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY_2);
+process.env.SENDGRID_API_KEY_2 &&
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY_2);
 
 //TODO -> improve email texts.
 

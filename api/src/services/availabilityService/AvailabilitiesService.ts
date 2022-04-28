@@ -1,11 +1,11 @@
 /* eslint-disable prefer-const */
 import { Request } from 'express';
 
+import db from '../../database/models/db';
 import { DatabaseAvailabilityType } from '../../types/types';
 import { ErrorService } from '../errorService/ErrorService';
 import { createAvalAlgoritm } from './createAvalAlgoritm/createAvalAlgoritm';
 
-const db = require('../../database/models/db');
 const DatabaseAvailabilty = db.DatabaseAvailabilty;
 
 class AvailabilitiesService {
@@ -67,71 +67,72 @@ class AvailabilitiesService {
   }
 }
 
+export const createDynamicAvail = (daySetting: DatabaseAvailabilityType[]) => {
+  const result = daySetting.map((day: DatabaseAvailabilityType) => {
+    return {
+      day: day.day,
+      availability: createAvalAlgoritm(
+        { start: day.workTimeStart, end: day.workTimeEnd },
+        { start: day.breakTimeStart, end: day.breakTimeEnd },
+        {
+          hours: Number(day.eventDurationHours),
+          minutes: Number(day.eventDurationMinutes),
+        },
+        {
+          hours: Number(day.breakTimeBtwEventsHours),
+          minutes: Number(day.breakTimeBtwEventsMinutes),
+        }
+      ),
+    };
+  });
+  return result;
+};
+
+export const setDefaultAvalInDatabase = (
+  availDefault: DatabaseAvailabilityType[]
+) => {
+  availDefault.map((day: DatabaseAvailabilityType) => {
+    const {
+      workTimeStart,
+      workTimeEnd,
+      breakTimeStart,
+      breakTimeEnd,
+      eventDurationHours,
+      eventDurationMinutes,
+      breakTimeBtwEventsHours,
+      breakTimeBtwEventsMinutes,
+    } = day;
+    const createAv = async () => {
+      await DatabaseAvailabilty.create({
+        day: day.day,
+        workTimeStart,
+        workTimeEnd,
+        breakTimeStart,
+        breakTimeEnd,
+        eventDurationHours,
+        eventDurationMinutes,
+        breakTimeBtwEventsHours,
+        breakTimeBtwEventsMinutes,
+      });
+    };
+    createAv();
+  });
+};
+
 export const parseDatabaseAvailability = async (
   availDefault: DatabaseAvailabilityType[]
 ) => {
   return await DatabaseAvailabilty.findAll()
     .then((daySetting: DatabaseAvailabilityType[]) => {
       if (daySetting.length > 0) {
-        const result = daySetting.map((day: DatabaseAvailabilityType) => {
-          return {
-            day: day.day,
-            /**
-             * this function create aval slots given the following inputs
-             * @param workTimeRange
-             * @param breakTimeRange
-             * @param eventDuration
-             * @param breakTimeBtwEvents
-             */
-            availability: createAvalAlgoritm(
-              { start: day.workTimeStart, end: day.workTimeEnd },
-              { start: day.breakTimeStart, end: day.breakTimeEnd },
-              {
-                hours: Number(day.eventDurationHours),
-                minutes: Number(day.eventDurationMinutes),
-              },
-              {
-                hours: Number(day.breakTimeBtwEventsHours),
-                minutes: Number(day.breakTimeBtwEventsMinutes),
-              }
-            ),
-          };
-        });
-        return result;
+        return createDynamicAvail(daySetting);
       } else {
-        availDefault.map((day: DatabaseAvailabilityType) => {
-          const {
-            workTimeStart,
-            workTimeEnd,
-            breakTimeStart,
-            breakTimeEnd,
-            eventDurationHours,
-            eventDurationMinutes,
-            breakTimeBtwEventsHours,
-            breakTimeBtwEventsMinutes,
-          } = day;
-          const createAv = async () => {
-            await DatabaseAvailabilty.create({
-              day: day.day,
-              workTimeStart,
-              workTimeEnd,
-              breakTimeStart,
-              breakTimeEnd,
-              eventDurationHours,
-              eventDurationMinutes,
-              breakTimeBtwEventsHours,
-              breakTimeBtwEventsMinutes,
-            });
-          };
-          createAv();
-        });
+        setDefaultAvalInDatabase(availDefault);
       }
     })
     .catch((e: any) => {
       throw ErrorService.internal(e);
     });
 };
-
-//export default parseDatabaseAvailability;
 
 export default new AvailabilitiesService();
