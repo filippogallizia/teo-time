@@ -1,6 +1,10 @@
-import { Model } from 'sequelize';
+import { InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 
-export interface BookingModel extends Model {
+export interface BookingModel
+  extends Model<
+    InferAttributes<BookingModel>,
+    InferCreationAttributes<BookingModel>
+  > {
   id?: number;
   start: string;
   end: string;

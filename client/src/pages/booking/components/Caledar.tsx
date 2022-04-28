@@ -23,6 +23,7 @@ export const getAvailabilities = async (selectedDate: DateTime) => {
     const response = await BookingPageApi.getAvailabilities({
       start: startOfDay,
       end: endOfDay,
+      zoneName: selectedDate.zoneName,
     });
     return response;
   } catch (e: any) {

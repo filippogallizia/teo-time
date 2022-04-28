@@ -1,12 +1,11 @@
-import express, { NextFunction, Request, Response, Router } from 'express';
+import express, { NextFunction, Request, Router } from 'express';
 
+import { createToken, loginValidation } from '../../middleware/middleware';
 //import { googleAuth } from '../../middleware/middleware';
 import authService from '../../services/authService/AuthService';
 import { ErrorService } from '../../services/errorService/ErrorService';
 import userService from '../../services/userService/UserService';
 import { ResponseWithUserType } from '../interfaces/interfaces';
-
-const { loginValidation, createToken } = require('../../middleware/middleware');
 
 const AuthRouter = express.Router();
 

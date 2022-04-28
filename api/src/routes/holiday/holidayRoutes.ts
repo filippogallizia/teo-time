@@ -1,11 +1,10 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 
+import db from '../../database/models/db';
+import { authenticateToken, bookExist } from '../../middleware/middleware';
 import { ResponseWithUserType } from '../interfaces/interfaces';
 
 const HolidayRouter = express.Router();
-
-const { authenticateToken, bookExist } = require('../../middleware/middleware');
-const db = require('../../database/models/db');
 
 const Bookings = db.Bookings;
 const User = db.user;

@@ -1,9 +1,9 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 import Stripe from 'stripe';
 
-const PaymentRouter = express.Router();
+import { authenticateToken } from '../../middleware/middleware';
 
-const { authenticateToken } = require('../../middleware/middleware');
+const PaymentRouter = express.Router();
 
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
 const endpointSecret =

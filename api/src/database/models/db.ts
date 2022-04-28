@@ -44,4 +44,4 @@ db.Bookings.belongsTo(db.user, {
   as: 'user',
 });
 
-export default db;
+export default db as any;

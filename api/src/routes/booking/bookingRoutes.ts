@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import GoogleCalendarService, {
   deleteEvent,
 } from '../../googleApi/GoogleCalendarService';
+import { authenticateToken, bookExist } from '../../middleware/middleware';
 import bookingService from '../../services/bookingService/BookingService';
 import EmailService from '../../services/emailService/EmailService';
 import { ErrorService } from '../../services/errorService/ErrorService';
@@ -11,7 +12,6 @@ import userService from '../../services/userService/UserService';
 import { ResponseWithUserType } from '../interfaces/interfaces';
 import { filterBookings } from './middleware/bookingMiddleware';
 
-const { authenticateToken, bookExist } = require('../../middleware/middleware');
 const BookingRouter = express.Router();
 
 export default (app: Router) => {
