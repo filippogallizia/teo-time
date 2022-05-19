@@ -16,13 +16,12 @@ export const createAvalAlgoritm = (
   breakTimeBtwEvents: HrsAndMinsType
 ): TimeRangeType[] => {
   const bucket: { start: DateTime; end: DateTime }[] = [];
+  const dayStart = DateTime.fromISO(workTimeRange.start);
+  const dayEnd = DateTime.fromISO(workTimeRange.end);
+  const breakStart = DateTime.fromISO(breakTimeRange.start);
+  const breakEnd = DateTime.fromISO(breakTimeRange.end);
 
   const fn = (): { start: DateTime; end: DateTime }[] => {
-    const dayStart = DateTime.fromISO(workTimeRange.start);
-    const dayEnd = DateTime.fromISO(workTimeRange.end);
-    const breakStart = DateTime.fromISO(breakTimeRange.start);
-    const breakEnd = DateTime.fromISO(breakTimeRange.end);
-
     const lastSlot =
       bucket.length === 0
         ? { start: dayStart, end: dayStart }
@@ -37,8 +36,10 @@ export const createAvalAlgoritm = (
 
     // validations on dynamic bucket
     if (
-      lastSlotEnd.plus(eventDuration).plus(breakTimeBtwEvents) > breakStart &&
-      lastSlotEnd.plus(eventDuration).plus(breakTimeBtwEvents) <= breakEnd
+      (lastSlotEnd.plus(eventDuration) >= breakStart &&
+        lastSlotEnd.plus(eventDuration) < breakEnd) ||
+      (lastSlotEnd.plus(eventDuration).plus(breakTimeBtwEvents) > breakStart &&
+        lastSlotEnd.plus(eventDuration).plus(breakTimeBtwEvents) < breakEnd)
     ) {
       lastSlotEnd = breakEnd;
     }
