@@ -13,8 +13,6 @@ type Props = {
 };
 
 const EventInformations = ({ bookingPhase, setBookingPhase }: Props) => {
-  console.log(bookingPhase, 'bookingPhase');
-
   const SHOW_GO_BACK_ARROW =
     bookingPhase !== BookingPhase.VIEW_CALENDAR && bookingPhase;
 

@@ -84,8 +84,24 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpe
 
 
 ###
+GET https://api.telegram.org/bot5384234838:AAHk6FpZ89MJSXV1IPrDSqFA7rwx5xn_fNw/getUpdates
+
+###
+POST https://api.telegram.org/bot5384234838:AAHk6FpZ89MJSXV1IPrDSqFA7rwx5xn_fNw/sendMessage
+Content-Type: application/json
+
+{
+  "chat_id": 1918231997,
+  "text": "hello from the bot"
+}
+
+
+
+###
 GET http://0.0.0.0:5000/bookings/users
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhbGxpemlhZmlsaXBwb0BnbWFpbC5jb20iLCJwYXNzd29yZCI6InN1cmZhbmRvIiwiaWF0IjoxNjM1NDEyMTM4fQ.4OrNWrQ3KbxgvMCboT9JL-Xj3IQ_DTz5rqlv0AYj4PI
+
+
 
 
 
@@ -237,4 +253,32 @@ GET http://0.0.0.0:5000/availability/dynamic?start=2022-04-20T01:01:01.000+02:00
 DELETE http://0.0.0.0:5000/fixedBookings?id=2
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDQ0OTA0OTEsImRhdGEiOnsiZW1haWwiOiJnYWxsaXppYWZpbGlwcG9AZ21haWwuY29tIn0sImlhdCI6MTY0NDQ4Njg5MX0.kZT0ZT82LHeqirfMwgAXq2M0-b5XZYFN4Rgu2OCRMb0
+
+###
+
+POST http://0.0.0.0:3000/api/v1/items
+Content-Type: application/json
+
+{
+  "item": 
+    {
+      "name": "cakrlooo",
+      "ask_price": "1000",
+      "current_price": 300
+    }
+}
+
+###
+
+PUT http://0.0.0.0:3000/api/v1/items
+Content-Type: application/json
+
+{
+  "item": 
+    {
+      "name": "cakrlooo",
+      "ask_price": "1000",
+      "current_price": 300
+    }
+}
 
