@@ -1,16 +1,19 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
-import { DateTime } from 'luxon';
 
 import GoogleCalendarService, {
   deleteEvent,
 } from '../../googleApi/GoogleCalendarService';
+import { parseDateToBeUserFriendly } from '../../helpers/helpers';
 import { authenticateToken, bookExist } from '../../middleware/middleware';
 import bookingService from '../../services/bookingService/BookingService';
 import EmailService from '../../services/emailService/EmailService';
 import { ErrorService } from '../../services/errorService/ErrorService';
 import userService from '../../services/userService/UserService';
 import { ResponseWithUserType } from '../interfaces/interfaces';
-import { filterBookings } from './middleware/bookingMiddleware';
+import {
+  filterBookings,
+  sendTelegramNotification,
+} from './middleware/bookingMiddleware';
 
 const BookingRouter = express.Router();
 
@@ -27,14 +30,15 @@ export default (app: Router) => {
         if (!res.user) {
           next(
             ErrorService.badRequest(
-              'User is missing, you are not loggein in probably'
+              'User is missing, you are not logged in in probably'
             )
           );
         } else {
           const userEmail = res.user.email;
           const usr = await userService.findOne(userEmail);
+
           if (!usr) {
-            next(ErrorService.badRequest('User already exist'));
+            next(ErrorService.badRequest('User do not exist'));
           }
 
           // insert the booking to admin google calendar
@@ -63,12 +67,22 @@ export default (app: Router) => {
           // associate the booking with the user
           await booking.setUser(usr);
 
+          // here I need to parse it to JSdate and then to Datetime date ( otherwise dont work dont know why )
+
+          const bookingStartTimeFriendly = parseDateToBeUserFriendly(
+            booking.start
+          );
+
           // send email to client and admin
           const emailBody = EmailService.getConfirmationEmailBody(
             userEmail,
-            DateTime.utc(booking.start).toFormat('yyyy LLL dd t').toString()
+            bookingStartTimeFriendly
           );
           await EmailService.sendEmail(emailBody);
+
+          const telegramMessage = `Prenotato nuovo appuntamento il: ${bookingStartTimeFriendly}`;
+
+          sendTelegramNotification(telegramMessage);
 
           // send booking to client
           res.status(200).send(booking);
@@ -102,9 +116,11 @@ export default (app: Router) => {
             // delete corresponding event on google calendar
             bks.calendarEventId && (await deleteEvent(bks.calendarEventId));
 
+            const bookingStartTimeFriendly = parseDateToBeUserFriendly(start);
+
             const emailBody = EmailService.getDeleteEmailBody(
               userEmail,
-              DateTime.fromISO(start).toFormat('yyyy LLL dd t').toString()
+              bookingStartTimeFriendly
             );
 
             await EmailService.sendEmail(emailBody);

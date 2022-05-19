@@ -37,7 +37,6 @@ export default function App() {
     const user = SessionService.getUser();
     if (user && user.email && user.name) {
       const payload = {
-        ammount: 50,
         email: user.email,
         name: user.name,
         idempotencyKey: idempotencyKey,

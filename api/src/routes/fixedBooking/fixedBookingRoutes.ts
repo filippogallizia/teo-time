@@ -27,7 +27,6 @@ export default (app: Router) => {
     async (req: Request, res: Response, next: NextFunction) => {
       try {
         const bks = await fixedBookingService.findAll();
-        console.log(bks, 'bks');
         res.send(bks);
       } catch (e: any) {
         next(e);

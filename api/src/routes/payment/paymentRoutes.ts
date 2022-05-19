@@ -12,13 +12,6 @@ const endpointSecret =
 const STRIPE_SECRET_TEST =
   'sk_test_51K5AW1G4kWNoryvxAZVOFwVPZ6qyVKUqZJslh0UYiNlU0aDb3hd0ksS0zCBWbyXUvDKB6f9CA9RvU3Gwc2rfBtsw00lC98E85E';
 
-const calculateOrderAmount = (ammount: any) => {
-  // Replace this constant with a calculation of the order's amount
-  // Calculate the order total on the server to prevent
-  // people from directly manipulating the amount on the client
-  return ammount * 10;
-};
-
 const stripe = new Stripe(process.env.STRIPE_SECRET ?? STRIPE_SECRET_TEST, {
   apiVersion: '2020-08-27',
 });
@@ -34,14 +27,13 @@ export default (app: Router) => {
     '/create-payment-intent',
     [authenticateToken],
     async (req: Request, res: Response, next: NextFunction) => {
-      const { ammount, email, name, idempotencyKey } = req.body;
+      const { email, name, idempotencyKey } = req.body;
       let id = '';
 
       try {
         const customerExist = await stripe.customers.list({
           email: email,
         });
-        console.log(customerExist, 'customeREx');
 
         if (customerExist && customerExist.data.length > 0) {
           id = customerExist.data[0].id;
@@ -62,12 +54,24 @@ export default (app: Router) => {
         const paymentIntent = await stripe.paymentIntents.create({
           setup_future_usage: 'off_session',
           customer: id,
-          amount: calculateOrderAmount(ammount),
+          amount: 50,
           currency: 'eur',
           automatic_payment_methods: {
             enabled: true,
           },
         });
+
+        const products = await stripe.products.list();
+
+        const price = await stripe.prices.list({
+          product: 'prod_LagtOhNx5vyWOp',
+        });
+
+        //const invoice = await stripe.invoices.create({
+        //  customer: 'cus_La0tQOqGAY3j0H',
+        //  collection_method: 'send_invoice',
+        //  days_until_due: 30,
+        //});
 
         res.send({
           clientSecret: paymentIntent.client_secret,
