@@ -36,10 +36,10 @@ export const createAvalAlgoritm = (
 
     // validations on dynamic bucket
     if (
-      (lastSlotEnd.plus(eventDuration) >= breakStart &&
-        lastSlotEnd.plus(eventDuration) < breakEnd) ||
+      (lastSlotEnd.plus(breakTimeBtwEvents) >= breakStart &&
+        lastSlotEnd.plus(breakTimeBtwEvents) < breakEnd) ||
       (lastSlotEnd.plus(eventDuration).plus(breakTimeBtwEvents) > breakStart &&
-        lastSlotEnd.plus(eventDuration).plus(breakTimeBtwEvents) < breakEnd)
+        lastSlotEnd.plus(eventDuration).plus(breakTimeBtwEvents) <= breakEnd)
     ) {
       lastSlotEnd = breakEnd;
     }
