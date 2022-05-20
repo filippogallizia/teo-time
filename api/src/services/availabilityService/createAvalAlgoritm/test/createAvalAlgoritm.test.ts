@@ -170,7 +170,7 @@ describe('AvalAlgoritm', () => {
         (DateTime.fromISO(slot.start).toString() >= breakTimeRangeStart &&
           DateTime.fromISO(slot.start).toString() < breakTimeRangeEnd) ||
         (DateTime.fromISO(slot.end).toString() >= breakTimeRangeStart &&
-          DateTime.fromISO(slot.end).toString() < breakTimeRangeEnd)
+          DateTime.fromISO(slot.end).toString() <= breakTimeRangeEnd)
       ) {
         return true;
       } else return false;
@@ -202,7 +202,7 @@ describe('AvalAlgoritm', () => {
         (DateTime.fromISO(slot.start).toString() >= breakTimeRangeStart &&
           DateTime.fromISO(slot.start).toString() < breakTimeRangeEnd) ||
         (DateTime.fromISO(slot.end).toString() >= breakTimeRangeStart &&
-          DateTime.fromISO(slot.end).toString() < breakTimeRangeEnd)
+          DateTime.fromISO(slot.end).toString() <= breakTimeRangeEnd)
       ) {
         return true;
       } else return false;
