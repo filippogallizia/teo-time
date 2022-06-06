@@ -1,13 +1,11 @@
 import { Request } from 'express';
-import { includes } from 'lodash';
 import { Op } from 'sequelize';
 
 import { BookingModel } from '../../database/models/booking.model';
+import db from '../../database/models/db';
 import { BookingDTO } from '../../interfaces/BookingDTO';
 import { UserDTO } from '../../interfaces/UserDTO';
 import { ErrorService } from '../errorService/ErrorService';
-
-const db = require('../../database/models/db');
 
 export type RecordType = UserDTO | BookingDTO;
 

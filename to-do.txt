@@ -1,13 +1,14 @@
 API
-- google calendar remove events
-- middleware authenticateToken in createBooking
-- EditBooking add a fetchAndSetState function 
-- BookingManager refactor handleSuccess function
+- look for sync fn in teh code
+- make tests
+- validation for fixedBookings
 
 
 CLIENT
 
-- filter in admin/prenotazioni not working in Italy ?? weird because on my pc works
+- after booking one hour it doesnt disappear from the bking list?
+- telegram notification with webhooks payment
+- create test for differents utc and fixedBookings
 - put validation on createion of fixedBookings
 
 for Admin

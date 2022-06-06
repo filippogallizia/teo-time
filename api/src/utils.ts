@@ -1,8 +1,7 @@
+import _ from 'lodash';
 import { DateTime, Settings } from 'luxon';
 
 import { BookingType, DayAvailabilityType, TimeRangeType } from './types/types';
-
-const _ = require('lodash');
 
 const currentYear = DateTime.now().year;
 export const lastDayOfyear = DateTime.utc(currentYear, 12, 31);
@@ -27,14 +26,12 @@ export const TODAY_AT_MIDNIGHT = () => {
   });
 };
 
-// this fn is foundamental to set the DateTime system time zone to the same one of the client
-export const getAndSetTimeZone = (date: string) => {
-  const zoneName = DateTime.fromISO(date).zoneName;
+export const setTimeZone = (zoneName: string) => {
   Settings.defaultZone = zoneName;
 };
 
 export const FROM_DATE_TO_DAY = (date: string) => {
-  getAndSetTimeZone(date);
+  //getAndSetTimeZone(date);
   return DateTime.fromISO(date).weekdayLong;
 };
 

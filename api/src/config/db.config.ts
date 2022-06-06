@@ -1,8 +1,8 @@
-const db = {
-  HOST: process.env.DB_HOST,
-  USER: process.env.DB_USER,
-  PASSWORD: process.env.DB_PASSWORD,
-  DATABASE: process.env.DB_NAME,
+const dbConfig = {
+  HOST: process.env.DB_HOST ?? '',
+  USER: process.env.DB_USER ?? '',
+  PASSWORD: process.env.DB_PASSWORD ?? '',
+  DATABASE: process.env.DB_NAME ?? '',
   dialect: 'mysql',
   port: process.env.DB_PORT,
   pool: {
@@ -13,4 +13,4 @@ const db = {
   },
 };
 
-export default db;
+export default dbConfig;

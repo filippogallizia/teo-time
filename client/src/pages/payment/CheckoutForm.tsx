@@ -70,7 +70,7 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `http://localhost:3000${routes.HOMEPAGE_BOOKING_SUCCESS}?token=${token}`,
+        return_url: `http://172.27.0.2:3000${routes.HOMEPAGE_BOOKING_SUCCESS}?token=${token}`,
       },
     });
     if (error.type === 'card_error' || error.type === 'validation_error') {

@@ -1,24 +1,19 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 
+import db from '../../database/models/db';
+import {
+  authenticateToken,
+  getAvailability,
+} from '../../middleware/middleware';
 import AvailabilitiesService from '../../services/availabilityService/AvailabilitiesService';
-import { ErrorService } from '../../services/errorService/ErrorService';
 import { ResponseWithAvalType } from '../interfaces/interfaces';
 
-const db = require('../../database/models/db');
-
 const DatabaseAvailabilty = db.DatabaseAvailabilty;
-
-const {
-  getAvailability,
-  authenticateToken,
-} = require('../../middleware/middleware');
 
 const AvailabilityRouter = express.Router();
 
 export default (app: Router) => {
   app.use('/availability', AvailabilityRouter);
-
-  //TODO -> create the service
 
   AvailabilityRouter.get(
     '/dynamic',
@@ -35,7 +30,7 @@ export default (app: Router) => {
   AvailabilityRouter.put(
     '/',
     [authenticateToken],
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response & any, next: NextFunction) => {
       try {
         await AvailabilitiesService.update(req);
         res.send({ message: 'availabilities created!' });

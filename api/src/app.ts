@@ -1,18 +1,17 @@
 import 'dotenv/config';
 
+import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
 
 import { URL_SERVER } from './config/constants/constants';
 import { isProduction } from './config/environment/environment';
+import db from './database/models/db';
 import { runEveryDay } from './helpers/cronJobs';
 import { apiErrorHandler } from './services/errorService/ErrorService';
 
-const compression = require('compression');
-
 const app = express();
 const port = process.env.PORT || 5000;
-const db = require('./database/models/db');
 
 app.use(cors());
 app.use(compression());
@@ -28,9 +27,8 @@ app.use((req, res, next) => {
     express.json()(req, res, next);
   }
 });
-
 db.sequelize
-  .sync({ force: false })
+  .sync({ force: true })
   .then(() => {
     // chronJob to delete past bookings
     runEveryDay(db);

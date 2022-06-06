@@ -1,13 +1,12 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
+import { v4 } from 'uuid';
 
 import { changePwdEmail, sendEmail } from '../../config/sendGrid/config';
+import db from '../../database/models/db';
 import { ErrorService } from '../../services/errorService/ErrorService';
 import UserService from '../../services/userService/UserService';
 
-const db = require('../../database/models/db');
-
 const PasswordRouter = express.Router();
-const { v4 } = require('uuid');
 
 const User = db.user;
 const OTP = v4();

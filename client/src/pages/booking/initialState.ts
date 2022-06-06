@@ -20,6 +20,5 @@ export const initialState = {
     isConfirmPhase: false,
     isRenderAval: false,
     currentUser: {},
-    location: '',
   },
 };

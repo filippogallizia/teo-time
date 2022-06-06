@@ -127,7 +127,7 @@ describe('AvalAlgoritm', () => {
     );
   });
 
-  it('first slot after break === breakEnd', function () {
+  it('first slot after break2 === breakEnd', function () {
     const workTimeRange = { start: '09:00', end: '21:00' };
     const breakTimeRange = { start: '10:30', end: '14:30' };
     const eventDuration = { hours: 1, minutes: 0 };
@@ -145,5 +145,69 @@ describe('AvalAlgoritm', () => {
     expect(DateTime.fromISO(result[0].start).toString()).to.be.equal(
       workTimeRangeStart
     );
+  });
+
+  it('break (1h) is respected', function () {
+    const workTimeRange = { start: '11:20', end: '20:30' };
+    const breakTimeRange = { start: '14:00', end: '15:00' };
+    const eventDuration = { hours: 1, minutes: 0 };
+    const breakTimeBtwEvents = { hours: 0, minutes: 30 };
+
+    const breakTimeRangeStart = DateTime.fromISO(
+      breakTimeRange.start
+    ).toString();
+    const breakTimeRangeEnd = DateTime.fromISO(breakTimeRange.end).toString();
+
+    const result = createAvalAlgoritm(
+      workTimeRange,
+      breakTimeRange,
+      eventDuration,
+      breakTimeBtwEvents
+    );
+
+    const breakTest = result.find((slot) => {
+      if (
+        (DateTime.fromISO(slot.start).toString() >= breakTimeRangeStart &&
+          DateTime.fromISO(slot.start).toString() < breakTimeRangeEnd) ||
+        (DateTime.fromISO(slot.end).toString() >= breakTimeRangeStart &&
+          DateTime.fromISO(slot.end).toString() <= breakTimeRangeEnd)
+      ) {
+        return true;
+      } else return false;
+    });
+
+    expect(breakTest).to.be.undefined;
+  });
+
+  it('break (2h) is respected', function () {
+    const workTimeRange = { start: '11:20', end: '20:30' };
+    const breakTimeRange = { start: '13:00', end: '15:00' };
+    const eventDuration = { hours: 1, minutes: 0 };
+    const breakTimeBtwEvents = { hours: 0, minutes: 30 };
+
+    const breakTimeRangeStart = DateTime.fromISO(
+      breakTimeRange.start
+    ).toString();
+    const breakTimeRangeEnd = DateTime.fromISO(breakTimeRange.end).toString();
+
+    const result = createAvalAlgoritm(
+      workTimeRange,
+      breakTimeRange,
+      eventDuration,
+      breakTimeBtwEvents
+    );
+
+    const breakTest = result.find((slot) => {
+      if (
+        (DateTime.fromISO(slot.start).toString() >= breakTimeRangeStart &&
+          DateTime.fromISO(slot.start).toString() < breakTimeRangeEnd) ||
+        (DateTime.fromISO(slot.end).toString() >= breakTimeRangeStart &&
+          DateTime.fromISO(slot.end).toString() <= breakTimeRangeEnd)
+      ) {
+        return true;
+      } else return false;
+    });
+
+    expect(breakTest).to.be.undefined;
   });
 });

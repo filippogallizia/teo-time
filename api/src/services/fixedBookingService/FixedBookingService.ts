@@ -1,7 +1,8 @@
 import { Request } from 'express';
 import { DateTime } from 'luxon';
-import { RRule, RRuleSet, rrulestr } from 'rrule';
+import { RRule, RRuleSet } from 'rrule';
 
+import db from '../../database/models/db';
 import {
   deleteEvent,
   getEvents,
@@ -10,8 +11,6 @@ import {
 import { setTimeToDate } from '../../utils';
 import { ErrorService } from '../errorService/ErrorService';
 import { FixedBookingDTO } from './interfaces';
-
-const db = require('../../database/models/db');
 
 export type RecordType = FixedBookingDTO;
 
@@ -68,7 +67,7 @@ class FixedBookingService {
       const optionalParameters =
         Object.keys(parameters).length > 0 ? parameters : undefined;
 
-      return await this.fixedBookingsModel.findAll(optionalParameters);
+      return await this.fixedBookingsModel?.findAll(optionalParameters);
     } catch (e) {
       throw ErrorService.internal(e);
     }

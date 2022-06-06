@@ -7,7 +7,7 @@ class EmailService {
     try {
       return await sgMail.send(emailBody);
     } catch (e) {
-      throw e;
+      console.log(e, 'errorFromEmailService');
     }
   }
 

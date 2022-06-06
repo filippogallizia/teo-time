@@ -1,12 +1,10 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 
+import db from '../../database/models/db';
+import { authenticateToken } from '../../middleware/middleware';
 import userService from '../../services/userService/UserService';
 
-const db = require('../../database/models/db');
-
 const Bookings = db.Bookings;
-
-const { authenticateToken } = require('../../middleware/middleware');
 
 const UserRouter = express.Router();
 

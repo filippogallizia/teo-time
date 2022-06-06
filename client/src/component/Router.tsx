@@ -66,11 +66,13 @@ const RouterComponent = (): JSX.Element => {
     <BrowserRouter history={history}>
       <Authentication>
         <Navbar />
+
         <MainContentWrapper>
           <Switch>
             <Route path={Routes.ERRORS_AND_WARNINGS}>
               <ErrorsAndWarningsModal />
             </Route>
+
             <ProtectedRoute
               path={Routes.LOGIN}
               condition={true}
@@ -147,7 +149,9 @@ const RouterComponent = (): JSX.Element => {
             </ProtectedRoute>
           </Switch>
         </MainContentWrapper>
+
         <ErrorHanlder />
+
         <Footer />
       </Authentication>
     </BrowserRouter>

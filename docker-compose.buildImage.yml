@@ -22,13 +22,9 @@ services:
       - mysqldb
     build:
       context: ./api
-      target: development
+      target: production
     restart: unless-stopped
     env_file: ./.env
-    volumes:
-      - ./api/src:/app/src
-      - ./api/node_modules:/src/node_modules
-
     ports:
       - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
     environment:
@@ -48,15 +44,12 @@ services:
       - api
     build:
       context: ./client
-      target: development
+      target: production
+    restart: unless-stopped
     environment:
       - NODE_ENV=$NODE_ENV
     ports:
       - $REACT_LOCAL_PORT:$REACT_DOCKER_PORT
-    volumes:
-      ## before the twodots its the host, after is the container
-      - ./client/src:/app/src
-
 volumes:
   db:
   client:

@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
@@ -21,6 +20,7 @@ import {
   DATE_TO_FULL_DAY,
   filterDays_updateDate,
   retrieveAvailability,
+  setTimeZone,
 } from '../utils';
 
 // chronJob to delete past bookings
@@ -86,7 +86,7 @@ export const bookExist = async (
   }
 };
 
-const getAvailability = async (
+export const getAvailability = async (
   req: Request,
   res: ResponseWithAvalType,
   next: NextFunction
@@ -95,6 +95,11 @@ const getAvailability = async (
   const start = req.query.start && req.query.start.split(' ').join('+');
   //@ts-expect-error
   const end = req.query.end && req.query.end.split(' ').join('+');
+
+  const zoneName = req.query.zoneName;
+
+  // this fn is foundamental to set the DateTime system time zone to the same one of the client
+  setTimeZone(zoneName as string);
 
   const avalRange: { start: string; end: string }[] = [
     {
@@ -193,7 +198,6 @@ const getAvailability = async (
      *
      */
     const daysAvailabilities: DayAvailabilityType[] =
-      //@ts-expect-error
       await parseDatabaseAvailability(avalDefault);
 
     /**
@@ -216,7 +220,7 @@ const getAvailability = async (
   }
 };
 
-const requestHasPassword = async (
+export const requestHasPassword = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -227,7 +231,11 @@ const requestHasPassword = async (
   } else next();
 };
 
-const userExist = async (req: Request, res: Response, next: NextFunction) => {
+export const userExist = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { email } = req.body;
   try {
     const user = await userService.findOne(email);
@@ -242,7 +250,7 @@ const userExist = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const loginValidation = async (
+export const loginValidation = async (
   req: Request,
   res: ResponseWithUserType,
   next: NextFunction
@@ -257,7 +265,7 @@ const loginValidation = async (
   }
 };
 
-const createToken = async (
+export const createToken = async (
   req: Request,
   res: ResponseWithUserType,
   next: NextFunction
@@ -279,9 +287,9 @@ const createToken = async (
   }
 };
 
-const authenticateToken = async (
+export const authenticateToken = async (
   req: Request,
-  res: Response & { user: any },
+  res: Response & any,
   next: NextFunction
 ) => {
   const authHeader = req.header('Authorization');
@@ -312,15 +320,4 @@ const authenticateToken = async (
       next(error);
     }
   }
-};
-
-module.exports = {
-  createToken,
-  userExist,
-  getAvailability,
-  bookExist,
-  requestHasPassword,
-  loginValidation,
-  authenticateToken,
-  //googleAuth,
 };

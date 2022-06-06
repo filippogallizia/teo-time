@@ -164,13 +164,6 @@ const Login = () => {
         >
           {i18n.t('loginPage.passwordLost')}
         </div>
-        {/**
-         * TODO -> implement google login for client
-         */}
-        {/*<div className="border-b-2 border-black	text-center">Oppure</div>*/}
-        {/*<div>*/}
-        {/*<GoogleLoginComponent />{' '}*/}
-        {/*</div>*/}
       </form>
     </SelfCenterLayout>
   );
