@@ -15,8 +15,6 @@ const AvailabilityRouter = express.Router();
 export default (app: Router) => {
   app.use('/availability', AvailabilityRouter);
 
-  //TODO -> create the service
-
   AvailabilityRouter.get(
     '/dynamic',
     [getAvailability],
