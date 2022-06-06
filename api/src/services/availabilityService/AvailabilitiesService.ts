@@ -91,7 +91,7 @@ export const createDynamicAvail = (daySetting: DatabaseAvailabilityType[]) => {
 export const setDefaultAvalInDatabase = (
   availDefault: DatabaseAvailabilityType[]
 ) => {
-  availDefault.map((day: DatabaseAvailabilityType) => {
+  availDefault.map(async (day: DatabaseAvailabilityType) => {
     const {
       workTimeStart,
       workTimeEnd,
@@ -102,6 +102,7 @@ export const setDefaultAvalInDatabase = (
       breakTimeBtwEventsHours,
       breakTimeBtwEventsMinutes,
     } = day;
+
     const createAv = async () => {
       await DatabaseAvailabilty.create({
         day: day.day,
@@ -115,7 +116,7 @@ export const setDefaultAvalInDatabase = (
         breakTimeBtwEventsMinutes,
       });
     };
-    createAv();
+    await createAv();
   });
 };
 

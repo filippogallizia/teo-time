@@ -27,7 +27,6 @@ app.use((req, res, next) => {
     express.json()(req, res, next);
   }
 });
-
 db.sequelize
   .sync({ force: true })
   .then(() => {
